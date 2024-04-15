@@ -2,10 +2,9 @@ package com.ecaservice.core.form.template.mapping;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-
-import javax.inject.Inject;
 
 import static com.ecaservice.core.form.template.TestHelperUtils.createFieldDictionary;
 import static com.ecaservice.core.form.template.TestHelperUtils.createFieldDictionaryValue;
@@ -25,7 +24,7 @@ class FormTemplateMapperTest {
     private static final int FIELD_ORDER = 0;
     private static final String FIELD_NAME = "field";
 
-    @Inject
+    @Autowired
     private FormTemplateMapper formTemplateMapper;
 
     @Test

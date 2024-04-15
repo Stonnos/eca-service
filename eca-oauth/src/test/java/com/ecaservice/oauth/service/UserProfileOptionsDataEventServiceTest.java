@@ -6,9 +6,8 @@ import com.ecaservice.oauth.mapping.UserProfileOptionsMapperImpl;
 import com.ecaservice.oauth.repository.UserProfileOptionsDataEventRepository;
 import com.ecaservice.user.profile.options.dto.UserProfileOptionsDto;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Import;
-
-import javax.inject.Inject;
 
 import static com.ecaservice.common.web.util.JsonUtils.fromJson;
 import static com.ecaservice.oauth.TestHelperUtils.createUserEntity;
@@ -23,10 +22,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Import({UserProfileOptionsDataEventService.class, UserProfileOptionsMapperImpl.class})
 class UserProfileOptionsDataEventServiceTest extends AbstractJpaTest {
 
-    @Inject
+    @Autowired
     private UserProfileOptionsDataEventRepository userProfileOptionsDataEventRepository;
 
-    @Inject
+    @Autowired
     private UserProfileOptionsDataEventService userProfileOptionsDataEventService;
 
     @Override

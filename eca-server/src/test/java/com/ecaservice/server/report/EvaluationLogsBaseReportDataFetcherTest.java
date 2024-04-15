@@ -28,9 +28,9 @@ import com.ecaservice.web.dto.model.SortFieldRequestDto;
 import com.google.common.collect.ImmutableList;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Import;
 
-import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import java.time.LocalDateTime;
 import java.util.Collections;
@@ -65,17 +65,17 @@ class EvaluationLogsBaseReportDataFetcherTest extends AbstractJpaTest {
     @Mock
     private ObjectStorageService objectStorageService;
 
-    @Inject
+    @Autowired
     private AppProperties appProperties;
-    @Inject
+    @Autowired
     private EvaluationLogMapper evaluationLogMapper;
-    @Inject
+    @Autowired
     private EntityManager entityManager;
-    @Inject
+    @Autowired
     private EvaluationLogRepository evaluationLogRepository;
-    @Inject
+    @Autowired
     private InstancesInfoRepository instancesInfoRepository;
-    @Inject
+    @Autowired
     private EvaluationResultsRequestEntityRepository evaluationResultsRequestEntityRepository;
 
     private EvaluationLogsBaseReportDataFetcher evaluationLogsBaseReportDataFetcher;

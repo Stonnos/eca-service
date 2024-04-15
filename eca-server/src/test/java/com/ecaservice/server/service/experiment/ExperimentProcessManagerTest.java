@@ -27,10 +27,10 @@ import org.camunda.bpm.engine.test.Deployment;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
-import javax.inject.Inject;
 import java.util.UUID;
 
 import static com.ecaservice.server.TestHelperUtils.createExperiment;
@@ -71,17 +71,17 @@ class ExperimentProcessManagerTest extends AbstractEvaluationProcessManagerTest<
     @MockBean
     private MinioStorageService minioStorageService;
 
-    @Inject
+    @Autowired
     private ExperimentRepository experimentRepository;
-    @Inject
+    @Autowired
     private InstancesInfoRepository instancesInfoRepository;
 
-    @Inject
+    @Autowired
     private ExperimentConfig experimentConfig;
-    @Inject
+    @Autowired
     private RuntimeService runtimeService;
 
-    @Inject
+    @Autowired
     private ExperimentProcessManager experimentProcessManager;
 
     @Captor

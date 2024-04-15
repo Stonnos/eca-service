@@ -6,12 +6,12 @@ import com.ecaservice.oauth.entity.UserEntity;
 import com.ecaservice.oauth.service.mail.dictionary.TemplateVariablesDictionary;
 import com.ecaservice.oauth.service.mail.dictionary.Templates;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.common.OAuth2AccessToken;
 import org.springframework.security.oauth2.provider.token.store.JdbcTokenStore;
 
-import javax.inject.Inject;
 import java.util.Collection;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -30,9 +30,9 @@ class ResetPasswordIT extends AbstractUserIT {
     private static final String CREATE_RESET_PASSWORD_REQUEST_URL = "/create-reset-request";
     private static final String RESET_URL = "/reset";
 
-    @Inject
+    @Autowired
     private PasswordEncoder passwordEncoder;
-    @Inject
+    @Autowired
     private JdbcTokenStore tokenStore;
 
     @Override

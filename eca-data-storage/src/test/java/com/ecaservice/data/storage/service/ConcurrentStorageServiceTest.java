@@ -13,13 +13,13 @@ import com.ecaservice.data.storage.repository.AttributeValueRepository;
 import com.ecaservice.data.storage.repository.InstancesRepository;
 import com.ecaservice.data.storage.service.impl.StorageServiceImpl;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.context.annotation.Import;
 import org.springframework.security.oauth2.common.util.RandomValueStringGenerator;
 import weka.core.Instances;
 
-import javax.inject.Inject;
 import java.util.UUID;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
@@ -50,11 +50,11 @@ class ConcurrentStorageServiceTest extends AbstractJpaTest {
     private static final String TEST_RELATION_NAME_2 = "test_relation_name_2";
     private static final String USER_NAME = "admin";
 
-    @Inject
+    @Autowired
     private InstancesRepository instancesRepository;
-    @Inject
+    @Autowired
     private AttributeRepository attributeRepository;
-    @Inject
+    @Autowired
     private AttributeValueRepository attributeValueRepository;
 
     @MockBean
@@ -66,7 +66,7 @@ class ConcurrentStorageServiceTest extends AbstractJpaTest {
     @MockBean
     private SearchQueryCreator searchQueryCreator;
 
-    @Inject
+    @Autowired
     private StorageService storageService;
 
     @Override

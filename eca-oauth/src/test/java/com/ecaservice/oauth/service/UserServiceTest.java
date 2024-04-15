@@ -28,6 +28,7 @@ import com.ecaservice.web.dto.model.UserDto;
 import com.google.common.collect.Sets;
 import org.apache.commons.io.FilenameUtils;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.Page;
@@ -35,7 +36,6 @@ import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.inject.Inject;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.Iterator;
@@ -71,15 +71,15 @@ class UserServiceTest extends AbstractJpaTest {
     private static final int PAGE = 0;
     private static final int SIZE = 10;
 
-    @Inject
+    @Autowired
     private AppProperties appProperties;
-    @Inject
+    @Autowired
     private UserMapper userMapper;
-    @Inject
+    @Autowired
     private UserEntityRepository userEntityRepository;
-    @Inject
+    @Autowired
     private RoleRepository roleRepository;
-    @Inject
+    @Autowired
     private UserPhotoRepository userPhotoRepository;
 
     @MockBean

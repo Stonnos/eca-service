@@ -4,10 +4,10 @@ import com.ecaservice.server.model.entity.ClassifiersConfiguration;
 import com.ecaservice.server.model.entity.ClassifiersConfigurationActionType;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import javax.inject.Inject;
 import java.time.LocalDateTime;
 
 import static com.ecaservice.server.TestHelperUtils.createClassifiersConfigurationHistory;
@@ -22,7 +22,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Import(ClassifiersConfigurationHistoryMapperImpl.class)
 class ClassifiersConfigurationHistoryMapperTest {
 
-    @Inject
+    @Autowired
     private ClassifiersConfigurationHistoryMapper classifiersConfigurationHistoryMapper;
 
     @Test

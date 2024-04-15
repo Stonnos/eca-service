@@ -9,11 +9,11 @@ import com.ecaservice.ers.repository.InstancesInfoRepository;
 import com.ecaservice.ers.service.EvaluationResultsHistoryService;
 import com.ecaservice.report.data.fetcher.AbstractBaseReportDataFetcher;
 import com.ecaservice.web.dto.model.PageRequestDto;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
-import javax.inject.Inject;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -41,7 +41,7 @@ public class EvaluationResultsHistoryReportDataFetcher
      * @param evaluationResultsMapper         - evaluation results mapper
      * @param instancesInfoRepository         - instances info repository
      */
-    @Inject
+    @Autowired
     public EvaluationResultsHistoryReportDataFetcher(FilterTemplateService filterTemplateService,
                                                      EvaluationResultsHistoryService evaluationResultsHistoryService,
                                                      EvaluationResultsMapper evaluationResultsMapper,

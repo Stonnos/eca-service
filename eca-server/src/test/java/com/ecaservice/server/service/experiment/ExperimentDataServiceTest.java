@@ -31,11 +31,11 @@ import com.ecaservice.web.dto.model.PageRequestDto;
 import com.ecaservice.web.dto.model.SortFieldRequestDto;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.Page;
 
-import javax.inject.Inject;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Arrays;
@@ -67,13 +67,13 @@ class ExperimentDataServiceTest extends AbstractJpaTest {
     private static final long INVALID_ID = 1000L;
     private static final String EXPERIMENT_DOWNLOAD_URL = "http://localhost:9000/experiment";
 
-    @Inject
+    @Autowired
     private ExperimentRepository experimentRepository;
-    @Inject
+    @Autowired
     private InstancesInfoRepository instancesInfoRepository;
-    @Inject
+    @Autowired
     private ExperimentStepRepository experimentStepRepository;
-    @Inject
+    @Autowired
     private ExperimentProgressRepository experimentProgressRepository;
     @MockBean
     private ObjectStorageService objectStorageService;
@@ -82,7 +82,7 @@ class ExperimentDataServiceTest extends AbstractJpaTest {
     @MockBean
     private ExperimentStepProcessor experimentStepProcessor;
 
-    @Inject
+    @Autowired
     private ExperimentDataService experimentDataService;
 
     private InstancesInfo instancesInfo;

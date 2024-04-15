@@ -7,13 +7,13 @@ import com.ecaservice.oauth.service.mail.dictionary.Templates;
 import com.ecaservice.oauth2.test.token.TokenResponse;
 import com.ecaservice.web.dto.model.ChangePasswordRequestStatusDto;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.common.OAuth2AccessToken;
 import org.springframework.security.oauth2.provider.token.store.JdbcTokenStore;
 
-import javax.inject.Inject;
 import java.util.Collection;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -33,9 +33,9 @@ class ChangePasswordIT extends AbstractUserIT {
     private static final String CHANGE_PASSWORD_REQUEST_URL = "/request";
     private static final String CONFIRM_CHANGE_PASSWORD_REQUEST_URL = "/confirm";
 
-    @Inject
+    @Autowired
     private PasswordEncoder passwordEncoder;
-    @Inject
+    @Autowired
     private JdbcTokenStore tokenStore;
 
     @Override

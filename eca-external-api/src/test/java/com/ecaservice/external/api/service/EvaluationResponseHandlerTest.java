@@ -8,9 +8,9 @@ import com.ecaservice.external.api.entity.RequestStageType;
 import com.ecaservice.external.api.mapping.EcaRequestMapperImpl;
 import com.ecaservice.external.api.repository.EvaluationRequestRepository;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Import;
 
-import javax.inject.Inject;
 import java.time.LocalDateTime;
 
 import static com.ecaservice.external.api.TestHelperUtils.createEvaluationRequestEntity;
@@ -27,10 +27,10 @@ import static org.assertj.core.api.Assertions.assertThat;
         RequestStageHandler.class})
 class EvaluationResponseHandlerTest extends AbstractJpaTest {
 
-    @Inject
+    @Autowired
     private EvaluationRequestRepository evaluationRequestRepository;
 
-    @Inject
+    @Autowired
     private EvaluationResponseHandler evaluationResponseHandler;
 
     @Override

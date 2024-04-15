@@ -5,10 +5,10 @@ import com.ecaservice.ers.dto.EvaluationResultsRequest;
 import com.ecaservice.ers.model.EvaluationResultsInfo;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import javax.inject.Inject;
 import java.util.UUID;
 
 import static com.ecaservice.ers.TestHelperUtils.buildEvaluationResultsReport;
@@ -27,7 +27,7 @@ import static org.assertj.core.api.Assertions.assertThat;
         RocCurveReportMapperImpl.class, ClassifierOptionsInfoMapperImpl.class})
 class EvaluationResultsMapperTest {
 
-    @Inject
+    @Autowired
     private EvaluationResultsMapper evaluationResultsMapper;
 
     @Test

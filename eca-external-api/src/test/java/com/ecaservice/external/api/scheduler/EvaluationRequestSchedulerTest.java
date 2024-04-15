@@ -7,10 +7,10 @@ import com.ecaservice.external.api.entity.RequestStageType;
 import com.ecaservice.external.api.repository.EcaRequestRepository;
 import com.ecaservice.external.api.service.RequestStageHandler;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 
-import javax.inject.Inject;
 import java.time.LocalDateTime;
 
 import static com.ecaservice.external.api.TestHelperUtils.createEvaluationRequestEntity;
@@ -30,12 +30,12 @@ class EvaluationRequestSchedulerTest extends AbstractJpaTest {
     @MockBean
     private RequestStageHandler requestStageHandler;
 
-    @Inject
+    @Autowired
     private ExternalApiConfig externalApiConfig;
-    @Inject
+    @Autowired
     private EcaRequestRepository ecaRequestRepository;
 
-    @Inject
+    @Autowired
     private EvaluationRequestScheduler evaluationRequestScheduler;
 
     @Override

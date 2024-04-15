@@ -31,6 +31,7 @@ import com.ecaservice.web.dto.model.S3ContentResponseDto;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
@@ -38,7 +39,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 
-import javax.inject.Inject;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -93,7 +93,7 @@ class ExperimentControllerTest extends PageRequestControllerTest {
     @MockBean
     private ExperimentResultsEntityRepository experimentResultsEntityRepository;
 
-    @Inject
+    @Autowired
     private ExperimentMapper experimentMapper;
 
     @Test

@@ -7,12 +7,12 @@ import com.ecaservice.server.model.evaluation.InstancesRequestDataModel;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import javax.inject.Inject;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -28,9 +28,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Import({ClassifierOptionsRequestMapperImpl.class, CrossValidationConfig.class, InstancesInfoMapperImpl.class})
 class ClassifierOptionsRequestMapperTest {
 
-    @Inject
+    @Autowired
     private ClassifierOptionsRequestMapper classifierOptionsRequestMapper;
-    @Inject
+    @Autowired
     private CrossValidationConfig crossValidationConfig;
 
     private InstancesRequestDataModel instancesRequestDataModel;

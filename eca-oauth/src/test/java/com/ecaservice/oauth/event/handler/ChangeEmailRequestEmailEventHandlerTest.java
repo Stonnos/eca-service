@@ -8,12 +8,11 @@ import com.ecaservice.oauth.service.mail.dictionary.TemplateVariablesDictionary;
 import com.ecaservice.oauth.service.mail.dictionary.Templates;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-
-import javax.inject.Inject;
 
 import java.util.UUID;
 
@@ -38,9 +37,9 @@ class ChangeEmailRequestEmailEventHandlerTest {
 
     private static final String NEW_EMAIL = "newemail@mail.ru";
 
-    @Inject
+    @Autowired
     private AppProperties appProperties;
-    @Inject
+    @Autowired
     private ChangeEmailRequestEmailEventHandler eventHandler;
 
     @Test

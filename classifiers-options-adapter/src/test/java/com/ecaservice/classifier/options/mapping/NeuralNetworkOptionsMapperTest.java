@@ -10,10 +10,9 @@ import eca.neural.functions.ActivationFunctionBuilder;
 import eca.neural.functions.ActivationFunctionType;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-
-import javax.inject.Inject;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -28,7 +27,7 @@ class NeuralNetworkOptionsMapperTest {
 
     private static final double COEFFICIENT = 2.0d;
 
-    @Inject
+    @Autowired
     private NeuralNetworkOptionsMapper neuralNetworkOptionsMapper;
 
     @Test

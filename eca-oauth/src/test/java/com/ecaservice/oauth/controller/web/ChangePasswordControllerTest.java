@@ -9,14 +9,13 @@ import com.ecaservice.web.dto.model.ChangePasswordRequestStatusDto;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-
-import javax.inject.Inject;
 
 import java.util.UUID;
 
@@ -57,7 +56,7 @@ class ChangePasswordControllerTest extends AbstractControllerTest {
     @MockBean
     private ApplicationEventPublisher applicationEventPublisher;
 
-    @Inject
+    @Autowired
     private MockMvc mockMvc;
 
     private ObjectMapper objectMapper = new ObjectMapper();

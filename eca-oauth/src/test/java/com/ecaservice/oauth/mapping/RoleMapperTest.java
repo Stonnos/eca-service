@@ -5,10 +5,9 @@ import com.ecaservice.user.model.Role;
 import com.ecaservice.web.dto.model.RoleDto;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-
-import javax.inject.Inject;
 
 import static com.ecaservice.oauth.TestHelperUtils.createRole;
 import static com.ecaservice.oauth.TestHelperUtils.createRoleEntity;
@@ -23,7 +22,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Import(RoleMapperImpl.class)
 class RoleMapperTest {
 
-    @Inject
+    @Autowired
     private RoleMapper roleMapper;
 
     @Test

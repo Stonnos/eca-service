@@ -25,11 +25,11 @@ import com.ecaservice.server.service.InstancesInfoService;
 import com.ecaservice.server.service.data.InstancesLoaderService;
 import com.ecaservice.server.service.data.InstancesMetaDataService;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import weka.core.Instances;
 
-import javax.inject.Inject;
 import java.util.List;
 import java.util.UUID;
 import java.util.function.Function;
@@ -54,13 +54,13 @@ class ExperimentServiceTest extends AbstractJpaTest {
 
     private static final String DATA_MD_5_HASH = "3032e188204cb537f69fc7364f638641";
 
-    @Inject
+    @Autowired
     private ExperimentRepository experimentRepository;
-    @Inject
+    @Autowired
     private ExperimentStepRepository experimentStepRepository;
-    @Inject
+    @Autowired
     private InstancesInfoRepository instancesInfoRepository;
-    @Inject
+    @Autowired
     private ExperimentProgressRepository experimentProgressRepository;
     @MockBean
     private InstancesMetaDataService instancesMetaDataService;
@@ -71,7 +71,7 @@ class ExperimentServiceTest extends AbstractJpaTest {
     @MockBean
     private ExperimentStepProcessor experimentStepProcessor;
 
-    @Inject
+    @Autowired
     private ExperimentService experimentService;
 
     @Override

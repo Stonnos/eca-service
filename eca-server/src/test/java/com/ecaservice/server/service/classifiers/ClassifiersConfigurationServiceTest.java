@@ -29,11 +29,11 @@ import com.ecaservice.web.dto.model.PageRequestDto;
 import com.ecaservice.web.dto.model.SortFieldRequestDto;
 import com.ecaservice.web.dto.model.UpdateClassifiersConfigurationDto;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.context.annotation.Import;
 
-import javax.inject.Inject;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Collections;
@@ -77,13 +77,13 @@ class ClassifiersConfigurationServiceTest extends AbstractJpaTest {
     private static final String MESSAGE = "message";
     private static final String TEMPLATE_TITLE = "title";
 
-    @Inject
+    @Autowired
     private ClassifierOptionsDatabaseModelRepository classifierOptionsDatabaseModelRepository;
-    @Inject
+    @Autowired
     private ClassifiersConfigurationHistoryRepository classifiersConfigurationHistoryRepository;
-    @Inject
+    @Autowired
     private ClassifiersConfigurationRepository classifiersConfigurationRepository;
-    @Inject
+    @Autowired
     private ClassifiersConfigurationService classifiersConfigurationService;
     @MockBean
     private FilterTemplateService filterTemplateService;

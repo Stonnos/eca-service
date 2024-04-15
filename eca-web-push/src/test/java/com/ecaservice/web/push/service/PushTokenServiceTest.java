@@ -8,10 +8,10 @@ import com.ecaservice.web.push.config.EncryptConfiguration;
 import com.ecaservice.web.push.repository.PushTokenRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import javax.inject.Inject;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -29,14 +29,14 @@ class PushTokenServiceTest extends AbstractJpaTest {
 
     private static final String USER = "user";
 
-    @Inject
+    @Autowired
     private PushTokenRepository pushTokenRepository;
-    @Inject
+    @Autowired
     private EncryptorBase64AdapterService encryptorBase64AdapterService;
-    @Inject
+    @Autowired
     private AppProperties appProperties;
 
-    @Inject
+    @Autowired
     private PushTokenService pushTokenService;
 
     @Override

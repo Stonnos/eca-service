@@ -5,10 +5,9 @@ import com.ecaservice.web.push.dto.UserPushNotificationRequest;
 import com.ecaservice.web.push.entity.NotificationEntity;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-
-import javax.inject.Inject;
 
 import static com.ecaservice.web.push.TestHelperUtils.createNotificationEntity;
 import static com.ecaservice.web.push.TestHelperUtils.createSystemPushRequest;
@@ -24,7 +23,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Import(NotificationMapperImpl.class)
 class NotificationMapperTest {
 
-    @Inject
+    @Autowired
     private NotificationMapper notificationMapper;
 
     @Test

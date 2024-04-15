@@ -5,10 +5,10 @@ import com.ecaservice.server.TestHelperUtils;
 import com.ecaservice.server.model.entity.ClassifierOptionsResponseModel;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import javax.inject.Inject;
 import java.util.Arrays;
 import java.util.List;
 
@@ -23,7 +23,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Import(ClassifierReportMapperImpl.class)
 class ClassifierReportMapperTest {
 
-    @Inject
+    @Autowired
     private ClassifierReportMapper classifierReportMapper;
 
     @Test

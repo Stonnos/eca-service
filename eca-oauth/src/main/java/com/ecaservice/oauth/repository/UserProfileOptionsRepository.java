@@ -4,8 +4,6 @@ import com.ecaservice.oauth.entity.UserEntity;
 import com.ecaservice.oauth.entity.UserProfileOptionsEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import java.util.Optional;
-
 /**
  * Repository to manage with {@link UserProfileOptionsEntity} persistence entity.
  *

@@ -6,6 +6,7 @@ import com.ecaservice.oauth.service.ChangeEmailService;
 import com.ecaservice.oauth2.test.controller.AbstractControllerTest;
 import com.ecaservice.web.dto.model.ChangeEmailRequestStatusDto;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.ApplicationEventPublisher;
@@ -13,7 +14,6 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
-import javax.inject.Inject;
 import java.util.UUID;
 
 import static com.ecaservice.oauth.TestHelperUtils.createChangeEmailRequestEntity;
@@ -54,7 +54,7 @@ class ChangeEmailControllerTest extends AbstractControllerTest {
     @MockBean
     private ApplicationEventPublisher applicationEventPublisher;
 
-    @Inject
+    @Autowired
     private MockMvc mockMvc;
 
     @Test

@@ -9,9 +9,9 @@ import com.ecaservice.server.repository.ExperimentRepository;
 import com.ecaservice.server.repository.InstancesInfoRepository;
 import com.ecaservice.server.service.AbstractJpaTest;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Import;
 
-import javax.inject.Inject;
 import java.util.UUID;
 
 import static com.ecaservice.server.TestHelperUtils.createExperiment;
@@ -29,13 +29,13 @@ class ExperimentProgressServiceTest extends AbstractJpaTest {
     private static final int FULL_PROGRESS = 100;
     private static final int PROGRESS_VALUE = 25;
 
-    @Inject
+    @Autowired
     private ExperimentRepository experimentRepository;
-    @Inject
+    @Autowired
     private InstancesInfoRepository instancesInfoRepository;
-    @Inject
+    @Autowired
     private ExperimentProgressRepository experimentProgressRepository;
-    @Inject
+    @Autowired
     private ExperimentProgressService experimentProgressService;
 
     @Override

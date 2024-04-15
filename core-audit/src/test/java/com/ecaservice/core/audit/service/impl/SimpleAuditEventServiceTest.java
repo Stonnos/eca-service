@@ -15,10 +15,10 @@ import com.ecaservice.core.audit.service.template.AuditTemplateProcessorService;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 
-import javax.inject.Inject;
 import java.util.UUID;
 
 import static com.ecaservice.core.audit.TestHelperUtils.createAuditEventTemplateEntity;
@@ -38,14 +38,14 @@ class SimpleAuditEventServiceTest extends AbstractJpaTest {
     private static final String MESSAGE = "Message";
     private static final String INITIATOR = "user";
 
-    @Inject
+    @Autowired
     private SimpleAuditEventService auditEventService;
 
-    @Inject
+    @Autowired
     private AuditEventTemplateRepository auditEventTemplateRepository;
-    @Inject
+    @Autowired
     private AuditCodeRepository auditCodeRepository;
-    @Inject
+    @Autowired
     private AuditGroupRepository auditGroupRepository;
 
     @MockBean

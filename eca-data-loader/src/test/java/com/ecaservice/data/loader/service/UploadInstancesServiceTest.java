@@ -13,12 +13,12 @@ import com.ecaservice.s3.client.minio.service.MinioStorageService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import eca.data.file.model.InstancesModel;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Import;
 import org.springframework.mock.web.MockMultipartFile;
 
-import javax.inject.Inject;
 import java.io.IOException;
 
 import static com.ecaservice.data.loader.TestHelperUtils.createInstancesMockMultipartFile;
@@ -40,10 +40,10 @@ class UploadInstancesServiceTest extends AbstractJpaTest {
     @MockBean
     private MinioStorageService minioStorageService;
 
-    @Inject
+    @Autowired
     private InstancesRepository instancesRepository;
 
-    @Inject
+    @Autowired
     private UploadInstancesService uploadInstancesService;
 
     @Override

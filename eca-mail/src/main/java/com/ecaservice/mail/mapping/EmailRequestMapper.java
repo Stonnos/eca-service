@@ -1,9 +1,9 @@
 package com.ecaservice.mail.mapping;
 
-import com.ecaservice.notification.dto.EmailRequest;
-import com.ecaservice.notification.dto.EmailResponse;
 import com.ecaservice.mail.config.MailConfig;
 import com.ecaservice.mail.model.Email;
+import com.ecaservice.notification.dto.EmailRequest;
+import com.ecaservice.notification.dto.EmailResponse;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 

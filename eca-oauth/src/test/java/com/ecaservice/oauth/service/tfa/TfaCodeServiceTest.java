@@ -9,12 +9,12 @@ import com.ecaservice.oauth.repository.UserEntityRepository;
 import com.ecaservice.oauth.service.SerializationHelper;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.security.oauth2.common.exceptions.InvalidGrantException;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
 
-import javax.inject.Inject;
 import java.time.LocalDateTime;
 import java.util.Collections;
 
@@ -43,13 +43,13 @@ class TfaCodeServiceTest extends AbstractJpaTest {
     @MockBean
     private SerializationHelper serializationHelper;
 
-    @Inject
+    @Autowired
     private TfaConfig tfaConfig;
-    @Inject
+    @Autowired
     private TfaCodeService tfaCodeService;
-    @Inject
+    @Autowired
     private UserEntityRepository userEntityRepository;
-    @Inject
+    @Autowired
     private TfaCodeRepository tfaCodeRepository;
 
     @Mock

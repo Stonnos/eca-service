@@ -10,7 +10,6 @@ import com.ecaservice.oauth.exception.EmailAlreadyBoundException;
 import com.ecaservice.oauth.exception.EmailDuplicationException;
 import com.ecaservice.oauth.exception.InvalidConfirmationCodeException;
 import com.ecaservice.oauth.exception.InvalidTokenException;
-import com.ecaservice.oauth.exception.UserLockedException;
 import com.ecaservice.oauth.model.TokenModel;
 import com.ecaservice.oauth.repository.ChangeEmailRequestRepository;
 import com.ecaservice.oauth.repository.UserEntityRepository;
@@ -27,7 +26,6 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 
-import static com.ecaservice.common.web.util.MaskUtils.mask;
 import static com.ecaservice.common.web.util.MaskUtils.maskEmail;
 import static com.ecaservice.oauth.config.audit.AuditCodes.CONFIRM_CHANGE_EMAIL_REQUEST;
 import static com.ecaservice.oauth.config.audit.AuditCodes.CREATE_CHANGE_EMAIL_REQUEST;

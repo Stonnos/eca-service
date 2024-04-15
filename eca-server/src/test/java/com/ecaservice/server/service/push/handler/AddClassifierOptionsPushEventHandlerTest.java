@@ -14,10 +14,10 @@ import com.ecaservice.user.profile.options.dto.UserNotificationEventType;
 import com.ecaservice.user.profile.options.dto.UserProfileOptionsDto;
 import com.ecaservice.web.dto.model.FormTemplateDto;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 
-import javax.inject.Inject;
 import java.util.Collections;
 import java.util.List;
 
@@ -51,12 +51,12 @@ class AddClassifierOptionsPushEventHandlerTest extends AbstractJpaTest {
     @MockBean
     private UserProfileOptionsProvider userProfileOptionsProvider;
 
-    @Inject
+    @Autowired
     private ClassifiersConfigurationRepository classifiersConfigurationRepository;
-    @Inject
+    @Autowired
     private ClassifiersConfigurationHistoryRepository classifiersConfigurationHistoryRepository;
 
-    @Inject
+    @Autowired
     private AddClassifierOptionsPushEventHandler addClassifierOptionsPushEventHandler;
 
     private ClassifiersConfiguration classifiersConfiguration;

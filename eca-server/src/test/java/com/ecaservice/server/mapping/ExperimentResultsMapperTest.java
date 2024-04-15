@@ -8,10 +8,10 @@ import com.ecaservice.web.dto.model.ExperimentResultsDto;
 import eca.core.evaluation.EvaluationResults;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import javax.inject.Inject;
 import java.math.BigDecimal;
 import java.util.UUID;
 
@@ -28,7 +28,7 @@ import static org.assertj.core.api.Assertions.assertThat;
         ExperimentMapperImpl.class, DateTimeConverter.class, InstancesInfoMapperImpl.class})
 class ExperimentResultsMapperTest {
 
-    @Inject
+    @Autowired
     private ExperimentResultsMapper experimentResultsMapper;
 
     @Test

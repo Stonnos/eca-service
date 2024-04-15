@@ -12,10 +12,10 @@ import com.ecaservice.web.dto.model.PageRequestDto;
 import com.ecaservice.web.dto.model.SortFieldRequestDto;
 import com.google.common.collect.ImmutableList;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 
-import javax.inject.Inject;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Collections;
@@ -49,10 +49,10 @@ class AuditLogsBaseReportDataFetcherTest extends AbstractJpaTest {
     @MockBean
     private FilterTemplateService filterTemplateService;
 
-    @Inject
+    @Autowired
     private AuditLogRepository auditLogRepository;
 
-    @Inject
+    @Autowired
     private AuditLogsBaseReportDataFetcher auditLogsBaseReportDataFetcher;
 
 

@@ -20,6 +20,7 @@ import eca.core.evaluation.EvaluationResults;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.TestPropertySource;
@@ -28,7 +29,6 @@ import weka.classifiers.AbstractClassifier;
 import weka.core.Attribute;
 import weka.core.Instances;
 
-import javax.inject.Inject;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -44,7 +44,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Import({EvaluationResultsService.class, InstancesInfoMapperImpl.class, ClassifiersOptionsAutoConfiguration.class})
 class EvaluationResultsServiceTest {
 
-    @Inject
+    @Autowired
     private EvaluationResultsService evaluationResultsService;
 
     private EvaluationResults evaluationResults;

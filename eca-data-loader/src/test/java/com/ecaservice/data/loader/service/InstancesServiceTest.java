@@ -8,10 +8,10 @@ import com.ecaservice.data.loader.mapping.InstancesMapperImpl;
 import com.ecaservice.data.loader.repository.InstancesRepository;
 import com.ecaservice.s3.client.minio.service.ObjectStorageService;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 
-import javax.inject.Inject;
 import java.time.LocalDateTime;
 
 import static com.ecaservice.data.loader.TestHelperUtils.createInstancesEntity;
@@ -29,10 +29,10 @@ class InstancesServiceTest extends AbstractJpaTest {
     @MockBean
     private ObjectStorageService objectStorageService;
 
-    @Inject
+    @Autowired
     private InstancesRepository instancesRepository;
 
-    @Inject
+    @Autowired
     private InstancesService instancesService;
 
     private InstancesEntity instancesEntity;

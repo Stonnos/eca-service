@@ -7,10 +7,10 @@ import com.ecaservice.audit.service.AuditLogService;
 import com.ecaservice.core.filter.service.FilterTemplateService;
 import com.ecaservice.report.data.fetcher.AbstractBaseReportDataFetcher;
 import com.ecaservice.web.dto.model.PageRequestDto;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
 
-import javax.inject.Inject;
 import java.util.List;
 
 import static com.ecaservice.audit.dictionary.FilterDictionaries.AUDIT_LOG_TEMPLATE;
@@ -34,7 +34,7 @@ public class AuditLogsBaseReportDataFetcher
      * @param auditLogService       - audit log service bean
      * @param auditLogMapper        - audit log mapper bean
      */
-    @Inject
+    @Autowired
     public AuditLogsBaseReportDataFetcher(FilterTemplateService filterTemplateService,
                                           AuditLogService auditLogService,
                                           AuditLogMapper auditLogMapper) {

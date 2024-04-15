@@ -49,6 +49,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
@@ -57,7 +58,6 @@ import org.springframework.test.context.TestPropertySource;
 import org.testcontainers.containers.DockerComposeContainer;
 import weka.core.Instances;
 
-import javax.inject.Inject;
 import java.io.File;
 import java.util.Collections;
 import java.util.List;
@@ -114,17 +114,17 @@ class OptimalClassifierOptionsFetcherIT extends AbstractJpaTest {
     private EvaluationResultsService evaluationResultsService;
     @MockBean
     private ErsRequestSender ersRequestSender;
-    @Inject
+    @Autowired
     private ClassifierOptionsRequestModelRepository classifierOptionsRequestModelRepository;
-    @Inject
+    @Autowired
     private ErsRequestRepository ersRequestRepository;
-    @Inject
+    @Autowired
     private EvaluationLogRepository evaluationLogRepository;
-    @Inject
+    @Autowired
     private InstancesInfoRepository instancesInfoRepository;
-    @Inject
+    @Autowired
     private ClassifierOptionsRequestRepository classifierOptionsRequestRepository;
-    @Inject
+    @Autowired
     private OptimalClassifierOptionsFetcher optimalClassifierOptionsFetcher;
 
     private Instances data;

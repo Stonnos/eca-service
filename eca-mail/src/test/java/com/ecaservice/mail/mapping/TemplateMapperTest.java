@@ -2,10 +2,9 @@ package com.ecaservice.mail.mapping;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-
-import javax.inject.Inject;
 
 import static com.ecaservice.mail.TestHelperUtils.createTemplateEntity;
 import static com.ecaservice.mail.TestHelperUtils.createTemplateParameterEntity;
@@ -22,7 +21,7 @@ class TemplateMapperTest {
 
     private static final String PARAM = "param";
 
-    @Inject
+    @Autowired
     private TemplateMapper templateMapper;
 
     @Test

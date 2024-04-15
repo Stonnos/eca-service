@@ -5,17 +5,17 @@ import com.ecaservice.oauth.mapping.UserProfileOptionsMapperImpl;
 import com.ecaservice.oauth.repository.UserProfileOptionsDataEventRepository;
 import com.ecaservice.user.profile.options.dto.UserProfileOptionsDto;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 
-import javax.inject.Inject;
 import java.util.stream.IntStream;
 
 import static com.ecaservice.oauth.TestHelperUtils.createUserProfileOptionsDataEventEntity;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
-import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Unit tests for checking {@link UserProfileOptionsDataEventService} functionality.
@@ -30,10 +30,10 @@ class UserProfileOptionsDataEventProcessorTest extends AbstractJpaTest {
     @MockBean
     private UserProfileOptionsDataEventSender userProfileOptionsDataEventSender;
 
-    @Inject
+    @Autowired
     private UserProfileOptionsDataEventRepository userProfileOptionsDataEventRepository;
 
-    @Inject
+    @Autowired
     private UserProfileOptionsDataEventProcessor userProfileOptionsDataEventProcessor;
 
     @Override

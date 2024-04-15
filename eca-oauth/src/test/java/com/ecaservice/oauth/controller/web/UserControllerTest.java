@@ -19,6 +19,7 @@ import com.ecaservice.web.dto.model.UserDictionaryDto;
 import com.ecaservice.web.dto.model.UserDto;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.ApplicationEventPublisher;
@@ -28,7 +29,6 @@ import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.util.MimeTypeUtils;
 
-import javax.inject.Inject;
 import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.List;
@@ -96,7 +96,7 @@ class UserControllerTest extends AbstractControllerTest {
     private UserService userService;
     @MockBean
     private PasswordService passwordService;
-    @Inject
+    @Autowired
     private UserMapper userMapper;
     @MockBean
     private ApplicationEventPublisher applicationEventPublisher;

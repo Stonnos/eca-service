@@ -8,10 +8,10 @@ import com.ecaservice.web.dto.model.MatchMode;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import javax.inject.Inject;
 import java.util.Arrays;
 import java.util.List;
 
@@ -27,7 +27,7 @@ class FilterFieldMapperTest {
     private static final String NAME = "name";
     private static final String DESCRIPTION = "description";
 
-    @Inject
+    @Autowired
     private FilterFieldMapper filterFieldMapper;
 
     @Test

@@ -15,12 +15,12 @@ import com.ecaservice.oauth.repository.UserEntityRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import javax.inject.Inject;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.UUID;
@@ -45,13 +45,13 @@ class ResetPasswordServiceTest extends AbstractJpaTest {
     private static final String NEW_PASSWORD = "#123dCgrh56$f";
     private static final String TOKEN = "token";
 
-    @Inject
+    @Autowired
     private AppProperties appProperties;
-    @Inject
+    @Autowired
     private PasswordValidationService passwordValidationService;
-    @Inject
+    @Autowired
     private UserEntityRepository userEntityRepository;
-    @Inject
+    @Autowired
     private ResetPasswordRequestRepository resetPasswordRequestRepository;
 
     @MockBean

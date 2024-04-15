@@ -4,12 +4,12 @@ import com.ecaservice.data.storage.config.EcaDsConfig;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import javax.inject.Inject;
 import java.io.IOException;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -27,7 +27,7 @@ class ReportsConfigurationServiceTest {
 
     private static final int EXPECTED_REPORTS_SIZE = 8;
 
-    @Inject
+    @Autowired
     private EcaDsConfig ecaDsConfig;
 
     private ReportsConfigurationService reportsConfigurationService;

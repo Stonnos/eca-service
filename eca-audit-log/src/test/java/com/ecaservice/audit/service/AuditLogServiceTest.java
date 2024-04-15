@@ -14,12 +14,12 @@ import com.ecaservice.web.dto.model.MatchMode;
 import com.ecaservice.web.dto.model.PageRequestDto;
 import com.ecaservice.web.dto.model.SortFieldRequestDto;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.Page;
 
-import javax.inject.Inject;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.concurrent.CountDownLatch;
@@ -53,9 +53,9 @@ class AuditLogServiceTest extends AbstractJpaTest {
     private static final int NUM_THREADS = 2;
     private static final String INVALID_FIELD_NAME = "abc.field1.field2";
 
-    @Inject
+    @Autowired
     private AuditLogService auditLogService;
-    @Inject
+    @Autowired
     private AuditLogRepository auditLogRepository;
 
     @MockBean

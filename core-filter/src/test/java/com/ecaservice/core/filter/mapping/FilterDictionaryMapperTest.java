@@ -6,10 +6,10 @@ import com.ecaservice.web.dto.model.FilterDictionaryDto;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import javax.inject.Inject;
 import java.util.Collections;
 
 /**
@@ -23,7 +23,7 @@ class FilterDictionaryMapperTest {
 
     private static final String NAME = "name";
 
-    @Inject
+    @Autowired
     private FilterDictionaryMapper filterDictionaryMapper;
 
     @Test

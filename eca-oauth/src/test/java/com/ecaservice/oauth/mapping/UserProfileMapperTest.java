@@ -4,10 +4,9 @@ import com.ecaservice.oauth.entity.UserEntity;
 import com.ecaservice.oauth.entity.UserProfileOptionsEntity;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-
-import javax.inject.Inject;
 
 import static com.ecaservice.oauth.TestHelperUtils.createUserEntity;
 import static com.ecaservice.oauth.TestHelperUtils.createUserProfileOptionsEntity;
@@ -22,7 +21,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Import(UserProfileOptionsMapperImpl.class)
 class UserProfileMapperTest {
 
-    @Inject
+    @Autowired
     private UserProfileOptionsMapper userProfileOptionsMapper;
 
     @Test

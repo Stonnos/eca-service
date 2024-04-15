@@ -27,13 +27,13 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import weka.core.Instances;
 
-import javax.inject.Inject;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -59,13 +59,13 @@ class ClassifiersSetSearcherTest {
     private static final ObjectMapper objectMapper = new ObjectMapper();
     private static final String OPTIONS = "options";
 
-    @Inject
+    @Autowired
     private ExperimentConfig experimentConfig;
-    @Inject
+    @Autowired
     private CrossValidationConfig crossValidationConfig;
-    @Inject
+    @Autowired
     private List<ClassifierInputDataHandler> classifierInputDataHandlers;
-    @Inject
+    @Autowired
     private ClassifierOptionsAdapter classifierOptionsAdapter;
     @Mock
     private EvaluationService evaluationService;

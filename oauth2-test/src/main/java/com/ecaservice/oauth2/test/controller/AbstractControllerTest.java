@@ -6,9 +6,8 @@ import com.ecaservice.oauth2.test.token.TokenService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Getter;
 import org.junit.jupiter.api.BeforeEach;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.web.servlet.MockMvc;
-
-import javax.inject.Inject;
 
 /**
  * Abstract class for controllers tests.
@@ -24,10 +23,10 @@ public abstract class AbstractControllerTest {
     @Getter
     private String accessToken;
 
-    @Inject
+    @Autowired
     private TokenService tokenService;
 
-    @Inject
+    @Autowired
     protected MockMvc mockMvc;
 
     protected final ObjectMapper objectMapper = new ObjectMapper();

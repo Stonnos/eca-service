@@ -1,12 +1,10 @@
 package com.ecaservice.data.storage.mapping;
 
-import com.ecaservice.data.storage.entity.AttributeEntity;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-
-import javax.inject.Inject;
 
 import static com.ecaservice.data.storage.TestHelperUtils.createNominalAttributeEntity;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -23,7 +21,7 @@ class AttributeMapperTest {
     private static final long ID = 1L;
     private static final String COLUMN_NAME = "column_name";
 
-    @Inject
+    @Autowired
     private AttributeMapper attributeMapper;
 
     @Test

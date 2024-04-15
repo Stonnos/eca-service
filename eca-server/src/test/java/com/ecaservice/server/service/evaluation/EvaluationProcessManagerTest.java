@@ -23,10 +23,10 @@ import org.camunda.bpm.engine.test.Deployment;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
-import javax.inject.Inject;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.UUID;
@@ -71,12 +71,12 @@ class EvaluationProcessManagerTest extends AbstractEvaluationProcessManagerTest<
     @MockBean
     private FormTemplateProvider formTemplateProvider;
 
-    @Inject
+    @Autowired
     private EvaluationLogRepository evaluationLogRepository;
-    @Inject
+    @Autowired
     private InstancesInfoRepository instancesInfoRepository;
 
-    @Inject
+    @Autowired
     private EvaluationProcessManager evaluationProcessManager;
 
     @Captor

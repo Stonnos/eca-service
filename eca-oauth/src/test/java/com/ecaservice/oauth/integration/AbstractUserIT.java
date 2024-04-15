@@ -21,6 +21,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.MockitoAnnotations;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -33,7 +34,6 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import javax.inject.Inject;
 import java.nio.charset.StandardCharsets;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -76,22 +76,22 @@ abstract class AbstractUserIT {
     @Captor
     private ArgumentCaptor<EmailRequest> emailRequestArgumentCaptor;
 
-    @Inject
+    @Autowired
     @Getter
     private UserEntityRepository userEntityRepository;
-    @Inject
+    @Autowired
     private UserNotificationEventOptionsRepository userNotificationEventOptionsRepository;
-    @Inject
+    @Autowired
     private UserProfileOptionsRepository userProfileOptionsRepository;
-    @Inject
+    @Autowired
     private RoleRepository roleRepository;
-    @Inject
+    @Autowired
     private ResetPasswordRequestRepository resetPasswordRequestRepository;
-    @Inject
+    @Autowired
     private ChangePasswordRequestRepository changePasswordRequestRepository;
 
     @Getter
-    @Inject
+    @Autowired
     private UserService userService;
 
     @Getter

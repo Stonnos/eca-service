@@ -6,9 +6,8 @@ import com.ecaservice.user.profile.options.dto.UserProfileOptionsDto;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Import;
-
-import javax.inject.Inject;
 
 import static com.ecaservice.user.profile.options.cache.client.TestHelperUtils.loadUserProfileOptionsDto;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
@@ -22,10 +21,10 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 @Import(UserProfileOptionsDataService.class)
 class UserProfileOptionsDataServiceTest extends AbstractJpaTest {
 
-    @Inject
+    @Autowired
     private UserProfileOptionsDataRepository userProfileOptionsDataRepository;
 
-    @Inject
+    @Autowired
     private UserProfileOptionsDataService userProfileOptionsDataService;
 
     private final ObjectMapper objectMapper = new ObjectMapper();

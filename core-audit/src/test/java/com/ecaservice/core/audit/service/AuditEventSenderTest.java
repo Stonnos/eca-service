@@ -2,11 +2,10 @@ package com.ecaservice.core.audit.service;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-
-import javax.inject.Inject;
 
 import static com.ecaservice.core.audit.TestHelperUtils.createAuditEventRequest;
 import static org.mockito.Mockito.atLeastOnce;
@@ -21,7 +20,7 @@ import static org.mockito.Mockito.verify;
 @Import(AuditEventSender.class)
 class AuditEventSenderTest {
 
-    @Inject
+    @Autowired
     private AuditEventSender auditEventSender;
 
     @MockBean

@@ -12,10 +12,9 @@ import com.ecaservice.core.audit.repository.AuditGroupRepository;
 import com.ecaservice.core.audit.service.store.DatabaseAuditEventTemplateStore;
 import com.google.common.collect.ImmutableMap;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.freemarker.FreeMarkerAutoConfiguration;
 import org.springframework.context.annotation.Import;
-
-import javax.inject.Inject;
 
 import static com.ecaservice.core.audit.TestHelperUtils.createAuditEventTemplateEntity;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -37,14 +36,14 @@ class FreemarkerAuditTemplateProcessorServiceTest extends AbstractJpaTest {
     private static final String VALUE_2 = "value2";
     private static final String EXPECTED_MESSAGE = "Audit value1, value2 with result ResultValue";
 
-    @Inject
+    @Autowired
     private FreemarkerAuditTemplateProcessorService freemarkerAuditTemplateProcessorService;
 
-    @Inject
+    @Autowired
     private AuditEventTemplateRepository auditEventTemplateRepository;
-    @Inject
+    @Autowired
     private AuditCodeRepository auditCodeRepository;
-    @Inject
+    @Autowired
     private AuditGroupRepository auditGroupRepository;
 
     private AuditEventTemplateEntity auditEventTemplateEntity;

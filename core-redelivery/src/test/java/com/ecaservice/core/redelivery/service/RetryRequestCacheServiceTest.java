@@ -4,9 +4,9 @@ import com.ecaservice.core.redelivery.AbstractJpaTest;
 import com.ecaservice.core.redelivery.model.RetryRequestModel;
 import com.ecaservice.core.redelivery.repository.RetryRequestRepository;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Import;
 
-import javax.inject.Inject;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -23,10 +23,10 @@ class RetryRequestCacheServiceTest extends AbstractJpaTest {
     private static final String REQUEST = "request";
     private static final long MIN_RETRY_INTERVAL = 30000L;
 
-    @Inject
+    @Autowired
     private RetryRequestRepository retryRequestRepository;
 
-    @Inject
+    @Autowired
     private RetryRequestCacheService retryRequestCacheService;
 
     @Override

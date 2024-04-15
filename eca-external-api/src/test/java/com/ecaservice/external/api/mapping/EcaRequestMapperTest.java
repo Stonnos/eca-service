@@ -7,10 +7,9 @@ import com.ecaservice.external.api.entity.EvaluationRequestEntity;
 import com.ecaservice.external.api.entity.ExperimentRequestEntity;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-
-import javax.inject.Inject;
 
 import java.util.Map;
 
@@ -35,7 +34,7 @@ class EcaRequestMapperTest {
             ErrorCode.INVALID_FIELD_VALUE, EvaluationErrorCode.INTERNAL_SERVER_ERROR
     );
 
-    @Inject
+    @Autowired
     private EcaRequestMapper ecaRequestMapper;
 
     @Test

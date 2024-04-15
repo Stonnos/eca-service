@@ -8,9 +8,8 @@ import com.ecaservice.external.api.mapping.EcaRequestMapperImpl;
 import com.ecaservice.external.api.repository.EvaluationRequestRepository;
 import com.ecaservice.external.api.repository.ExperimentRequestRepository;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Import;
-
-import javax.inject.Inject;
 
 import static com.ecaservice.external.api.TestHelperUtils.createEvaluationRequestDto;
 import static com.ecaservice.external.api.TestHelperUtils.createExperimentRequestDto;
@@ -24,12 +23,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Import({EcaRequestService.class, EcaRequestMapperImpl.class, ExternalApiConfig.class})
 class EcaRequestServiceTest extends AbstractJpaTest {
 
-    @Inject
+    @Autowired
     private EvaluationRequestRepository evaluationRequestRepository;
-    @Inject
+    @Autowired
     private ExperimentRequestRepository experimentRequestRepository;
 
-    @Inject
+    @Autowired
     private EcaRequestService ecaRequestService;
 
     @Test

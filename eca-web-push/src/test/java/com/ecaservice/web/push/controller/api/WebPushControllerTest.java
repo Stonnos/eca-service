@@ -8,6 +8,7 @@ import com.ecaservice.web.push.service.handler.UserNotificationPushRequestHandle
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -17,7 +18,6 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 
-import javax.inject.Inject;
 import java.util.Collections;
 
 import static com.ecaservice.web.push.TestHelperUtils.createSystemPushRequest;
@@ -49,7 +49,7 @@ class WebPushControllerTest {
     @MockBean
     private SystemPushNotificationRequestHandler systemPushNotificationRequestHandler;
 
-    @Inject
+    @Autowired
     private MockMvc mockMvc;
 
     @Test

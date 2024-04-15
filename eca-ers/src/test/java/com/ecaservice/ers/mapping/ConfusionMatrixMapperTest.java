@@ -4,10 +4,9 @@ import com.ecaservice.ers.dto.ConfusionMatrixReport;
 import com.ecaservice.ers.model.ConfusionMatrix;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-
-import javax.inject.Inject;
 
 import static com.ecaservice.ers.TestHelperUtils.buildConfusionMatrix;
 import static com.ecaservice.ers.TestHelperUtils.buildConfusionMatrixReport;
@@ -22,7 +21,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Import(ConfusionMatrixMapperImpl.class)
 class ConfusionMatrixMapperTest {
 
-    @Inject
+    @Autowired
     private ConfusionMatrixMapper confusionMatrixMapper;
 
     @Test

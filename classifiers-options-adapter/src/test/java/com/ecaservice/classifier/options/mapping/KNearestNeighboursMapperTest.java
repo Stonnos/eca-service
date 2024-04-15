@@ -7,10 +7,9 @@ import eca.metrics.distances.ManhattanDistance;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-
-import javax.inject.Inject;
 
 /**
  * Unit tests for checking {@link KNearestNeighboursMapper} functionality.
@@ -21,7 +20,7 @@ import javax.inject.Inject;
 @Import(KNearestNeighboursMapperImpl.class)
 class KNearestNeighboursMapperTest {
 
-    @Inject
+    @Autowired
     private KNearestNeighboursMapper kNearestNeighboursMapper;
 
     @Test

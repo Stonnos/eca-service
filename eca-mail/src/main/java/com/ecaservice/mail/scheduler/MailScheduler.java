@@ -1,11 +1,11 @@
 package com.ecaservice.mail.scheduler;
 
-import com.ecaservice.mail.metrics.MetricsService;
-import com.ecaservice.mail.service.MailSenderService;
 import com.ecaservice.mail.config.MailConfig;
+import com.ecaservice.mail.metrics.MetricsService;
 import com.ecaservice.mail.model.Email;
 import com.ecaservice.mail.model.EmailStatus;
 import com.ecaservice.mail.repository.EmailRepository;
+import com.ecaservice.mail.service.MailSenderService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;

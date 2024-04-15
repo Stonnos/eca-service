@@ -7,10 +7,9 @@ import eca.ensemble.sampling.SamplingMethod;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-
-import javax.inject.Inject;
 
 /**
  * Unit tests for checking {@link HeterogeneousClassifierMapper} functionality.
@@ -21,7 +20,7 @@ import javax.inject.Inject;
 @Import(HeterogeneousClassifierMapperImpl.class)
 class HeterogeneousClassifierMapperTest {
 
-    @Inject
+    @Autowired
     private HeterogeneousClassifierMapper heterogeneousClassifierMapper;
 
     @Test

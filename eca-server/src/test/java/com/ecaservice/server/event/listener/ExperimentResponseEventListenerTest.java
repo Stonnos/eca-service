@@ -14,10 +14,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import javax.inject.Inject;
 import java.util.UUID;
 
 import static com.ecaservice.server.TestHelperUtils.createExperiment;
@@ -37,7 +37,7 @@ class ExperimentResponseEventListenerTest {
 
     @Mock
     private EcaResponseSender ecaResponseSender;
-    @Inject
+    @Autowired
     private EcaResponseMapper ecaResponseMapper;
 
     @Captor

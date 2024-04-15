@@ -11,11 +11,11 @@ import com.ecaservice.server.report.model.ExperimentBean;
 import com.ecaservice.server.repository.InstancesInfoRepository;
 import com.ecaservice.server.service.experiment.ExperimentDataService;
 import com.ecaservice.web.dto.model.PageRequestDto;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
-import javax.inject.Inject;
 import java.util.List;
 
 /**
@@ -39,7 +39,7 @@ public class ExperimentsBaseReportDataFetcher
      * @param experimentDataService   - experiments data service bean
      * @param experimentMapper        - experiment mapper bean
      */
-    @Inject
+    @Autowired
     public ExperimentsBaseReportDataFetcher(FilterTemplateService filterTemplateService,
                                             InstancesInfoRepository instancesInfoRepository,
                                             ExperimentDataService experimentDataService,

@@ -7,10 +7,9 @@ import eca.ensemble.forests.RandomForests;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-
-import javax.inject.Inject;
 
 /**
  * Unit tests for checking {@link RandomForestsOptionsMapper} functionality.
@@ -21,7 +20,7 @@ import javax.inject.Inject;
 @Import(RandomForestsOptionsMapperImpl.class)
 class RandomForestsOptionsMapperTest {
 
-    @Inject
+    @Autowired
     private RandomForestsOptionsMapper randomForestsOptionsMapper;
 
     @Test

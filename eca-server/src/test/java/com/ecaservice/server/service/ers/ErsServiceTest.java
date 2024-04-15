@@ -24,9 +24,9 @@ import feign.FeignException;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Import;
 
-import javax.inject.Inject;
 import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.UUID;
@@ -51,13 +51,13 @@ class ErsServiceTest extends AbstractJpaTest {
 
     @Mock
     private ErsRequestService ersRequestService;
-    @Inject
+    @Autowired
     private GetEvaluationResultsMapper evaluationResultsMapper;
-    @Inject
+    @Autowired
     private ExperimentResultsEntityRepository experimentResultsEntityRepository;
-    @Inject
+    @Autowired
     private InstancesInfoRepository instancesInfoRepository;
-    @Inject
+    @Autowired
     private ExperimentRepository experimentRepository;
 
     private ErsService ersService;

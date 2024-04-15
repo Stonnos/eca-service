@@ -9,11 +9,11 @@ import com.ecaservice.mail.repository.TemplateRepository;
 import com.ecaservice.web.dto.model.PageRequestDto;
 import com.ecaservice.web.dto.model.SortFieldRequestDto;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.Page;
 
-import javax.inject.Inject;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -40,10 +40,10 @@ class TemplateServiceTest extends AbstractJpaTest {
     @MockBean
     private FilterTemplateService filterTemplateService;
 
-    @Inject
+    @Autowired
     private TemplateRepository templateRepository;
 
-    @Inject
+    @Autowired
     private TemplateService templateService;
 
     @Override

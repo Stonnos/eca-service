@@ -11,9 +11,9 @@ import com.ecaservice.oauth.exception.InvalidTokenException;
 import com.ecaservice.oauth.repository.ChangeEmailRequestRepository;
 import com.ecaservice.oauth.repository.UserEntityRepository;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Import;
 
-import javax.inject.Inject;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.UUID;
@@ -35,13 +35,13 @@ class ChangeEmailServiceTest extends AbstractJpaTest {
     private static final long INVALID_USER_ID = 1000L;
     private static final String CONFIRMATION_CODE = "code";
 
-    @Inject
+    @Autowired
     private AppProperties appProperties;
-    @Inject
+    @Autowired
     private UserEntityRepository userEntityRepository;
-    @Inject
+    @Autowired
     private ChangeEmailRequestRepository changeEmailRequestRepository;
-    @Inject
+    @Autowired
     private ChangeEmailService changeEmailService;
 
     private UserEntity userEntity;

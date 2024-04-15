@@ -5,10 +5,10 @@ import com.ecaservice.server.model.entity.ExperimentProgressEntity;
 import com.ecaservice.web.dto.model.ExperimentProgressDto;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import javax.inject.Inject;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -26,7 +26,7 @@ class ExperimentProgressMapperTest {
 
     private static final int PROGRESS_VALUE = 64;
 
-    @Inject
+    @Autowired
     private ExperimentProgressMapper experimentProgressMapper;
 
     @Test

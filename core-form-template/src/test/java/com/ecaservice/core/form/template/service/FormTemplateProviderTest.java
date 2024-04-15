@@ -6,9 +6,9 @@ import com.ecaservice.core.form.template.mapping.FormTemplateMapperImpl;
 import com.ecaservice.core.form.template.repository.FormTemplateGroupRepository;
 import com.ecaservice.core.form.template.repository.FormTemplateRepository;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Import;
 
-import javax.inject.Inject;
 import java.util.Collections;
 
 import static com.ecaservice.core.form.template.TestHelperUtils.createFormTemplateEntity;
@@ -24,12 +24,12 @@ class FormTemplateProviderTest extends AbstractJpaTest {
 
     private static final String GROUP_NAME = "groupName";
 
-    @Inject
+    @Autowired
     private FormTemplateGroupRepository formTemplateGroupRepository;
-    @Inject
+    @Autowired
     private FormTemplateRepository formTemplateRepository;
 
-    @Inject
+    @Autowired
     private FormTemplateProvider formTemplateProvider;
 
     private FormTemplateGroupEntity formTemplateGroupEntity;

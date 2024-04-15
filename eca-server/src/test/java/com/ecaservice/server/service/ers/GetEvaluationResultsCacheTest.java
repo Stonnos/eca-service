@@ -15,11 +15,11 @@ import com.ecaservice.server.service.AbstractJpaTest;
 import com.ecaservice.server.service.evaluation.EvaluationResultsService;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.cache.CacheManager;
 import org.springframework.context.annotation.Import;
 
-import javax.inject.Inject;
 import java.util.UUID;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -43,9 +43,9 @@ class GetEvaluationResultsCacheTest extends AbstractJpaTest {
     @MockBean
     private ErsRequestSender ersRequestSender;
 
-    @Inject
+    @Autowired
     private ErsRequestService ersRequestService;
-    @Inject
+    @Autowired
     private CacheManager cacheManager;
 
     @Test

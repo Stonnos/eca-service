@@ -7,8 +7,8 @@ import lombok.EqualsAndHashCode;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 
-import static com.ecaservice.classifier.options.model.Constraints.VALUE_1;
 import static com.ecaservice.classifier.options.model.Constraints.MAX_THREADS;
+import static com.ecaservice.classifier.options.model.Constraints.VALUE_1;
 
 /**
  * Iterative ensemble classifier options model.

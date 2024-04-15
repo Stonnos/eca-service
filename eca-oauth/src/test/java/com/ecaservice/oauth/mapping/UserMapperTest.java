@@ -8,10 +8,9 @@ import com.ecaservice.user.model.UserDetailsImpl;
 import com.ecaservice.web.dto.model.UserDto;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-
-import javax.inject.Inject;
 
 import static com.ecaservice.oauth.TestHelperUtils.createUpdateUserInfoDto;
 import static com.ecaservice.oauth.TestHelperUtils.createUserDto;
@@ -27,7 +26,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Import({RoleMapperImpl.class, UserMapperImpl.class})
 class UserMapperTest {
 
-    @Inject
+    @Autowired
     private UserMapper userMapper;
 
     @Test

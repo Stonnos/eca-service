@@ -5,9 +5,9 @@ import com.ecaservice.core.audit.repository.AuditCodeRepository;
 import com.ecaservice.core.audit.repository.AuditGroupRepository;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Import;
 
-import javax.inject.Inject;
 import java.io.IOException;
 import java.util.List;
 import java.util.stream.IntStream;
@@ -28,12 +28,12 @@ class AuditEventCsvReportGeneratorTest extends AbstractJpaTest {
             "Group description");
     private static final int HEADER_IDX = 0;
 
-    @Inject
+    @Autowired
     private AuditCodeRepository auditCodeRepository;
-    @Inject
+    @Autowired
     private AuditGroupRepository auditGroupRepository;
 
-    @Inject
+    @Autowired
     private AuditEventCsvReportGenerator auditEventCsvReportGenerator;
 
     @Override
