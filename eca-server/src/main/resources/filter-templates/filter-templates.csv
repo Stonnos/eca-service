@@ -1,0 +1,7 @@
+id;template_name;template_type
+1;Фильтр экспериментов;EXPERIMENT
+2;Фильтр классификаторов;EVALUATION_LOG
+4;Фильтр истории конфигурации классификаторов;CLASSIFIERS_CONFIGURATION_HISTORY
+5;Фильтр по обучающим выборкам;INSTANCES_INFO
+6;Фильтр по конфигурациям классификаторов;CLASSIFIERS_CONFIGURATION
+7;Фильтр по настройкам классификаторов;CLASSIFIER_OPTIONS
