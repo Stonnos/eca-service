@@ -45,6 +45,7 @@ public class UploadInstancesService {
     private final MinioStorageService minioStorageService;
     private final ObjectMapper objectMapper;
     private final InstancesValidationService instancesValidationService;
+    private final UserService userService;
     private final InstancesRepository instancesRepository;
 
     /**
@@ -60,20 +61,28 @@ public class UploadInstancesService {
                     instancesFile.getOriginalFilename()));
         }
         try {
+            String clientId = userService.getCurrentUser();
             byte[] jsonData = loadData(instancesFile);
-            InstancesModel instancesModel = objectMapper.readValue(jsonData, InstancesModel.class);
-            instancesValidationService.validate(instancesModel);
-            String uuid = UUID.randomUUID().toString();
-            String objectPath = String.format(INSTANCES_OBJECT_PATH_FORMAT, uuid);
             String md5Hash = DigestUtils.md5DigestAsHex(jsonData);
-            log.info("Starting to upload instances file [{}] with uuid [{}], object path [{}]",
-                    instancesFile.getOriginalFilename(), uuid, objectPath);
-            uploadInstancesToS3(objectPath, jsonData);
-            var instancesEntity = createAndSaveInstancesEntity(uuid, objectPath, md5Hash, instancesModel);
-            log.info("Instances file [{}] has been uploaded with uuid [{}], object path [{}]",
-                    instancesFile.getOriginalFilename(), uuid, objectPath);
+            var instancesEntity = instancesRepository.findByClientIdAndMd5Hash(clientId, md5Hash);
+            if (instancesEntity != null) {
+                log.info(
+                        "Instances file [{}] with md5 hash [{}] is already uploaded for client id [{}]. Instances uuid [{}]",
+                        instancesFile.getOriginalFilename(), md5Hash, clientId, instancesEntity.getUuid());
+            } else {
+                InstancesModel instancesModel = objectMapper.readValue(jsonData, InstancesModel.class);
+                instancesValidationService.validate(instancesModel);
+                String uuid = UUID.randomUUID().toString();
+                String objectPath = String.format(INSTANCES_OBJECT_PATH_FORMAT, uuid);
+                log.info("Starting to upload instances file [{}] with uuid [{}], md5 hash [{}] object path [{}]",
+                        instancesFile.getOriginalFilename(), uuid, md5Hash, objectPath);
+                uploadInstancesToS3(objectPath, jsonData);
+                instancesEntity = createAndSaveInstancesEntity(uuid, objectPath, md5Hash, clientId, instancesModel);
+                log.info("Instances file [{}] has been uploaded with uuid [{}], md5 hash [{}] object path [{}]",
+                        instancesFile.getOriginalFilename(), uuid, md5Hash, objectPath);
+            }
             return UploadInstancesResponseDto.builder()
-                    .uuid(uuid)
+                    .uuid(instancesEntity.getUuid())
                     .md5Hash(md5Hash)
                     .expireAt(instancesEntity.getExpireAt())
                     .build();
@@ -91,6 +100,7 @@ public class UploadInstancesService {
     private InstancesEntity createAndSaveInstancesEntity(String uuid,
                                                          String objectPath,
                                                          String md5Hash,
+                                                         String clientId,
                                                          InstancesModel instancesModel) {
         var instancesEntity = new InstancesEntity();
         instancesEntity.setRelationName(instancesModel.getRelationName());
@@ -108,6 +118,7 @@ public class UploadInstancesService {
         instancesEntity.setUuid(uuid);
         instancesEntity.setObjectPath(objectPath);
         instancesEntity.setMd5Hash(md5Hash);
+        instancesEntity.setClientId(clientId);
         instancesEntity.setExpireAt(LocalDateTime.now().plusDays(appProperties.getInstancesExpireDays()));
         instancesEntity.setCreated(LocalDateTime.now());
         return instancesRepository.save(instancesEntity);
