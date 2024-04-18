@@ -7,6 +7,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 import java.time.LocalDateTime;
 
 /**
@@ -16,7 +17,10 @@ import java.time.LocalDateTime;
  */
 @Data
 @Entity
-@Table(name = "instances")
+@Table(name = "instances",uniqueConstraints = {
+        @UniqueConstraint(columnNames = {"client_id", "md5_hash"},
+                name = "instances_client_id_md5_hash_unique_index")
+})
 public class InstancesEntity {
 
     @Id
@@ -76,6 +80,12 @@ public class InstancesEntity {
      */
     @Column(name = "md5_hash", nullable = false)
     private String md5Hash;
+
+    /**
+     * Username (client id)
+     */
+    @Column(name = "client_id")
+    private String clientId;
 
     /**
      * Instances object path

@@ -94,6 +94,8 @@ public class InstancesExternalApiController {
             @Parameter(description = "Training data file", required = true)
             @RequestParam MultipartFile instancesFile) {
         log.info("Request to upload train data file [{}]", instancesFile.getOriginalFilename());
-        return uploadInstancesService.uploadInstances(instancesFile);
+        var uploadInstancesResponseDto = uploadInstancesService.uploadInstances(instancesFile);
+        log.info("Request to upload train data file [{}] has been processed", instancesFile.getOriginalFilename());
+        return uploadInstancesResponseDto;
     }
 }
