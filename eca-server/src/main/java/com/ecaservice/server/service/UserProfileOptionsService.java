@@ -5,6 +5,7 @@ import com.ecaservice.server.bpm.model.UserProfileOptionsNotificationEventModel;
 import com.ecaservice.user.profile.options.client.service.UserProfileOptionsProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cloud.sleuth.annotation.NewSpan;
 import org.springframework.stereotype.Service;
 
 import java.util.stream.Collectors;
@@ -27,6 +28,7 @@ public class UserProfileOptionsService {
      * @param user - user login
      * @return user profile options model
      */
+    @NewSpan
     public UserProfileOptionsModel getUserProfileOptionsModel(String user) {
         log.info("Starting to get user [{}] profile options model", user);
         UserProfileOptionsModel userProfileOptionsModel = new UserProfileOptionsModel();

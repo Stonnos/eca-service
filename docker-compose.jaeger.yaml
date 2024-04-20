@@ -1,0 +1,22 @@
+version: "3.5"
+services:
+
+  jaeger:
+    image: jaegertracing/all-in-one:${JAEGER_VERSION}
+    container_name: jaeger
+    environment:
+      TZ: ${TIME_ZONE}
+      COLLECTOR_ZIPKIN_HOST_PORT: ":9411"
+    ports:
+      - "5778:5778"
+      - "16686:16686"
+      - "14268:14268"
+      - "14250:14250"
+      - "9411:9411"
+    networks:
+      - default
+
+networks:
+  default:
+    name: app-network
+    driver: bridge

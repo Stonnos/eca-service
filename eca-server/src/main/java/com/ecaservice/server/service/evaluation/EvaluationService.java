@@ -8,6 +8,7 @@ import eca.core.evaluation.EvaluationMethodVisitor;
 import eca.core.evaluation.EvaluationResults;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cloud.sleuth.annotation.NewSpan;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StopWatch;
 import weka.classifiers.AbstractClassifier;
@@ -36,6 +37,7 @@ public class EvaluationService {
      * @param evaluationInputDataModel - evaluation input options data model
      * @return evaluation results
      */
+    @NewSpan
     public EvaluationResults evaluateModel(EvaluationInputDataModel evaluationInputDataModel) {
         try {
             final Classifier classifier = AbstractClassifier.makeCopy(evaluationInputDataModel.getClassifier());

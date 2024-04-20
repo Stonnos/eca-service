@@ -1,6 +1,8 @@
 spring:
   application:
     name: eca-web
+  zipkin:
+    enabled: false
 
 eureka:
   client:

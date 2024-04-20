@@ -84,6 +84,8 @@ services:
       TZ: ${TIME_ZONE}
       SPRING_PROFILES_ACTIVE: "docker"
       JAVA_OPTS: "-Xmx512m"
+      SPRING_ZIPKIN_ENABLED: ${ZIPKIN_ENABLED}
+      SPRING_ZIPKIN_BASEURL: ${ZIPKIN_URL}
     networks:
       - default
 
@@ -105,6 +107,8 @@ services:
       AUDIT_THREADPOOLSIZE: ${AUDIT_THREAD_POOL_SIZE}
       REDELIVERY_ENABLED: "true"
       OPENAPI_BASEPATH: "/eca-server"
+      SPRING_ZIPKIN_ENABLED: ${ZIPKIN_ENABLED}
+      SPRING_ZIPKIN_BASEURL: ${ZIPKIN_URL}
     networks:
       - default
     depends_on:
@@ -119,12 +123,14 @@ services:
     environment:
       TZ: ${TIME_ZONE}
       SPRING_PROFILES_ACTIVE: "docker"
-      JAVA_OPTS: "-Xmx756m"
+      JAVA_OPTS: "-Xmx512m"
       AUDIT_ENABLED: "true"
       AUDIT_ASYNCEVENTS: ${AUDIT_ASYNC_EVENTS}
       AUDIT_THREADPOOLSIZE: ${AUDIT_THREAD_POOL_SIZE}
       REDELIVERY_ENABLED: "true"
       OPENAPI_BASEPATH: "/eca-oauth"
+      SPRING_ZIPKIN_ENABLED: ${ZIPKIN_ENABLED}
+      SPRING_ZIPKIN_BASEURL: ${ZIPKIN_URL}
     networks:
       - default
     depends_on:
@@ -140,6 +146,8 @@ services:
       SPRING_PROFILES_ACTIVE: "docker"
       JAVA_OPTS: "-Xmx512m"
       OPENAPI_BASEPATH: "/eca-mail"
+      SPRING_ZIPKIN_ENABLED: ${ZIPKIN_ENABLED}
+      SPRING_ZIPKIN_BASEURL: ${ZIPKIN_URL}
     networks:
       - default
     depends_on:
@@ -159,6 +167,8 @@ services:
       AUDIT_THREADPOOLSIZE: ${AUDIT_THREAD_POOL_SIZE}
       REDELIVERY_ENABLED: "true"
       OPENAPI_BASEPATH: "/eca-ds"
+      SPRING_ZIPKIN_ENABLED: ${ZIPKIN_ENABLED}
+      SPRING_ZIPKIN_BASEURL: ${ZIPKIN_URL}
     networks:
       - default
     depends_on:
@@ -172,12 +182,14 @@ services:
     environment:
       TZ: ${TIME_ZONE}
       SPRING_PROFILES_ACTIVE: "docker"
-      JAVA_OPTS: "-Xmx1g"
+      JAVA_OPTS: "-Xmx512m"
       AUDIT_ENABLED: "true"
       AUDIT_ASYNCEVENTS: ${AUDIT_ASYNC_EVENTS}
       AUDIT_THREADPOOLSIZE: ${AUDIT_THREAD_POOL_SIZE}
       REDELIVERY_ENABLED: "true"
       OPENAPI_BASEPATH: "/eca-ers"
+      SPRING_ZIPKIN_ENABLED: ${ZIPKIN_ENABLED}
+      SPRING_ZIPKIN_BASEURL: ${ZIPKIN_URL}
     networks:
       - default
     depends_on:
@@ -191,6 +203,8 @@ services:
       TZ: ${TIME_ZONE}
       SPRING_PROFILES_ACTIVE: "docker"
       JAVA_OPTS: "-Xmx512m"
+      SPRING_ZIPKIN_ENABLED: ${ZIPKIN_ENABLED}
+      SPRING_ZIPKIN_BASEURL: ${ZIPKIN_URL}
     networks:
       - default
     depends_on:
@@ -204,6 +218,8 @@ services:
       TZ: ${TIME_ZONE}
       SPRING_PROFILES_ACTIVE: "docker"
       JAVA_OPTS: "-Xmx756m"
+      SPRING_ZIPKIN_ENABLED: ${ZIPKIN_ENABLED}
+      SPRING_ZIPKIN_BASEURL: ${ZIPKIN_URL}
     ports:
       - "8080:8080"
     networks:
@@ -220,6 +236,8 @@ services:
       SPRING_PROFILES_ACTIVE: "docker"
       JAVA_OPTS: "-Xmx512m"
       OPENAPI_BASEPATH: "/eca-web-push"
+      SPRING_ZIPKIN_ENABLED: ${ZIPKIN_ENABLED}
+      SPRING_ZIPKIN_BASEURL: ${ZIPKIN_URL}
     networks:
       - default
 
@@ -232,6 +250,8 @@ services:
       SPRING_PROFILES_ACTIVE: "docker"
       JAVA_OPTS: "-Xmx512m"
       OPENAPI_BASEPATH: "/eca-audit-log"
+      SPRING_ZIPKIN_ENABLED: ${ZIPKIN_ENABLED}
+      SPRING_ZIPKIN_BASEURL: ${ZIPKIN_URL}
     networks:
       - default
     depends_on:
@@ -247,6 +267,8 @@ services:
       SPRING_PROFILES_ACTIVE: "docker"
       JAVA_OPTS: "-Xmx512m"
       OPENAPI_BASEPATH: "/eca-data-loader"
+      SPRING_ZIPKIN_ENABLED: ${ZIPKIN_ENABLED}
+      SPRING_ZIPKIN_BASEURL: ${ZIPKIN_URL}
     networks:
       - default
     depends_on:

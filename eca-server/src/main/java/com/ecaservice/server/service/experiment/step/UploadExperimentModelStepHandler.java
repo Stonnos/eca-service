@@ -11,6 +11,7 @@ import com.ecaservice.server.repository.ExperimentRepository;
 import com.ecaservice.server.service.experiment.ExperimentModelLocalStorage;
 import com.ecaservice.server.service.experiment.ExperimentStepService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cloud.sleuth.annotation.NewSpan;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StopWatch;
@@ -50,6 +51,7 @@ public class UploadExperimentModelStepHandler extends AbstractExperimentStepHand
         this.experimentRepository = experimentRepository;
     }
 
+    @NewSpan("uploadExperimentModelStep")
     @Override
     public void handle(ExperimentContext experimentContext,
                        ExperimentStepEntity experimentStepEntity) {
