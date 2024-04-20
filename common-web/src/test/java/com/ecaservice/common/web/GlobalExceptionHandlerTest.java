@@ -73,13 +73,6 @@ class GlobalExceptionHandlerTest {
     }
 
     @Test
-    void testBadRequest() {
-        var responseEntity = exceptionHandler.handleBadRequest(new IllegalStateException());
-        assertThat(responseEntity).isNotNull();
-        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
-    }
-
-    @Test
     void testHttpMessageNotReadable() {
         var httpInputMessage = mock(HttpInputMessage.class);
         var invalidFormatException = mock(InvalidFormatException.class);

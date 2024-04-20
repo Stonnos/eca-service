@@ -27,18 +27,6 @@ import java.util.List;
 public class GlobalExceptionHandler {
 
     /**
-     * Handles bad request error.
-     *
-     * @param ex -  exception
-     * @return response entity
-     */
-    @ExceptionHandler({IllegalArgumentException.class, IllegalStateException.class})
-    public ResponseEntity<String> handleBadRequest(Exception ex) {
-        log.error("Bad request error: {}", ex.getMessage());
-        return ResponseEntity.badRequest().body(ex.getMessage());
-    }
-
-    /**
      * Handles validation error.
      *
      * @param ex -  method argument not valid exception
@@ -48,7 +36,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<List<ValidationErrorDto>> handleMethodArgumentNotValid(MethodArgumentNotValidException ex) {
         log.error("Method argument not valid error: {}", ex.getMessage());
         var response = ExceptionResponseHandler.handleMethodArgumentNotValid(ex);
-        log.error("Method argument not valid errors: {}", response);
+        log.error("Method argument not valid errors response: {}", response);
         return ResponseEntity.badRequest().body(response);
     }
 
@@ -62,7 +50,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<List<ValidationErrorDto>> handleConstraintViolation(ConstraintViolationException ex) {
         log.error("Constraint violation error: {}", ex.getMessage());
         var response = ExceptionResponseHandler.handleConstraintViolation(ex);
-        log.error("Constraint violation errors: {}", response);
+        log.error("Constraint violation errors response: {}", response);
         return ResponseEntity.badRequest().body(response);
     }
 
@@ -76,7 +64,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<List<ValidationErrorDto>> handleValidationError(ValidationErrorException ex) {
         log.error("Validation error [{}]: {}", ex.getErrorDetails(), ex.getMessage());
         var response = ExceptionResponseHandler.handleValidationErrorException(ex);
-        log.error("Validation errors: {}", response);
+        log.error("Validation errors response: {}", response);
         return ResponseEntity.badRequest().body(response);
     }
 
@@ -91,7 +79,7 @@ public class GlobalExceptionHandler {
             HttpMessageNotReadableException ex) {
         log.error("Http message not readable error: {}", ex.getMessage());
         var response = ExceptionResponseHandler.handleHttpMessageNotReadable(ex);
-        log.error("Http message not readable errors: {}", response);
+        log.error("Http message not readable errors response: {}", response);
         return ResponseEntity.badRequest().body(response);
     }
 
@@ -105,7 +93,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<List<ValidationErrorDto>> handleBindException(BindException ex) {
         log.error("Bind error: {}", ex.getMessage());
         var response = ExceptionResponseHandler.handleBindException(ex);
-        log.error("Bind errors: {}", response);
+        log.error("Bind errors response: {}", response);
         return ResponseEntity.badRequest().body(response);
     }
 
@@ -120,7 +108,7 @@ public class GlobalExceptionHandler {
             MethodArgumentTypeMismatchException ex) {
         log.error("Method argument type mismatch error: {}", ex.getMessage());
         var response = ExceptionResponseHandler.handleMethodArgumentTypeMismatchException(ex);
-        log.error("Method argument type mismatch errors: {}", response);
+        log.error("Method argument type mismatch errors response: {}", response);
         return ResponseEntity.badRequest().body(response);
     }
 
