@@ -1,6 +1,7 @@
 package com.ecaservice.common.web;
 
 import com.ecaservice.common.error.model.ValidationErrorDto;
+import com.ecaservice.common.web.error.CommonErrorCode;
 import com.ecaservice.common.web.exception.ValidationErrorException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.annotation.Order;
@@ -14,6 +15,7 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 import org.springframework.web.multipart.MaxUploadSizeExceededException;
 
 import javax.validation.ConstraintViolationException;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -25,6 +27,23 @@ import java.util.List;
 @ControllerAdvice
 @Order(0)
 public class GlobalExceptionHandler {
+
+    /**
+     * Handles bad request error.
+     *
+     * @param ex -  exception
+     * @return response entity
+     */
+    @ExceptionHandler({IllegalArgumentException.class, IllegalStateException.class})
+    public ResponseEntity<List<ValidationErrorDto>> handleBadRequest(Exception ex) {
+        log.error("Bad request error: {}", ex.getMessage());
+        var validationErrorDto = new ValidationErrorDto();
+        validationErrorDto.setCode(CommonErrorCode.INVALID_REQUEST_CODE.getCode());
+        validationErrorDto.setErrorMessage(ex.getMessage());
+        var response = Collections.singletonList(validationErrorDto);
+        log.error("Bad request response: {}", ex.getMessage());
+        return ResponseEntity.badRequest().body(response);
+    }
 
     /**
      * Handles validation error.
