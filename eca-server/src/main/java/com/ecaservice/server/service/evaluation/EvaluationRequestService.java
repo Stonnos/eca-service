@@ -19,6 +19,7 @@ import eca.core.evaluation.EvaluationResults;
 import eca.core.model.ClassificationModel;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cloud.sleuth.annotation.NewSpan;
 import org.springframework.stereotype.Service;
 import weka.classifiers.AbstractClassifier;
 import weka.core.Instances;
@@ -96,6 +97,7 @@ public class EvaluationRequestService {
      * @param evaluationLog - evaluation log
      * @return evaluation results data model
      */
+    @NewSpan
     public EvaluationResultsDataModel processEvaluationRequest(EvaluationLog evaluationLog) {
         log.info("Starting to process request for classifier [{}] evaluation with data uuid [{}]",
                 evaluationLog.getClassifierInfo().getClassifierName(), evaluationLog.getTrainingDataUuid());

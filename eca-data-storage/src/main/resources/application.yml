@@ -23,6 +23,8 @@ spring:
     baggage:
       correlation-fields: tx.id
       remote-fields: tx.id
+  zipkin:
+    enabled: false
   cache:
     cache-names: attributes, attributes-statistics, global-filters, filter-templates, filter-dictionaries, sort-fields
     caffeine:

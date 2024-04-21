@@ -10,6 +10,7 @@ import com.ecaservice.data.storage.repository.InstancesRepository;
 import com.ecaservice.data.storage.service.data.UploadInstancesObjectService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cloud.sleuth.annotation.NewSpan;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -34,6 +35,7 @@ public class ExportInstancesObjectService {
      *
      * @param uuid - instances uuid
      */
+    @NewSpan
     public ExportInstancesResponseDto exportValidInstances(String uuid) {
         log.info("Starting to export instances [{}] to central data storage", uuid);
         var instancesEntity = instancesRepository.findByUuid(uuid)

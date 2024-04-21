@@ -35,7 +35,8 @@ import static org.mockito.Mockito.when;
  * @author Roman Batygin
  */
 @ComponentScan(basePackageClasses = InstancesValidator.class)
-@Import({UploadInstancesService.class, ObjectMapper.class, AppProperties.class})
+@Import({UploadInstancesService.class, ObjectMapper.class, AppProperties.class,
+        InstancesReader.class, InstancesDeserializer.class})
 class UploadInstancesServiceTest extends AbstractJpaTest {
 
     private static final String USER = "user";

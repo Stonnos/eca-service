@@ -15,6 +15,7 @@ import eca.data.db.SqlTypeUtils;
 import eca.data.file.model.InstancesModel;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cloud.sleuth.annotation.NewSpan;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
@@ -53,6 +54,7 @@ public class InstancesService {
      * @param instancesEntity - instances entity
      * @param instances       - training data
      */
+    @NewSpan
     public void saveInstances(InstancesEntity instancesEntity, Instances instances) {
         log.info("Starting to save instances [{}] into table [{}].", instancesEntity.getRelationName(),
                 instancesEntity.getTableName());
@@ -83,6 +85,7 @@ public class InstancesService {
      *
      * @param tableName - table name
      */
+    @NewSpan
     public void deleteInstances(String tableName) {
         log.info("Starting to delete table with name [{}]", tableName);
         jdbcTemplate.execute(String.format(DROP_TABLE_QUERY_FORMAT, tableName));
@@ -145,6 +148,7 @@ public class InstancesService {
      * @param instancesEntity - instances entity
      * @return instances model object
      */
+    @NewSpan
     public InstancesModel getValidInstancesModel(InstancesEntity instancesEntity) {
         log.info("Starting to get valid instances [{}] model from table [{}]", instancesEntity.getRelationName(),
                 instancesEntity.getTableName());
