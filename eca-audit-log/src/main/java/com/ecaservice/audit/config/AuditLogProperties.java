@@ -12,6 +12,9 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @ConfigurationProperties("audit")
 public class AuditLogProperties {
 
+    /**
+     * Rabbit properties
+     */
     private RabbitProperties rabbit = new RabbitProperties();
 
     /**
