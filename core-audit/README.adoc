@@ -158,7 +158,7 @@ audit:
     ## Тип канала для отправки rabbitmq
     type: rabbitmq
   rabbit:
-    ## Название очередт для отправки собыйти в rabbitmq
+    ## Название очереди для отправки собыйти в rabbitmq
     queueName: queue-audit-events
 ----
 
