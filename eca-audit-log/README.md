@@ -32,7 +32,10 @@
    * baseUrl - базовый url eca-oauth
    * clientId - идентификатор клиента
    * clientSecret - пароль клиента
-4) logging.mode - режим логирования
+4) audit - настройки журнала аудита
+   * audit.rabbit.enabled - вкл./выкл. обработки событий из rabbit mq
+   * audit.rabbit.queueName - очередь для получения и сохранения событий аудита
+5) logging.mode - режим логирования
    * text - текстовый формат
    * json - логи в формате json
     

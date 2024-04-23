@@ -33,6 +33,11 @@ eureka:
     registerWithEureka: false
     fetchRegistry: false
 
+audit:
+  rabbit:
+    enabled: true
+    queueName: queue-audit-events
+
 lock:
   enabled: true
 
