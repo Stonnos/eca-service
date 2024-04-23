@@ -50,6 +50,8 @@ public class AuditCoreConfiguration {
         ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
         executor.setCorePoolSize(auditProperties.getThreadPoolSize());
         executor.setMaxPoolSize(auditProperties.getThreadPoolSize());
+        log.info("[{}] audit client thread pool with size [{}] has been configured",
+                AUDIT_EVENT_THREAD_POOL_TASK_EXECUTOR, auditProperties.getThreadPoolSize());
         return executor;
     }
 }
