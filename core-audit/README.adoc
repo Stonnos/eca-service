@@ -147,6 +147,14 @@ lock:
 
 [source,yml]
 ----
+spring:
+  ## настройки rabbitmq для отправки событий аудита
+  rabbitmq:
+    host: rabbitmq
+    port: 5672
+    username: guest
+    password: guest
+
 audit:
   ## Вкл. отправку событий аудита
   enabled: true
@@ -158,7 +166,7 @@ audit:
     ## Тип канала для отправки rabbitmq
     type: rabbitmq
   rabbit:
-    ## Название очереди для отправки собыйти в rabbitmq
+    ## Название очереди для отправки событий аудита в rabbitmq
     queueName: queue-audit-events
 ----
 
