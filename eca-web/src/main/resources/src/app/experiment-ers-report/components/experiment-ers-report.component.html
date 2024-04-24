@@ -29,7 +29,7 @@
 
 <div class="ui-g">
   <div class="ui-g-12 text-center">
-    <div [class.text-success]="experimentErsReport?.ersReportStatus.value == 'FETCHED'"
+    <div *ngIf="experimentErsReport?.ersReportStatus.value != 'FETCHED'"
          [class.text-primary]="experimentErsReport?.ersReportStatus.value == 'EXPERIMENT_NEW'"
          [class.text-info]="experimentErsReport?.ersReportStatus.value == 'EXPERIMENT_IN_PROGRESS'"
          [class.text-danger]="experimentErsReport?.ersReportStatus.value == 'EXPERIMENT_ERROR'"
