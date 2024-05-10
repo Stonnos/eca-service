@@ -21,12 +21,6 @@ spring:
   liquibase:
     contexts: schema,data
     change-log: classpath:db/liquibase-changelog.xml
-  sleuth:
-    baggage:
-      correlation-fields: tx.id
-      remote-fields: tx.id
-  zipkin:
-    enabled: false
 
 eureka:
   client:
@@ -70,6 +64,14 @@ springdoc:
     disable-swagger-default-url: true
 
 management:
+  tracing:
+    enabled: false
+    baggage:
+      correlation:
+        fields:
+          - tx.id
+      remote-fields:
+        - tx.id
   metrics:
     tags:
       application: ${spring.application.name}

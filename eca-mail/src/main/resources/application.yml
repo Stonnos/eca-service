@@ -34,12 +34,6 @@ spring:
     cache-names: global-filters, filter-templates, filter-dictionaries, sort-fields
     caffeine:
       spec: maximumSize=100, expireAfterWrite=18000s
-  sleuth:
-    baggage:
-      correlation-fields: tx.id
-      remote-fields: tx.id
-  zipkin:
-    enabled: false
 
 eureka:
   client:
@@ -93,6 +87,14 @@ table:
           storagePeriodInDays: 30
 
 management:
+  tracing:
+    enabled: false
+    baggage:
+      correlation:
+        fields:
+          - tx.id
+      remote-fields:
+        - tx.id
   metrics:
     tags:
       application: ${spring.application.name}

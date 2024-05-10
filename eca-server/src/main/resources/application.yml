@@ -44,12 +44,6 @@ spring:
     redis:
       repositories:
         enabled: false
-  sleuth:
-    baggage:
-      correlation-fields: tx.id
-      remote-fields: tx.id
-  zipkin:
-    enabled: false
 
 eureka:
   client:
@@ -193,6 +187,14 @@ lock:
       expireAfter: 7500000
 
 management:
+  tracing:
+    enabled: false
+    baggage:
+      correlation:
+        fields:
+          - tx.id
+      remote-fields:
+        - tx.id
   metrics:
     tags:
       application: ${spring.application.name}

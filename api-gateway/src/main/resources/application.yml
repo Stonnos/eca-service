@@ -1,8 +1,6 @@
 spring:
   application:
     name: api-gateway
-  zipkin:
-    enabled: false
   cloud:
     gateway:
       discovery:
@@ -75,6 +73,8 @@ eureka:
       defaultZone: http://discovery-server:8761/eureka
 
 management:
+  tracing:
+    enabled: false
   metrics:
     tags:
       application: ${spring.application.name}

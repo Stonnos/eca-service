@@ -18,13 +18,14 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.SchedulingConfigurer;
-import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.springframework.scheduling.config.ScheduledTaskRegistrar;
 
 import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+
+import static com.ecaservice.common.web.concurrent.ThreadPoolExecutorFactory.createThreadPoolTaskExecutor;
 
 /**
  * Eca - service configuration.
@@ -70,10 +71,7 @@ public class EcaServiceConfiguration implements SchedulingConfigurer {
      */
     @Bean(name = ECA_THREAD_POOL_TASK_EXECUTOR)
     public Executor ecaThreadPoolTaskExecutor(AppProperties appProperties) {
-        ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
-        executor.setCorePoolSize(appProperties.getThreadPoolSize());
-        executor.setMaxPoolSize(appProperties.getThreadPoolSize());
-        return executor;
+        return createThreadPoolTaskExecutor(appProperties.getThreadPoolSize());
     }
 
     @Override

@@ -6,7 +6,7 @@ import com.ecaservice.data.storage.model.MultipartFileResource;
 import eca.data.file.FileDataLoader;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.cloud.sleuth.annotation.NewSpan;
+import io.micrometer.tracing.annotation.NewSpan;
 import org.springframework.stereotype.Service;
 import weka.core.Instances;
 

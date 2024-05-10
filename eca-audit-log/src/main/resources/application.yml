@@ -25,8 +25,6 @@ spring:
     cache-names: global-filters, filter-templates, filter-dictionaries, sort-fields
     caffeine:
       spec: maximumSize=100, expireAfterWrite=18000s
-  zipkin:
-    enabled: false
 
 eureka:
   client:
@@ -67,6 +65,8 @@ auth-server:
   clientSecret: 02#eca_service_tech6
 
 management:
+  tracing:
+    enabled: false
   metrics:
     tags:
       application: ${spring.application.name}

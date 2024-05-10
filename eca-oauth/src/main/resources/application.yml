@@ -26,8 +26,6 @@ spring:
   servlet:
     multipart:
       max-file-size: 10MB
-  zipkin:
-    enabled: false
 
 eureka:
   client:
@@ -132,6 +130,8 @@ springdoc:
     disable-swagger-default-url: true
 
 management:
+  tracing:
+    enabled: false
   metrics:
     tags:
       application: ${spring.application.name}

@@ -1,6 +1,7 @@
 package com.ecaservice.server.service;
 
 import com.ecaservice.server.model.Cancelable;
+import io.micrometer.context.ContextSnapshotFactory;
 import lombok.RequiredArgsConstructor;
 
 import java.util.concurrent.Callable;
@@ -36,7 +37,9 @@ public class TaskWorker<T> implements Cancelable {
      */
     public T performTask(Callable<T> callable, long timeout, TimeUnit timeUnit)
             throws ExecutionException, InterruptedException, TimeoutException {
-        future = executorService.submit(callable);
+        ContextSnapshotFactory contextSnapshotFactory = ContextSnapshotFactory.builder().build();
+        var wrappedCallable = contextSnapshotFactory.captureAll().wrap(callable);
+        future = executorService.submit(wrappedCallable);
         return future.get(timeout, timeUnit);
     }
 

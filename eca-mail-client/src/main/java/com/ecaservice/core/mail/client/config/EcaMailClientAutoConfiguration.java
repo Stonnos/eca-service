@@ -10,11 +10,11 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableAsync;
-import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.security.crypto.encrypt.AesBytesEncryptor;
 
 import java.util.concurrent.Executor;
 
+import static com.ecaservice.common.web.concurrent.ThreadPoolExecutorFactory.createThreadPoolTaskExecutor;
 import static com.ecaservice.common.web.crypto.factory.EncryptFactory.getAesBytesEncryptor;
 
 /**
@@ -45,9 +45,7 @@ public class EcaMailClientAutoConfiguration {
     @Bean(name = MAIL_CLIENT_THREAD_POOL_TASK_EXECUTOR)
     @ConditionalOnProperty(value = "mail.client.async", havingValue = "true")
     public Executor mailClientEventThreadPoolTaskExecutor(EcaMailClientProperties ecaMailClientProperties) {
-        ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
-        executor.setCorePoolSize(ecaMailClientProperties.getThreadPoolSize());
-        executor.setMaxPoolSize(ecaMailClientProperties.getThreadPoolSize());
+        Executor executor = createThreadPoolTaskExecutor(ecaMailClientProperties.getThreadPoolSize());
         log.info("[{}] email client thread pool with size [{}] has been configured",
                 MAIL_CLIENT_THREAD_POOL_TASK_EXECUTOR, ecaMailClientProperties.getThreadPoolSize());
         return executor;

@@ -1,8 +1,6 @@
 spring:
   application:
     name: discovery-server
-  zipkin:
-    enabled: false
 server:
   port: 8761
 
@@ -29,6 +27,8 @@ springdoc:
     disable-swagger-default-url: true
 
 management:
+  tracing:
+    enabled: false
   metrics:
     tags:
       application: ${spring.application.name}

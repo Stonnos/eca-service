@@ -30,8 +30,6 @@ spring:
       simple:
         concurrency: 10
         maxConcurrency: 10
-  zipkin:
-    enabled: false
 
 eureka:
   client:
@@ -88,6 +86,8 @@ auth-server:
   clientSecret: external_api_secret
 
 management:
+  tracing:
+    enabled: false
   metrics:
     tags:
       application: ${spring.application.name}
