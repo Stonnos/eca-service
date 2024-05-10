@@ -1,0 +1,37 @@
+= Библиотека core-tracing
+:toc:
+:toc-title: Оглавление
+
+== Введение
+
+Библиотека реализует функционал для поддержки распределенной трассировк на основе micrometer tracing.
+
+== 1. Базовые настройки библиотеки
+
+Для начала, необходимо добавить зависимость в pom.xml
+
+[source,xml]
+----
+<dependency>
+    <groupId>eca.service</groupId>
+    <artifactId>core-tracing</artifactId>
+    <version>${project.version}</version>
+</dependency>
+----
+
+В файле application.yml добавить настройки библиотеки
+
+[source,yml]
+----
+management:
+  zipkin:
+    tracing:
+      ## Вкл./выкл. отправки трейсов в zipkin
+      enabled: true
+      ## Url zipkin
+      endpoint: http://localhost:9411/api/v2/spans
+  tracing:
+    sampling:
+      ## Коэффициент сэмплирования (указывает, какая доля трейсов будет отправлена)
+      probability: 1.0
+----
