@@ -30,6 +30,8 @@ spring:
       simple:
         concurrency: 10
         maxConcurrency: 10
+  zipkin:
+    enabled: false
 
 eureka:
   client:

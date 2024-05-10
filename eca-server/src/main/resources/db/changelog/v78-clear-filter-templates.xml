@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+        logicalFilePath="db/changelog/v78-clear-filter-templates.xml"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet author="roman.batygin@mail.ru" id="delete_sort_templates_fields_2" context="data">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="sort_field"/>
+        </preConditions>
+        <sql>
+            delete from sort_field
+        </sql>
+    </changeSet>
+
+    <changeSet author="roman.batygin@mail.ru" id="delete_sort_templates_2" context="data">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="sort_template"/>
+        </preConditions>
+        <sql>
+            delete from sort_template
+        </sql>
+    </changeSet>
+
+    <changeSet author="roman.batygin@mail.ru" id="delete_global_filter_templates_fields_2" context="data">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="global_filter_field"/>
+        </preConditions>
+        <sql>
+            delete from global_filter_field
+        </sql>
+    </changeSet>
+
+    <changeSet author="roman.batygin@mail.ru" id="delete_global_filter_templates_2" context="data">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="global_filter_template"/>
+        </preConditions>
+        <sql>
+            delete from global_filter_template
+        </sql>
+    </changeSet>
+
+    <changeSet author="roman.batygin@mail.ru" id="delete_filter_template_fields_2" context="data">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="filter_field"/>
+        </preConditions>
+        <sql>
+            delete from filter_field
+        </sql>
+    </changeSet>
+
+    <changeSet author="roman.batygin@mail.ru" id="delete_filter_template_2" context="data">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="filter_template"/>
+        </preConditions>
+        <sql>
+            delete from filter_template
+        </sql>
+    </changeSet>
+
+    <changeSet author="roman.batygin@mail.ru" id="delete_filter_dictionaries_values_2" context="data">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="filter_dictionary_value"/>
+        </preConditions>
+        <sql>
+            delete from filter_dictionary_value
+        </sql>
+    </changeSet>
+
+    <changeSet author="roman.batygin@mail.ru" id="delete_filter_dictionaries_2" context="data">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="filter_dictionary"/>
+        </preConditions>
+        <sql>
+            delete from filter_dictionary
+        </sql>
+    </changeSet>
+
+</databaseChangeLog>

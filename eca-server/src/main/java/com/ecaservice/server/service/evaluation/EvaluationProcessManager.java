@@ -6,6 +6,7 @@ import com.ecaservice.server.bpm.service.ProcessManager;
 import com.ecaservice.server.config.ProcessConfig;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cloud.sleuth.annotation.NewSpan;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
@@ -36,6 +37,7 @@ public class EvaluationProcessManager {
      *
      * @param id - evaluation log id
      */
+    @NewSpan
     @Locked(lockRegistryKey = EVALUATION_LOCK_REGISTRY_KEY, lockName = "evaluation", key = "#id", waitForLock = false)
     public void processEvaluationRequest(Long id) {
         var evaluationLog = evaluationLogDataService.getById(id);
@@ -51,6 +53,7 @@ public class EvaluationProcessManager {
      *
      * @param evaluationRequestModel - evaluation request dto
      */
+    @NewSpan
     public void createAndProcessEvaluationRequest(EvaluationRequestModel evaluationRequestModel) {
         putMdc(TX_ID, evaluationRequestModel.getRequestId());
         log.info("Starting create and process evaluation [{}] request business process",

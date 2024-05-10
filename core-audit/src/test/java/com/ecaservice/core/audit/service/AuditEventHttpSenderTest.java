@@ -12,16 +12,16 @@ import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.verify;
 
 /**
- * Unit tests for {@link AuditEventSender} class.
+ * Unit tests for {@link AuditEventHttpSender} class.
  *
  * @author Roman Batygin
  */
 @ExtendWith(SpringExtension.class)
-@Import(AuditEventSender.class)
-class AuditEventSenderTest {
+@Import(AuditEventHttpSender.class)
+class AuditEventHttpSenderTest {
 
     @Autowired
-    private AuditEventSender auditEventSender;
+    private AuditEventHttpSender auditEventHttpSender;
 
     @MockBean
     private AuditEventClient auditEventClient;
@@ -29,7 +29,7 @@ class AuditEventSenderTest {
     @Test
     void testSendAuditEvent() {
         var auditEventRequest = createAuditEventRequest();
-        auditEventSender.sendAuditEvent(auditEventRequest);
+        auditEventHttpSender.sendAuditEvent(auditEventRequest);
         verify(auditEventClient, atLeastOnce()).sendEvent(auditEventRequest);
     }
 }

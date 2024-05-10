@@ -10,6 +10,7 @@ import eca.dataminer.AbstractExperiment;
 import eca.dataminer.IterativeExperiment;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cloud.sleuth.annotation.NewSpan;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
@@ -38,6 +39,7 @@ public class ExperimentProcessorService {
      * @param initializationParams - experiment initialization params {@link InitializationParams}
      * @return experiment history
      */
+    @NewSpan
     public AbstractExperiment<?> processExperimentHistory(Experiment experiment,
                                                           Cancelable cancelable,
                                                           InitializationParams initializationParams) {

@@ -27,6 +27,8 @@ spring:
     baggage:
       correlation-fields: tx.id
       remote-fields: tx.id
+  zipkin:
+    enabled: false
 
 eureka:
   client:

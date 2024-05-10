@@ -6,6 +6,7 @@ import com.ecaservice.server.bpm.service.ProcessManager;
 import com.ecaservice.server.config.ProcessConfig;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cloud.sleuth.annotation.NewSpan;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
@@ -36,6 +37,7 @@ public class ExperimentProcessManager {
      *
      * @param id - experiment id
      */
+    @NewSpan
     @Locked(lockRegistryKey = EXPERIMENT_LOCK_REGISTRY_KEY, lockName = "experiment", key = "#id", waitForLock = false)
     public void processExperiment(Long id) {
         var experiment = experimentDataService.getById(id);
@@ -52,6 +54,7 @@ public class ExperimentProcessManager {
      *
      * @param experimentRequestModel - experiment request data model
      */
+    @NewSpan
     public void createExperimentRequest(ExperimentRequestModel experimentRequestModel) {
         putMdc(TX_ID, experimentRequestModel.getRequestId());
         log.info("Starting create experiment [{}] request business process",

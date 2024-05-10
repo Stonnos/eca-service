@@ -10,6 +10,7 @@ import io.micrometer.core.annotation.Timed;
 import lombok.Cleanup;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cloud.sleuth.annotation.NewSpan;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StopWatch;
@@ -51,6 +52,7 @@ public class ObjectStorageService {
      * @param serializer - object serializer
      * @throws IOException in case of I/O error
      */
+    @NewSpan
     public void uploadObject(Serializable object, String objectPath, ObjectSerializer serializer) throws IOException {
         log.info("Starting to upload object [{}] to storage", objectPath);
         log.info("Starting to serialize object [{}]", objectPath);
@@ -78,6 +80,7 @@ public class ObjectStorageService {
      * @throws IOException            in case of I/O error
      * @throws ClassNotFoundException in case of class not found errors
      */
+    @NewSpan
     @Timed(value = OBJECT_REQUEST_METRIC)
     public <T> T getObject(String objectPath, Class<T> targetClazz) throws IOException, ClassNotFoundException {
         return getObject(objectPath, targetClazz, new FstDeserializer<>());
@@ -94,6 +97,7 @@ public class ObjectStorageService {
      * @throws IOException            in case of I/O error
      * @throws ClassNotFoundException in case of class not found errors
      */
+    @NewSpan
     @Timed(value = OBJECT_REQUEST_METRIC)
     public <T> T getObject(String objectPath, Class<T> targetClazz, ObjectDeserializer<T> objectDeserializer)
             throws IOException, ClassNotFoundException {
@@ -114,6 +118,7 @@ public class ObjectStorageService {
      * @param presignedUrlObject - presigned url object
      * @return presigned proxy url
      */
+    @NewSpan
     public String getObjectPresignedProxyUrl(GetPresignedUrlObject presignedUrlObject) {
         return minioStorageService.getObjectPresignedProxyUrl(presignedUrlObject);
     }
@@ -123,6 +128,7 @@ public class ObjectStorageService {
      *
      * @param objectPath - object path
      */
+    @NewSpan
     public void removeObject(String objectPath) {
         minioStorageService.removeObject(objectPath);
     }

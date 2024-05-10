@@ -32,6 +32,7 @@ import com.ecaservice.web.dto.model.RequestStatusStatisticsDto;
 import com.ecaservice.web.dto.model.S3ContentResponseDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cloud.sleuth.annotation.NewSpan;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -160,6 +161,7 @@ public class EvaluationLogDataService {
      *
      * @return evaluation statuses counting statistics
      */
+    @NewSpan
     public RequestStatusStatisticsDto getRequestStatusesStatistics() {
         log.info("Request get evaluations requests statuses statistics");
         List<RequestStatusStatistics> requestStatusStatistics = evaluationLogRepository.getRequestStatusesStatistics();
@@ -175,6 +177,7 @@ public class EvaluationLogDataService {
      * @param createdDateTo   - created date to
      * @return classifiers statistics data
      */
+    @NewSpan
     public ChartDto getClassifiersStatisticsData(LocalDate createdDateFrom, LocalDate createdDateTo) {
         log.info("Starting to get classifiers statistics data with created date from [{}] to [{}]",
                 createdDateFrom, createdDateTo);
@@ -241,6 +244,7 @@ public class EvaluationLogDataService {
      *
      * @param evaluationLog - evaluation log entity
      */
+    @NewSpan
     public void removeModel(EvaluationLog evaluationLog) {
         try {
             log.info("Starting to remove classifier [{}] model file", evaluationLog.getRequestId());

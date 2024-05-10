@@ -12,6 +12,7 @@ import com.ecaservice.server.service.InstancesInfoService;
 import com.ecaservice.server.service.data.InstancesMetaDataService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cloud.sleuth.annotation.NewSpan;
 import org.springframework.stereotype.Service;
 import weka.classifiers.AbstractClassifier;
 
@@ -46,6 +47,7 @@ public class EvaluationLogService {
      * @param evaluationRequestData - evaluation request data model
      * @return evaluation log entity
      */
+    @NewSpan
     public EvaluationLog createAndSaveEvaluationLog(EvaluationRequestData evaluationRequestData) {
         var instancesMetaDataModel =
                 instancesMetaDataService.getInstancesMetaData(evaluationRequestData.getDataUuid());
@@ -68,6 +70,7 @@ public class EvaluationLogService {
      *
      * @param evaluationLog - evaluation log
      */
+    @NewSpan
     public void startEvaluationLog(EvaluationLog evaluationLog) {
         evaluationLog.setRequestStatus(RequestStatus.IN_PROGRESS);
         evaluationLog.setStartDate(LocalDateTime.now());
@@ -81,6 +84,7 @@ public class EvaluationLogService {
      * @param evaluationLog - evaluation log entity
      * @param requestStatus - final request status (FINISHED, ERROR, TIMEOUT)
      */
+    @NewSpan
     public void finishEvaluation(EvaluationLog evaluationLog, RequestStatus requestStatus) {
         if (!FINAL_STATUSES.contains(requestStatus)) {
             throw new IllegalArgumentException(

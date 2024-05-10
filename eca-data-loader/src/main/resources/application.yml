@@ -22,6 +22,8 @@ spring:
   servlet:
     multipart:
       max-file-size: 10MB
+  zipkin:
+    enabled: false
 
 eureka:
   client:
@@ -31,7 +33,7 @@ eureka:
 app:
   batchSize: 50
   dateFormat: yyyy-MM-dd HH:mm:ss
-  instancesExpireDays: 30
+  instancesExpireDays: 180
   removeDataCron: 0 0 0 * * *
 
 minio:

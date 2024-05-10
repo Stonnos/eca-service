@@ -14,4 +14,6 @@
     <include file="db/changelog/v6-change-correlation-id-match-mode.xml"/>
     <include file="db/changelog/v7-change-initiator-filter-field-type.xml"/>
     <include file="db/changelog/v8-update-filter-templates.xml"/>
+    <include file="db/changelog/v9-clear-filter-templates.xml"/>
+    <include file="db/changelog/v10-update-filter-templates.xml"/>
 </databaseChangeLog>

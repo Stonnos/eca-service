@@ -26,6 +26,7 @@ import eca.data.file.model.InstancesModel;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.cloud.sleuth.annotation.NewSpan;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -90,6 +91,7 @@ public class StorageServiceImpl implements StorageService {
     }
 
     @Override
+    @NewSpan
     @Audit(value = SAVE_INSTANCES, correlationIdKey = "#result.id")
     @Transactional
     public InstancesEntity saveData(Instances instances, String relationName) {
@@ -114,6 +116,7 @@ public class StorageServiceImpl implements StorageService {
     }
 
     @Override
+    @NewSpan
     @Audit(value = DELETE_INSTANCES, correlationIdKey = "#id")
     @Transactional
     public String deleteData(long id) {

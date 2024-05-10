@@ -1,0 +1,19 @@
+id;field_name;description;field_order;filter_field_type;match_mode;filter_template_id;filter_dictionary_id;multiple
+10;requestId;UUID заявки;0;TEXT;LIKE;2;NULL;false
+12;evaluationMethod;Метод оценки точности;3;REFERENCE;EQUALS;2;1;false
+14;creationDate;Дата создания заявки;5;DATE;RANGE;2;NULL;true
+13;requestStatus;Статус заявки;4;REFERENCE;EQUALS;2;2;false
+1;requestId;UUID заявки;0;TEXT;LIKE;1;NULL;false
+11;classifierInfo.classifierName;Классификатор;1;REFERENCE;EQUALS;2;5;true
+24;actionType;Тип события;1;REFERENCE;EQUALS;4;6;true
+25;createdAt;Дата события;2;DATE;RANGE;4;NULL;true
+22;instancesInfo.id;Обучающая выборка;2;LAZY_REFERENCE;EQUALS;2;NULL;false
+27;relationName;Обучающая выборка;0;TEXT;LIKE;5;NULL;false
+3;evaluationMethod;Метод оценки точности;4;REFERENCE;EQUALS;1;1;false
+6;creationDate;Дата создания заявки;7;DATE;RANGE;1;NULL;true
+5;experimentType;Тип эксперимента;6;REFERENCE;EQUALS;1;3;true
+4;requestStatus;Статус заявки;5;REFERENCE;EQUALS;1;2;false
+26;instancesInfo.id;Обучающая выборка;3;LAZY_REFERENCE;EQUALS;1;NULL;false
+2;createdBy;Пользователь;2;LAZY_REFERENCE;EQUALS;1;NULL;false
+28;createdBy;Пользователь;1;LAZY_REFERENCE;EQUALS;2;NULL;false
+23;createdBy;Пользователь;0;LAZY_REFERENCE;EQUALS;4;NULL;false

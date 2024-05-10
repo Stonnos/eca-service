@@ -1,5 +1,7 @@
 package com.ecaservice.oauth.controller;
 
+import com.ecaservice.common.error.model.ErrorDto;
+import com.ecaservice.oauth.error.EcaOauthErrorCode;
 import com.ecaservice.oauth.exception.NotSafePasswordException;
 import com.ecaservice.oauth.exception.UserLockNotAllowedException;
 import com.ecaservice.web.dto.model.PasswordRuleResultDto;
@@ -33,9 +35,10 @@ public class ErrorHandler {
      * @return response entity
      */
     @ExceptionHandler(UserLockNotAllowedException.class)
-    public ResponseEntity<String> handleUserLockNotAllowed(UserLockNotAllowedException ex) {
+    public ResponseEntity<ErrorDto> handleUserLockNotAllowed(UserLockNotAllowedException ex) {
         log.error("User lock now allowed: {}", ex.getMessage());
-        return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        var errorDto = new ErrorDto(EcaOauthErrorCode.USER_LOCK_NOT_ALLOWED.getCode(), ex.getMessage());
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(errorDto);
     }
 
     /**
@@ -57,6 +60,8 @@ public class ErrorHandler {
         passwordValidationErrorDto.setFieldName(ex.getFieldName());
         passwordValidationErrorDto.setDetails(details);
         passwordValidationErrorDto.setErrorMessage(ex.getMessage());
-        return ResponseEntity.badRequest().body(Collections.singletonList(passwordValidationErrorDto));
+        var response = Collections.singletonList(passwordValidationErrorDto);
+        log.error("Not safe password error response: {}", response);
+        return ResponseEntity.badRequest().body(response);
     }
 }

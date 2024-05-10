@@ -68,7 +68,8 @@ public class AuditEventController {
     )
     @PostMapping(value = "/save")
     public void saveAuditEvent(@Valid @RequestBody AuditEventRequest auditEventRequest) {
-        log.debug("Request audit event: {}", auditEventRequest);
+        log.info("Request audit event [{}]: {}", auditEventRequest.getEventId(), auditEventRequest);
         auditLogService.save(auditEventRequest);
+        log.info("Audit event request [{}] has been processed", auditEventRequest.getEventId());
     }
 }

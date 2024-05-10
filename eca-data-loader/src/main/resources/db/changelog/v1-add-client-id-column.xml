@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+        logicalFilePath="db/changelog/v1-add-client-id-column.xml"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="add_client_id_column_to_instances_table" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="instances"/>
+            <not>
+                <columnExists tableName="instances" columnName="client_id"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="instances">
+            <column name="client_id" type="varchar(255)"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="add_instances_client_id_md5_hash_unique_index" author="roman.batygin@mail.ru" context="schema">
+        <addUniqueConstraint tableName="instances" columnNames="client_id, md5_hash"
+                             constraintName="instances_client_id_md5_hash_unique_index"/>
+    </changeSet>
+
+</databaseChangeLog>

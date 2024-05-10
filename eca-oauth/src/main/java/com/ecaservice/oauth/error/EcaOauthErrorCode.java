@@ -76,7 +76,12 @@ public enum EcaOauthErrorCode implements ErrorDetails {
     /**
      * Invalid confirmation code
      */
-    INVALID_CONFIRMATION_CODE("InvalidConfirmationCode");
+    INVALID_CONFIRMATION_CODE("InvalidConfirmationCode"),
+
+    /**
+     * User lock not allowed
+     */
+    USER_LOCK_NOT_ALLOWED("UserLockNotAllowed");
 
     /**
      * Error code

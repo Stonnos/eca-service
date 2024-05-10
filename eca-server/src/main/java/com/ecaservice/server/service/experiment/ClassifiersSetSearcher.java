@@ -17,6 +17,7 @@ import eca.dataminer.ClassifierComparator;
 import eca.ensemble.ClassifiersSet;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cloud.sleuth.annotation.NewSpan;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import weka.classifiers.AbstractClassifier;
@@ -54,6 +55,7 @@ public class ClassifiersSetSearcher {
      * @param evaluationMethod evaluation method
      * @return classifiers set
      */
+    @NewSpan
     public ClassifiersSet findBestClassifiers(Instances data, EvaluationMethod evaluationMethod) {
         log.info("Starting to find the best individual classifiers using {} evaluation method.", evaluationMethod);
         List<AbstractClassifier> classifiersSet = readClassifiers();

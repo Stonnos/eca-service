@@ -15,6 +15,7 @@ import io.minio.http.Method;
 import lombok.Cleanup;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cloud.sleuth.annotation.NewSpan;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StopWatch;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -47,6 +48,7 @@ public class MinioStorageService {
      *
      * @param uploadObject - upload object
      */
+    @NewSpan
     @Timed(value = OBJECT_REQUEST_METRIC)
     public void uploadObject(UploadObject uploadObject) {
         String bucket = minioClientProperties.getBucketName();
@@ -109,6 +111,7 @@ public class MinioStorageService {
      *
      * @param objectPath - object path
      */
+    @NewSpan
     @Timed(value = OBJECT_REQUEST_METRIC)
     public void removeObject(String objectPath) {
         String bucket = minioClientProperties.getBucketName();
@@ -140,6 +143,7 @@ public class MinioStorageService {
      * @param presignedUrlObject - presigned url object
      * @return presigned url
      */
+    @NewSpan
     @Timed(value = OBJECT_REQUEST_METRIC)
     public String getObjectPresignedUrl(GetPresignedUrlObject presignedUrlObject) {
         log.info("Gets presigned url for object path [{}]", presignedUrlObject.getObjectPath());
@@ -173,6 +177,7 @@ public class MinioStorageService {
      * @param presignedUrlObject - presigned url object
      * @return presigned proxy url
      */
+    @NewSpan
     @Timed(value = OBJECT_REQUEST_METRIC)
     public String getObjectPresignedProxyUrl(GetPresignedUrlObject presignedUrlObject) {
         log.info("Gets presigned proxy url for object path [{}]", presignedUrlObject.getObjectPath());

@@ -18,6 +18,7 @@ import com.ecaservice.server.service.experiment.ExperimentProgressService;
 import com.ecaservice.server.service.experiment.ExperimentStepService;
 import eca.dataminer.AbstractExperiment;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cloud.sleuth.annotation.NewSpan;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StopWatch;
 import weka.core.Attribute;
@@ -82,6 +83,7 @@ public class ExperimentModelProcessorStepHandler extends AbstractExperimentStepH
         this.experimentRepository = experimentRepository;
     }
 
+    @NewSpan("processExperimentModelStep")
     @Override
     public void handle(ExperimentContext experimentContext,
                        ExperimentStepEntity experimentStepEntity) {

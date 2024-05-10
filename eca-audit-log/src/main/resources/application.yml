@@ -25,11 +25,18 @@ spring:
     cache-names: global-filters, filter-templates, filter-dictionaries, sort-fields
     caffeine:
       spec: maximumSize=100, expireAfterWrite=18000s
+  zipkin:
+    enabled: false
 
 eureka:
   client:
     registerWithEureka: false
     fetchRegistry: false
+
+audit:
+  rabbit:
+    enabled: false
+    queueName: queue-audit-events
 
 lock:
   enabled: true
