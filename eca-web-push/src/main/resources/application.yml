@@ -65,7 +65,8 @@ springdoc:
 
 management:
   tracing:
-    enabled: false
+    sampling:
+      probability: 1.0
     baggage:
       correlation:
         fields:

@@ -28,7 +28,8 @@ springdoc:
 
 management:
   tracing:
-    enabled: false
+    sampling:
+      probability: 1.0
   metrics:
     tags:
       application: ${spring.application.name}

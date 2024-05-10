@@ -108,7 +108,7 @@ services:
       REDELIVERY_ENABLED: "true"
       OPENAPI_BASEPATH: "/eca-server"
       MANAGEMENT_TRACING_ENABLED: ${ZIPKIN_ENABLED}
-      MANAGEMENT_TRACING_ZIPKIN_ENDPOINT: ${ZIPKIN_URL}
+      MANAGEMENT_ZIPKIN_TRACING_ENDPOINT: ${ZIPKIN_URL}
     networks:
       - default
     depends_on:
