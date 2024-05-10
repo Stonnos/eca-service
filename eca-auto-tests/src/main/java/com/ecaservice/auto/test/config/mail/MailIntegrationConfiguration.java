@@ -1,5 +1,6 @@
 package com.ecaservice.auto.test.config.mail;
 
+import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -8,13 +9,11 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.integration.channel.DirectChannel;
 import org.springframework.integration.config.EnableIntegration;
 import org.springframework.integration.dsl.IntegrationFlow;
-import org.springframework.integration.dsl.IntegrationFlows;
 import org.springframework.integration.mail.dsl.Mail;
 import org.springframework.integration.mail.support.DefaultMailHeaderMapper;
 import org.springframework.integration.mapping.HeaderMapper;
 import org.springframework.messaging.MessageChannel;
 
-import javax.mail.internet.MimeMessage;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 
@@ -74,7 +73,7 @@ public class MailIntegrationConfiguration {
      */
     @Bean
     public IntegrationFlow iMapIdleFlow() {
-        return IntegrationFlows
+        return IntegrationFlow
                 .from(Mail.imapIdleAdapter(getUrl())
                         .autoStartup(true)
                         .autoCloseFolder(false)

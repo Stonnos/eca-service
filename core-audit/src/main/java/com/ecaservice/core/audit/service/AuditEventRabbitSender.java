@@ -4,13 +4,12 @@ import com.ecaservice.audit.dto.AuditEventRequest;
 import com.ecaservice.core.audit.config.AuditProperties;
 import com.ecaservice.core.redelivery.annotation.Retry;
 import com.ecaservice.core.redelivery.annotation.Retryable;
+import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Service;
-
-import javax.annotation.PostConstruct;
 
 import static com.ecaservice.core.audit.config.rabbit.AuditRabbitConfiguration.AUDIT_RABBIT_TEMPLATE;
 
