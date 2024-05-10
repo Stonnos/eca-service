@@ -1,6 +1,6 @@
 package com.ecaservice.core.tracing.config;
 
-import com.ecaservice.core.tracing.report.EmptyReporter;
+import com.ecaservice.core.tracing.report.NoopReporter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -36,13 +36,13 @@ public class ZipkinReportAutoConfiguration {
     }
 
     /**
-     * Creates span empty reporter bean.
+     * Creates span noop reporter bean.
      *
-     * @return span empty reporter bean
+     * @return span noop reporter bean
      */
     @Bean
     @ConditionalOnProperty(value = "management.zipkin.tracing.enabled", havingValue = "false", matchIfMissing = true)
-    public EmptyReporter emptyReporter() {
-        return new EmptyReporter();
+    public NoopReporter noopReporter() {
+        return new NoopReporter();
     }
 }
