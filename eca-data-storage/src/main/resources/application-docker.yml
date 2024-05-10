@@ -9,6 +9,12 @@ spring:
     hibernate:
       ddl-auto: validate
     database-platform: org.hibernate.dialect.PostgreSQL9Dialect
+  security:
+    oauth2:
+      client:
+        provider:
+          api-client:
+            token-uri: http://eca-oauth:8080/oauth2/token
 
 eureka:
   client:
@@ -23,8 +29,3 @@ open-api:
 
 auth-server:
   baseUrl: http://eca-oauth:8080
-
-service:
-  feign:
-    oauth:
-      tokenUrl: http://eca-oauth:8080

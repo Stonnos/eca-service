@@ -1,6 +1,5 @@
 package com.ecaservice.feign.oauth.config;
 
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
@@ -11,6 +10,5 @@ import org.springframework.context.annotation.Configuration;
  */
 @Configuration
 @ComponentScan({"com.ecaservice.feign.oauth"})
-@EnableConfigurationProperties(FeignOauthProperties.class)
 public class FeignOauth2AutoConfiguration {
 }

@@ -26,6 +26,19 @@ spring:
   servlet:
     multipart:
       max-file-size: 10MB
+  security:
+    oauth2:
+      client:
+        registration:
+          api-client:
+            client-id: eca_service_tech
+            client-secret: 02#eca_service_tech6
+            scope: web
+            authorization-grant-type: client_credentials
+            provider: api-client
+        provider:
+          api-client:
+            token-uri: http://localhost:8085/oauth2/token
 
 eureka:
   client:
@@ -64,13 +77,6 @@ auth-server:
   baseUrl: http://localhost:8085/eca-oauth
   clientId: eca_service_tech
   clientSecret: 02#eca_service_tech6
-
-service:
-  feign:
-    oauth:
-      tokenUrl: http://localhost:8085/eca-oauth
-      clientId: eca_service_tech
-      clientSecret: 02#eca_service_tech6
 
 management:
   tracing:

@@ -96,7 +96,6 @@
         <docker-maven-plugin.version>1.4.13</docker-maven-plugin.version>
         <maven-processor-plugin.version>4.5</maven-processor-plugin.version>
         <spring.security.oauth2.version>2.6.8</spring.security.oauth2.version>
-        <spring.cloud.oauth2.version>2.2.5.RELEASE</spring.cloud.oauth2.version>
         <logstash-encoder.version>6.2</logstash-encoder.version>
         <org.mapstruct.version>1.5.5.Final</org.mapstruct.version>
         <commons.io.version>2.13.0</commons.io.version>
@@ -168,11 +167,6 @@
                 <groupId>org.springframework.security.oauth.boot</groupId>
                 <artifactId>spring-security-oauth2-autoconfigure</artifactId>
                 <version>${spring.security.oauth2.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework.cloud</groupId>
-                <artifactId>spring-cloud-starter-oauth2</artifactId>
-                <version>${spring.cloud.oauth2.version}</version>
             </dependency>
             <dependency>
                 <groupId>io.micrometer</groupId>

@@ -1,11 +1,13 @@
 package com.ecaservice.feign.oauth.config;
 
-import com.ecaservice.feign.oauth.interceptor.BearerTokenRequestInterceptor;
-import feign.RequestInterceptor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
+import org.springframework.boot.autoconfigure.security.oauth2.client.OAuth2ClientProperties;
+import org.springframework.cloud.openfeign.security.OAuth2AccessTokenInterceptor;
 import org.springframework.context.annotation.Bean;
-import org.springframework.security.oauth2.client.DefaultOAuth2ClientContext;
-import org.springframework.security.oauth2.client.token.grant.client.ClientCredentialsResourceDetails;
+import org.springframework.security.oauth2.client.OAuth2AuthorizedClientManager;
+import org.springframework.util.Assert;
 
 /**
  * Feign configuration for oauth2 secured endpoints.
@@ -13,32 +15,23 @@ import org.springframework.security.oauth2.client.token.grant.client.ClientCrede
  * @author Roman Batygin
  */
 @Slf4j
+@RequiredArgsConstructor
 public class FeignClientOauth2Configuration {
 
-    private static final String TOKEN_URL_FORMAT = "%s/oauth/token";
-    private static final String CLIENT_CREDENTIALS = "client_credentials";
+    private final OAuth2ClientProperties oAuth2ClientProperties;
 
     /**
-     * Creates oauth2 request interceptor.
+     * Creates oauth2 access token interceptor.
      *
-     * @param feignOauthProperties - auth server config
-     * @return request interceptor bean
+     * @param oAuth2AuthorizedClientManager - oauth2 authorized client manager
+     * @return oauth2 access token interceptor
      */
     @Bean
-    public RequestInterceptor oauth2FeignRequestInterceptor(FeignOauthProperties feignOauthProperties) {
-        var clientCredentialsResourceDetails = clientCredentialsResourceDetails(feignOauthProperties);
-        return new BearerTokenRequestInterceptor(new DefaultOAuth2ClientContext(), clientCredentialsResourceDetails);
-    }
-
-    private ClientCredentialsResourceDetails clientCredentialsResourceDetails(FeignOauthProperties feignOauthProperties) {
-        var clientCredentialsResourceDetails = new ClientCredentialsResourceDetails();
-        clientCredentialsResourceDetails.setClientId(feignOauthProperties.getClientId());
-        clientCredentialsResourceDetails.setClientSecret(feignOauthProperties.getClientSecret());
-        clientCredentialsResourceDetails.setGrantType(CLIENT_CREDENTIALS);
-        clientCredentialsResourceDetails.setAccessTokenUri(
-                String.format(TOKEN_URL_FORMAT, feignOauthProperties.getTokenUrl()));
-        log.info("Feign client oauth2 client [{}] has been configured. Token url: {}",
-                clientCredentialsResourceDetails.getClientId(), clientCredentialsResourceDetails.getAccessTokenUri());
-        return clientCredentialsResourceDetails;
+    @ConditionalOnBean(OAuth2AuthorizedClientManager.class)
+    public OAuth2AccessTokenInterceptor oAuth2AccessTokenInterceptor(
+            OAuth2AuthorizedClientManager oAuth2AuthorizedClientManager) {
+        String clientRegistrationId = oAuth2ClientProperties.getRegistration().keySet().iterator().next();
+        Assert.notNull(clientRegistrationId, "Client registration must be specified for oauth2 client!");
+        return new OAuth2AccessTokenInterceptor(clientRegistrationId, oAuth2AuthorizedClientManager);
     }
 }

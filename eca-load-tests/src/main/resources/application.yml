@@ -25,6 +25,19 @@ spring:
       simple:
         concurrency: 10
         maxConcurrency: 10
+  security:
+    oauth2:
+      client:
+        registration:
+          api-client:
+            client-id: external-api
+            client-secret: external_api_secret
+            scope: external-api
+            authorization-grant-type: client_credentials
+            provider: api-client
+        provider:
+          api-client:
+            token-uri: http://localhost:8080/oauth2/token
 
 eca-load-tests:
   numRequests: 100
@@ -41,13 +54,6 @@ eca-load-tests:
 
 data-loader:
   url: http://localhost:8080/eca-data-loader
-
-service:
-  feign:
-    oauth:
-      tokenUrl: http://localhost:8080/eca-oauth
-      clientId: external-api
-      clientSecret: external_api_secret
 
 queue:
   evaluationRequestQueue: evaluation-request-queue
