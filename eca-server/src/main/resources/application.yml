@@ -30,8 +30,6 @@ spring:
     change-log: classpath:db/liquibase-changelog.xml
   cache:
     type: caffeine
-  redis:
-    client-type: jedis
   rabbitmq:
     listener:
       simple:
@@ -42,6 +40,7 @@ spring:
       max-file-size: 10MB
   data:
     redis:
+      client-type: jedis
       repositories:
         enabled: false
   security:

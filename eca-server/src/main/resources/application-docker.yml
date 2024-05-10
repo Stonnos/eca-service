@@ -16,8 +16,9 @@ spring:
     database-platform: org.hibernate.dialect.PostgreSQL9Dialect
   rabbitmq:
     host: rabbitmq
-  redis:
-    host: redis
+  data:
+    redis:
+      host: redis
   security:
     oauth2:
       client:
