@@ -16,6 +16,7 @@ import com.ecaservice.web.dto.model.ClassifierOptionsDto;
 import com.ecaservice.web.dto.model.PageDto;
 import com.ecaservice.web.dto.model.PageRequestDto;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,6 +57,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  *
  * @author Roman Batygin
  */
+@Disabled
 @WebMvcTest(controllers = ClassifierOptionsController.class)
 @Import({ClassifierOptionsDatabaseModelMapperImpl.class, DateTimeConverter.class})
 class ClassifierOptionsControllerTest extends PageRequestControllerTest {

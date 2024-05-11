@@ -25,12 +25,12 @@ public class FilterDictionaryValue {
     /**
      * Label string
      */
-    @Column(nullable = false)
+    @Column(name = "_label", nullable = false)
     private String label;
 
     /**
      * String value
      */
-    @Column(nullable = false)
+    @Column(name = "_value", nullable = false)
     private String value;
 }

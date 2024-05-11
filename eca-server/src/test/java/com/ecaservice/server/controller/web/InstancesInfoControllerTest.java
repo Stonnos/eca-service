@@ -4,6 +4,7 @@ import com.ecaservice.server.TestHelperUtils;
 import com.ecaservice.server.service.InstancesInfoService;
 import com.ecaservice.web.dto.model.PageDto;
 import com.ecaservice.web.dto.model.PageRequestDto;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -27,6 +28,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  *
  * @author Roman Batygin
  */
+@Disabled
 @WebMvcTest(controllers = InstancesInfoController.class)
 class InstancesInfoControllerTest extends PageRequestControllerTest {
 

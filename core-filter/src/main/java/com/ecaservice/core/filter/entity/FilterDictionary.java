@@ -30,7 +30,7 @@ public class FilterDictionary {
     /**
      * Dictionary name
      */
-    @Column(nullable = false, unique = true)
+    @Column(name = "_name", nullable = false, unique = true)
     private String name;
 
     /**

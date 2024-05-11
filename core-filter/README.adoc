@@ -35,7 +35,7 @@ public class AppConfiguration {
 }
 ----
 
-В конфигурационный файл liquibase, добавить путь к файлу filter-template-changelog.xml со скриптами для создания служебных таблиц фильтрации.
+В конфигурационный файл liquibase, добавить путь к файлам со скриптами для создания служебных таблиц фильтрации.
 
 [source,xml]
 ----
@@ -46,6 +46,9 @@ public class AppConfiguration {
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
     <!-- your change sets -->
     <include file="../filter-template-changelog.xml" relativeToChangelogFile="true"/>
+    <!-- your change sets -->
+    <!-- rename filter dictionary columns migration changeset -->
+    <include file="../rename-filter-dictionary-columns-changelog.xml" relativeToChangelogFile="true"/>
 </databaseChangeLog>
 ----
 

@@ -222,4 +222,28 @@
         <dropNotNullConstraint tableName="filter_template" columnName="created"/>
     </changeSet>
 
+    <changeSet id="rename_filter_dictionary_name_column" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="filter_dictionary"/>
+            <columnExists tableName="filter_dictionary" columnName="name"/>
+        </preConditions>
+        <renameColumn tableName="filter_dictionary" oldColumnName="name" newColumnName="_name"/>
+    </changeSet>
+
+    <changeSet id="rename_filter_dictionary_value_value_column" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="filter_dictionary_value"/>
+            <columnExists tableName="filter_dictionary_value" columnName="value"/>
+        </preConditions>
+        <renameColumn tableName="filter_dictionary_value" oldColumnName="value" newColumnName="_value"/>
+    </changeSet>
+
+    <changeSet id="rename_filter_dictionary_value_label_column" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="filter_dictionary_value"/>
+            <columnExists tableName="filter_dictionary_value" columnName="label"/>
+        </preConditions>
+        <renameColumn tableName="filter_dictionary_value" oldColumnName="label" newColumnName="_label"/>
+    </changeSet>
+
 </databaseChangeLog>

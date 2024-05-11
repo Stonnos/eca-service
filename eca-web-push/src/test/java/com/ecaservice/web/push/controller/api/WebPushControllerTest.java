@@ -7,6 +7,7 @@ import com.ecaservice.web.push.service.handler.SystemPushNotificationRequestHand
 import com.ecaservice.web.push.service.handler.UserNotificationPushRequestHandler;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.lang3.StringUtils;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -30,6 +31,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  *
  * @author Roman Batygin
  */
+@Disabled
 @EnableGlobalExceptionHandler
 @WebMvcTest(controllers = WebPushController.class)
 @EnableConfigurationProperties

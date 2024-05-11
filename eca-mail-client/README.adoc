@@ -53,7 +53,7 @@ public class AppConfiguration {
 }
 ----
 
-В конфигурационный файл liquibase, добавить путь к файлу mail-client-changelog.xml со скриптами для создания служебных таблиц.
+В конфигурационный файл liquibase, добавить путь к файлам со скриптами для создания служебных таблиц.
 
 [source,xml]
 ----
@@ -63,6 +63,7 @@ public class AppConfiguration {
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
     <!-- your change sets -->
+    <include file="../redelivery-changelog.xml" relativeToChangelogFile="true"/>
     <include file="../mail-client-changelog.xml" relativeToChangelogFile="true"/>
 </databaseChangeLog>
 ----
