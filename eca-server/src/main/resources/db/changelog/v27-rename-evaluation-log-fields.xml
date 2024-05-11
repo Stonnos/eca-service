@@ -12,31 +12,4 @@
         </preConditions>
         <renameColumn tableName="evaluation_log" oldColumnName="evaluation_status" newColumnName="request_status"/>
     </changeSet>
-
-    <!-- Changed evaluationStatus name to requestStatus name in global filter template -->
-    <changeSet id="2" author="roman.batygin@mail.ru" context="data">
-        <preConditions onFail="MARK_RAN">
-            <tableExists tableName="filter_field"/>
-            <sqlCheck expectedResult="1">
-                select count(*) from filter_field where filter_template_id = 2 and field_name = 'evaluationStatus'
-            </sqlCheck>
-        </preConditions>
-        <update tableName="filter_field">
-            <column name="field_name" value="requestStatus"/>
-            <where>filter_template_id = 2 and field_name = 'evaluationStatus'</where>
-        </update>
-    </changeSet>
-
-    <changeSet id="3" author="roman.batygin@mail.ru" context="data">
-        <preConditions onFail="MARK_RAN">
-            <tableExists tableName="global_filter_field"/>
-            <sqlCheck expectedResult="1">
-                select count(*) from global_filter_field where global_filter_template_id = 2 and field_name = 'evaluationStatus'
-            </sqlCheck>
-        </preConditions>
-        <update tableName="global_filter_field">
-            <column name="field_name" value="requestStatus"/>
-            <where>global_filter_template_id = 2 and field_name = 'evaluationStatus'</where>
-        </update>
-    </changeSet>
 </databaseChangeLog>

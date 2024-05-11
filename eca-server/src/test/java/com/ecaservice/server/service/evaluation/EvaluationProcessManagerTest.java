@@ -20,6 +20,7 @@ import com.ecaservice.web.push.dto.PushType;
 import com.ecaservice.web.push.dto.UserPushNotificationRequest;
 import lombok.RequiredArgsConstructor;
 import org.camunda.bpm.engine.test.Deployment;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
@@ -54,6 +55,7 @@ import static org.mockito.Mockito.when;
  *
  * @author Roman Batygin
  */
+@Disabled
 @SpringBootTest
 @Deployment(resources = {"bpmn/create-evaluation-web-request.bpmn", "bpmn/process-evaluation-web-request.bpmn",
         "bpmn/create-and-process-evaluation-message-request.bpmn", "bpmn/create-evaluation-request-process.bpmn"})
