@@ -1077,7 +1077,7 @@ image::./images/data-loader-db-schema.png[alt=Схема базы данных e
 |===
 |Название колонки|Тип|Unique|Not NULL|Индекс|Описание
 |id                         |bigint           |+|+|+                                 |Идентификатор записи (первичный ключ)
-|name                       |varchar(255)     |-|+|filter_dictionary_name_unique_idx |Название словаря
+|_name                      |varchar(255)     |-|+|filter_dictionary_name_unique_idx |Название словаря
 |===
 
 ==== Таблица 3.{counter:db-table-id} - 'filter_dictionary_value' - содержит данные значений словарей
@@ -1085,8 +1085,8 @@ image::./images/data-loader-db-schema.png[alt=Схема базы данных e
 |===
 |Название колонки|Тип|Unique|Not NULL|Индекс|Описание
 |id                         |bigint           |+|+|+                                 |Идентификатор записи (первичный ключ)
-|label                      |varchar(255)     |-|+|-                                 |Описание значения
-|value                      |varchar(255)     |-|+|-                                 |Значение
+|_label                     |varchar(255)     |-|+|-                                 |Описание значения
+|_value                     |varchar(255)     |-|+|-                                 |Значение
 |filter_dictionary_id       |bigint           |-|+|fk_filter_dictionary_id           |Внешний ключ, ID словаря
 |===
 
