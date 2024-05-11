@@ -23,7 +23,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
-import org.springframework.security.oauth2.common.util.RandomValueStringGenerator;
 import weka.core.Attribute;
 import weka.core.AttributeStats;
 import weka.core.Instances;
@@ -48,7 +47,7 @@ import static org.mockito.Mockito.when;
  * @author Roman Batygin
  */
 @Import({StorageServiceImpl.class, InstancesService.class, InstancesBatchService.class,
-        RandomValueStringGenerator.class, StorageTestConfiguration.class, AttributeService.class,
+        StorageTestConfiguration.class, AttributeService.class,
         AttributeMapperImpl.class, SearchQueryCreator.class, InstancesTransformer.class, InstancesMapperImpl.class,
         InstancesResultSetConverter.class, InstancesExtractor.class, InstancesStatisticsService.class})
 class InstancesStatisticsServiceTest extends AbstractJpaTest {

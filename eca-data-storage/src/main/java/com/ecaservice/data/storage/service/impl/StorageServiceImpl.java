@@ -23,14 +23,14 @@ import com.ecaservice.web.dto.model.AttributeDto;
 import com.ecaservice.web.dto.model.PageDto;
 import com.ecaservice.web.dto.model.PageRequestDto;
 import eca.data.file.model.InstancesModel;
+import io.micrometer.tracing.annotation.NewSpan;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.RandomUtils;
 import org.apache.commons.lang3.StringUtils;
-import io.micrometer.tracing.annotation.NewSpan;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
-import org.springframework.security.oauth2.common.util.RandomValueStringGenerator;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import weka.core.Instances;
@@ -61,7 +61,7 @@ import static com.ecaservice.data.storage.util.Utils.MIN_NUM_CLASSES;
 @RequiredArgsConstructor
 public class StorageServiceImpl implements StorageService {
 
-    private static final String ID_COLUMN_NAME_FORMAT = "id_%s";
+    private static final String ID_COLUMN_NAME_FORMAT = "id_%d";
     private static final String TABLE_NAME_FORMAT = "data_set_%s";
 
     private final FilterTemplateService filterTemplateService;
@@ -70,7 +70,6 @@ public class StorageServiceImpl implements StorageService {
     private final UserService userService;
 
     private final InstancesTransformer instancesTransformer;
-    private final RandomValueStringGenerator randomValueStringGenerator;
     private final AttributeMapper attributeMapper;
     private final InstancesRepository instancesRepository;
     private final AttributeRepository attributeRepository;
@@ -221,7 +220,7 @@ public class StorageServiceImpl implements StorageService {
     private InstancesEntity saveInstancesEntity(String relationName, Instances instances) {
         InstancesEntity instancesEntity = new InstancesEntity();
         instancesEntity.setUuid(UUID.randomUUID().toString());
-        instancesEntity.setIdColumnName(String.format(ID_COLUMN_NAME_FORMAT, randomValueStringGenerator.generate()));
+        instancesEntity.setIdColumnName(String.format(ID_COLUMN_NAME_FORMAT, RandomUtils.nextInt()));
         instancesEntity.setRelationName(relationName);
         String transformedUuid = StringUtils.replaceChars(instancesEntity.getUuid(), '-', '_');
         instancesEntity.setTableName(String.format(TABLE_NAME_FORMAT, transformedUuid));

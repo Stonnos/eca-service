@@ -15,7 +15,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;
 import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
-import org.springframework.security.oauth2.common.util.RandomValueStringGenerator;
 
 import static org.springframework.web.context.WebApplicationContext.SCOPE_REQUEST;
 
@@ -34,16 +33,6 @@ import static org.springframework.web.context.WebApplicationContext.SCOPE_REQUES
 @EnableGlobalExceptionHandler
 @EnableConfigurationProperties(EcaDsConfig.class)
 public class EcaDataStorageConfiguration {
-
-    /**
-     * Creates random string value generator bean.
-     *
-     * @return random string value generator bean
-     */
-    @Bean
-    public RandomValueStringGenerator randomValueStringGenerator() {
-        return new RandomValueStringGenerator();
-    }
 
     /**
      * Creates file data loader bean.

@@ -30,7 +30,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.Page;
-import org.springframework.security.oauth2.common.util.RandomValueStringGenerator;
 import weka.core.Instances;
 
 import java.util.Collections;
@@ -57,7 +56,7 @@ import static org.mockito.Mockito.when;
  * @author Roman Batygin
  */
 @Import({StorageServiceImpl.class, InstancesService.class, InstancesBatchService.class,
-        RandomValueStringGenerator.class, StorageTestConfiguration.class, AttributeService.class,
+        StorageTestConfiguration.class, AttributeService.class,
         AttributeMapperImpl.class, SearchQueryCreator.class, InstancesTransformer.class,
         InstancesResultSetConverter.class, InstancesExtractor.class})
 class StorageServiceImplTest extends AbstractJpaTest {

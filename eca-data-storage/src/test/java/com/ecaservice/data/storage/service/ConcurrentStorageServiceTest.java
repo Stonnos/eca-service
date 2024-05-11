@@ -17,7 +17,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.context.annotation.Import;
-import org.springframework.security.oauth2.common.util.RandomValueStringGenerator;
 import weka.core.Instances;
 
 import java.util.UUID;
@@ -39,7 +38,7 @@ import static org.mockito.Mockito.when;
  */
 @EnableAspectJAutoProxy
 @Import({StorageServiceImpl.class, InstancesService.class, InstancesBatchService.class,
-        RandomValueStringGenerator.class, StorageTestConfiguration.class, ConcurrentStorageService.class,
+        StorageTestConfiguration.class, ConcurrentStorageService.class,
         AttributeService.class, AttributeMapperImpl.class, InstancesTransformer.class,
         CoreLockAutoConfiguration.class})
 class ConcurrentStorageServiceTest extends AbstractJpaTest {
