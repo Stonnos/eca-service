@@ -40,7 +40,7 @@ public class OpenApi30CustomConfiguration {
      * @return open api customizer bean
      */
     @Bean
-    public OpenApiCustomizer openApiCustomiser() {
+    public OpenApiCustomizer openApiCustomizer() {
         return openApi -> {
             log.info("Starting to customize Open API");
             loadCustomExamples(openApi);
