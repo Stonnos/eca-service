@@ -123,10 +123,6 @@
             <artifactId>swagger-core</artifactId>
             <version>${project.version}</version>
         </dependency>
-        <dependency>
-            <groupId>org.springdoc</groupId>
-            <artifactId>springdoc-openapi-security</artifactId>
-        </dependency>
 
         <dependency>
             <groupId>eca.service</groupId>

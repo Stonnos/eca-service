@@ -155,16 +155,6 @@
                 <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
                 <version>${open-api-webmvc-ui.version}</version>
             </dependency>
-           <!-- <dependency>
-                <groupId>org.springdoc</groupId>
-                <artifactId>springdoc-openapi-ui</artifactId>
-                <version>${open-api.version}</version>
-            </dependency>-->
-            <dependency>
-                <groupId>org.springdoc</groupId>
-                <artifactId>springdoc-openapi-security</artifactId>
-                <version>${open-api.version}</version>
-            </dependency>
             <dependency>
                 <groupId>org.springframework.security.oauth.boot</groupId>
                 <artifactId>spring-security-oauth2-autoconfigure</artifactId>
