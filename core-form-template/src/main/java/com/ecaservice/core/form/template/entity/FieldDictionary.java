@@ -29,7 +29,7 @@ public class FieldDictionary {
     /**
      * Dictionary name
      */
-    @Column(nullable = false)
+    @Column(name = "_name", nullable = false)
     private String name;
 
     /**

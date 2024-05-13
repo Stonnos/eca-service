@@ -182,6 +182,10 @@ processes:
   createExperimentRequestProcessId: CreateExperimentRequestProcess
   createEvaluationRequestProcessId: CreateEvaluationRequestProcess
 
+camunda:
+  bpm:
+
+
 lock:
   registries:
     evaluations-registry:

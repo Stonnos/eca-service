@@ -1,4 +1,4 @@
-id;label;value;dictionary_id
+id;_label;_value;dictionary_id
 1;Евкилидово расстояние;EUCLID;1
 2;Квадрат Евклидова расстояни;SQUARE_EUCLID;1
 3;Манхеттенское расстояние;MANHATTAN;1

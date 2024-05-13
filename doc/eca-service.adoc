@@ -987,7 +987,7 @@ image::./images/data-loader-db-schema.png[alt=Схема базы данных e
 |===
 |Название колонки|Тип|Unique|Not NULL|Индекс|Описание
 |id                         |bigint           |+|+|+                                 |Идентификатор записи (первичный ключ)
-|name                       |varchar(255)     |-|+|-                                 |Название словаря
+|_name                       |varchar(255)     |-|+|-                                 |Название словаря
 |===
 
 ==== Таблица 3.{counter:db-table-id} - 'form_field_dictionary_value' - содержит данные значений словарей
@@ -995,12 +995,12 @@ image::./images/data-loader-db-schema.png[alt=Схема базы данных e
 |===
 |Название колонки|Тип|Unique|Not NULL|Индекс|Описание
 |id                         |bigint           |+|+|+                                               |Идентификатор записи (первичный ключ)
-|label                      |varchar(255)     |-|+|-                                               |Описание значения
-|value                      |varchar(255)     |-|+|-                                               |Код (значение)
+|_label                     |varchar(255)     |-|+|-                                               |Описание значения
+|_value                     |varchar(255)     |-|+|-                                               |Код (значение)
 |dictionary_id              |bigint           |-|+|fk_form_field_dictionary_value_dictionary_id    |Внешний ключ, ID словаря
 |===
 
-Таблица также содержит уникальный составной индекс form_field_dictionary_value_dictionary_id_unique_idx на поля (value, dictionary_id)
+Таблица также содержит уникальный составной индекс form_field_dictionary_value_dictionary_id_unique_idx на поля (_value, dictionary_id)
 
 ==== Таблица 3.{counter:db-table-id} - 'form_field' - содержит данные полей для шаблонов
 [cols="^20%,^14%,^8%,^8%,^8%,^30%",options="header"]
