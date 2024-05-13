@@ -9,12 +9,11 @@ import com.ecaservice.mail.model.EmailStatus;
 import com.ecaservice.mail.service.EmailService;
 import com.ecaservice.notification.dto.EmailRequest;
 import com.ecaservice.notification.dto.EmailResponse;
+import com.ecaservice.oauth2.test.configuration.annotation.MockSecurity;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.lang3.StringUtils;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
@@ -33,10 +32,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  *
  * @author Roman Batygin
  */
-@Disabled
+@MockSecurity
 @EnableGlobalExceptionHandler
 @WebMvcTest(controllers = EmailController.class)
-@AutoConfigureMockMvc(addFilters = false)
 @Import(EmailRequestMapperImpl.class)
 class EmailControllerTest {
 

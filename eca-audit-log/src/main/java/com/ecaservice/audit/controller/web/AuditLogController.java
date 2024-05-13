@@ -70,7 +70,7 @@ public class AuditLogController {
      * @param pageRequestDto - page request dto
      * @return audit logs page
      */
-    @PreAuthorize("#oauth2.hasScope('web') and hasRole('ROLE_SUPER_ADMIN')")
+    @PreAuthorize("hasAuthority('SCOPE_web') and hasRole('ROLE_SUPER_ADMIN')")
     @Operation(
             description = "Finds audit logs with specified options such as filter, sorting and paging",
             summary = "Finds audit logs with specified options such as filter, sorting and paging",
@@ -145,7 +145,7 @@ public class AuditLogController {
      *
      * @return filter fields list
      */
-    @PreAuthorize("#oauth2.hasScope('web') and hasRole('ROLE_SUPER_ADMIN')")
+    @PreAuthorize("hasAuthority('SCOPE_web') and hasRole('ROLE_SUPER_ADMIN')")
     @Operation(
             description = "Gets audit log filter fields",
             summary = "Gets audit log filter fields",
@@ -210,7 +210,7 @@ public class AuditLogController {
      * @param httpServletResponse - http servlet response
      * @throws IOException in case of I/O error
      */
-    @PreAuthorize("#oauth2.hasScope('web') and hasRole('ROLE_SUPER_ADMIN')")
+    @PreAuthorize("hasAuthority('SCOPE_web') and hasRole('ROLE_SUPER_ADMIN')")
     @Operation(
             description = "Downloads audit logs base report in xlsx format",
             summary = "Downloads audit logs base report in xlsx format",

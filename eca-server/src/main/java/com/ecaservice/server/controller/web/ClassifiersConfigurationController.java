@@ -83,7 +83,7 @@ public class ClassifiersConfigurationController {
      * @param pageRequestDto - page request dto
      * @return classifiers configurations page
      */
-    @PreAuthorize("#oauth2.hasScope('web')")
+    @PreAuthorize("hasAuthority('SCOPE_web')")
     @Operation(
             description = "Finds classifiers configurations with specified options",
             summary = "Finds classifiers configurations with specified options",
@@ -146,7 +146,7 @@ public class ClassifiersConfigurationController {
      *
      * @param id - configuration id
      */
-    @PreAuthorize("#oauth2.hasScope('web')")
+    @PreAuthorize("hasAuthority('SCOPE_web')")
     @Operation(
             description = "Gets classifiers configuration details",
             summary = "Gets classifiers configuration details",
@@ -204,7 +204,7 @@ public class ClassifiersConfigurationController {
      * @param configurationDto - classifiers configuration
      * @return classifiers configuration dto
      */
-    @PreAuthorize("#oauth2.hasScope('web')")
+    @PreAuthorize("hasAuthority('SCOPE_web')")
     @Operation(
             description = "Saves new classifiers configuration",
             summary = "Saves new classifiers configuration",
@@ -266,7 +266,7 @@ public class ClassifiersConfigurationController {
      *
      * @param configurationDto - classifiers configuration
      */
-    @PreAuthorize("#oauth2.hasScope('web')")
+    @PreAuthorize("hasAuthority('SCOPE_web')")
     @Operation(
             description = "Updates classifiers configuration",
             summary = "Updates classifiers configuration",
@@ -319,7 +319,7 @@ public class ClassifiersConfigurationController {
      *
      * @param id - configuration id
      */
-    @PreAuthorize("#oauth2.hasScope('web')")
+    @PreAuthorize("hasAuthority('SCOPE_web')")
     @Operation(
             description = "Deletes classifiers configuration",
             summary = "Deletes classifiers configuration",
@@ -364,7 +364,7 @@ public class ClassifiersConfigurationController {
      * @param configurationDto - classifiers configuration
      * @return classifiers configuration dto
      */
-    @PreAuthorize("#oauth2.hasScope('web')")
+    @PreAuthorize("hasAuthority('SCOPE_web')")
     @Operation(
             description = "Creates classifiers configuration copy",
             summary = "Creates classifiers configuration copy",
@@ -426,7 +426,7 @@ public class ClassifiersConfigurationController {
      *
      * @param id - configuration id
      */
-    @PreAuthorize("#oauth2.hasScope('web')")
+    @PreAuthorize("hasAuthority('SCOPE_web')")
     @Operation(
             description = "Sets classifiers configuration as active",
             summary = "Sets classifiers configuration as active",
@@ -476,7 +476,7 @@ public class ClassifiersConfigurationController {
      * @throws IOException in case of I/O error
      */
     @Audit(value = GENERATE_CONFIGURATION_REPORT, correlationIdKey = "#id")
-    @PreAuthorize("#oauth2.hasScope('web')")
+    @PreAuthorize("hasAuthority('SCOPE_web')")
     @Operation(
             description = "Downloads classifiers configuration report in xlsx format",
             summary = "Downloads classifiers configuration report in xlsx format",
@@ -528,7 +528,7 @@ public class ClassifiersConfigurationController {
      * @param pageRequestDto  - page request dto
      * @return classifiers configurations page
      */
-    @PreAuthorize("#oauth2.hasScope('web')")
+    @PreAuthorize("hasAuthority('SCOPE_web')")
     @Operation(
             description = "Finds classifiers configuration history with specified options",
             summary = "Finds classifiers configuration history with specified options",

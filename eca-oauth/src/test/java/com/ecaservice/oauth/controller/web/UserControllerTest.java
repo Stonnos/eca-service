@@ -18,7 +18,6 @@ import com.ecaservice.web.dto.model.PageRequestDto;
 import com.ecaservice.web.dto.model.UserDictionaryDto;
 import com.ecaservice.web.dto.model.UserDto;
 import org.apache.commons.lang3.StringUtils;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -28,6 +27,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.security.oauth2.provider.token.DefaultTokenServices;
 import org.springframework.util.MimeTypeUtils;
 
 import java.nio.charset.StandardCharsets;
@@ -59,7 +59,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  *
  * @author Roman Batygin
  */
-@Disabled
 @WebMvcTest(controllers = UserController.class)
 @Import({UserMapperImpl.class, RoleMapperImpl.class})
 class UserControllerTest extends AbstractControllerTest {
@@ -87,7 +86,6 @@ class UserControllerTest extends AbstractControllerTest {
     private static final String USER_ID_PARAM = "userId";
     private static final long LOCK_USER_ID = 2L;
     private static final String TFA_ENABLED_PARAM = "enabled";
-    private static final String PUSH_ENABLED_PARAM = "enabled";
     private static final String INVALID_PERSON_DATA = "ивfd";
 
     private final MockMultipartFile photoFile =
@@ -96,6 +94,8 @@ class UserControllerTest extends AbstractControllerTest {
 
     @MockBean
     private UserService userService;
+    @MockBean
+    private DefaultTokenServices defaultTokenServices;
     @MockBean
     private PasswordService passwordService;
     @Autowired

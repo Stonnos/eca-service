@@ -1,17 +1,16 @@
 package com.ecaservice.web.push.controller.api;
 
 import com.ecaservice.common.web.annotation.EnableGlobalExceptionHandler;
+import com.ecaservice.oauth2.test.configuration.annotation.MockSecurity;
 import com.ecaservice.web.push.config.ws.QueueConfig;
 import com.ecaservice.web.push.dto.AbstractPushRequest;
 import com.ecaservice.web.push.service.handler.SystemPushNotificationRequestHandler;
 import com.ecaservice.web.push.service.handler.UserNotificationPushRequestHandler;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.lang3.StringUtils;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
@@ -31,13 +30,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  *
  * @author Roman Batygin
  */
-@Disabled
+@MockSecurity
 @EnableGlobalExceptionHandler
 @WebMvcTest(controllers = WebPushController.class)
 @EnableConfigurationProperties
 @TestPropertySource("classpath:application.properties")
 @Import(QueueConfig.class)
-@AutoConfigureMockMvc(addFilters = false)
 class WebPushControllerTest {
 
     private static final String BASE_URL = "/api/push";

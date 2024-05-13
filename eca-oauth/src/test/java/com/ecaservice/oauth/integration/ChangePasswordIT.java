@@ -2,9 +2,9 @@ package com.ecaservice.oauth.integration;
 
 import com.ecaservice.oauth.dto.ChangePasswordRequest;
 import com.ecaservice.oauth.entity.UserEntity;
+import com.ecaservice.oauth.model.TokenResponse;
 import com.ecaservice.oauth.service.mail.dictionary.TemplateVariablesDictionary;
 import com.ecaservice.oauth.service.mail.dictionary.Templates;
-import com.ecaservice.oauth2.test.token.TokenResponse;
 import com.ecaservice.web.dto.model.ChangePasswordRequestStatusDto;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -76,7 +76,7 @@ public class ClassifierOptionsController {
      * @param pageRequestDto - page request dto
      * @return response entity
      */
-    @PreAuthorize("#oauth2.hasScope('web')")
+    @PreAuthorize("hasAuthority('SCOPE_web')")
     @Operation(
             description = "Finds classifiers options configs page",
             summary = "Finds classifiers options configs page",
@@ -144,7 +144,7 @@ public class ClassifierOptionsController {
      * @param configurationId        - configuration id
      * @param classifiersOptionsFile - classifier options file
      */
-    @PreAuthorize("#oauth2.hasScope('web')")
+    @PreAuthorize("hasAuthority('SCOPE_web')")
     @Operation(
             description = "Uploads new classifier options file for specified configuration",
             summary = "Uploads new classifier options file for specified configuration",
@@ -234,7 +234,7 @@ public class ClassifierOptionsController {
      * @param classifierOptions - classifier options
      * @return classifier options dto
      */
-    @PreAuthorize("#oauth2.hasScope('web')")
+    @PreAuthorize("hasAuthority('SCOPE_web')")
     @Operation(
             description = "Adds new classifier options for specified configuration",
             summary = "Adds new classifier options for specified configuration",
@@ -302,7 +302,7 @@ public class ClassifierOptionsController {
      *
      * @param id - classifier options id
      */
-    @PreAuthorize("#oauth2.hasScope('web')")
+    @PreAuthorize("hasAuthority('SCOPE_web')")
     @Operation(
             description = "Classifier options id",
             summary = "Classifier options id",

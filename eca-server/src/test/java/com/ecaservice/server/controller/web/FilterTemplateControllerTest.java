@@ -9,7 +9,6 @@ import com.ecaservice.server.model.entity.FilterTemplateType;
 import com.ecaservice.server.service.filter.dictionary.FilterDictionaries;
 import com.ecaservice.web.dto.model.FilterDictionaryDto;
 import com.ecaservice.web.dto.model.FilterFieldDto;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -19,7 +18,6 @@ import org.springframework.http.MediaType;
 import java.util.Collections;
 import java.util.List;
 
-import static com.ecaservice.server.TestHelperUtils.bearerHeader;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -30,7 +28,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  *
  * @author Roman Batygin
  */
-@Disabled
 @EnableCamundaMock
 @WebMvcTest(controllers = FilterTemplateController.class)
 class FilterTemplateControllerTest extends AbstractControllerTest {
@@ -128,7 +125,7 @@ class FilterTemplateControllerTest extends AbstractControllerTest {
             throws Exception {
         when(filterTemplateService.getFilterFields(filterTemplateType)).thenThrow(EntityNotFoundException.class);
         mockMvc.perform(get(templateUrl)
-                .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken())))
+                .header(HttpHeaders.AUTHORIZATION, getBearerToken()))
                 .andExpect(status().isBadRequest());
     }
 
@@ -136,7 +133,7 @@ class FilterTemplateControllerTest extends AbstractControllerTest {
         List<FilterFieldDto> filterFieldDtoList = Collections.singletonList(TestHelperUtils.createFilterFieldDto());
         when(filterTemplateService.getFilterFields(filterTemplateType)).thenReturn(filterFieldDtoList);
         mockMvc.perform(get(templateUrl)
-                .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken())))
+                .header(HttpHeaders.AUTHORIZATION, getBearerToken()))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(content().json(objectMapper.writeValueAsString(filterFieldDtoList)));
@@ -145,7 +142,7 @@ class FilterTemplateControllerTest extends AbstractControllerTest {
     private void testGetFilterDictionaryNotFound(String templateUrl, String filterDictionaryName) throws Exception {
         when(filterTemplateService.getFilterDictionary(filterDictionaryName)).thenThrow(EntityNotFoundException.class);
         mockMvc.perform(get(templateUrl)
-                .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken())))
+                .header(HttpHeaders.AUTHORIZATION, getBearerToken()))
                 .andExpect(status().isBadRequest());
     }
 
@@ -153,7 +150,7 @@ class FilterTemplateControllerTest extends AbstractControllerTest {
         FilterDictionaryDto filterDictionaryDto = TestHelperUtils.createFilterDictionaryDto();
         when(filterTemplateService.getFilterDictionary(filterDictionaryName)).thenReturn(filterDictionaryDto);
         mockMvc.perform(get(templateUrl)
-                .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken())))
+                .header(HttpHeaders.AUTHORIZATION, getBearerToken()))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(content().json(objectMapper.writeValueAsString(filterDictionaryDto)));

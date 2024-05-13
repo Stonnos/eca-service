@@ -48,7 +48,7 @@ public class UserApiController {
      * @param login - user login
      * @return user info dto
      */
-    @PreAuthorize("#oauth2.hasScope('internal-api')")
+    @PreAuthorize("hasAuthority('SCOPE_internal-api')")
     @Operation(
             description = "Gets user info",
             summary = "Gets user info",

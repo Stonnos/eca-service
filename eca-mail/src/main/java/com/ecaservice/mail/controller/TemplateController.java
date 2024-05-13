@@ -55,7 +55,7 @@ public class TemplateController {
      * @param pageRequestDto - page request dto
      * @return email templates tables page
      */
-    @PreAuthorize("#oauth2.hasScope('web') and hasRole('ROLE_SUPER_ADMIN')")
+    @PreAuthorize("hasAuthority('SCOPE_web') and hasRole('ROLE_SUPER_ADMIN')")
     @Operation(
             description = "Finds email templates with specified options such as filter, sorting and paging",
             summary = "Finds email templates with specified options such as filter, sorting and paging",

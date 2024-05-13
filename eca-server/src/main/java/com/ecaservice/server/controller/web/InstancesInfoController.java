@@ -50,7 +50,7 @@ public class InstancesInfoController {
      * @param pageRequestDto - page request dto
      * @return instances info page
      */
-    @PreAuthorize("#oauth2.hasScope('web')")
+    @PreAuthorize("hasAuthority('SCOPE_web')")
     @Operation(
             description = "Finds instances info page with specified options such as filter, sorting and paging",
             summary = "Finds instances info page with specified options such as filter, sorting and paging",

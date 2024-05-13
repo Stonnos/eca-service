@@ -49,7 +49,7 @@ public class UserProfileOptionsController {
      *
      * @return user profile notification options
      */
-    @PreAuthorize("#oauth2.hasScope('web')")
+    @PreAuthorize("hasAuthority('SCOPE_web')")
     @Operation(
             description = "Gets user profile notification options",
             summary = "Gets user profile notification options",
@@ -93,7 +93,7 @@ public class UserProfileOptionsController {
      * @param userDetails                      - user details
      * @param updateUserNotificationOptionsDto - notification options dto for update
      */
-    @PreAuthorize("#oauth2.hasScope('web')")
+    @PreAuthorize("hasAuthority('SCOPE_web')")
     @Operation(
             description = "Updates user profile notification options",
             summary = "Updates user profile notification options",

@@ -42,7 +42,7 @@ public class WebController {
      *
      * @return menu items list
      */
-    @PreAuthorize("#oauth2.hasScope('web')")
+    @PreAuthorize("hasAuthority('SCOPE_web')")
     @Operation(
             description = "Gets menu bar for web application",
             summary = "Gets menu bar for web application",

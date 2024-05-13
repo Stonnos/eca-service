@@ -4,7 +4,6 @@ import com.ecaservice.server.TestHelperUtils;
 import com.ecaservice.server.service.InstancesInfoService;
 import com.ecaservice.web.dto.model.PageDto;
 import com.ecaservice.web.dto.model.PageRequestDto;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -15,7 +14,6 @@ import java.util.Collections;
 
 import static com.ecaservice.server.PageRequestUtils.PAGE_NUMBER;
 import static com.ecaservice.server.PageRequestUtils.TOTAL_ELEMENTS;
-import static com.ecaservice.server.TestHelperUtils.bearerHeader;
 import static com.ecaservice.server.TestHelperUtils.createPageRequestDto;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
@@ -28,7 +26,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  *
  * @author Roman Batygin
  */
-@Disabled
 @WebMvcTest(controllers = InstancesInfoController.class)
 class InstancesInfoControllerTest extends PageRequestControllerTest {
 
@@ -69,7 +66,7 @@ class InstancesInfoControllerTest extends PageRequestControllerTest {
         var pageDto = PageDto.of(instancesInfoPage, PAGE_NUMBER, TOTAL_ELEMENTS);
         when(instancesInfoService.getNextPage(any(PageRequestDto.class))).thenReturn(pageDto);
         mockMvc.perform(post(LIST_URL)
-                .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken()))
+                .header(HttpHeaders.AUTHORIZATION, getBearerToken())
                 .content(objectMapper.writeValueAsString(createPageRequestDto()))
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())

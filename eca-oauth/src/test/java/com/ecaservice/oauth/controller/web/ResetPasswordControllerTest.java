@@ -7,16 +7,13 @@ import com.ecaservice.oauth.model.TokenModel;
 import com.ecaservice.oauth.repository.ResetPasswordRequestRepository;
 import com.ecaservice.oauth.repository.UserEntityRepository;
 import com.ecaservice.oauth.service.ResetPasswordService;
+import com.ecaservice.oauth2.test.configuration.annotation.MockSecurity;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.FilterType;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -34,14 +31,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  *
  * @author Roman Batygin
  */
-@Disabled
+@MockSecurity
 @EnableGlobalExceptionHandler
-@WebMvcTest(controllers = ResetPasswordController.class,
-        useDefaultFilters = false,
-        includeFilters = {
-                @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, value = ResetPasswordController.class)
-        })
-@AutoConfigureMockMvc(addFilters = false)
+@WebMvcTest(controllers = ResetPasswordController.class)
 class ResetPasswordControllerTest {
 
     private static final String BASE_URL = "/password";

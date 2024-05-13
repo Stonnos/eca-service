@@ -72,7 +72,7 @@ public class EvaluationResultsHistoryController {
      * @param pageRequestDto - page request dto
      * @return audit logs page
      */
-    @PreAuthorize("#oauth2.hasScope('web')")
+    @PreAuthorize("hasAuthority('SCOPE_web')")
     @Operation(
             description = "Finds evaluation results history page with specified options such as filter, sorting and paging",
             summary = "Finds evaluation results history page with specified options such as filter, sorting and paging",
@@ -135,7 +135,7 @@ public class EvaluationResultsHistoryController {
      *
      * @return filter fields list
      */
-    @PreAuthorize("#oauth2.hasScope('web')")
+    @PreAuthorize("hasAuthority('SCOPE_web')")
     @Operation(
             description = "Gets evaluation results history filter fields",
             summary = "Gets evaluation results history filter fields",
@@ -188,7 +188,7 @@ public class EvaluationResultsHistoryController {
      * @param pageRequestDto - page request dto
      * @return instances info page
      */
-    @PreAuthorize("#oauth2.hasScope('web')")
+    @PreAuthorize("hasAuthority('SCOPE_web')")
     @Operation(
             description = "Finds instances info page with specified options such as filter, sorting and paging",
             summary = "Finds instances info page with specified options such as filter, sorting and paging",
@@ -253,7 +253,7 @@ public class EvaluationResultsHistoryController {
      * @throws IOException in case of I/O error
      */
     @Audit(value = DOWNLOAD_EVALUATION_RESULTS_HISTORY_REPORT)
-    @PreAuthorize("#oauth2.hasScope('web')")
+    @PreAuthorize("hasAuthority('SCOPE_web')")
     @Operation(
             description = "Downloads evaluation results history report in xlsx format",
             summary = "Downloads evaluation results history report in xlsx format",

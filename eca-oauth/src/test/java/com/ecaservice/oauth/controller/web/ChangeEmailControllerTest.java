@@ -5,7 +5,6 @@ import com.ecaservice.oauth.model.TokenModel;
 import com.ecaservice.oauth.service.ChangeEmailService;
 import com.ecaservice.oauth2.test.controller.AbstractControllerTest;
 import com.ecaservice.web.dto.model.ChangeEmailRequestStatusDto;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -33,7 +32,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  *
  * @author Roman Batygin
  */
-@Disabled
 @EnableGlobalExceptionHandler
 @WebMvcTest(controllers = ChangeEmailController.class)
 class ChangeEmailControllerTest extends AbstractControllerTest {

@@ -7,7 +7,6 @@ import com.ecaservice.oauth.mapping.UserMapperImpl;
 import com.ecaservice.oauth.service.UserProfileOptionsService;
 import com.ecaservice.oauth2.test.controller.AbstractControllerTest;
 import com.ecaservice.web.dto.model.UserProfileNotificationOptionsDto;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -30,7 +29,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  *
  * @author Roman Batygin
  */
-@Disabled
 @WebMvcTest(controllers = UserProfileOptionsController.class)
 @Import({UserMapperImpl.class, RoleMapperImpl.class})
 class UserProfileOptionsControllerTest extends AbstractControllerTest {

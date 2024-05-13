@@ -61,7 +61,7 @@ public class ChangePasswordController {
      * @param changePasswordRequest - change password request
      * @return change password request status dto
      */
-    @PreAuthorize("#oauth2.hasScope('web')")
+    @PreAuthorize("hasAuthority('SCOPE_web')")
     @Operation(
             description = "Creates change password request",
             summary = "Creates change password request",
@@ -132,7 +132,7 @@ public class ChangePasswordController {
      * @param token            - token value
      * @param confirmationCode - confirmation code
      */
-    @PreAuthorize("#oauth2.hasScope('web')")
+    @PreAuthorize("hasAuthority('SCOPE_web')")
     @Operation(
             description = "Confirms change password request",
             summary = "Confirms change password request",
@@ -182,7 +182,7 @@ public class ChangePasswordController {
      * @param userDetails - user details
      * @return change password request status dto
      */
-    @PreAuthorize("#oauth2.hasScope('web')")
+    @PreAuthorize("hasAuthority('SCOPE_web')")
     @Operation(
             description = "Gets change password request status",
             summary = "Gets change password request status",

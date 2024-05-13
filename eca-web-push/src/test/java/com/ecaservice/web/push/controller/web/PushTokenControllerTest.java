@@ -4,7 +4,6 @@ import com.ecaservice.oauth2.test.controller.AbstractControllerTest;
 import com.ecaservice.web.dto.model.PushTokenDto;
 import com.ecaservice.web.push.service.PushTokenService;
 import com.ecaservice.web.push.service.UserService;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -23,7 +22,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  *
  * @author Roman Batygin
  */
-@Disabled
 @WebMvcTest(controllers = PushTokenController.class)
 class PushTokenControllerTest extends AbstractControllerTest {
 

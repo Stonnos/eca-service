@@ -61,7 +61,7 @@ public class ChangeEmailController {
      * @param newEmail    - new email
      * @return change email requests status dto
      */
-    @PreAuthorize("#oauth2.hasScope('web')")
+    @PreAuthorize("hasAuthority('SCOPE_web')")
     @Operation(
             description = "Creates change email request",
             summary = "Creates change email request",
@@ -128,7 +128,7 @@ public class ChangeEmailController {
      * @param token            - token value
      * @param confirmationCode - confirmation code
      */
-    @PreAuthorize("#oauth2.hasScope('web')")
+    @PreAuthorize("hasAuthority('SCOPE_web')")
     @Operation(
             description = "Confirms change email request",
             summary = "Confirms change email request",
@@ -177,7 +177,7 @@ public class ChangeEmailController {
      *
      * @param userDetails - user details
      */
-    @PreAuthorize("#oauth2.hasScope('web')")
+    @PreAuthorize("hasAuthority('SCOPE_web')")
     @Operation(
             description = "Gets change email request status",
             summary = "Gets change email request status",

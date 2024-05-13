@@ -88,7 +88,7 @@ public class UserController {
      *
      * @return users list
      */
-    @PreAuthorize("#oauth2.hasScope('web')")
+    @PreAuthorize("hasAuthority('SCOPE_web')")
     @Operation(
             description = "Gets current authenticated user info",
             summary = "Gets current authenticated user info",
@@ -130,7 +130,7 @@ public class UserController {
      *
      * @param authentication - oauth2 authentication
      */
-    @PreAuthorize("#oauth2.hasScope('web')")
+    @PreAuthorize("hasAuthority('SCOPE_web')")
     @Operation(
             description = "Logout current user and revokes access/refresh token pair",
             summary = "Logout current user and revokes access/refresh token pair",
@@ -164,7 +164,7 @@ public class UserController {
      *
      * @param enabled - tfa enabled?
      */
-    @PreAuthorize("#oauth2.hasScope('web')")
+    @PreAuthorize("hasAuthority('SCOPE_web')")
     @Operation(
             description = "Enable/disable tfa for current authenticated user",
             summary = "Enable/disable tfa for current authenticated user",
@@ -210,7 +210,7 @@ public class UserController {
      * @param pageRequestDto - page request dto
      * @return users page
      */
-    @PreAuthorize("#oauth2.hasScope('web') and hasRole('ROLE_SUPER_ADMIN')")
+    @PreAuthorize("hasAuthority('SCOPE_web') and hasRole('ROLE_SUPER_ADMIN')")
     @Operation(
             description = "Finds users with specified options",
             summary = "Finds users with specified options",
@@ -284,7 +284,7 @@ public class UserController {
      * @param pageRequestDto - page request dto
      * @return users dictionary page
      */
-    @PreAuthorize("#oauth2.hasScope('web')")
+    @PreAuthorize("hasAuthority('SCOPE_web')")
     @Operation(
             description = "Finds users dictionary with specified options such as filter, sorting and paging",
             summary = "Finds users dictionary with specified options such as filter, sorting and paging",
@@ -346,7 +346,7 @@ public class UserController {
      *
      * @param createUserDto - create user dto
      */
-    @PreAuthorize("#oauth2.hasScope('web') and hasRole('ROLE_SUPER_ADMIN')")
+    @PreAuthorize("hasAuthority('SCOPE_web') and hasRole('ROLE_SUPER_ADMIN')")
     @Operation(
             description = "Creates new user",
             summary = "Creates new user",
@@ -422,7 +422,7 @@ public class UserController {
      * @param userDetails       - user details
      * @param updateUserInfoDto - user info dto
      */
-    @PreAuthorize("#oauth2.hasScope('web')")
+    @PreAuthorize("hasAuthority('SCOPE_web')")
     @Operation(
             description = "Updates info for current authenticated user",
             summary = "Updates info for current authenticated user",
@@ -475,7 +475,7 @@ public class UserController {
      * @param userDetails - user details
      * @param file        - user photo file
      */
-    @PreAuthorize("#oauth2.hasScope('web')")
+    @PreAuthorize("hasAuthority('SCOPE_web')")
     @Operation(
             description = "Uploads photo for current authenticated user",
             summary = "Uploads photo for current authenticated user",
@@ -509,7 +509,7 @@ public class UserController {
      * @param id - photo id
      * @return user photo as byte array
      */
-    @PreAuthorize("#oauth2.hasScope('web')")
+    @PreAuthorize("hasAuthority('SCOPE_web')")
     @Operation(
             description = "Downloads user photo",
             summary = "Downloads user photo",
@@ -555,7 +555,7 @@ public class UserController {
      *
      * @param userDetails - user details
      */
-    @PreAuthorize("#oauth2.hasScope('web')")
+    @PreAuthorize("hasAuthority('SCOPE_web')")
     @Operation(
             description = "Deletes photo for current authenticated user",
             summary = "Deletes photo for current authenticated user",
@@ -599,7 +599,7 @@ public class UserController {
      * @param userDetails - user details
      * @param userId      - user id
      */
-    @PreAuthorize("#oauth2.hasScope('web') and hasRole('ROLE_SUPER_ADMIN')")
+    @PreAuthorize("hasAuthority('SCOPE_web') and hasRole('ROLE_SUPER_ADMIN')")
     @Operation(
             description = "Locks user",
             summary = "Locks user",
@@ -649,7 +649,7 @@ public class UserController {
      *
      * @param userId - user id
      */
-    @PreAuthorize("#oauth2.hasScope('web') and hasRole('ROLE_SUPER_ADMIN')")
+    @PreAuthorize("hasAuthority('SCOPE_web') and hasRole('ROLE_SUPER_ADMIN')")
     @Operation(
             description = "Unlocks user",
             summary = "Unlocks user",

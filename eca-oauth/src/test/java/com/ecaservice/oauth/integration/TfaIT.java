@@ -2,9 +2,9 @@ package com.ecaservice.oauth.integration;
 
 import com.ecaservice.oauth.entity.UserEntity;
 import com.ecaservice.oauth.model.TfaRequiredResponse;
+import com.ecaservice.oauth.model.TokenResponse;
 import com.ecaservice.oauth.service.mail.dictionary.TemplateVariablesDictionary;
 import com.ecaservice.oauth.service.mail.dictionary.Templates;
-import com.ecaservice.oauth2.test.token.TokenResponse;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.lang3.StringUtils;

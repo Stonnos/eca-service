@@ -1,11 +1,10 @@
 package com.ecaservice.audit.controller.audit;
 
 import com.ecaservice.audit.service.AuditLogService;
+import com.ecaservice.oauth2.test.configuration.annotation.MockSecurity;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
@@ -20,9 +19,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  *
  * @author Roman Batygin
  */
-@Disabled
+@MockSecurity
 @WebMvcTest(controllers = AuditEventController.class)
-@AutoConfigureMockMvc(addFilters = false)
 class AuditEventControllerTest {
 
     private static final String BASE_URL = "/api/audit/event";

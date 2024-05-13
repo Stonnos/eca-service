@@ -51,7 +51,7 @@ public class UserNotificationController {
      * @param pageRequestDto - page request dto
      * @return users page
      */
-    @PreAuthorize("#oauth2.hasScope('web')")
+    @PreAuthorize("hasAuthority('SCOPE_web')")
     @Operation(
             description = "Gets current user notifications next page for specified page request and last 7 days",
             summary = "Gets current user notifications next page for specified page request and last 7 days",
@@ -113,7 +113,7 @@ public class UserNotificationController {
      *
      * @return notifications statistics
      */
-    @PreAuthorize("#oauth2.hasScope('web')")
+    @PreAuthorize("hasAuthority('SCOPE_web')")
     @Operation(
             description = "Gets notifications statistics for current user",
             summary = "Gets notifications statistics for current user",
@@ -154,7 +154,7 @@ public class UserNotificationController {
      *
      * @param readNotificationsDto - read notifications dto
      */
-    @PreAuthorize("#oauth2.hasScope('web')")
+    @PreAuthorize("hasAuthority('SCOPE_web')")
     @Operation(
             description = "Reads not read notifications",
             summary = "Reads not read notifications",

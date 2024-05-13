@@ -60,7 +60,7 @@ public class ReportController {
      * @throws IOException in case of I/O error
      */
     @Audit(value = GENERATE_EVALUATION_REQUESTS_REPORT)
-    @PreAuthorize("#oauth2.hasScope('web')")
+    @PreAuthorize("hasAuthority('SCOPE_web')")
     @Operation(
             description = "Downloads specified base report in xlsx format",
             summary = "Downloads specified base report in xlsx format",

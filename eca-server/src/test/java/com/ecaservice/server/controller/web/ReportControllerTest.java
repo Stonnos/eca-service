@@ -4,7 +4,6 @@ import com.ecaservice.server.report.EvaluationLogsBaseReportDataFetcher;
 import com.ecaservice.server.report.ExperimentsBaseReportDataFetcher;
 import com.ecaservice.server.report.model.BaseReportType;
 import com.ecaservice.web.dto.model.PageRequestDto;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -13,7 +12,6 @@ import org.springframework.http.MediaType;
 
 import java.util.Collections;
 
-import static com.ecaservice.server.TestHelperUtils.bearerHeader;
 import static com.ecaservice.server.TestHelperUtils.createPageRequestDto;
 import static com.ecaservice.server.TestHelperUtils.createReportBean;
 import static org.mockito.ArgumentMatchers.any;
@@ -27,7 +25,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  *
  * @author Roman Batygin
  */
-@Disabled
 @WebMvcTest(controllers = ReportController.class)
 class ReportControllerTest extends PageRequestControllerTest {
 
@@ -91,7 +88,7 @@ class ReportControllerTest extends PageRequestControllerTest {
     @Test
     void testDownloadReportWithNullReportType() throws Exception {
         mockMvc.perform(post(DOWNLOAD_REPORT_URL)
-                .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken()))
+                .header(HttpHeaders.AUTHORIZATION, getBearerToken())
                 .content(objectMapper.writeValueAsString(createPageRequestDto()))
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest());
@@ -113,7 +110,7 @@ class ReportControllerTest extends PageRequestControllerTest {
 
     private void testDownloadReportOk(BaseReportType reportType) throws Exception {
         mockMvc.perform(post(DOWNLOAD_REPORT_URL)
-                .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken()))
+                .header(HttpHeaders.AUTHORIZATION, getBearerToken())
                 .param(REPORT_TYPE_PARAM, reportType.name())
                 .content(objectMapper.writeValueAsString(createPageRequestDto()))
                 .contentType(MediaType.APPLICATION_JSON))
