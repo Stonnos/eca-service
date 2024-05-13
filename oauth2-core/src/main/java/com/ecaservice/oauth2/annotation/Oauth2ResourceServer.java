@@ -1,6 +1,5 @@
 package com.ecaservice.oauth2.annotation;
 
-import com.ecaservice.oauth2.MethodSecurityConfiguration;
 import com.ecaservice.oauth2.ResourceServerConfiguration;
 import org.springframework.context.annotation.Import;
 
@@ -16,6 +15,6 @@ import java.lang.annotation.Target;
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
-@Import({ResourceServerConfiguration.class, MethodSecurityConfiguration.class})
+@Import(ResourceServerConfiguration.class)
 public @interface Oauth2ResourceServer {
 }

@@ -10,7 +10,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
  */
 @Data
 @ConfigurationProperties("auth-server")
-public class AuthServerConfig {
+public class AuthServerProperties {
 
     /**
      * Authorization server base url
