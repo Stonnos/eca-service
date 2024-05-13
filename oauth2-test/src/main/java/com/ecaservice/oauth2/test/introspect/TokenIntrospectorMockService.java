@@ -44,6 +44,7 @@ public class TokenIntrospectorMockService implements OpaqueTokenIntrospector {
         } else {
             Map<String, Object> claims = newHashMap();
             Collection<GrantedAuthority> authorities = new ArrayList<>();
+            claims.put(OAuth2TokenIntrospectionClaimNames.SUB, oauth2TestConfig.getUsername());
             claims.put(OAuth2TokenIntrospectionClaimNames.SCOPE, Collections.singletonList(oauth2TestConfig.getScope()));
             authorities.add(new SimpleGrantedAuthority(String.format(SCOPE_PREFIX, oauth2TestConfig.getScope())));
             authorities.add(new SimpleGrantedAuthority(ROLE_SUPER_ADMIN));

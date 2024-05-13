@@ -13,6 +13,11 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 public class Oauth2TestConfig {
 
     /**
+     * Username
+     */
+    private String username = "admin";
+
+    /**
      * Scope
      */
     private String scope = "web";
