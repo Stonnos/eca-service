@@ -8,6 +8,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
+
 import java.util.Map;
 
 import static com.ecaservice.web.dto.util.FieldConstraints.MAX_ADDITIONAL_PROPERTIES_SIZE;
@@ -30,7 +31,7 @@ public class PushRequestDto {
      */
     @NotNull
     @Schema(description = "Push type", minLength = VALUE_1, maxLength = MAX_LENGTH_255, requiredMode = Schema.RequiredMode.REQUIRED)
-    private final PushType pushType;
+    private PushType pushType;
 
     /**
      * Request id (used for cross system logging)
