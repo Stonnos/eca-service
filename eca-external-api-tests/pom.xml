@@ -14,7 +14,7 @@
 
     <properties>
         <sonar.coverage.exclusions>**/*.*</sonar.coverage.exclusions>
-        <spring-boot-camunda-bpm.version>7.19.0</spring-boot-camunda-bpm.version>
+        <spring-boot-camunda-bpm.version>7.21.0</spring-boot-camunda-bpm.version>
     </properties>
 
     <dependencies>
@@ -87,6 +87,12 @@
             <groupId>eca.service</groupId>
             <artifactId>swagger-core</artifactId>
             <version>${project.version}</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/org.hibernate.validator/hibernate-validator -->
+        <dependency>
+            <groupId>org.hibernate.validator</groupId>
+            <artifactId>hibernate-validator</artifactId>
         </dependency>
 
         <dependency>
