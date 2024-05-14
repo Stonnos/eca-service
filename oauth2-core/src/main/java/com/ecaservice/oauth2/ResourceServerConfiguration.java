@@ -19,6 +19,7 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.oauth2.server.resource.introspection.OpaqueTokenIntrospector;
 import org.springframework.security.oauth2.server.resource.introspection.SpringOpaqueTokenIntrospector;
 import org.springframework.security.oauth2.server.resource.web.BearerTokenResolver;
+import org.springframework.security.oauth2.server.resource.web.DefaultBearerTokenResolver;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.util.CollectionUtils;
 
@@ -61,7 +62,9 @@ public class ResourceServerConfiguration {
     @Bean
     @Primary
     public BearerTokenResolver bearerTokenResolver() {
-        return new SimpleBearerTokenResolver();
+        DefaultBearerTokenResolver defaultBearerTokenResolver = new DefaultBearerTokenResolver();
+        defaultBearerTokenResolver.setAllowUriQueryParameter(true);
+        return new SimpleBearerTokenResolver(defaultBearerTokenResolver);
     }
 
     /**
