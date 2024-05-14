@@ -1,14 +1,11 @@
 package com.ecaservice.auto.test.entity.autotest;
 
-import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
-import org.hibernate.annotations.TypeDef;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 /**
  * Evaluation request persistence entity.
@@ -20,7 +17,6 @@ import jakarta.persistence.Table;
 @ToString(callSuper = true)
 @Entity
 @Table(name = "evaluation_request")
-@TypeDef(name = "jsonb", typeClass = JsonBinaryType.class)
 public class EvaluationRequestEntity extends BaseEvaluationRequestEntity {
 
     /**

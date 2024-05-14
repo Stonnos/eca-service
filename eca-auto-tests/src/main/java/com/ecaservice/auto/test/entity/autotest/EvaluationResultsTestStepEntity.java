@@ -1,6 +1,7 @@
 package com.ecaservice.auto.test.entity.autotest;
 
 import com.ecaservice.auto.test.model.evaluation.EvaluationResultsDetailsMatch;
+import com.vladmihalcea.hibernate.type.json.JsonType;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
@@ -25,7 +26,7 @@ public class EvaluationResultsTestStepEntity extends BaseTestStepEntity<Evaluati
     /**
      * Evaluation results details
      */
-    @Type(type = "jsonb")
+    @Type(JsonType.class)
     @Column(name = "evaluation_results_details", columnDefinition = "jsonb")
     private EvaluationResultsDetailsMatch evaluationResultsDetails;
 
