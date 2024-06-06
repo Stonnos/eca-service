@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+        logicalFilePath="db/changelog/v37-drop-oauth-tables.xml"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="drop_oauth_access_token_table" author="roman.batygin@mail.ru">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="oauth_access_token"/>
+        </preConditions>
+        <dropTable tableName="oauth_access_token"/>
+    </changeSet>
+
+    <changeSet id="drop_oauth_refresh_token_table" author="roman.batygin@mail.ru">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="oauth_refresh_token"/>
+        </preConditions>
+        <dropTable tableName="oauth_refresh_token"/>
+    </changeSet>
+
+    <changeSet id="drop_oauth_code_table" author="roman.batygin@mail.ru">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="oauth_code"/>
+        </preConditions>
+        <dropTable tableName="oauth_code"/>
+    </changeSet>
+
+    <changeSet id="drop_oauth_client_details_table" author="roman.batygin@mail.ru">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="oauth_client_details"/>
+        </preConditions>
+        <dropTable tableName="oauth_client_details"/>
+    </changeSet>
+
+    <changeSet id="drop_oauth_client_token_table" author="roman.batygin@mail.ru">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="oauth_client_token"/>
+        </preConditions>
+        <dropTable tableName="oauth_client_token"/>
+    </changeSet>
+
+    <changeSet id="drop_oauth_approvals_table" author="roman.batygin@mail.ru">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="oauth_approvals"/>
+        </preConditions>
+        <dropTable tableName="oauth_approvals"/>
+    </changeSet>
+</databaseChangeLog>

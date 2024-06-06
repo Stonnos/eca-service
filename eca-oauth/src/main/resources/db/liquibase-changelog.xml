@@ -45,4 +45,5 @@
     <include file="db/changelog/v34-add-created-date-to-temporary-tables.xml"/>
     <include file="db/changelog/v35-create-user-profile-options-data-event-table.xml"/>
     <include file="db/changelog/v36-create-oauth2-authorization-schema-table.xml"/>
+    <include file="db/changelog/v37-drop-oauth-tables.xml"/>
 </databaseChangeLog>
