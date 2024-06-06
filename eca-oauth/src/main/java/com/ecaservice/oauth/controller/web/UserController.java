@@ -62,7 +62,7 @@ import static com.ecaservice.web.dto.util.FieldConstraints.VALUE_1;
  *
  * @author Roman Batygin
  */
-// TODo migrate logout to /oauth2/revoke endpoint
+// TODO migrate logout to /oauth2/revoke endpoint
 @Slf4j
 @Validated
 @Tag(name = "Users API for web application")
