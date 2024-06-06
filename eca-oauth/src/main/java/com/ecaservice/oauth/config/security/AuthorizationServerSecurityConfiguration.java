@@ -133,6 +133,7 @@ public class AuthorizationServerSecurityConfiguration {
                         tokenEndpoint
                                 .accessTokenRequestConverter(new Oauth2PasswordGrantAuthenticationConverter())
                                 .authenticationProvider(authenticationProvider)
+                                .errorResponseHandler(new OAuth2AuthenticationFailureErrorHandler())
                 );
         RequestMatcher endpointsMatcher = authorizationServerConfigurer.getEndpointsMatcher();
         http
