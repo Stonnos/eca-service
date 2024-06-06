@@ -1,14 +1,19 @@
 package com.ecaservice.oauth.config.security;
 
+import com.ecaservice.oauth.config.Oauth2RegisteredClient;
 import com.ecaservice.oauth.config.TfaConfig;
 import com.ecaservice.oauth.repository.UserEntityRepository;
 import com.ecaservice.oauth.service.tfa.TfaCodeService;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.Cleanup;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
+import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -35,7 +40,9 @@ import org.springframework.security.oauth2.server.authorization.token.OAuth2Refr
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.util.matcher.RequestMatcher;
 
+import java.io.IOException;
 import java.time.Duration;
+import java.util.List;
 
 /**
  * Authorization server security configuration.
@@ -51,23 +58,25 @@ public class AuthorizationServerSecurityConfiguration {
 
     private static final int AUTHORIZATION_SERVER_SECURITY_FILTER_ORDER = 0;
 
+    private static final String OAUTH2_REGISTERED_CLIENTS_JSON = "oauth2-registered-clients.json";
+
+    private final ObjectMapper objectMapper;
+    private final PathMatchingResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
+
+    /**
+     * Creates oauth2 registered clients repository.
+     *
+     * @return oauth2 registered clients repository
+     * @throws IOException in case of I/O error
+     */
     @Bean
-    public RegisteredClientRepository registeredClientRepository() {
-        RegisteredClient registeredClient = RegisteredClient.withId("web")
-                .clientId("eca_web") // пункт 6
-                .clientSecret("{noop}web_secret")       //пункт 7
-                .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC)
-                .authorizationGrantType(AuthorizationGrantType.PASSWORD)
-                .authorizationGrantType(AuthorizationGrantType.REFRESH_TOKEN)
-                .authorizationGrantType(AuthorizationGrantType.CLIENT_CREDENTIALS)
-                .scope("web") //пункт 8
-                .tokenSettings(TokenSettings.builder()
-                        .accessTokenFormat(OAuth2TokenFormat.REFERENCE)
-                        .accessTokenTimeToLive(Duration.ofMinutes(15))
-                        .refreshTokenTimeToLive(Duration.ofMinutes(30))
-                        .build())
-                .build();
-        return new InMemoryRegisteredClientRepository(registeredClient);
+    public RegisteredClientRepository registeredClientRepository() throws IOException {
+        List<Oauth2RegisteredClient> oauth2RegisteredClients = loadOauth2RegisteredClients();
+        List<RegisteredClient> registeredClients = oauth2RegisteredClients
+                .stream()
+                .map(this::registeredClient)
+                .toList();
+        return new InMemoryRegisteredClientRepository(registeredClients);
     }
 
     /**
@@ -166,5 +175,41 @@ public class AuthorizationServerSecurityConfiguration {
         daoAuthenticationProvider.setPasswordEncoder(passwordEncoder);
         daoAuthenticationProvider.setUserDetailsService(userDetailsService);
         return daoAuthenticationProvider;
+    }
+
+    private List<Oauth2RegisteredClient> loadOauth2RegisteredClients() throws IOException {
+        log.info("Starting to load oauth2 registered clients");
+        var resource = resolver.getResource(OAUTH2_REGISTERED_CLIENTS_JSON);
+        @Cleanup var inputStream = resource.getInputStream();
+        List<Oauth2RegisteredClient> clients = objectMapper.readValue(inputStream, new TypeReference<>() {
+        });
+        log.info("[{}] oauth2 registered clients has been loaded", clients.size());
+        return clients;
+    }
+
+    private RegisteredClient registeredClient(Oauth2RegisteredClient oauth2RegisteredClient) {
+        return RegisteredClient.withId(oauth2RegisteredClient.getClientId())
+                .clientId(oauth2RegisteredClient.getClientId())
+                .clientName(oauth2RegisteredClient.getClientId())
+                .clientSecret(oauth2RegisteredClient.getClientSecret())
+                .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC)
+                .authorizationGrantTypes(authorizationGrantTypes -> {
+                    List<AuthorizationGrantType> grantTypes =
+                            oauth2RegisteredClient.getAuthorizationGrantTypes()
+                                    .stream()
+                                    .map(AuthorizationGrantType::new)
+                                    .toList();
+                    authorizationGrantTypes.addAll(grantTypes);
+                })
+                .scopes(scopes -> scopes.addAll(oauth2RegisteredClient.getScopes()))
+                .tokenSettings(
+                        TokenSettings.builder()
+                                .accessTokenFormat(OAuth2TokenFormat.REFERENCE)
+                                .accessTokenTimeToLive(Duration.ofMinutes(
+                                        oauth2RegisteredClient.getAccessTokenTimeToLiveMinutes()))
+                                .refreshTokenTimeToLive(Duration.ofMinutes(
+                                        oauth2RegisteredClient.getRefreshTokenTimeToLiveMinutes()))
+                                .build())
+                .build();
     }
 }

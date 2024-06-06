@@ -1,0 +1,55 @@
+[
+  {
+    "clientId": "eca_web",
+    "clientSecret": "{bcrypt}$2a$10$sVFy6rEToUdmWpMn3EIp3.TOk9Jg7z0HLmRuTq.s7U5.sX3L5ZKXu",
+    "authorizationGrantTypes": [
+      "password",
+      "refresh_token",
+      "tfa_code"
+    ],
+    "scopes": [
+      "web"
+    ],
+    "accessTokenTimeToLiveMinutes": 30,
+    "refreshTokenTimeToLiveMinutes": 43200
+  },
+  {
+    "clientId": "swagger",
+    "clientSecret": "{bcrypt}$2a$10$uuX3KZ/8vpTKPz4B3sbvkOdJ7jrAezgk4eq.kdQXDhaQnNmbjEuRG",
+    "authorizationGrantTypes": [
+      "password",
+      "refresh_token",
+      "client_credentials"
+    ],
+    "scopes": [
+      "web",
+      "external-api",
+      "internal-api"
+    ],
+    "accessTokenTimeToLiveMinutes": 30,
+    "refreshTokenTimeToLiveMinutes": 43200
+  },
+  {
+    "clientId": "external-api",
+    "clientSecret": "{bcrypt}$2a$10$fHGMvUF9W4uHnWp8Sm6nwODwwwO.7qeWFLb4I7mja3tiuI4EP.R1i",
+    "scopes": [
+      "external-api"
+    ],
+    "authorizationGrantTypes": [
+      "client_credentials"
+    ],
+    "accessTokenTimeToLiveMinutes": 60
+  },
+  {
+    "clientId": "eca_service_tech",
+    "clientSecret": "{bcrypt}$2a$10$XooFEngMQDIRZDyLyBv86OYwVXice5KdGv5SNxJp5OMgxoVI0FKt6",
+    "scopes": [
+      "internal-api",
+      "external-api"
+    ],
+    "authorizationGrantTypes": [
+      "client_credentials"
+    ],
+    "accessTokenTimeToLiveMinutes": 60
+  }
+]

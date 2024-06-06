@@ -80,6 +80,9 @@ public class AppProperties {
         private String url;
     }
 
+    /**
+     * Security properties.
+     */
     @Data
     public static class SecurityProperties {
 
