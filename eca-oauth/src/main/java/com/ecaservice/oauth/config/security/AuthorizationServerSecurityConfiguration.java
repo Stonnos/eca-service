@@ -106,12 +106,13 @@ public class AuthorizationServerSecurityConfiguration {
                                                                       Oauth2PasswordGrantAuthenticationProvider authenticationProvider)
             throws Exception {
         var authorizationServerConfigurer = new OAuth2AuthorizationServerConfigurer();
+        var oAuth2AuthenticationFailureErrorHandler = createOAuth2AuthenticationFailureErrorHandler();
         authorizationServerConfigurer
                 .tokenEndpoint(tokenEndpoint ->
                         tokenEndpoint
                                 .accessTokenRequestConverter(new Oauth2PasswordGrantAuthenticationConverter())
                                 .authenticationProvider(authenticationProvider)
-                                .errorResponseHandler(new OAuth2AuthenticationFailureErrorHandler())
+                                .errorResponseHandler(oAuth2AuthenticationFailureErrorHandler)
                 );
         RequestMatcher endpointsMatcher = authorizationServerConfigurer.getEndpointsMatcher();
         http
@@ -175,6 +176,13 @@ public class AuthorizationServerSecurityConfiguration {
         daoAuthenticationProvider.setPasswordEncoder(passwordEncoder);
         daoAuthenticationProvider.setUserDetailsService(userDetailsService);
         return daoAuthenticationProvider;
+    }
+
+    private OAuth2AuthenticationFailureErrorHandler createOAuth2AuthenticationFailureErrorHandler() {
+        var oAuth2AuthenticationFailureErrorHandler = new OAuth2AuthenticationFailureErrorHandler();
+        oAuth2AuthenticationFailureErrorHandler.getErrorResponseConverter()
+                .setErrorParametersConverter(new OAuth2ErrorParametersConverter());
+        return oAuth2AuthenticationFailureErrorHandler;
     }
 
     private List<Oauth2RegisteredClient> loadOauth2RegisteredClients() throws IOException {

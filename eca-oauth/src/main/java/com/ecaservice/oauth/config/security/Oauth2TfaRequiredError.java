@@ -1,6 +1,5 @@
 package com.ecaservice.oauth.config.security;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import org.springframework.security.oauth2.core.OAuth2Error;
 
@@ -15,14 +14,12 @@ public class Oauth2TfaRequiredError extends OAuth2Error {
      * Temporary token value for tfa code
      */
     @Getter
-    @JsonProperty("token")
     private final String token;
 
     /**
      * Token expiration time seconds
      */
     @Getter
-    @JsonProperty("expires_in")
     private final long expiresIn;
 
     /**

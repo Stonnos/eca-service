@@ -31,5 +31,5 @@ public class TfaRequiredResponse {
      * Tfa code expiration in seconds
      */
     @JsonProperty("expires_in")
-    private Integer expiresIn;
+    private String expiresIn;
 }

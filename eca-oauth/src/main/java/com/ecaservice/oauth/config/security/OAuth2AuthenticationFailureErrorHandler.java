@@ -2,10 +2,11 @@ package com.ecaservice.oauth.config.security;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.server.ServletServerHttpResponse;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
@@ -23,7 +24,9 @@ import java.io.IOException;
 @Slf4j
 public class OAuth2AuthenticationFailureErrorHandler implements AuthenticationFailureHandler {
 
-    private final HttpMessageConverter<OAuth2Error> errorResponseConverter = new OAuth2ErrorHttpMessageConverter();
+    @Getter
+    @Setter
+    private OAuth2ErrorHttpMessageConverter errorResponseConverter = new OAuth2ErrorHttpMessageConverter();
 
     @Override
     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response,
