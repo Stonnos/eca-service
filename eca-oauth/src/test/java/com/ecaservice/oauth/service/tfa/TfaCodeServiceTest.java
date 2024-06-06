@@ -12,8 +12,8 @@ import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
-import org.springframework.security.oauth2.common.exceptions.InvalidGrantException;
-import org.springframework.security.oauth2.provider.OAuth2Authentication;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 
 import java.time.LocalDateTime;
 import java.util.Collections;
@@ -53,16 +53,16 @@ class TfaCodeServiceTest extends AbstractJpaTest {
     private TfaCodeRepository tfaCodeRepository;
 
     @Mock
-    private OAuth2Authentication oAuth2Authentication;
+    private Authentication authentication;
 
     private UserEntity userEntity;
 
     @Override
     public void init() {
         userEntity = createAndSaveUser();
-        when(oAuth2Authentication.getName()).thenReturn(USER);
+        when(authentication.getName()).thenReturn(USER);
         when(serializationHelper.serialize(any())).thenReturn(AUTHENTICATION);
-        when(serializationHelper.deserialize(any())).thenReturn(oAuth2Authentication);
+        when(serializationHelper.deserialize(any())).thenReturn(authentication);
     }
 
     @Override
@@ -74,7 +74,7 @@ class TfaCodeServiceTest extends AbstractJpaTest {
     @Test
     void testCreateAuthorizationCode() {
         createAndSaveTfaCode(userEntity);
-        var tfaCodeModel = tfaCodeService.createAuthorizationCode(oAuth2Authentication);
+        var tfaCodeModel = tfaCodeService.createAuthorizationCode(authentication);
         assertThat(tfaCodeModel).isNotNull();
         assertThat(tfaCodeModel.getCode()).hasSize(tfaConfig.getCodeLength());
         assertThat(tfaCodeRepository.count()).isOne();
@@ -89,14 +89,14 @@ class TfaCodeServiceTest extends AbstractJpaTest {
 
     @Test
     void testConsumeAuthorizationCode() {
-        var tfaCodeModel = tfaCodeService.createAuthorizationCode(oAuth2Authentication);
+        var tfaCodeModel = tfaCodeService.createAuthorizationCode(authentication);
         var authentication = tfaCodeService.consumeAuthorizationCode(tfaCodeModel.getToken(), tfaCodeModel.getCode());
         assertThat(authentication).isNotNull();
     }
 
     @Test
     void testConsumeInvalidAuthorizationCode() {
-        assertThrows(InvalidGrantException.class,
+        assertThrows(OAuth2AuthenticationException.class,
                 () -> tfaCodeService.consumeAuthorizationCode(INVALID_TOKEN, INVALID_CODE));
     }
 

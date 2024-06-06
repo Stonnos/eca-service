@@ -22,6 +22,7 @@ import java.util.UUID;
 import static com.ecaservice.oauth.TestHelperUtils.createChangePasswordRequestEntity;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -59,7 +60,7 @@ class ChangePasswordControllerTest extends AbstractControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
-    private ObjectMapper objectMapper = new ObjectMapper();
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
     @Test
     void testCreateChangePasswordRequestWithEmptyOldPassword() throws Exception {
@@ -94,7 +95,7 @@ class ChangePasswordControllerTest extends AbstractControllerTest {
     void testCreateChangePasswordRequestOk() throws Exception {
         String token = UUID.randomUUID().toString();
         ChangePasswordRequest changePasswordRequest = new ChangePasswordRequest(PASSWORD, PASSWORD);
-        when(changePasswordService.createChangePasswordRequest(anyLong(), any(ChangePasswordRequest.class)))
+        when(changePasswordService.createChangePasswordRequest(anyString(), any(ChangePasswordRequest.class)))
                 .thenReturn(
                         TokenModel.builder()
                                 .token(token)
@@ -162,7 +163,7 @@ class ChangePasswordControllerTest extends AbstractControllerTest {
         var changePasswordRequestStatusDto = ChangePasswordRequestStatusDto.builder()
                 .active(false)
                 .build();
-        when(changePasswordService.getChangePasswordRequestStatus(anyLong()))
+        when(changePasswordService.getChangePasswordRequestStatus(anyString()))
                 .thenReturn(changePasswordRequestStatusDto);
         mockMvc.perform(get(REQUEST_STATUS_URL)
                         .header(HttpHeaders.AUTHORIZATION, getBearerToken()))

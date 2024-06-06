@@ -1,29 +1,18 @@
 package com.ecaservice.oauth.exception;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.security.oauth2.common.exceptions.OAuth2Exception;
+import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 
 /**
  * Change password required exception.
  *
  * @author Roman Batygin
  */
-public class ChangePasswordRequiredException extends OAuth2Exception {
+public class ChangePasswordRequiredException extends OAuth2AuthenticationException {
 
     /**
      * Change password required exception.
      */
     public ChangePasswordRequiredException() {
-        super("Password must be changed");
-    }
-
-    @Override
-    public String getOAuth2ErrorCode() {
-        return "change_password_required";
-    }
-
-    @Override
-    public int getHttpErrorCode() {
-        return HttpStatus.FORBIDDEN.value();
+        super("change_password_required");
     }
 }

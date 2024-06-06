@@ -15,8 +15,7 @@ public class EmailAlreadyBoundException extends ValidationErrorException {
      *
      * @param userId - user id
      */
-    public EmailAlreadyBoundException(Long userId) {
-        super(EcaOauthErrorCode.EMAIL_ALREADY_BOUND,
-                String.format("Email is already bound to account for user [%d]", userId));
+    public EmailAlreadyBoundException() {
+        super(EcaOauthErrorCode.EMAIL_ALREADY_BOUND, "Email is already bound to account");
     }
 }

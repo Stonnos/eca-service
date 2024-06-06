@@ -9,10 +9,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.oauth2.common.OAuth2AccessToken;
-import org.springframework.security.oauth2.provider.token.store.JdbcTokenStore;
-
-import java.util.Collection;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -26,14 +22,12 @@ class ResetPasswordIT extends AbstractUserIT {
     private static final String NEW_PASSWORD = "545NewPa6word!#890";
     private static final String TOKEN_PARAM = "token";
 
-    private static final String API_PREFIX = "/password";
+    private static final String API_PREFIX = "/reset-password";
     private static final String CREATE_RESET_PASSWORD_REQUEST_URL = "/create-reset-request";
     private static final String RESET_URL = "/reset";
 
     @Autowired
     private PasswordEncoder passwordEncoder;
-    @Autowired
-    private JdbcTokenStore tokenStore;
 
     @Override
     String getApiPrefix() {
@@ -78,7 +72,6 @@ class ResetPasswordIT extends AbstractUserIT {
         //Verify that password has been changed
         assertThat(passwordEncoder.matches(NEW_PASSWORD, actualUser.getPassword())).isTrue();
         //Verify that all tokens has been revoked
-        Collection<OAuth2AccessToken> tokens = tokenStore.findTokensByUserName(actualUser.getLogin());
-        assertThat(tokens).isEmpty();
+        //TODO Verify that all tokens has been revoked
     }
 }

@@ -45,7 +45,7 @@ import static org.apache.commons.codec.digest.DigestUtils.md5Hex;
 @Tag(name = "Reset password API")
 @Validated
 @RestController
-@RequestMapping("/password")
+@RequestMapping("/reset-password")
 @RequiredArgsConstructor
 public class ResetPasswordController {
 

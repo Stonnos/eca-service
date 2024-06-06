@@ -8,6 +8,8 @@ import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import java.util.List;
 
+import static com.google.common.collect.Lists.newArrayList;
+
 /**
  * Application properties.
  *
@@ -48,6 +50,12 @@ public class AppProperties {
     private TokenValidityProperties changeEmail = new TokenValidityProperties();
 
     /**
+     * Security properties
+     */
+    @NotNull
+    private SecurityProperties security = new SecurityProperties();
+
+    /**
      * Token validity properties
      */
     @Data
@@ -70,5 +78,14 @@ public class AppProperties {
          * Token url
          */
         private String url;
+    }
+
+    @Data
+    public static class SecurityProperties {
+
+        /**
+         * Whitelist urls
+         */
+        private List<String> whitelistUrls = newArrayList();
     }
 }

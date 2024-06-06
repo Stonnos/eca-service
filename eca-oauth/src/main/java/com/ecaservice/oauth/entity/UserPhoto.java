@@ -45,6 +45,7 @@ public class UserPhoto {
      */
     @Basic(fetch = FetchType.LAZY)
     @Lob
+    //TODO fix user photo type
   //  @Type(v = "org.hibernate.type.BinaryType")
     private byte[] photo;
 

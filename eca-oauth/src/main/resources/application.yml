@@ -46,6 +46,10 @@ app:
     validityMinutes: 15
   changeEmail:
     validityMinutes: 2880
+  security:
+    whitelistUrls:
+      - /api/internal/**
+      - /reset-password/**
 
 mail:
   client:

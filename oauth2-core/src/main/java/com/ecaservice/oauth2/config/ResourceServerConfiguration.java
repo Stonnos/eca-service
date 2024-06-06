@@ -1,4 +1,4 @@
-package com.ecaservice.oauth2;
+package com.ecaservice.oauth2.config;
 
 import com.ecaservice.oauth2.config.AuthServerProperties;
 import com.ecaservice.oauth2.config.ResourceServerProperties;

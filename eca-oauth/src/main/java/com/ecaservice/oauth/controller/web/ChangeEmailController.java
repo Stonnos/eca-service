@@ -4,7 +4,6 @@ import com.ecaservice.common.error.model.ValidationErrorDto;
 import com.ecaservice.oauth.event.model.ChangeEmailRequestEmailEvent;
 import com.ecaservice.oauth.event.model.EmailChangedEmailEvent;
 import com.ecaservice.oauth.service.ChangeEmailService;
-import com.ecaservice.user.model.UserDetailsImpl;
 import com.ecaservice.web.dto.model.ChangeEmailRequestStatusDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -15,12 +14,13 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.Size;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -28,8 +28,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.Size;
+import java.security.Principal;
 
 import static com.ecaservice.config.swagger.OpenApi30Configuration.ECA_AUTHENTICATION_SECURITY_SCHEME;
 import static com.ecaservice.config.swagger.OpenApi30Configuration.SCOPE_WEB;
@@ -57,8 +56,8 @@ public class ChangeEmailController {
     /**
      * Creates change email request.
      *
-     * @param userDetails - user details
-     * @param newEmail    - new email
+     * @param principal - principal object
+     * @param newEmail  - new email
      * @return change email requests status dto
      */
     @PreAuthorize("hasAuthority('SCOPE_web')")
@@ -105,16 +104,16 @@ public class ChangeEmailController {
             }
     )
     @PostMapping(value = "/request")
-    public ChangeEmailRequestStatusDto createChangeEmailRequest(@AuthenticationPrincipal UserDetailsImpl userDetails,
+    public ChangeEmailRequestStatusDto createChangeEmailRequest(Principal principal,
                                                                 @Parameter(description = "User email", required = true)
                                                                 @Email(regexp = EMAIL_REGEX)
                                                                 @Size(min = VALUE_1, max = EMAIL_MAX_SIZE) @RequestParam
                                                                 String newEmail) {
-        log.info("Received change email request for user [{}]", userDetails.getId());
-        var tokenModel = changeEmailService.createChangeEmailRequest(userDetails.getId(), newEmail);
+        log.info("Received change email request for user [{}]", principal.getName());
+        var tokenModel = changeEmailService.createChangeEmailRequest(principal.getName(), newEmail);
         applicationEventPublisher.publishEvent(new ChangeEmailRequestEmailEvent(this, tokenModel, newEmail));
         log.info("Change email request [{}] has been processed for user [{}]", tokenModel.getToken(),
-                userDetails.getId());
+                principal.getName());
         return ChangeEmailRequestStatusDto.builder()
                 .token(tokenModel.getToken())
                 .active(true)
@@ -175,7 +174,7 @@ public class ChangeEmailController {
     /**
      * Gets change email request status.
      *
-     * @param userDetails - user details
+     * @param principal - principal object
      */
     @PreAuthorize("hasAuthority('SCOPE_web')")
     @Operation(
@@ -209,9 +208,8 @@ public class ChangeEmailController {
             }
     )
     @GetMapping(value = "/request-status")
-    public ChangeEmailRequestStatusDto getChangeEmailRequestStatus(
-            @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        log.info("Received get change email request status for user [{}]", userDetails.getId());
-        return changeEmailService.getChangeEmailRequestStatus(userDetails.getId());
+    public ChangeEmailRequestStatusDto getChangeEmailRequestStatus(Principal principal) {
+        log.info("Received get change email request status for user [{}]", principal.getName());
+        return changeEmailService.getChangeEmailRequestStatus(principal.getName());
     }
 }

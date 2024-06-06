@@ -5,7 +5,6 @@ import com.ecaservice.oauth.dto.ChangePasswordRequest;
 import com.ecaservice.oauth.event.model.ChangePasswordRequestEmailEvent;
 import com.ecaservice.oauth.event.model.PasswordChangedEmailEvent;
 import com.ecaservice.oauth.service.ChangePasswordService;
-import com.ecaservice.user.model.UserDetailsImpl;
 import com.ecaservice.web.dto.model.ChangePasswordRequestStatusDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -16,12 +15,13 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Size;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -30,8 +30,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import jakarta.validation.Valid;
-import jakarta.validation.constraints.Size;
+import java.security.Principal;
 
 import static com.ecaservice.config.swagger.OpenApi30Configuration.ECA_AUTHENTICATION_SECURITY_SCHEME;
 import static com.ecaservice.config.swagger.OpenApi30Configuration.SCOPE_WEB;
@@ -57,7 +56,7 @@ public class ChangePasswordController {
     /**
      * Creates change password request.
      *
-     * @param userDetails           - user details
+     * @param principal             - principal object
      * @param changePasswordRequest - change password request
      * @return change password request status dto
      */
@@ -113,13 +112,13 @@ public class ChangePasswordController {
     )
     @PostMapping(value = "/request")
     public ChangePasswordRequestStatusDto createChangePasswordRequest(
-            @AuthenticationPrincipal UserDetailsImpl userDetails,
+            Principal principal,
             @Valid @RequestBody ChangePasswordRequest changePasswordRequest) {
-        log.info("Received change password request for user [{}]", userDetails.getId());
-        var tokenModel = changePasswordService.createChangePasswordRequest(userDetails.getId(), changePasswordRequest);
+        log.info("Received change password request for user [{}]", principal.getName());
+        var tokenModel = changePasswordService.createChangePasswordRequest(principal.getName(), changePasswordRequest);
         applicationEventPublisher.publishEvent(new ChangePasswordRequestEmailEvent(this, tokenModel));
         log.info("Change password request [{}] has been processed for user [{}]", tokenModel.getToken(),
-                userDetails.getId());
+                principal.getName());
         return ChangePasswordRequestStatusDto.builder()
                 .token(tokenModel.getToken())
                 .active(true)
@@ -179,7 +178,7 @@ public class ChangePasswordController {
     /**
      * Gets change password request status.
      *
-     * @param userDetails - user details
+     * @param principal - principal object
      * @return change password request status dto
      */
     @PreAuthorize("hasAuthority('SCOPE_web')")
@@ -214,9 +213,8 @@ public class ChangePasswordController {
             }
     )
     @GetMapping(value = "/request-status")
-    public ChangePasswordRequestStatusDto getChangePasswordRequestStatus(
-            @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        log.info("Received get change password request status for user [{}]", userDetails.getId());
-        return changePasswordService.getChangePasswordRequestStatus(userDetails.getId());
+    public ChangePasswordRequestStatusDto getChangePasswordRequestStatus(Principal principal) {
+        log.info("Received get change password request status for user [{}]", principal.getName());
+        return changePasswordService.getChangePasswordRequestStatus(principal.getName());
     }
 }

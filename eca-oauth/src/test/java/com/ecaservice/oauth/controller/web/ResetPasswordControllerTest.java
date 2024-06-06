@@ -36,7 +36,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(controllers = ResetPasswordController.class)
 class ResetPasswordControllerTest {
 
-    private static final String BASE_URL = "/password";
+    private static final String BASE_URL = "/reset-password";
     private static final String CREATE_RESET_PASSWORD_REQUEST_URL = BASE_URL + "/create-reset-request";
     private static final String RESET_URL = BASE_URL + "/reset";
     private static final String VERIFY_TOKEN_URL = BASE_URL + "/verify-token";

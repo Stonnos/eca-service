@@ -55,7 +55,7 @@ abstract class AbstractUserIT {
     private static final String PASSWORD_PARAM = "password";
     private final String GRANT_TYPE_PASSWORD = "password";
 
-    static final String TOKEN_URL = "/oauth/token";
+    static final String TOKEN_URL = "/oauth2/token";
     static final String BASIC_FORMAT = "Basic %s";
     static final String BEARER_FORMAT = "Bearer %s";
     static final String GRANT_TYPE_PARAM = "grant_type";
