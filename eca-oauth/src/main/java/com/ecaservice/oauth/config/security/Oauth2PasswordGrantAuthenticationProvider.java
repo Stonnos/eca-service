@@ -83,7 +83,7 @@ public class Oauth2PasswordGrantAuthenticationProvider implements Authentication
 
         OAuth2TokenContext tokenContext = tokenContextBuilder.build();
 
-        log.info("Starting to generate access token for user [{}]", oauth2PasswordAuthenticationToken.getUsername());
+        log.info("Starting to generate access token for user [{}]", authenticatedUser.getName());
         OAuth2Token generatedAccessToken = this.tokenGenerator.generate(tokenContext);
         if (generatedAccessToken == null) {
             OAuth2Error error = new OAuth2Error(OAuth2ErrorCodes.SERVER_ERROR,
@@ -93,7 +93,7 @@ public class Oauth2PasswordGrantAuthenticationProvider implements Authentication
         OAuth2AccessToken accessToken = new OAuth2AccessToken(OAuth2AccessToken.TokenType.BEARER,
                 generatedAccessToken.getTokenValue(), generatedAccessToken.getIssuedAt(),
                 generatedAccessToken.getExpiresAt(), tokenContext.getAuthorizedScopes());
-        log.info("Access token has been generated for user [{}]", oauth2PasswordAuthenticationToken.getUsername());
+        log.info("Access token has been generated for user [{}]", authenticatedUser.getName());
 
         // Initialize the OAuth2Authorization
         OAuth2Authorization.Builder authorizationBuilder = OAuth2Authorization.withRegisteredClient(registeredClient)
@@ -106,7 +106,7 @@ public class Oauth2PasswordGrantAuthenticationProvider implements Authentication
             authorizationBuilder.token(accessToken,
                     (metadata) -> metadata.put(OAuth2Authorization.Token.CLAIMS_METADATA_NAME, claims));
             log.info("Claims {} has been set for user [{}] access token",
-                    oauth2PasswordAuthenticationToken.getUsername(), claims);
+                    authenticatedUser.getName(), claims);
         } else {
             authorizationBuilder.accessToken(accessToken);
         }
@@ -114,8 +114,7 @@ public class Oauth2PasswordGrantAuthenticationProvider implements Authentication
         // Generates refresh token
         OAuth2RefreshToken refreshToken = null;
         if (registeredClient.getAuthorizationGrantTypes().contains(AuthorizationGrantType.REFRESH_TOKEN)) {
-            log.info("Starting to generate refresh token for user [{}]",
-                    oauth2PasswordAuthenticationToken.getUsername());
+            log.info("Starting to generate refresh token for user [{}]", authenticatedUser.getName());
             tokenContext = tokenContextBuilder.tokenType(OAuth2TokenType.REFRESH_TOKEN).build();
             refreshToken = this.refreshTokenGenerator.generate(tokenContext);
             if (refreshToken == null) {
@@ -124,21 +123,20 @@ public class Oauth2PasswordGrantAuthenticationProvider implements Authentication
                 throw new OAuth2AuthenticationException(error);
             }
             authorizationBuilder.refreshToken(refreshToken);
-            log.info("Refresh token has been generated for user [{}]", oauth2PasswordAuthenticationToken.getUsername());
+            log.info("Refresh token has been generated for user [{}]", authenticatedUser.getName());
         }
 
         OAuth2Authorization authorization = authorizationBuilder.build();
         // Save the OAuth2Authorization
-        log.info("Starting to save the OAuth2Authorization for user [{}]",
-                oauth2PasswordAuthenticationToken.getUsername());
+        log.info("Starting to save the OAuth2Authorization for user [{}]", authenticatedUser.getName());
         this.authorizationService.save(authorization);
         log.info("OAuth2Authorization has been saved for user [{}] with: scopes [{}], claims {}",
-                oauth2PasswordAuthenticationToken.getUsername(), authorization.getAccessToken().getToken().getScopes(),
+                authenticatedUser.getName(), authorization.getAccessToken().getToken().getScopes(),
                 authorization.getAccessToken().getClaims());
         var oAuth2AccessTokenAuthenticationToken =
                 new OAuth2AccessTokenAuthenticationToken(registeredClient, authenticatedUser, accessToken,
                         refreshToken);
-        log.info("User [{}] has been authenticated", oauth2PasswordAuthenticationToken.getUsername());
+        log.info("User [{}] has been authenticated", authenticatedUser.getName());
         return oAuth2AccessTokenAuthenticationToken;
     }
 
