@@ -43,9 +43,6 @@ external-api:
   classifierDownloadUrlExpirationDays: 7
   delaySeconds: 10
 
-classifiers-options:
-  maximumFractionDigits: 4
-
 queue:
   evaluationRequestQueue: evaluation-request-queue
   experimentRequestQueue: experiment-request-queue

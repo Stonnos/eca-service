@@ -60,7 +60,7 @@ public class ExternalApiController {
      * @param evaluationRequestDto - evaluation request dto.
      * @return evaluation response object
      */
-    @PreAuthorize("#oauth2.hasScope('external-api')")
+    @PreAuthorize("hasAuthority('SCOPE_external-api')")
     @Operation(
             description = "Processes evaluation request",
             summary = "Processes evaluation request",
@@ -127,7 +127,7 @@ public class ExternalApiController {
      * @param instancesRequestDto - instances request dto
      * @return evaluation response object
      */
-    @PreAuthorize("#oauth2.hasScope('external-api')")
+    @PreAuthorize("hasAuthority('SCOPE_external-api')")
     @Operation(
             description = "Processes evaluation request using optimal classifier model",
             summary = "Processes evaluation request using optimal classifier model",
@@ -192,7 +192,7 @@ public class ExternalApiController {
      * @param experimentRequestDto - evaluation request dto.
      * @return evaluation response mono object
      */
-    @PreAuthorize("#oauth2.hasScope('external-api')")
+    @PreAuthorize("hasAuthority('SCOPE_external-api')")
     @Operation(
             description = "Creates experiment request",
             summary = "Creates experiment request",
@@ -256,7 +256,7 @@ public class ExternalApiController {
      *
      * @param requestId - request id
      */
-    @PreAuthorize("#oauth2.hasScope('external-api')")
+    @PreAuthorize("hasAuthority('SCOPE_external-api')")
     @Operation(
             description = "Gets evaluation results response",
             summary = "Gets evaluation results response",
@@ -312,7 +312,7 @@ public class ExternalApiController {
      *
      * @param requestId - request id
      */
-    @PreAuthorize("#oauth2.hasScope('external-api')")
+    @PreAuthorize("hasAuthority('SCOPE_external-api')")
     @Operation(
             description = "Gets experiment results response",
             summary = "Gets evaluation results response",
