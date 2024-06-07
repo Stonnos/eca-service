@@ -112,10 +112,9 @@ export class UsersService {
   }
 
   public logoutRequest(): Observable<any> {
-    const headers = new HttpHeaders({
-      'Authorization': Utils.getBearerTokenHeader()
-    });
-    return this.http.post(this.serviceUrl + '/logout', null, { headers: headers });
+    const formData = new FormData();
+    formData.append('token', Utils.getBearerTokenHeader());
+    return this.http.post(environment.oauthUrl + '/oauth2/revoke', formData);
   }
 
   public setPushEnabled(enabled: boolean) {
