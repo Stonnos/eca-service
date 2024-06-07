@@ -318,11 +318,11 @@ public class UserService {
     public void deletePhoto(String user) {
         log.info("Starting to delete user [{}] photo", user);
         UserEntity userEntity = getByLogin(user);
-        UserPhoto userPhoto = userPhotoRepository.findByUserEntity(userEntity);
-        if (userPhoto == null) {
+        Long userPhotoId = userPhotoRepository.getUserPhotoId(userEntity);
+        if (userPhotoId == null) {
             throw new EntityNotFoundException(UserPhoto.class, String.format("User %d", userEntity.getId()));
         }
-        userPhotoRepository.delete(userPhoto);
+        userPhotoRepository.deleteById(userPhotoId);
         log.info("User [{}] photo has been deleted", user);
     }
 
