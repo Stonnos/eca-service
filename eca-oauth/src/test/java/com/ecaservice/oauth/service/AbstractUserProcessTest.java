@@ -27,6 +27,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpHeaders;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -88,6 +89,8 @@ abstract class AbstractUserProcessTest {
     private ResetPasswordRequestRepository resetPasswordRequestRepository;
     @Autowired
     private ChangePasswordRequestRepository changePasswordRequestRepository;
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
 
     @Getter
     @Autowired
@@ -142,7 +145,6 @@ abstract class AbstractUserProcessTest {
                 .build();
     }
 
-    //TODO исправить интеграционные тесты
     @SneakyThrows
     TokenResponse obtainOauth2Token() {
         WebClient tokenClient = createWebClient(StringUtils.EMPTY);
@@ -194,5 +196,9 @@ abstract class AbstractUserProcessTest {
         String value = emailRequest.getVariables().get(variable);
         assertThat(value).isNotNull();
         return value;
+    }
+
+    Integer countTokens() {
+        return jdbcTemplate.queryForObject("select count(*) from oauth2_authorization", Integer.class);
     }
 }

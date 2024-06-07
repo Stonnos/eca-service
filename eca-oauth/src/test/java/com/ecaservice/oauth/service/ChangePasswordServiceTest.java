@@ -57,7 +57,7 @@ class ChangePasswordServiceTest extends AbstractJpaTest {
     private ChangePasswordRequestRepository changePasswordRequestRepository;
 
     @MockBean
-    private Oauth2TokenService oauth2TokenService;
+    private Oauth2RevokeTokenService oauth2RevokeTokenService;
 
     private ChangePasswordService changePasswordService;
 
@@ -68,7 +68,7 @@ class ChangePasswordServiceTest extends AbstractJpaTest {
     @Override
     public void init() {
         passwordEncoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
-        changePasswordService = new ChangePasswordService(appProperties, passwordEncoder, oauth2TokenService,
+        changePasswordService = new ChangePasswordService(appProperties, passwordEncoder, oauth2RevokeTokenService,
                 passwordValidationService, changePasswordRequestRepository, userEntityRepository);
         userEntity = createAndSaveUser();
     }
@@ -170,7 +170,7 @@ class ChangePasswordServiceTest extends AbstractJpaTest {
         assertThat(actual.getConfirmationDate()).isNotNull();
         assertThat(actual.getUserEntity().getPasswordChangeDate()).isNotNull();
         assertThat(actual.getUserEntity().getPassword()).isEqualTo(changePasswordRequestEntity.getNewPassword());
-        verify(oauth2TokenService, atLeastOnce()).revokeTokens(any(UserEntity.class));
+        verify(oauth2RevokeTokenService, atLeastOnce()).revokeTokens(any(UserEntity.class));
     }
 
     @Test

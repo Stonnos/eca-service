@@ -83,7 +83,7 @@ class UserServiceTest extends AbstractJpaTest {
     private UserPhotoRepository userPhotoRepository;
 
     @MockBean
-    private Oauth2TokenService oauth2TokenService;
+    private Oauth2RevokeTokenService oauth2RevokeTokenService;
     @MockBean
     private UserProfileOptionsConfigurationService userProfileOptionsConfigurationService;
     @MockBean
@@ -97,7 +97,7 @@ class UserServiceTest extends AbstractJpaTest {
     public void init() {
         roleRepository.save(createRoleEntity());
         PasswordEncoder passwordEncoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
-        userService = new UserService(appProperties, passwordEncoder, userMapper, oauth2TokenService,
+        userService = new UserService(appProperties, passwordEncoder, userMapper, oauth2RevokeTokenService,
                 userProfileOptionsConfigurationService, userProfileOptionsDataEventService, filterTemplateService,
                 userEntityRepository, roleRepository, userPhotoRepository);
         when(filterTemplateService.getGlobalFilterFields(USERS_TEMPLATE)).thenReturn(
@@ -347,7 +347,7 @@ class UserServiceTest extends AbstractJpaTest {
         UserEntity actual = userEntityRepository.findById(userEntity.getId()).orElse(null);
         assertThat(actual).isNotNull();
         assertThat(actual.isLocked()).isTrue();
-        verify(oauth2TokenService, atLeastOnce()).revokeTokens(any(UserEntity.class));
+        verify(oauth2RevokeTokenService, atLeastOnce()).revokeTokens(any(UserEntity.class));
     }
 
     @Test

@@ -17,7 +17,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  *
  * @author Roman Batygin
  */
-class ResetPasswordTest extends AbstractUserProcessTest {
+class ResetPasswordProcessTest extends AbstractUserProcessTest {
 
     private static final String NEW_PASSWORD = "545NewPa6word!#890";
     private static final String TOKEN_PARAM = "token";
@@ -72,6 +72,6 @@ class ResetPasswordTest extends AbstractUserProcessTest {
         //Verify that password has been changed
         assertThat(passwordEncoder.matches(NEW_PASSWORD, actualUser.getPassword())).isTrue();
         //Verify that all tokens has been revoked
-        //TODO Verify that all tokens has been revoked
+        assertThat(countTokens()).isZero();
     }
 }

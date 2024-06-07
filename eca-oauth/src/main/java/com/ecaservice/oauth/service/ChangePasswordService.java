@@ -42,7 +42,7 @@ public class ChangePasswordService {
 
     private final AppProperties appProperties;
     private final PasswordEncoder passwordEncoder;
-    private final Oauth2TokenService oauth2TokenService;
+    private final Oauth2RevokeTokenService oauth2RevokeTokenService;
     private final PasswordValidationService passwordValidationService;
     private final ChangePasswordRequestRepository changePasswordRequestRepository;
     private final UserEntityRepository userEntityRepository;
@@ -116,7 +116,7 @@ public class ChangePasswordService {
         changePasswordRequestEntity.setConfirmationDate(LocalDateTime.now());
         userEntityRepository.save(userEntity);
         changePasswordRequestRepository.save(changePasswordRequestEntity);
-        oauth2TokenService.revokeTokens(userEntity);
+        oauth2RevokeTokenService.revokeTokens(userEntity);
         log.info("New password has been set for user [{}], change password request [{}]", userEntity.getId(),
                 changePasswordRequestEntity.getToken());
         return changePasswordRequestEntity;

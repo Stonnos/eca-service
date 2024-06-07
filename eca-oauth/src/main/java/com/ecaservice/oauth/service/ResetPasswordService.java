@@ -40,7 +40,7 @@ public class ResetPasswordService {
 
     private final AppProperties appProperties;
     private final PasswordEncoder passwordEncoder;
-    private final Oauth2TokenService oauth2TokenService;
+    private final Oauth2RevokeTokenService oauth2RevokeTokenService;
     private final PasswordValidationService passwordValidationService;
     private final ResetPasswordRequestRepository resetPasswordRequestRepository;
     private final UserEntityRepository userEntityRepository;
@@ -114,7 +114,7 @@ public class ResetPasswordService {
         resetPasswordRequestEntity.setResetDate(LocalDateTime.now());
         userEntityRepository.save(userEntity);
         resetPasswordRequestRepository.save(resetPasswordRequestEntity);
-        oauth2TokenService.revokeTokens(userEntity);
+        oauth2RevokeTokenService.revokeTokens(userEntity);
         log.info("New password has been set for user [{}], reset password request id [{}]", userEntity.getId(),
                 resetPasswordRequestEntity.getId());
         return resetPasswordRequestEntity;

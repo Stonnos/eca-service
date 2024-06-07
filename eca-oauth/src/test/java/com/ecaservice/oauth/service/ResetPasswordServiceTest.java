@@ -55,7 +55,7 @@ class ResetPasswordServiceTest extends AbstractJpaTest {
     private ResetPasswordRequestRepository resetPasswordRequestRepository;
 
     @MockBean
-    private Oauth2TokenService oauth2TokenService;
+    private Oauth2RevokeTokenService oauth2RevokeTokenService;
 
     private PasswordEncoder passwordEncoder;
 
@@ -66,7 +66,7 @@ class ResetPasswordServiceTest extends AbstractJpaTest {
     @Override
     public void init() {
         passwordEncoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
-        resetPasswordService = new ResetPasswordService(appProperties, passwordEncoder, oauth2TokenService,
+        resetPasswordService = new ResetPasswordService(appProperties, passwordEncoder, oauth2RevokeTokenService,
                 passwordValidationService, resetPasswordRequestRepository, userEntityRepository);
         userEntity = createAndSaveUser();
     }
@@ -159,7 +159,7 @@ class ResetPasswordServiceTest extends AbstractJpaTest {
         assertThat(actual.getResetDate()).isNotNull();
         assertThat(actual.getUserEntity().getPasswordChangeDate()).isNotNull();
         assertThat(actual.getUserEntity().getPassword()).isNotNull();
-        verify(oauth2TokenService, atLeastOnce()).revokeTokens(any(UserEntity.class));
+        verify(oauth2RevokeTokenService, atLeastOnce()).revokeTokens(any(UserEntity.class));
     }
 
     @Test

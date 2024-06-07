@@ -74,7 +74,7 @@ public class UserService {
     private final AppProperties appProperties;
     private final PasswordEncoder passwordEncoder;
     private final UserMapper userMapper;
-    private final Oauth2TokenService oauth2TokenService;
+    private final Oauth2RevokeTokenService oauth2RevokeTokenService;
     private final UserProfileOptionsConfigurationService userProfileOptionsConfigurationService;
     private final UserProfileOptionsDataEventService userProfileOptionsDataEventService;
     private final FilterTemplateService filterTemplateService;
@@ -260,7 +260,7 @@ public class UserService {
         }
         userEntity.setLocked(true);
         userEntityRepository.save(userEntity);
-        oauth2TokenService.revokeTokens(userEntity);
+        oauth2RevokeTokenService.revokeTokens(userEntity);
         log.info("User [{}] has been locked", userId);
         return userEntity;
     }
