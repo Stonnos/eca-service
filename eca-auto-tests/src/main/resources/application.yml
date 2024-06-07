@@ -2,6 +2,12 @@ spring:
   application:
     name: eca-auto-tests
   ## Auto tests datasource properties
+  jpa:
+    properties:
+      hibernate:
+        id:
+          ## Use one hibernate_sequence for all entities
+          db_structure_naming_strategy: legacy
   datasource:
     driver-class-name: org.postgresql.Driver
     jdbc-url: jdbc:postgresql://localhost:5433/eca_auto_tests
@@ -9,7 +15,6 @@ spring:
     password: postgres
     jpa:
       ddlAuto: update
-      databasePlatform: org.hibernate.dialect.PostgreSQL9Dialect
   ## Eca server datasource properties
   ecaserverdatasource:
     driver-class-name: org.postgresql.Driver
@@ -18,7 +23,6 @@ spring:
     password: postgres
     jpa:
       ddlAuto: validate
-      databasePlatform: org.hibernate.dialect.PostgreSQL9Dialect
   cache:
     cache-names: instances
     caffeine:

@@ -36,7 +36,7 @@ public class OpenApi30Configuration {
     private static final String ECA_AUTHENTICATION_SECURITY_DESCRIPTION = "Oauth2 authentication";
     private static final String BEARER_ACCESS_TOKEN = "Authorization: Bearer <access token>";
 
-    private static final String TOKEN_URL_FORMAT = "%s/oauth/token";
+    private static final String TOKEN_URL_FORMAT = "%s/oauth2/token";
 
     private final OpenApiProperties openApiProperties;
 

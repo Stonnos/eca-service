@@ -13,7 +13,6 @@ spring:
   jpa:
     hibernate:
       ddl-auto: validate
-    database-platform: org.hibernate.dialect.PostgreSQL9Dialect
   rabbitmq:
     host: rabbitmq
   data:

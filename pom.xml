@@ -101,19 +101,16 @@
         <commons.io.version>2.13.0</commons.io.version>
         <org.apache.commons.lang3.version>3.10</org.apache.commons.lang3.version>
         <jakarta-validation-api.version>3.0.2</jakarta-validation-api.version>
-        <swagger-annotations.version>2.2.9</swagger-annotations.version>
+        <swagger-annotations.version>2.2.15</swagger-annotations.version>
         <open-api-webmvc-ui.version>2.2.0</open-api-webmvc-ui.version>
         <guava.version>32.1.1-jre</guava.version>
         <feign.version>11.10</feign.version>
         <janino.version>3.1.7</janino.version>
         <jacoco-plugin.version>0.8.10</jacoco-plugin.version>
         <jacoco.minCoverage>0.0</jacoco.minCoverage>
-        <!-- TODO registry prometheus version -->
         <micrometer-registry-prometheus.version>1.12.4</micrometer-registry-prometheus.version>
         <hibernate-validator.version>6.2.5.Final</hibernate-validator.version>
         <commons.csv.version>1.10.0</commons.csv.version>
-        <!-- TODO review client type -->
-        <jedis-client.version>3.8.0</jedis-client.version>
         <feign-micrometer.version>13.2.1</feign-micrometer.version>
         <spring-cloud-starter-openfeign.version>4.1.1</spring-cloud-starter-openfeign.version>
         <spring-cloud-starter-netflix-eureka-client.version>4.1.1</spring-cloud-starter-netflix-eureka-client.version>
@@ -169,11 +166,6 @@
                 <groupId>org.apache.commons</groupId>
                 <artifactId>commons-csv</artifactId>
                 <version>${commons.csv.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>redis.clients</groupId>
-                <artifactId>jedis</artifactId>
-                <version>${jedis-client.version}</version>
             </dependency>
             <dependency>
                 <groupId>io.github.openfeign</groupId>

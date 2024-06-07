@@ -17,9 +17,11 @@ spring:
   jpa:
     hibernate:
       ddl-auto: validate
-    database-platform: org.hibernate.dialect.PostgreSQL9Dialect
     properties:
       hibernate:
+        id:
+          ## Use one hibernate_sequence for all entities
+          db_structure_naming_strategy: legacy
         jdbc:
           lob:
             non_contextual_creation: true
@@ -40,8 +42,6 @@ spring:
       max-file-size: 10MB
   data:
     redis:
-      ## TODO review client type
-      client-type: jedis
       repositories:
         enabled: false
   security:
