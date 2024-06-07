@@ -1,7 +1,5 @@
 package com.ecaservice.oauth2.config;
 
-import com.ecaservice.oauth2.config.AuthServerProperties;
-import com.ecaservice.oauth2.config.ResourceServerProperties;
 import com.ecaservice.oauth2.web.BearerTokenAuthenticationEntryPoint;
 import com.ecaservice.oauth2.web.CustomTokenIntrospector;
 import com.ecaservice.oauth2.web.SimpleBearerTokenResolver;
@@ -50,6 +48,8 @@ public class ResourceServerConfiguration {
     private static final String CHECK_TOKEN_ENDPOINT_FORMAT = "%s/oauth2/introspect";
     private static final int PUBLIC_ENDPOINTS_SECURITY_FILTER_ORDER = 0;
     private static final int RESOURCE_SERVER_SECURITY_FILTER_ORDER = 1;
+    private static final String SOCKET_URL = "/socket";
+    private static final String SCOPE_WEB = "SCOPE_web";
 
     private final AuthServerProperties authServerProperties;
     private final ResourceServerProperties resourceServerProperties;
@@ -100,13 +100,16 @@ public class ResourceServerConfiguration {
      */
     @Bean
     @Order(RESOURCE_SERVER_SECURITY_FILTER_ORDER)
-    public SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http)
+    public SecurityFilterChain resourceServerSecurityFilterChain(HttpSecurity http)
             throws Exception {
         http
                 .cors(AbstractHttpConfigurer::disable)
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authorize ->
-                        authorize.anyRequest().permitAll()
+                        authorize.requestMatchers(SOCKET_URL)
+                                .hasAuthority(SCOPE_WEB)
+                                .anyRequest()
+                                .permitAll()
                 )
                 .oauth2ResourceServer(c ->
                         c.authenticationEntryPoint(new BearerTokenAuthenticationEntryPoint())
