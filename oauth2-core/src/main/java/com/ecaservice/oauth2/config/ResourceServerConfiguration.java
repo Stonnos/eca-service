@@ -78,8 +78,8 @@ public class ResourceServerConfiguration {
     @Order(PUBLIC_ENDPOINTS_SECURITY_FILTER_ORDER)
     public SecurityFilterChain whitelistSecurityUrlsFilterChain(HttpSecurity http) throws Exception {
         List<String> whitelistUrls = newArrayList(COMMON_WHITELIST_URLS);
-        if (!CollectionUtils.isEmpty(resourceServerProperties.getWhitelistSecuredUrls())) {
-            whitelistUrls.addAll(resourceServerProperties.getWhitelistSecuredUrls());
+        if (!CollectionUtils.isEmpty(resourceServerProperties.getSecurity().getWhitelistUrls())) {
+            whitelistUrls.addAll(resourceServerProperties.getSecurity().getWhitelistUrls());
         }
         log.info("Resource server security whitelist urls: {}", whitelistUrls);
         http

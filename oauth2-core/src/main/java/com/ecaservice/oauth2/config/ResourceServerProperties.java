@@ -17,7 +17,19 @@ import static com.google.common.collect.Lists.newArrayList;
 public class ResourceServerProperties {
 
     /**
-     * Whitelist secured urls
+     * Security properties
      */
-    private List<String> whitelistSecuredUrls = newArrayList();
+    private SecurityProperties security = new SecurityProperties();
+
+    /**
+     * Security properties.
+     */
+    @Data
+    public static class SecurityProperties {
+
+        /**
+         * Whitelist urls
+         */
+        private List<String> whitelistUrls = newArrayList();
+    }
 }

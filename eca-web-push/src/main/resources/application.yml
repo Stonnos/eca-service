@@ -35,6 +35,12 @@ app:
     password: pa66word!
     salt: s@lt#
 
+resource:
+  server:
+    security:
+      whitelistUrls:
+        - /api/push/**
+
 auth-server:
   baseUrl: http://localhost:8085/eca-oauth
   clientId: eca_service_tech

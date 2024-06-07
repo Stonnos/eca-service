@@ -55,6 +55,12 @@ springdoc:
 ers:
   resultSize: 5
 
+resource:
+  server:
+    security:
+      whitelistUrls:
+        - /api/**
+
 auth-server:
   baseUrl: http://localhost:8085/eca-oauth
   clientId: eca_service_tech

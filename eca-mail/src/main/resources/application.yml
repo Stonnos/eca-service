@@ -63,6 +63,12 @@ springdoc:
       client-secret: swagger_secret
     disable-swagger-default-url: true
 
+resource:
+  server:
+    security:
+      whitelistUrls:
+        - /emails/**
+
 auth-server:
   baseUrl: http://localhost:8085/eca-oauth
   clientId: eca_service_tech

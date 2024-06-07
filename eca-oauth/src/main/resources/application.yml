@@ -48,7 +48,7 @@ app:
     validityMinutes: 2880
   security:
     whitelistUrls:
-      - /api/internal/**
+      - /api/internal/user/options/**
       - /reset-password/**
 
 mail:
