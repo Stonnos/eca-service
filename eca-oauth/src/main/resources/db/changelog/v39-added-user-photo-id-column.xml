@@ -21,6 +21,18 @@
         </addColumn>
     </changeSet>
 
+    <changeSet id="migrate_user_photo_ids" author="roman.batygin@mail.ru">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="user_entity"/>
+            <tableExists tableName="user_photo"/>
+        </preConditions>
+        <sqlFile path="sql/migrate-user-photo-ids.sql"
+                 dbms="postgresql"
+                 relativeToChangelogFile="true"
+                 splitStatements="false"
+                 stripComments="false"/>
+    </changeSet>
+
     <changeSet id="drop_user_photo_user_id_column" author="roman.batygin@mail.ru" context="schema">
         <preConditions onFail="MARK_RAN">
             <tableExists tableName="user_photo"/>
