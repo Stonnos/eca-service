@@ -103,7 +103,6 @@
         <jakarta-validation-api.version>3.0.2</jakarta-validation-api.version>
         <swagger-annotations.version>2.2.9</swagger-annotations.version>
         <open-api-webmvc-ui.version>2.2.0</open-api-webmvc-ui.version>
-        <open-api.version>1.7.0</open-api.version>
         <guava.version>32.1.1-jre</guava.version>
         <feign.version>11.10</feign.version>
         <janino.version>3.1.7</janino.version>
