@@ -1,4 +1,4 @@
-package com.ecaservice.oauth.integration;
+package com.ecaservice.oauth.service;
 
 import com.ecaservice.core.mail.client.service.EmailRequestSender;
 import com.ecaservice.notification.dto.EmailRequest;
@@ -12,7 +12,6 @@ import com.ecaservice.oauth.repository.RoleRepository;
 import com.ecaservice.oauth.repository.UserEntityRepository;
 import com.ecaservice.oauth.repository.UserNotificationEventOptionsRepository;
 import com.ecaservice.oauth.repository.UserProfileOptionsRepository;
-import com.ecaservice.oauth.service.UserService;
 import lombok.Getter;
 import lombok.SneakyThrows;
 import org.apache.commons.lang3.StringUtils;
@@ -48,7 +47,7 @@ import static org.mockito.Mockito.verify;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @EnableConfigurationProperties
 @TestPropertySource("classpath:application.properties")
-abstract class AbstractUserIT {
+abstract class AbstractUserProcessTest {
 
     private static final String BASE_URL_FORMAT = "http://localhost:%d/%s";
     private static final String USERNAME_PARAM = "username";

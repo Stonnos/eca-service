@@ -1,4 +1,4 @@
-package com.ecaservice.oauth.integration;
+package com.ecaservice.oauth.service;
 
 import com.ecaservice.oauth.dto.CreateResetPasswordRequest;
 import com.ecaservice.oauth.dto.ResetPasswordRequest;
@@ -17,7 +17,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  *
  * @author Roman Batygin
  */
-class ResetPasswordIT extends AbstractUserIT {
+class ResetPasswordTest extends AbstractUserProcessTest {
 
     private static final String NEW_PASSWORD = "545NewPa6word!#890";
     private static final String TOKEN_PARAM = "token";

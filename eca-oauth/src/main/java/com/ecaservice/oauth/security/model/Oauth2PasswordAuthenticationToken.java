@@ -1,4 +1,4 @@
-package com.ecaservice.oauth.config.security;
+package com.ecaservice.oauth.security.model;
 
 import lombok.Getter;
 import org.springframework.security.core.Authentication;

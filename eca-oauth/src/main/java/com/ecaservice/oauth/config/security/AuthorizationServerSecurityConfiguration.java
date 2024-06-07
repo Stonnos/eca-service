@@ -3,6 +3,14 @@ package com.ecaservice.oauth.config.security;
 import com.ecaservice.oauth.config.Oauth2RegisteredClient;
 import com.ecaservice.oauth.config.TfaConfig;
 import com.ecaservice.oauth.repository.UserEntityRepository;
+import com.ecaservice.oauth.security.OAuth2AuthenticationFailureErrorHandler;
+import com.ecaservice.oauth.security.OAuth2ErrorParametersConverter;
+import com.ecaservice.oauth.security.OAuth2TokenCustomizerImpl;
+import com.ecaservice.oauth.security.Oauth2AccessTokenService;
+import com.ecaservice.oauth.security.authentication.Oauth2PasswordGrantAuthenticationProvider;
+import com.ecaservice.oauth.security.authentication.Oauth2TfaCodeGrantAuthenticationProvider;
+import com.ecaservice.oauth.security.converter.Oauth2PasswordGrantAuthenticationConverter;
+import com.ecaservice.oauth.security.converter.Oauth2TfaCodeGrantAuthenticationConverter;
 import com.ecaservice.oauth.service.tfa.TfaCodeService;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -95,15 +103,17 @@ public class AuthorizationServerSecurityConfiguration {
     /**
      * Creates authorization server security filter chain
      *
-     * @param http                   - http security
-     * @param authenticationProvider - password authentication provider
+     * @param http                                - http security
+     * @param passwordGrantAuthenticationProvider - password authentication provider
+     * @param tfaCodeGrantAuthenticationProvider  - tfa code authentication provider
      * @return security filter chain
      * @throws Exception in case of error
      */
     @Bean
     @Order(AUTHORIZATION_SERVER_SECURITY_FILTER_ORDER)
     public SecurityFilterChain authorizationServerSecurityFilterChain(HttpSecurity http,
-                                                                      Oauth2PasswordGrantAuthenticationProvider authenticationProvider)
+                                                                      Oauth2PasswordGrantAuthenticationProvider passwordGrantAuthenticationProvider,
+                                                                      Oauth2TfaCodeGrantAuthenticationProvider tfaCodeGrantAuthenticationProvider)
             throws Exception {
         var authorizationServerConfigurer = new OAuth2AuthorizationServerConfigurer();
         var oAuth2AuthenticationFailureErrorHandler = createOAuth2AuthenticationFailureErrorHandler();
@@ -111,7 +121,9 @@ public class AuthorizationServerSecurityConfiguration {
                 .tokenEndpoint(tokenEndpoint ->
                         tokenEndpoint
                                 .accessTokenRequestConverter(new Oauth2PasswordGrantAuthenticationConverter())
-                                .authenticationProvider(authenticationProvider)
+                                .accessTokenRequestConverter(new Oauth2TfaCodeGrantAuthenticationConverter())
+                                .authenticationProvider(passwordGrantAuthenticationProvider)
+                                .authenticationProvider(tfaCodeGrantAuthenticationProvider)
                                 .errorResponseHandler(oAuth2AuthenticationFailureErrorHandler)
                 );
         RequestMatcher endpointsMatcher = authorizationServerConfigurer.getEndpointsMatcher();
@@ -137,29 +149,53 @@ public class AuthorizationServerSecurityConfiguration {
     }
 
     /**
+     * Creates oauth2 access token service.
+     *
+     * @param oAuth2AuthorizationService - oauth2 access token service
+     * @return oauth2 access token service
+     */
+    @Bean
+    public Oauth2AccessTokenService oauth2AccessTokenService(OAuth2AuthorizationService oAuth2AuthorizationService) {
+        var oAuth2AccessTokenGenerator = new OAuth2AccessTokenGenerator();
+        oAuth2AccessTokenGenerator.setAccessTokenCustomizer(new OAuth2TokenCustomizerImpl());
+        return new Oauth2AccessTokenService(oAuth2AuthorizationService, oAuth2AccessTokenGenerator,
+                new OAuth2RefreshTokenGenerator());
+    }
+
+    /**
      * Creates password grant authentication provider.
      *
-     * @param daoAuthenticationProvider  - dao authentication provider
-     * @param oAuth2AuthorizationService - oauth2 authorization service
-     * @param tfaConfig                  - tfa config
-     * @param tfaCodeService             - tfa code service
-     * @param userEntityRepository       - user entity repository
-     * @param applicationEventPublisher  - application event publisher
+     * @param daoAuthenticationProvider - dao authentication provider
+     * @param tfaConfig                 - tfa config
+     * @param tfaCodeService            - tfa code service
+     * @param userEntityRepository      - user entity repository
+     * @param applicationEventPublisher - application event publisher
+     * @param oauth2AccessTokenService  - oauth2 access token service
      * @return password grant authentication provider
      */
     @Bean
     public Oauth2PasswordGrantAuthenticationProvider passwordGrantAuthenticationProvider(
             AuthenticationProvider daoAuthenticationProvider,
-            OAuth2AuthorizationService oAuth2AuthorizationService,
             TfaConfig tfaConfig,
             TfaCodeService tfaCodeService,
             UserEntityRepository userEntityRepository,
-            ApplicationEventPublisher applicationEventPublisher) {
-        var oAuth2AccessTokenGenerator = new OAuth2AccessTokenGenerator();
-        oAuth2AccessTokenGenerator.setAccessTokenCustomizer(new OAuth2TokenCustomizerImpl());
-        return new Oauth2PasswordGrantAuthenticationProvider(oAuth2AuthorizationService, daoAuthenticationProvider,
-                oAuth2AccessTokenGenerator, new OAuth2RefreshTokenGenerator(), tfaConfig, tfaCodeService,
-                userEntityRepository, applicationEventPublisher);
+            ApplicationEventPublisher applicationEventPublisher,
+            Oauth2AccessTokenService oauth2AccessTokenService) {
+        return new Oauth2PasswordGrantAuthenticationProvider(daoAuthenticationProvider, tfaConfig, tfaCodeService,
+                userEntityRepository, applicationEventPublisher, oauth2AccessTokenService);
+    }
+
+    /**
+     * Creates password grant authentication provider.
+     *
+     * @param tfaCodeService           - tfa code service
+     * @param oauth2AccessTokenService - oauth2 access token service
+     * @return password grant authentication provider
+     */
+    @Bean
+    public Oauth2TfaCodeGrantAuthenticationProvider tfaCodeGrantAuthenticationProvider(TfaCodeService tfaCodeService,
+                                                                                       Oauth2AccessTokenService oauth2AccessTokenService) {
+        return new Oauth2TfaCodeGrantAuthenticationProvider(tfaCodeService, oauth2AccessTokenService);
     }
 
     /**

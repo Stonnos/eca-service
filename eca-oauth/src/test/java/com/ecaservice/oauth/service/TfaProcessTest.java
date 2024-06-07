@@ -1,4 +1,4 @@
-package com.ecaservice.oauth.integration;
+package com.ecaservice.oauth.service;
 
 import com.ecaservice.oauth.entity.UserEntity;
 import com.ecaservice.oauth.model.TfaRequiredResponse;
@@ -21,7 +21,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  *
  * @author Roman Batygin
  */
-class TfaIT extends AbstractUserIT {
+class TfaProcessTest extends AbstractUserProcessTest {
 
     private static final String TOKEN_PARAM = "token";
     private static final String TFA_CODE_PARAM = "tfa_code";

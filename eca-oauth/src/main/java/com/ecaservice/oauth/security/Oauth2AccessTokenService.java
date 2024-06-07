@@ -1,19 +1,7 @@
-package com.ecaservice.oauth.config.security;
+package com.ecaservice.oauth.security;
 
-import com.ecaservice.oauth.config.TfaConfig;
-import com.ecaservice.oauth.event.model.TfaCodeEmailEvent;
-import com.ecaservice.oauth.exception.ChangePasswordRequiredException;
-import com.ecaservice.oauth.exception.TfaRequiredException;
-import com.ecaservice.oauth.repository.UserEntityRepository;
-import com.ecaservice.oauth.service.tfa.TfaCodeService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.security.authentication.AccountStatusException;
-import org.springframework.security.authentication.AuthenticationProvider;
-import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.oauth2.core.AuthorizationGrantType;
@@ -39,47 +27,42 @@ import org.springframework.security.oauth2.server.authorization.token.OAuth2Toke
 import java.security.Principal;
 
 /**
- * Oauth2 password grant authentication provider.
+ * Oauth2 access token service.
  *
  * @author Roman Batygin
  */
 @Slf4j
 @RequiredArgsConstructor
-public class Oauth2PasswordGrantAuthenticationProvider implements AuthenticationProvider {
+public class Oauth2AccessTokenService {
 
     private final OAuth2AuthorizationService authorizationService;
-    private final AuthenticationProvider authenticationProvider;
     private final OAuth2AccessTokenGenerator tokenGenerator;
     private final OAuth2RefreshTokenGenerator refreshTokenGenerator;
-    private final TfaConfig tfaConfig;
-    private final TfaCodeService tfaCodeService;
-    private final UserEntityRepository userEntityRepository;
-    private final ApplicationEventPublisher applicationEventPublisher;
 
-    @Override
-    public Authentication authenticate(Authentication authentication) throws AuthenticationException {
-        Oauth2PasswordAuthenticationToken oauth2PasswordAuthenticationToken =
-                (Oauth2PasswordAuthenticationToken) authentication;
-        log.info("Starting to authenticate user [{}]", oauth2PasswordAuthenticationToken.getUsername());
-        // Ensure the client is authenticated
-        OAuth2ClientAuthenticationToken clientPrincipal =
-                getAuthenticatedClientElseThrowInvalidClient(oauth2PasswordAuthenticationToken);
+    /**
+     * Creates access token.
+     *
+     * @param authenticationGrant - authentication grant object
+     * @param authenticatedUser   - authenticated user
+     * @param clientPrincipal     - client principal
+     * @param grantType           - grant type
+     * @return authentication object
+     * @throws AuthenticationException in case of authentication error
+     */
+    public Authentication createAccessToken(Authentication authenticationGrant,
+                                            Authentication authenticatedUser,
+                                            OAuth2ClientAuthenticationToken clientPrincipal,
+                                            AuthorizationGrantType grantType) throws AuthenticationException {
         RegisteredClient registeredClient = clientPrincipal.getRegisteredClient();
-        // Ensure the client is configured to use this authorization grant type
-        if (!registeredClient.getAuthorizationGrantTypes().contains(AuthorizationGrantType.PASSWORD)) {
-            throw new OAuth2AuthenticationException(OAuth2ErrorCodes.UNAUTHORIZED_CLIENT);
-        }
-        Authentication authenticatedUser = authenticateUser(oauth2PasswordAuthenticationToken);
-        postAuthenticateUserAdditionalChecks(authenticatedUser);
         // Generate the access token
         DefaultOAuth2TokenContext.Builder tokenContextBuilder = DefaultOAuth2TokenContext.builder()
                 .registeredClient(registeredClient)
                 .principal(authenticatedUser)
                 .authorizationServerContext(AuthorizationServerContextHolder.getContext())
                 .tokenType(OAuth2TokenType.ACCESS_TOKEN)
-                .authorizationGrantType(AuthorizationGrantType.PASSWORD)
+                .authorizationGrantType(grantType)
                 .authorizedScopes(registeredClient.getScopes())
-                .authorizationGrant(oauth2PasswordAuthenticationToken);
+                .authorizationGrant(authenticationGrant);
 
         OAuth2TokenContext tokenContext = tokenContextBuilder.build();
 
@@ -100,13 +83,12 @@ public class Oauth2PasswordGrantAuthenticationProvider implements Authentication
                 .principalName(authenticatedUser.getName())
                 .attribute(Principal.class.getName(), authenticatedUser)
                 .authorizedScopes(registeredClient.getScopes())
-                .authorizationGrantType(AuthorizationGrantType.PASSWORD);
+                .authorizationGrantType(grantType);
         if (generatedAccessToken instanceof ClaimAccessor) {
             var claims = ((ClaimAccessor) generatedAccessToken).getClaims();
             authorizationBuilder.token(accessToken,
                     (metadata) -> metadata.put(OAuth2Authorization.Token.CLAIMS_METADATA_NAME, claims));
-            log.info("Claims {} has been set for user [{}] access token",
-                    authenticatedUser.getName(), claims);
+            log.info("Claims {} has been set for user [{}] access token", authenticatedUser.getName(), claims);
         } else {
             authorizationBuilder.accessToken(accessToken);
         }
@@ -139,55 +121,4 @@ public class Oauth2PasswordGrantAuthenticationProvider implements Authentication
         log.info("User [{}] has been authenticated", authenticatedUser.getName());
         return oAuth2AccessTokenAuthenticationToken;
     }
-
-    @Override
-    public boolean supports(Class<?> authentication) {
-        return Oauth2PasswordAuthenticationToken.class.isAssignableFrom(authentication);
-    }
-
-    private Authentication authenticateUser(Oauth2PasswordAuthenticationToken oauth2PasswordAuthenticationToken) {
-        log.info("Starting to authenticate user [{}] by credentials", oauth2PasswordAuthenticationToken.getUsername());
-        Authentication usernamePasswordAuthenticationToken =
-                new UsernamePasswordAuthenticationToken(oauth2PasswordAuthenticationToken.getUsername(),
-                        oauth2PasswordAuthenticationToken.getPassword());
-        try {
-            Authentication authentication = authenticationProvider.authenticate(usernamePasswordAuthenticationToken);
-            log.info("User [{}] has been authenticated by credentials",
-                    oauth2PasswordAuthenticationToken.getUsername());
-            return authentication;
-        } catch (BadCredentialsException | AccountStatusException ex) {
-            OAuth2Error error = new OAuth2Error(OAuth2ErrorCodes.INVALID_REQUEST, ex.getMessage(), StringUtils.EMPTY);
-            throw new OAuth2AuthenticationException(error);
-        }
-    }
-
-    private void postAuthenticateUserAdditionalChecks(Authentication authentication) {
-        var userEntity = userEntityRepository.findUser(authentication.getName());
-        if (userEntity.isForceChangePassword()) {
-            log.info("Password must be change for user [{}]", userEntity.getLogin());
-            throw new ChangePasswordRequiredException();
-        }
-        if (Boolean.TRUE.equals(tfaConfig.getEnabled()) && userEntity.isTfaEnabled()) {
-            log.info("Tfa required for user [{}]. Starting to sent authorization code", userEntity.getLogin());
-            var tfaCodeModel = tfaCodeService.createAuthorizationCode(authentication);
-            applicationEventPublisher.publishEvent(
-                    new TfaCodeEmailEvent(this, userEntity, tfaCodeModel.getCode()));
-            var tfaRequiredError =
-                    new Oauth2TfaRequiredError(tfaCodeModel.getToken(), tfaConfig.getCodeValiditySeconds());
-            throw new TfaRequiredException(tfaRequiredError);
-        }
-    }
-
-    private OAuth2ClientAuthenticationToken getAuthenticatedClientElseThrowInvalidClient(
-            Authentication authentication) {
-        OAuth2ClientAuthenticationToken clientPrincipal = null;
-        if (OAuth2ClientAuthenticationToken.class.isAssignableFrom(authentication.getPrincipal().getClass())) {
-            clientPrincipal = (OAuth2ClientAuthenticationToken) authentication.getPrincipal();
-        }
-        if (clientPrincipal != null && clientPrincipal.isAuthenticated()) {
-            return clientPrincipal;
-        }
-        throw new OAuth2AuthenticationException(OAuth2ErrorCodes.INVALID_CLIENT);
-    }
-
 }

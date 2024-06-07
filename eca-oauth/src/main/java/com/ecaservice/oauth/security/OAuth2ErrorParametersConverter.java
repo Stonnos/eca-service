@@ -1,5 +1,6 @@
-package com.ecaservice.oauth.config.security;
+package com.ecaservice.oauth.security;
 
+import com.ecaservice.oauth.security.model.Oauth2TfaRequiredError;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.security.oauth2.core.OAuth2Error;
 import org.springframework.security.oauth2.core.endpoint.OAuth2ParameterNames;

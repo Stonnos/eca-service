@@ -1,6 +1,9 @@
 package com.ecaservice.oauth.config.security;
 
 import com.ecaservice.oauth.config.AppProperties;
+import com.ecaservice.oauth.security.BearerTokenAuthenticationEntryPoint;
+import com.ecaservice.oauth.security.JdbcTokenIntrospector;
+import com.ecaservice.oauth.security.SimpleBearerTokenResolver;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;

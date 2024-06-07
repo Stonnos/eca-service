@@ -1,8 +1,5 @@
 package com.ecaservice.oauth.entity;
 
-import lombok.Data;
-import org.hibernate.annotations.Type;
-
 import jakarta.persistence.Basic;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -13,6 +10,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.Lob;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
+import lombok.Data;
 
 /**
  * User photo persistence entity.
@@ -45,8 +43,6 @@ public class UserPhoto {
      */
     @Basic(fetch = FetchType.LAZY)
     @Lob
-    //TODO fix user photo type
-  //  @Type(v = "org.hibernate.type.BinaryType")
     private byte[] photo;
 
     /**

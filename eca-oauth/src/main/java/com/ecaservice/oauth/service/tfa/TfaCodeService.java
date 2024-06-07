@@ -6,6 +6,7 @@ import com.ecaservice.oauth.entity.UserEntity;
 import com.ecaservice.oauth.model.TfaCodeModel;
 import com.ecaservice.oauth.repository.TfaCodeRepository;
 import com.ecaservice.oauth.repository.UserEntityRepository;
+import com.ecaservice.oauth.security.model.TfaCodeAuthenticationRequest;
 import com.ecaservice.oauth.service.SerializationHelper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -40,23 +41,21 @@ public class TfaCodeService {
     /**
      * Creates 2fa authorization code.
      *
-     * @param authentication - authentication object
+     * @param tfaCodeAuthenticationRequest - tfa code authentication request
      * @return 2fa code model
      */
     @Transactional
-    public TfaCodeModel createAuthorizationCode(Authentication authentication) {
-        String user = authentication.getName();
+    public TfaCodeModel createAuthorizationCode(TfaCodeAuthenticationRequest tfaCodeAuthenticationRequest) {
+        String user = tfaCodeAuthenticationRequest.getAuthentication().getName();
         var userEntity = userEntityRepository.findUser(user);
         if (userEntity == null) {
             throw new UsernameNotFoundException(String.format("User with login [%s] doesn't exists!", user));
         }
-        // TODO also save authenticated client id options
-        // TODO impl tfa_code grant type
         //Invalidate previous code
         invalidatePreviousCodes(userEntity);
         String token = UUID.randomUUID().toString();
         String code = RandomStringUtils.random(tfaConfig.getCodeLength(), false, true);
-        saveNewCode(token, code, userEntity, authentication);
+        saveNewCode(token, code, userEntity, tfaCodeAuthenticationRequest);
         return TfaCodeModel.builder()
                 .token(token)
                 .code(code)
@@ -68,9 +67,9 @@ public class TfaCodeService {
      *
      * @param token - token value
      * @param code  - authorization code
-     * @return authentication object
+     * @return tfa code authentication request
      */
-    public Authentication consumeAuthorizationCode(String token, String code) {
+    public TfaCodeAuthenticationRequest consumeAuthorizationCode(String token, String code) {
         var tfaCodeEntity = tfaCodeRepository.findByToken(md5Hex(token));
         if (tfaCodeEntity == null) {
             throw new OAuth2AuthenticationException("invalid_token");
@@ -84,7 +83,7 @@ public class TfaCodeService {
         }
         Authentication authentication = serializationHelper.deserialize(tfaCodeEntity.getAuthentication());
         tfaCodeRepository.delete(tfaCodeEntity);
-        return authentication;
+        return new TfaCodeAuthenticationRequest(tfaCodeEntity.getRegisteredClientId(), authentication);
     }
 
     private void invalidatePreviousCodes(UserEntity userEntity) {
@@ -97,11 +96,14 @@ public class TfaCodeService {
         }
     }
 
-    private void saveNewCode(String token, String code, UserEntity userEntity, Authentication authentication) {
+    private void saveNewCode(String token, String code, UserEntity userEntity,
+                             TfaCodeAuthenticationRequest tfaCodeAuthenticationRequest) {
         var tfaCodeEntity = new TfaCodeEntity();
         tfaCodeEntity.setToken(md5Hex(token));
         tfaCodeEntity.setCode(md5Hex(code));
-        tfaCodeEntity.setAuthentication(serializationHelper.serialize(authentication));
+        tfaCodeEntity.setRegisteredClientId(tfaCodeAuthenticationRequest.getClientId());
+        tfaCodeEntity.setAuthentication(
+                serializationHelper.serialize(tfaCodeAuthenticationRequest.getAuthentication()));
         tfaCodeEntity.setExpireDate(LocalDateTime.now().plusSeconds(tfaConfig.getCodeValiditySeconds()));
         tfaCodeEntity.setUserEntity(userEntity);
         tfaCodeEntity.setCreated(LocalDateTime.now());

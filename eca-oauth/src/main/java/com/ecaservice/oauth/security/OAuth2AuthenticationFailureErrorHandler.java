@@ -1,5 +1,6 @@
-package com.ecaservice.oauth.config.security;
+package com.ecaservice.oauth.security;
 
+import com.ecaservice.oauth.security.model.Oauth2TfaRequiredError;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.Getter;

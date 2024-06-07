@@ -1,6 +1,6 @@
 package com.ecaservice.oauth.exception;
 
-import com.ecaservice.oauth.config.security.Oauth2TfaRequiredError;
+import com.ecaservice.oauth.security.model.Oauth2TfaRequiredError;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 
 /**

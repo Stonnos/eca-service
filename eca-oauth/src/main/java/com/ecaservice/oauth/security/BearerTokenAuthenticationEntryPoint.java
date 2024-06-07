@@ -1,4 +1,4 @@
-package com.ecaservice.oauth.config.security;
+package com.ecaservice.oauth.security;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;

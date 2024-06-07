@@ -1,4 +1,4 @@
-package com.ecaservice.oauth.config.security;
+package com.ecaservice.oauth.security;
 
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;

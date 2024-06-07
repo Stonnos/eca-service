@@ -1,4 +1,4 @@
-package com.ecaservice.oauth.config.security;
+package com.ecaservice.oauth.security;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

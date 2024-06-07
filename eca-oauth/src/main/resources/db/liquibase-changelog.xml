@@ -46,4 +46,5 @@
     <include file="db/changelog/v35-create-user-profile-options-data-event-table.xml"/>
     <include file="db/changelog/v36-create-oauth2-authorization-schema-table.xml"/>
     <include file="db/changelog/v37-drop-oauth-tables.xml"/>
+    <include file="db/changelog/v38-add-registered-client-id-to-tfa-code-table.xml"/>
 </databaseChangeLog>

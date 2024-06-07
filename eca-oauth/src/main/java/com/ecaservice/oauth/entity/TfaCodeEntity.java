@@ -21,6 +21,12 @@ import jakarta.persistence.Table;
 public class TfaCodeEntity extends TokenEntity {
 
     /**
+     * Registered client id
+     */
+    @Column(name = "registered_client_id", nullable = false)
+    private String registeredClientId;
+
+    /**
      * Two - factor authentication code value
      */
     @Column(nullable = false)

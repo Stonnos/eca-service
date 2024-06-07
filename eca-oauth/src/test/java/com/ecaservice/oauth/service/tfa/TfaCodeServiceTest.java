@@ -6,6 +6,7 @@ import com.ecaservice.oauth.entity.TfaCodeEntity;
 import com.ecaservice.oauth.entity.UserEntity;
 import com.ecaservice.oauth.repository.TfaCodeRepository;
 import com.ecaservice.oauth.repository.UserEntityRepository;
+import com.ecaservice.oauth.security.model.TfaCodeAuthenticationRequest;
 import com.ecaservice.oauth.service.SerializationHelper;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
@@ -39,6 +40,7 @@ class TfaCodeServiceTest extends AbstractJpaTest {
     private static final String INVALID_TOKEN = "1";
     private static final String INVALID_CODE = "2";
     private static final String AUTHENTICATION = "auth";
+    private static final String CLIENT_ID = "clientId";
 
     @MockBean
     private SerializationHelper serializationHelper;
@@ -74,7 +76,8 @@ class TfaCodeServiceTest extends AbstractJpaTest {
     @Test
     void testCreateAuthorizationCode() {
         createAndSaveTfaCode(userEntity);
-        var tfaCodeModel = tfaCodeService.createAuthorizationCode(authentication);
+        var tfaCodeModel =
+                tfaCodeService.createAuthorizationCode(new TfaCodeAuthenticationRequest(CLIENT_ID, authentication));
         assertThat(tfaCodeModel).isNotNull();
         assertThat(tfaCodeModel.getCode()).hasSize(tfaConfig.getCodeLength());
         assertThat(tfaCodeRepository.count()).isOne();
@@ -89,9 +92,12 @@ class TfaCodeServiceTest extends AbstractJpaTest {
 
     @Test
     void testConsumeAuthorizationCode() {
-        var tfaCodeModel = tfaCodeService.createAuthorizationCode(authentication);
-        var authentication = tfaCodeService.consumeAuthorizationCode(tfaCodeModel.getToken(), tfaCodeModel.getCode());
-        assertThat(authentication).isNotNull();
+        var tfaCodeModel =
+                tfaCodeService.createAuthorizationCode(new TfaCodeAuthenticationRequest(CLIENT_ID, authentication));
+        var tfaCodeAuthenticationRequest =
+                tfaCodeService.consumeAuthorizationCode(tfaCodeModel.getToken(), tfaCodeModel.getCode());
+        assertThat(tfaCodeAuthenticationRequest).isNotNull();
+        assertThat(tfaCodeAuthenticationRequest.getClientId()).isEqualTo(CLIENT_ID);
     }
 
     @Test
@@ -109,6 +115,7 @@ class TfaCodeServiceTest extends AbstractJpaTest {
     private void createAndSaveTfaCode(UserEntity userEntity) {
         var tfaCodeEntity = new TfaCodeEntity();
         tfaCodeEntity.setUserEntity(userEntity);
+        tfaCodeEntity.setRegisteredClientId(CLIENT_ID);
         tfaCodeEntity.setToken(md5Hex(TEST_TOKEN));
         tfaCodeEntity.setCode(md5Hex(TEST_CODE));
         tfaCodeEntity.setAuthentication(AUTHENTICATION);
