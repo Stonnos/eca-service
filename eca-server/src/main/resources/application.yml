@@ -40,6 +40,7 @@ spring:
       max-file-size: 10MB
   data:
     redis:
+      ## TODO review client type
       client-type: jedis
       repositories:
         enabled: false
