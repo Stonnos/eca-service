@@ -2,17 +2,22 @@ package com.ecaservice.data.storage.service;
 
 import com.ecaservice.common.web.exception.FileProcessingException;
 import com.ecaservice.common.web.exception.InvalidFileException;
+import com.ecaservice.data.storage.config.EcaDsConfig;
 import com.ecaservice.data.storage.model.MultipartFileResource;
 import eca.data.file.FileDataLoader;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
+import org.springframework.test.context.TestPropertySource;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.io.IOException;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -21,13 +26,16 @@ import static org.mockito.Mockito.when;
  *
  * @author Roman Batygin
  */
-@ExtendWith(MockitoExtension.class)
+@ExtendWith(SpringExtension.class)
+@EnableConfigurationProperties
+@TestPropertySource("classpath:application.properties")
+@Import({InstancesLoader.class, EcaDsConfig.class})
 class InstancesLoaderTest {
 
-    @Mock
+    @MockBean
     private FileDataLoader fileDataLoader;
 
-    @InjectMocks
+    @Autowired
     private InstancesLoader instancesLoader;
 
 

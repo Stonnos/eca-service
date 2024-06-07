@@ -20,11 +20,6 @@
     "fileExtension": "json"
   },
   {
-    "title": "Xml формат (.xml)",
-    "reportType": "XML",
-    "fileExtension": "xml"
-  },
-  {
     "title": "Текстовый формат (.txt)",
     "reportType": "TXT",
     "fileExtension": "txt"
@@ -33,10 +28,5 @@
     "title": "Формат данных (.data)",
     "reportType": "DATA",
     "fileExtension": "data"
-  },
-  {
-    "title": "Microsoft Word (.docx)",
-    "reportType": "DOCX",
-    "fileExtension": "docx"
   }
 ]

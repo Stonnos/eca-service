@@ -52,6 +52,7 @@ eca-ds:
   dateFormat: yyyy-MM-dd HH:mm:ss
   batchSize: 100
   reportsPath: reports-config.json
+  supportedDataFileExtensions: csv, arff, xls, xlsx, json, txt, data
 
 ## Swagger properties
 open-api:

@@ -98,7 +98,7 @@ export class CreateEditInstancesComponent extends BaseCreateDialogComponent<Crea
       const errors: ValidationErrorDto[] = error.error;
       if (this.validationService.hasErrorCode(errors, ValidationErrorCode.INVALID_TRAIN_DATA_FILE)) {
         this.messageService.add({ severity: 'error',
-          summary: 'Не удалось добавить датасет. Допускаются файлы только файлы форматов .csv,.xls,.xlsx,.arff,.xml,.json,.txt,.data,.docx', detail: '' });
+          summary: 'Не удалось добавить датасет. Допускаются файлы только файлы форматов .csv,.xls,.xlsx,.arff,.json,.txt,.data', detail: '' });
         return;
       } else if (this.validationService.hasErrorCode(errors, ValidationErrorCode.PROCESS_FILE_ERROR)) {
         const validationError = this.validationService.getErrorByCode(errors, ValidationErrorCode.PROCESS_FILE_ERROR);

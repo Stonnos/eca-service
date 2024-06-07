@@ -11,7 +11,7 @@ export class UploadTrainingDataComponent implements OnInit {
   //Max file size: 10MB
   public maxFileSize: number = 10000000;
   //Files formats
-  public accept: string = '.csv,.xls,.xlsx,.arff,.xml,.json,.txt,.data,.docx';
+  public accept: string = '.csv,.xls,.xlsx,.arff,.json,.txt,.data';
   public invalidFileSizeMessageSummary: string = 'Недопустимый размер файла,';
   public invalidFileSizeMessageDetail: string = 'максимальный допустимый размер: 10MB.';
   public invalidFileTypeMessageSummary: string = 'Некорректный тип файла,';

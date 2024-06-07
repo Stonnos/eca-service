@@ -8,7 +8,6 @@ import com.ecaservice.data.storage.service.StorageService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import eca.data.file.FileDataLoader;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,8 +36,6 @@ import static org.mockito.Mockito.when;
  *
  * @author Roman Batygin
  */
-//TODO убрать поддержку xml
-@Disabled
 @ExtendWith(SpringExtension.class)
 @EnableConfigurationProperties
 @TestPropertySource("classpath:application.properties")

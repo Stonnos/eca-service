@@ -6,9 +6,7 @@ import eca.data.file.arff.ArffFileSaver;
 import eca.data.file.csv.CsvSaver;
 import eca.data.file.json.JsonSaver;
 import eca.data.file.text.DATASaver;
-import eca.data.file.text.DocxSaver;
 import eca.data.file.xls.XLSSaver;
-import eca.data.file.xml.XmlSaver;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -42,11 +40,6 @@ public class ReportProvider implements ReportTypeVisitor<AbstractDataSaver> {
     }
 
     @Override
-    public AbstractDataSaver visitXml() {
-        return new XmlSaver();
-    }
-
-    @Override
     public AbstractDataSaver visitTxt() {
         return new DATASaver();
     }
@@ -54,10 +47,5 @@ public class ReportProvider implements ReportTypeVisitor<AbstractDataSaver> {
     @Override
     public AbstractDataSaver visitData() {
         return new DATASaver();
-    }
-
-    @Override
-    public AbstractDataSaver visitDocx() {
-        return new DocxSaver();
     }
 }

@@ -37,13 +37,6 @@ public interface ReportTypeVisitor<T> {
     T visitJson();
 
     /**
-     * Method executes in case in report type is XML.
-     *
-     * @return result data
-     */
-    T visitXml();
-
-    /**
      * Method executes in case in report type is TXT.
      *
      * @return result data
@@ -56,11 +49,4 @@ public interface ReportTypeVisitor<T> {
      * @return result data
      */
     T visitData();
-
-    /**
-     * Method executes in case in report type is DOCX.
-     *
-     * @return result data
-     */
-    T visitDocx();
 }
