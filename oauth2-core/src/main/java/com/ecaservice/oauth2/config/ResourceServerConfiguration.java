@@ -68,6 +68,19 @@ public class ResourceServerConfiguration {
     }
 
     /**
+     * Creates opaque token introspector bean.
+     *
+     * @return opaque token introspector bean
+     */
+    @Bean
+    public OpaqueTokenIntrospector opaqueTokenIntrospector() {
+        String introspectEndpoint = String.format(CHECK_TOKEN_ENDPOINT_FORMAT, authServerProperties.getBaseUrl());
+        var delegate = new SpringOpaqueTokenIntrospector(introspectEndpoint, authServerProperties.getClientId(),
+                authServerProperties.getClientSecret());
+        return new CustomTokenIntrospector(delegate);
+    }
+
+    /**
      * Creates whitelist urls security filter chain.
      *
      * @param http - http security
@@ -95,12 +108,14 @@ public class ResourceServerConfiguration {
      * Creates resource server security filter chain.
      *
      * @param http                    - http security
+     * @param opaqueTokenIntrospector - opaque token introspector
      * @return security filter chain
      * @throws Exception in case of error
      */
     @Bean
     @Order(RESOURCE_SERVER_SECURITY_FILTER_ORDER)
-    public SecurityFilterChain resourceServerSecurityFilterChain(HttpSecurity http)
+    public SecurityFilterChain resourceServerSecurityFilterChain(HttpSecurity http,
+                                                                 OpaqueTokenIntrospector opaqueTokenIntrospector)
             throws Exception {
         http
                 .cors(AbstractHttpConfigurer::disable)
@@ -114,19 +129,7 @@ public class ResourceServerConfiguration {
                 .oauth2ResourceServer(c ->
                         c.authenticationEntryPoint(new BearerTokenAuthenticationEntryPoint())
                                 .opaqueToken(opaqueTokenConfigurer -> opaqueTokenConfigurer
-                                        .introspector(opaqueTokenIntrospector())));
+                                        .introspector(opaqueTokenIntrospector)));
         return http.build();
-    }
-
-    /**
-     * Creates opaque token introspector bean.
-     *
-     * @return opaque token introspector bean
-     */
-    private OpaqueTokenIntrospector opaqueTokenIntrospector() {
-        String introspectEndpoint = String.format(CHECK_TOKEN_ENDPOINT_FORMAT, authServerProperties.getBaseUrl());
-        var delegate = new SpringOpaqueTokenIntrospector(introspectEndpoint, authServerProperties.getClientId(),
-                authServerProperties.getClientSecret());
-        return new CustomTokenIntrospector(delegate);
     }
 }

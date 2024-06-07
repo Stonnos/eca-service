@@ -16,20 +16,31 @@ import org.springframework.messaging.simp.stomp.StompCommand;
 import org.springframework.messaging.simp.stomp.StompHeaders;
 import org.springframework.messaging.simp.stomp.StompSession;
 import org.springframework.messaging.simp.stomp.StompSessionHandlerAdapter;
-import org.springframework.security.oauth2.server.resource.web.BearerTokenResolver;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.oauth2.core.OAuth2TokenIntrospectionClaimNames;
+import org.springframework.security.oauth2.server.resource.introspection.OAuth2IntrospectionAuthenticatedPrincipal;
+import org.springframework.security.oauth2.server.resource.introspection.OpaqueTokenIntrospector;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.web.socket.client.standard.StandardWebSocketClient;
 import org.springframework.web.socket.messaging.WebSocketStompClient;
 
 import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
 
+import static com.google.common.collect.Maps.newHashMap;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.when;
 
 /**
  * Web socket integration test.
@@ -44,9 +55,10 @@ public class WebSocketTest {
     private static final String WS_URL_FORMAT = "ws://localhost:%d/socket?access_token=%s";
     private static final int CONNECT_TIMEOUT = 10;
     private static final int POOL_TIMEOUT = 10;
+    private static final String SCOPE_WEB = "SCOPE_web";
 
     @MockBean
-    private BearerTokenResolver bearerTokenResolver;
+    private OpaqueTokenIntrospector opaqueTokenIntrospector;
 
     @Autowired
     private QueueConfig queueConfig;
@@ -60,6 +72,7 @@ public class WebSocketTest {
 
     @BeforeEach
     public void setup() {
+        mockTokenIntrospection();
         this.blockingQueue.clear();
         this.webSocketStompClient = new WebSocketStompClient(new StandardWebSocketClient());
         this.webSocketStompClient.setMessageConverter(new MappingJackson2MessageConverter());
@@ -123,5 +136,15 @@ public class WebSocketTest {
 
     private String getWsPath() {
         return String.format(WS_URL_FORMAT, port, UUID.randomUUID());
+    }
+
+    private void mockTokenIntrospection() {
+        Map<String, Object> claims = newHashMap();
+        Collection<GrantedAuthority> authorities = new ArrayList<>();
+        claims.put(OAuth2TokenIntrospectionClaimNames.SCOPE, Collections.singletonList(SCOPE_WEB));
+        authorities.add(new SimpleGrantedAuthority(SCOPE_WEB));
+        var oAuth2IntrospectionAuthenticatedPrincipal =
+                new OAuth2IntrospectionAuthenticatedPrincipal(claims, authorities);
+        when(opaqueTokenIntrospector.introspect(anyString())).thenReturn(oAuth2IntrospectionAuthenticatedPrincipal);
     }
 }
