@@ -20,7 +20,6 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.oauth2.core.AuthorizationGrantType;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.OAuth2Error;
 import org.springframework.security.oauth2.core.OAuth2ErrorCodes;
@@ -78,7 +77,9 @@ public class Oauth2PasswordGrantAuthenticationProvider implements Authentication
             Authentication authentication = authenticationProvider.authenticate(usernamePasswordAuthenticationToken);
             log.info("User [{}] has been authenticated by credentials",
                     oauth2PasswordAuthenticationToken.getUsername());
-            return authentication;
+            // Returns UsernamePasswordAuthenticationToken without password in credentials
+            return UsernamePasswordAuthenticationToken.authenticated(authentication.getPrincipal(), null,
+                    authentication.getAuthorities());
         } catch (BadCredentialsException | AccountStatusException ex) {
             OAuth2Error error = new OAuth2Error(OAuth2ErrorCodes.INVALID_REQUEST, ex.getMessage(), StringUtils.EMPTY);
             throw new OAuth2AuthenticationException(error);
