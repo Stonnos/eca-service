@@ -25,12 +25,15 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Import({RoleMapperImpl.class, UserMapperImpl.class})
 class UserMapperTest {
 
+    private static final long PHOTO_ID = 1L;
+
     @Autowired
     private UserMapper userMapper;
 
     @Test
     void testMapUserEntityToUserDto() {
         UserEntity userEntity = createUserEntity();
+        userEntity.setPhotoId(PHOTO_ID);
         UserDto userDto = userMapper.map(userEntity);
         assertThat(userDto).isNotNull();
         assertThat(userDto.getId()).isEqualTo(userEntity.getId());
@@ -45,6 +48,7 @@ class UserMapperTest {
         assertThat(userDto.isTfaEnabled()).isEqualTo(userEntity.isTfaEnabled());
         assertThat(userDto.isLocked()).isEqualTo(userEntity.isLocked());
         assertThat(userDto.isLockAllowed()).isTrue();
+        assertThat(userDto.getPhotoId()).isEqualTo(userEntity.getPhotoId());
     }
 
     @Test

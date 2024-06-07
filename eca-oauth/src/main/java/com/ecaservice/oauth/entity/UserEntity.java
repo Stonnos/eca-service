@@ -95,6 +95,12 @@ public class UserEntity {
     private LocalDateTime passwordChangeDate;
 
     /**
+     * User photo id
+     */
+    @Column(name = "photo_id")
+    private Long photoId;
+
+    /**
      * User roles
      */
     @ManyToMany(fetch = FetchType.EAGER)

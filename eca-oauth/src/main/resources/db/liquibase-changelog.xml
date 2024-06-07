@@ -47,4 +47,5 @@
     <include file="db/changelog/v36-create-oauth2-authorization-schema-table.xml"/>
     <include file="db/changelog/v37-drop-oauth-tables.xml"/>
     <include file="db/changelog/v38-add-registered-client-id-to-tfa-code-table.xml"/>
+    <include file="db/changelog/v39-added-user-photo-id-column.xml"/>
 </databaseChangeLog>

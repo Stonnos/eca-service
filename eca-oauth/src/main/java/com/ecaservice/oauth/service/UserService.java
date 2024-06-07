@@ -17,7 +17,6 @@ import com.ecaservice.oauth.exception.UserLockNotAllowedException;
 import com.ecaservice.oauth.exception.UserLockedException;
 import com.ecaservice.oauth.filter.UserFilter;
 import com.ecaservice.oauth.mapping.UserMapper;
-import com.ecaservice.oauth.projection.UserPhotoIdProjection;
 import com.ecaservice.oauth.repository.RoleRepository;
 import com.ecaservice.oauth.repository.UserEntityRepository;
 import com.ecaservice.oauth.repository.UserPhotoRepository;
@@ -42,8 +41,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.stream.Collectors;
 
 import static com.ecaservice.common.web.util.FileUtils.isValidExtension;
 import static com.ecaservice.core.filter.util.FilterUtils.buildSort;
@@ -111,7 +108,6 @@ public class UserService {
             @ValidPageRequest(filterTemplateName = USERS_TEMPLATE) PageRequestDto pageRequestDto) {
         var usersPage = getNextPage(pageRequestDto);
         var userDtoList = userMapper.map(usersPage.getContent());
-        populateUsersPhotoIds(usersPage.getContent(), userDtoList);
         return PageDto.of(userDtoList, pageRequestDto.getPage(), usersPage.getTotalElements());
     }
 
@@ -190,7 +186,6 @@ public class UserService {
         log.info("Gets user [{}] info", login);
         var userEntity = getByLogin(login);
         UserDto userDto = userMapper.map(userEntity);
-        userDto.setPhotoId(userPhotoRepository.getUserPhotoId(userEntity));
         log.info("User [{}] info has been fetched", login);
         return userDto;
     }
@@ -291,6 +286,7 @@ public class UserService {
      * @param file - user photo file
      */
     @Audit(UPDATE_PHOTO)
+    @Transactional
     public void updatePhoto(String user, MultipartFile file) {
         log.info("Starting to update user [{}] photo: [{}]", user, file.getOriginalFilename());
         UserEntity userEntity = getByLogin(user);
@@ -299,13 +295,15 @@ public class UserService {
                     String.format("Invalid file [%s] extension. Expected one of %s", file.getOriginalFilename(),
                             appProperties.getValidUserPhotoFileExtensions()));
         }
-        UserPhoto userPhoto = userPhotoRepository.findByUserEntity(userEntity);
-        if (userPhoto == null) {
-            userPhoto = new UserPhoto();
-            userPhoto.setUserEntity(userEntity);
+        Long oldPhotoId = userEntity.getPhotoId();
+        UserPhoto newUserPhoto = saveNewPhoto(file);
+        userEntity.setPhotoId(newUserPhoto.getId());
+        userEntityRepository.save(userEntity);
+        if (oldPhotoId != null) {
+            userPhotoRepository.deleteById(oldPhotoId);
+            log.info("Old user [{}] photo [{}] has been deleted", user, oldPhotoId);
         }
-        updatePhoto(userPhoto, file);
-        log.info("New photo [{}] has been updated for user [{}]", userPhoto.getId(), user);
+        log.info("New photo [{}] has been updated for user [{}]", newUserPhoto.getId(), user);
     }
 
     /**
@@ -318,11 +316,11 @@ public class UserService {
     public void deletePhoto(String user) {
         log.info("Starting to delete user [{}] photo", user);
         UserEntity userEntity = getByLogin(user);
-        Long userPhotoId = userPhotoRepository.getUserPhotoId(userEntity);
-        if (userPhotoId == null) {
-            throw new EntityNotFoundException(UserPhoto.class, String.format("User %d", userEntity.getId()));
+        Long photoId = userEntity.getPhotoId();
+        if (photoId == null) {
+            throw new InvalidOperationException("User has no photo");
         }
-        userPhotoRepository.deleteById(userPhotoId);
+        userPhotoRepository.deleteById(photoId);
         log.info("User [{}] photo has been deleted", user);
     }
 
@@ -332,23 +330,17 @@ public class UserService {
         userEntity.setRoles(Sets.newHashSet(roleEntity));
     }
 
-    private void updatePhoto(UserPhoto userPhoto, MultipartFile file) {
+    private UserPhoto saveNewPhoto(MultipartFile file) {
         try {
             String fileName = file.getOriginalFilename();
+            UserPhoto userPhoto = new UserPhoto();
             userPhoto.setFileName(fileName);
             userPhoto.setFileExtension(FilenameUtils.getExtension(fileName));
             userPhoto.setPhoto(file.getBytes());
-            userPhotoRepository.save(userPhoto);
+            return userPhotoRepository.save(userPhoto);
         } catch (IOException ex) {
             throw new FileProcessingException(ex.getMessage());
         }
-    }
-
-    private void populateUsersPhotoIds(List<UserEntity> userEntities, List<UserDto> userDtoList) {
-        var userPhotoIdsMap = userPhotoRepository.getUserPhotoIds(userEntities)
-                .stream()
-                .collect(Collectors.toMap(UserPhotoIdProjection::getUserId, UserPhotoIdProjection::getId));
-        userDtoList.forEach(userDto -> userDto.setPhotoId(userPhotoIdsMap.get(userDto.getId())));
     }
 
     public UserEntity getByLogin(String login) {

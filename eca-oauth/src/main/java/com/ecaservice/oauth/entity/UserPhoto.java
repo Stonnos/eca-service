@@ -4,8 +4,6 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.Data;
 
@@ -39,11 +37,4 @@ public class UserPhoto {
      * User photo byte array
      */
     private byte[] photo;
-
-    /**
-     * User entity
-     */
-    @OneToOne
-    @JoinColumn(name = "user_id", nullable = false, updatable = false)
-    private UserEntity userEntity;
 }

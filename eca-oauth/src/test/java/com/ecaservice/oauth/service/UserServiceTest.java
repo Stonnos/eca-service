@@ -109,9 +109,9 @@ class UserServiceTest extends AbstractJpaTest {
 
     @Override
     public void deleteAll() {
-        userPhotoRepository.deleteAll();
         userEntityRepository.deleteAll();
         roleRepository.deleteAll();
+        userPhotoRepository.deleteAll();
     }
 
     @Test
@@ -282,13 +282,25 @@ class UserServiceTest extends AbstractJpaTest {
     }
 
     @Test
-    void testUpdatePhoto() throws IOException {
-        MultipartFile file = mock(MultipartFile.class);
-        when(file.getOriginalFilename()).thenReturn(PHOTO_FILE_NAME);
-        when(file.getBytes()).thenReturn(new byte[BYTE_ARRAY_LENGTH]);
+    void testSaveNewPhoto() throws IOException {
         UserEntity userEntity = createAndSaveUser();
-        userService.updatePhoto(userEntity.getLogin(), file);
-        UserPhoto userPhoto = userPhotoRepository.findByUserEntity(userEntity);
+        savePhoto(userEntity);
+        UserPhoto userPhoto = userPhotoRepository.findAll().iterator().next();
+        assertThat(userPhoto).isNotNull();
+        assertThat(userPhoto.getFileName()).isEqualTo(PHOTO_FILE_NAME);
+        assertThat(userPhoto.getFileExtension()).isEqualTo(FilenameUtils.getExtension(PHOTO_FILE_NAME));
+        assertThat(userPhoto.getPhoto()).isNotNull();
+        assertThat(userPhoto.getPhoto()).hasSize(BYTE_ARRAY_LENGTH);
+    }
+
+    @Test
+    void testUpdatePhoto() throws IOException {
+        UserEntity userEntity = createAndSaveUser();
+        savePhoto(userEntity);
+        savePhoto(userEntity);
+        var userPhotos = userPhotoRepository.findAll();
+        assertThat(userPhotos).hasSize(1);
+        UserPhoto userPhoto = userPhotos.iterator().next();
         assertThat(userPhoto).isNotNull();
         assertThat(userPhoto.getFileName()).isEqualTo(PHOTO_FILE_NAME);
         assertThat(userPhoto.getFileExtension()).isEqualTo(FilenameUtils.getExtension(PHOTO_FILE_NAME));
@@ -313,7 +325,7 @@ class UserServiceTest extends AbstractJpaTest {
     @Test
     void testDeleteNotExistingPhoto() {
         UserEntity userEntity = createAndSaveUser();
-        assertThrows(EntityNotFoundException.class, () -> userService.deletePhoto(userEntity.getLogin()));
+        assertThrows(InvalidOperationException.class, () -> userService.deletePhoto(userEntity.getLogin()));
     }
 
     @Test
@@ -324,7 +336,7 @@ class UserServiceTest extends AbstractJpaTest {
         UserEntity userEntity = createAndSaveUser();
         userService.updatePhoto(userEntity.getLogin(), file);
         userService.deletePhoto(userEntity.getLogin());
-        assertThat(userPhotoRepository.findByUserEntity(userEntity)).isNull();
+        assertThat(userPhotoRepository.findAll()).isEmpty();
     }
 
     @Test
@@ -376,6 +388,13 @@ class UserServiceTest extends AbstractJpaTest {
         UserEntity userEntity = createAndSaveUser();
         Long userId = userEntity.getId();
         assertThrows(InvalidOperationException.class, () -> userService.unlock(userId));
+    }
+
+    private void savePhoto(UserEntity userEntity) throws IOException {
+        MultipartFile file = mock(MultipartFile.class);
+        when(file.getOriginalFilename()).thenReturn(PHOTO_FILE_NAME);
+        when(file.getBytes()).thenReturn(new byte[BYTE_ARRAY_LENGTH]);
+        userService.updatePhoto(userEntity.getLogin(), file);
     }
 
     private UserEntity createAndSaveUser() {
