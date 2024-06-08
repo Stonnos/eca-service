@@ -2,7 +2,6 @@ package com.ecaservice.server.config;
 
 import com.ecaservice.common.web.annotation.EnableGlobalExceptionHandler;
 import com.ecaservice.config.swagger.annotation.EnableOpenApi;
-import com.ecaservice.core.filter.annotation.EnableFilters;
 import com.ecaservice.oauth2.annotation.Oauth2ResourceServer;
 import com.ecaservice.server.config.ers.ErsConfig;
 import com.ecaservice.server.model.entity.AbstractEvaluationEntity;
@@ -39,7 +38,6 @@ import static com.ecaservice.common.web.concurrent.ThreadPoolExecutorFactory.cre
 @EnableCaching
 @EnableAsync
 @EnableGlobalExceptionHandler
-@EnableFilters
 @Oauth2ResourceServer
 @EntityScan(basePackageClasses = AbstractEvaluationEntity.class)
 @EnableJpaRepositories(basePackageClasses = EvaluationLogRepository.class)

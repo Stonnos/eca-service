@@ -2,7 +2,6 @@ package com.ecaservice.mail.config;
 
 import com.ecaservice.common.web.annotation.EnableGlobalExceptionHandler;
 import com.ecaservice.config.swagger.annotation.EnableOpenApi;
-import com.ecaservice.core.filter.annotation.EnableFilters;
 import com.ecaservice.mail.model.Email;
 import com.ecaservice.mail.repository.EmailRepository;
 import com.ecaservice.oauth2.annotation.Oauth2ResourceServer;
@@ -21,7 +20,6 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @Configuration
 @EnableOpenApi
 @EnableScheduling
-@EnableFilters
 @EnableCaching
 @Oauth2ResourceServer
 @EnableGlobalExceptionHandler
