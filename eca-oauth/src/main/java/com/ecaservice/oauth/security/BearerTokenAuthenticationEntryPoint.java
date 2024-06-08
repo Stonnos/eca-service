@@ -28,7 +28,7 @@ public class BearerTokenAuthenticationEntryPoint implements AuthenticationEntryP
     public void commence(HttpServletRequest request, HttpServletResponse response,
                          AuthenticationException authException) throws IOException {
         log.error("Bearer token authentication request [{}] error: {}", request.getRequestURI(),
-                authException.getMessage(), authException);
+                authException.getMessage());
         ServletServerHttpResponse httpResponse = new ServletServerHttpResponse(response);
         httpResponse.setStatusCode(HttpStatus.UNAUTHORIZED);
         if (authException instanceof OAuth2AuthenticationException) {
