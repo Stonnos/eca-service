@@ -25,7 +25,7 @@ public class ZipkinReportAutoConfiguration {
      */
     @Bean
     @ConditionalOnProperty(value = "management.zipkin.tracing.enabled", havingValue = "false", matchIfMissing = true)
-    public Reporter<Span> noopReporter() {
+    public Reporter<Span> spanReporter() {
         return Reporter.NOOP;
     }
 }
