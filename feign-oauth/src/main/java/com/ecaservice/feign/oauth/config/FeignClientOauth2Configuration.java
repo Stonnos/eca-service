@@ -56,7 +56,6 @@ public class FeignClientOauth2Configuration {
     @Bean
     @ConditionalOnBean(OAuth2AuthorizedClientManager.class)
     public OAuth2AccessTokenInterceptor oAuth2AccessTokenInterceptor(
-            OAuth2ClientProperties oAuth2ClientProperties,
             OAuth2AuthorizedClientManager feignOauthAuthorizedClientManager) {
         return new OAuth2AccessTokenInterceptor(clientRegistrationId, feignOauthAuthorizedClientManager);
     }
