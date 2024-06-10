@@ -44,7 +44,7 @@ spring:
             provider: api-client
         provider:
           api-client:
-            token-uri: http://localhost:8080/oauth2/token
+            token-uri: http://localhost:8080/eca-oauth/oauth2/token
 
 ## Swagger properties
 open-api:
