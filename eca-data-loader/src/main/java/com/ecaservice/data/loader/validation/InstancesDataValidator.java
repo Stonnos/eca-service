@@ -62,7 +62,7 @@ public class InstancesDataValidator implements InstancesValidator {
         if (StringUtils.isNotEmpty(value)) {
             switch (attributeModel.getType()) {
                 case NUMERIC:
-                    if (!NumberUtils.isParsable(value)) {
+                    if (!NumberUtils.isCreatable(value)) {
                         String errorMessage =
                                 String.format("Invalid numeric value [%s] at row [%d], attribute [%s] index [%d]",
                                         value, rowIdx, attributeModel.getName(), attrIdx);
