@@ -1,5 +1,6 @@
 package com.ecaservice.oauth.config.security;
 
+import com.ecaservice.common.web.resource.JsonResourceLoader;
 import com.ecaservice.oauth.config.Oauth2RegisteredClient;
 import com.ecaservice.oauth.config.TfaConfig;
 import com.ecaservice.oauth.repository.UserEntityRepository;
@@ -13,15 +14,12 @@ import com.ecaservice.oauth.security.converter.Oauth2PasswordGrantAuthentication
 import com.ecaservice.oauth.security.converter.Oauth2TfaCodeGrantAuthenticationConverter;
 import com.ecaservice.oauth.service.tfa.TfaCodeService;
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.Cleanup;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
-import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -68,8 +66,7 @@ public class AuthorizationServerSecurityConfiguration {
 
     private static final String OAUTH2_REGISTERED_CLIENTS_JSON = "oauth2-registered-clients.json";
 
-    private final ObjectMapper objectMapper;
-    private final PathMatchingResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
+    private final JsonResourceLoader jsonResourceLoader = new JsonResourceLoader();
 
     /**
      * Creates oauth2 registered clients repository.
@@ -223,10 +220,9 @@ public class AuthorizationServerSecurityConfiguration {
 
     private List<Oauth2RegisteredClient> loadOauth2RegisteredClients() throws IOException {
         log.info("Starting to load oauth2 registered clients");
-        var resource = resolver.getResource(OAUTH2_REGISTERED_CLIENTS_JSON);
-        @Cleanup var inputStream = resource.getInputStream();
-        List<Oauth2RegisteredClient> clients = objectMapper.readValue(inputStream, new TypeReference<>() {
-        });
+        List<Oauth2RegisteredClient> clients =
+                jsonResourceLoader.load(OAUTH2_REGISTERED_CLIENTS_JSON, new TypeReference<>() {
+                });
         log.info("[{}] oauth2 registered clients has been loaded", clients.size());
         return clients;
     }

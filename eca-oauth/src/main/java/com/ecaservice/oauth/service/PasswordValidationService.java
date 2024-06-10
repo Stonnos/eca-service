@@ -1,20 +1,18 @@
 package com.ecaservice.oauth.service;
 
+import com.ecaservice.common.web.resource.JsonResourceLoader;
 import com.ecaservice.oauth.model.AbstractPasswordRule;
 import com.ecaservice.oauth.model.PasswordValidationResult;
 import com.ecaservice.oauth.model.RuleResultDetails;
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.Cleanup;
+import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.passay.PasswordData;
 import org.passay.Rule;
 import org.passay.RuleResult;
-import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.stereotype.Service;
 
-import jakarta.annotation.PostConstruct;
 import java.io.IOException;
 import java.util.List;
 
@@ -33,8 +31,7 @@ public class PasswordValidationService {
     private static final String VALIDATION_RULES_JSON = "password-validation-rules.json";
 
     private final PasswordRuleHandler passwordRuleHandler;
-    private final ObjectMapper objectMapper;
-    private final PathMatchingResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
+    private final JsonResourceLoader jsonResourceLoader = new JsonResourceLoader();
 
     private List<AbstractPasswordRule> rules;
 
@@ -43,12 +40,8 @@ public class PasswordValidationService {
      */
     @PostConstruct
     public void initializeRules() throws IOException {
-        log.info("Starting to load password validation rules");
-        var resource = resolver.getResource(VALIDATION_RULES_JSON);
-        @Cleanup var inputStream = resource.getInputStream();
-        rules = objectMapper.readValue(inputStream, new TypeReference<>() {
+        rules = jsonResourceLoader.load(VALIDATION_RULES_JSON, new TypeReference<>() {
         });
-        log.info("Password validation rules has been loaded");
     }
 
     /**
