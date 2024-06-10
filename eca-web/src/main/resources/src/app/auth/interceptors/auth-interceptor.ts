@@ -22,7 +22,7 @@ import { Logger } from "../../common/util/logging";
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
 
-  private static readonly TOKEN_URL = '/oauth/token';
+  private static readonly TOKEN_URL = '/oauth2/token';
 
   private refreshTokenInProgress = false;
   private refreshTokenSubject: BehaviorSubject<any> = new BehaviorSubject<any>(null);

@@ -12,7 +12,6 @@ export class LogoutService {
   }
 
   public logout() {
-    localStorage.removeItem(AuthenticationKeys.USER);
     localStorage.removeItem(AuthenticationKeys.ACCESS_TOKEN);
     localStorage.removeItem(AuthenticationKeys.REFRESH_TOKEN);
     this.eventService.publishEvent(EventType.LOGOUT);
