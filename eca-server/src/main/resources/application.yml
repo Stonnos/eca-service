@@ -51,7 +51,7 @@ spring:
           api-client:
             client-id: eca_service_tech
             client-secret: 02#eca_service_tech6
-            scope: web
+            scope: internal-api
             authorization-grant-type: client_credentials
             provider: api-client
         provider:
