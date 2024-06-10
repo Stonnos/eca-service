@@ -3,7 +3,6 @@ package com.ecaservice.feign.oauth.config;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.security.oauth2.client.OAuth2ClientProperties;
 import org.springframework.cloud.openfeign.security.OAuth2AccessTokenInterceptor;
 import org.springframework.context.annotation.Bean;
@@ -54,7 +53,6 @@ public class FeignClientOauth2Configuration {
      * @return oauth2 access token interceptor
      */
     @Bean
-    @ConditionalOnBean(OAuth2AuthorizedClientManager.class)
     public OAuth2AccessTokenInterceptor oAuth2AccessTokenInterceptor(
             OAuth2AuthorizedClientManager feignOauthAuthorizedClientManager) {
         return new OAuth2AccessTokenInterceptor(clientRegistrationId, feignOauthAuthorizedClientManager);
