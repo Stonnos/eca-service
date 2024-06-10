@@ -506,8 +506,10 @@ public class UserController {
     public ResponseEntity<ByteArrayResource> downloadPhoto(
             @Parameter(description = "Photo id", required = true, example = "1")
             @Min(VALUE_1) @Max(Long.MAX_VALUE) @PathVariable Long id) {
+        log.info("Request to download user photo [{}]", id);
         UserPhoto userPhoto = userPhotoRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException(UserPhoto.class, id));
+        log.info("User photo [{}] has been fetched from db", id);
         return buildAttachmentResponse(userPhoto.getPhoto(), userPhoto.getFileName());
     }
 

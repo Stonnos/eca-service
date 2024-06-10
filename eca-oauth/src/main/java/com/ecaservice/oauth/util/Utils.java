@@ -10,6 +10,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+
 /**
  * Utility class.
  *
@@ -31,7 +34,7 @@ public class Utils {
         ByteArrayResource resource = new ByteArrayResource(data);
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
-        headers.setContentDispositionFormData(ATTACHMENT, fileName);
+        headers.setContentDispositionFormData(ATTACHMENT, URLEncoder.encode(fileName, StandardCharsets.UTF_8));
         return new ResponseEntity<>(resource, headers, HttpStatus.OK);
     }
 
