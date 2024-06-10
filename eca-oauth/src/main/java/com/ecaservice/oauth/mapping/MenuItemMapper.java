@@ -1,7 +1,7 @@
-package com.ecaservice.web.mapping;
+package com.ecaservice.oauth.mapping;
 
+import com.ecaservice.oauth.model.MenuItem;
 import com.ecaservice.web.dto.model.MenuItemDto;
-import com.ecaservice.web.model.MenuItem;
 import org.mapstruct.Mapper;
 
 import java.util.List;

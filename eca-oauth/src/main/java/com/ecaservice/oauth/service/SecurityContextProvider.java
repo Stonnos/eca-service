@@ -1,16 +1,16 @@
-package com.ecaservice.web.service;
+package com.ecaservice.oauth.service;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 /**
- * Authentication service.
+ * Security context provider service.
  *
  * @author Roman Batygin
  */
 @Service
-public class AuthenticationService {
+public class SecurityContextProvider {
 
     /**
      * Gets current authentication.

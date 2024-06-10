@@ -1,4 +1,4 @@
-package com.ecaservice.web.model;
+package com.ecaservice.oauth.model;
 
 import lombok.Data;
 

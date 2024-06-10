@@ -1,7 +1,7 @@
-package com.ecaservice.web.controller;
+package com.ecaservice.oauth.controller.web;
 
+import com.ecaservice.oauth.service.MenuConfigService;
 import com.ecaservice.web.dto.model.MenuItemDto;
-import com.ecaservice.web.service.MenuBarService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -24,28 +24,28 @@ import static com.ecaservice.config.swagger.OpenApi30Configuration.ECA_AUTHENTIC
 import static com.ecaservice.config.swagger.OpenApi30Configuration.SCOPE_WEB;
 
 /**
- * API for web application.
+ * Web config API controller.
  *
  * @author Roman Batygin
  */
-@Tag(name = "API for web application")
+@Tag(name = "Web config API")
 @Slf4j
 @RestController
-@RequestMapping("/api/web")
+@RequestMapping("/web-config")
 @RequiredArgsConstructor
-public class WebController {
+public class WebConfigController {
 
-    private final MenuBarService menuBarService;
+    private final MenuConfigService menuConfigService;
 
     /**
-     * Gets menu bar for web application.
+     * Gets current user menu config for web application.
      *
      * @return menu items list
      */
     @PreAuthorize("hasAuthority('SCOPE_web')")
     @Operation(
-            description = "Gets menu bar for web application",
-            summary = "Gets menu bar for web application",
+            description = "Gets current user menu config for web application",
+            summary = "Gets current user menu config for web application",
             security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME, scopes = SCOPE_WEB),
             responses = {
                     @ApiResponse(description = "OK", responseCode = "200",
@@ -73,8 +73,8 @@ public class WebController {
                     )
             }
     )
-    @GetMapping(value = "/menu-bar")
-    public List<MenuItemDto> getMenuItems() {
-        return menuBarService.getMenuItems();
+    @GetMapping(value = "/menu")
+    public List<MenuItemDto> getMenuConfig() {
+        return menuConfigService.getMenuConfig();
     }
 }

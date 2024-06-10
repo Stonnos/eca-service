@@ -1,8 +1,7 @@
-package com.ecaservice.web.service;
+package com.ecaservice.oauth.service;
 
-import com.ecaservice.web.config.MenuBarConfigProvider;
+import com.ecaservice.oauth.mapping.MenuItemMapper;
 import com.ecaservice.web.dto.model.MenuItemDto;
-import com.ecaservice.web.mapping.MenuItemMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.GrantedAuthority;
@@ -13,38 +12,38 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * Menu bar service.
+ * Menu config service.
  *
  * @author Roman Batygin
  */
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class MenuBarService {
+public class MenuConfigService {
 
-    private final MenuBarConfigProvider menuBarConfigProvider;
-    private final AuthenticationService authenticationService;
+    private final MenuConfigProvider menuConfigProvider;
+    private final SecurityContextProvider securityContextProvider;
     private final MenuItemMapper menuItemMapper;
 
     /**
-     * Gets menu items list.
+     * Gets current user menu config.
      *
-     * @return menu items list
+     * @return current user menu config
      */
-    public List<MenuItemDto> getMenuItems() {
-        var authentication = authenticationService.getAuthentication();
+    public List<MenuItemDto> getMenuConfig() {
+        var authentication = securityContextProvider.getAuthentication();
         var authorities = authentication.getAuthorities()
                 .stream()
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.toList());
-        log.info("Gets menu bar fow user [{}]", authentication.getName());
-        var menuItems = menuBarConfigProvider.getMenuItems()
+        log.info("Gets menu config fow user [{}]", authentication.getName());
+        var menuItems = menuConfigProvider.getMenuItems()
                 .stream()
                 .filter(menuItem -> CollectionUtils.isEmpty(menuItem.getAvailableRoles()) ||
                         CollectionUtils.containsAny(authorities, menuItem.getAvailableRoles()))
                 .collect(Collectors.toList());
         var menuItemsList = menuItemMapper.map(menuItems);
-        log.info("Got menu bar {} for user [{}]", menuItemsList, authentication.getName());
+        log.info("Got menu config {} for user [{}]", menuItemsList, authentication.getName());
         return menuItemsList;
     }
 }

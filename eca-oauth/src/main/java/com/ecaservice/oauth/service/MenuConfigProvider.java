@@ -1,6 +1,6 @@
-package com.ecaservice.web.config;
+package com.ecaservice.oauth.service;
 
-import com.ecaservice.web.model.MenuItem;
+import com.ecaservice.oauth.model.MenuItem;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.annotation.PostConstruct;
@@ -14,15 +14,15 @@ import java.io.IOException;
 import java.util.List;
 
 /**
- * Menu bar config provider.
+ * Menu config provider.
  *
  * @author Roman Batygin
  */
 @Slf4j
 @Component
-public class MenuBarConfigProvider {
+public class MenuConfigProvider {
 
-    private static final String MENU_BAR_JSON = "menu-bar.json";
+    private static final String MENU_CONFIG_JSON = "menu-config.json";
 
     @Getter
     private List<MenuItem> menuItems;
@@ -37,11 +37,11 @@ public class MenuBarConfigProvider {
      */
     @PostConstruct
     public void loadConfig() throws IOException {
-        log.info("Starting to load config from resource [{}]", MENU_BAR_JSON);
-        var resource = resolver.getResource(MENU_BAR_JSON);
+        log.info("Starting to load user menu config from resource [{}]", MENU_CONFIG_JSON);
+        var resource = resolver.getResource(MENU_CONFIG_JSON);
         @Cleanup var inputStream = resource.getInputStream();
         menuItems = objectMapper.readValue(inputStream, new TypeReference<>() {
         });
-        log.info("Config has been loaded from resource [{}]", MENU_BAR_JSON);
+        log.info("User menu config has been loaded from resource [{}]", MENU_CONFIG_JSON);
     }
 }
