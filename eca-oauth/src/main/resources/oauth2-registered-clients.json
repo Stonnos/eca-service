@@ -33,7 +33,8 @@
     "clientId": "external-api",
     "clientSecret": "{bcrypt}$2a$10$fHGMvUF9W4uHnWp8Sm6nwODwwwO.7qeWFLb4I7mja3tiuI4EP.R1i",
     "scopes": [
-      "external-api"
+      "external-api",
+      "data-loader-api"
     ],
     "authorizationGrantTypes": [
       "client_credentials"
@@ -45,7 +46,8 @@
     "clientSecret": "{bcrypt}$2a$10$XooFEngMQDIRZDyLyBv86OYwVXice5KdGv5SNxJp5OMgxoVI0FKt6",
     "scopes": [
       "internal-api",
-      "external-api"
+      "external-api",
+      "data-loader-api"
     ],
     "authorizationGrantTypes": [
       "client_credentials"
