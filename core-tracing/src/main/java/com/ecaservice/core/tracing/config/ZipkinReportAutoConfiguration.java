@@ -31,7 +31,7 @@ public class ZipkinReportAutoConfiguration {
     @Bean
     @ConditionalOnProperty(value = "management.zipkin.tracing.enabled", havingValue = "true")
     public AsyncReporter<Span> spanReporter(Sender sender, BytesEncoder<Span> encoder) {
-        log.info("Zipkin async reporter has been configured");
+        log.info("Zipkin async span reporter has been configured");
         return AsyncReporter.builder(sender).build(encoder);
     }
 
@@ -42,7 +42,7 @@ public class ZipkinReportAutoConfiguration {
      */
     @Bean
     @ConditionalOnProperty(value = "management.zipkin.tracing.enabled", havingValue = "false", matchIfMissing = true)
-    public Reporter<Span> spanReporter() {
+    public Reporter<Span> noopReporter() {
         return Reporter.NOOP;
     }
 }
