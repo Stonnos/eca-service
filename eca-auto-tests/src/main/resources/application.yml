@@ -32,6 +32,10 @@ spring:
       simple:
         concurrency: 10
         maxConcurrency: 10
+  cloud:
+    openfeign:
+      oauth2:
+        clientRegistrationId: api-client
   security:
     oauth2:
       client:

@@ -44,6 +44,10 @@ spring:
     redis:
       repositories:
         enabled: false
+  cloud:
+    openfeign:
+      oauth2:
+        clientRegistrationId: api-client
   security:
     oauth2:
       client:

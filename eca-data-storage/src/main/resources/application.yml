@@ -28,6 +28,10 @@ spring:
   servlet:
     multipart:
       max-file-size: 10MB
+  cloud:
+    openfeign:
+      oauth2:
+        clientRegistrationId: api-client
   security:
     oauth2:
       client:

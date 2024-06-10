@@ -16,6 +16,10 @@ spring:
     hibernate:
       ddl-auto: update
     database-platform: org.hibernate.dialect.H2Dialect
+  cloud:
+    openfeign:
+      oauth2:
+        clientRegistrationId: api-client
   security:
     oauth2:
       client:
