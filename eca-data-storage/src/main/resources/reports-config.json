@@ -16,6 +16,10 @@
     "reportType": "JSON"
   },
   {
+    "title": "Xml формат (.xml)",
+    "reportType": "XML"
+  },
+  {
     "title": "Текстовый формат (.txt)",
     "reportType": "TXT"
   },

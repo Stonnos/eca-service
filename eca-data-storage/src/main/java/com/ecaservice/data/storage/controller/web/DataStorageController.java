@@ -149,7 +149,7 @@ public class DataStorageController {
     /**
      * Saves instances into database.
      *
-     * @param trainingData - training data file with format, such as csv, xls, xlsx, arff, json, data, txt
+     * @param trainingData - training data file with format, such as csv, xls, xlsx, arff, json, data, txt, xml
      * @param relationName - relation name
      * @return create instances results dto
      */

@@ -53,6 +53,16 @@ public enum ReportType {
     },
 
     /**
+     * XML report type.
+     */
+    XML("xml") {
+        @Override
+        public <T> T handle(ReportTypeVisitor<T> reportTypeVisitor) {
+            return reportTypeVisitor.visitXml();
+        }
+    },
+
+    /**
      * Txt report type.
      */
     TXT("txt") {

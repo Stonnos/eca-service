@@ -27,7 +27,7 @@ public class ReportsConfigurationService {
 
     private final EcaDsConfig ecaDsConfig;
 
-    private final JsonResourceLoader jsonResourceLoader;
+    private final JsonResourceLoader jsonResourceLoader = new JsonResourceLoader();
 
     @Getter
     private List<ReportProperties> reportProperties = newArrayList();

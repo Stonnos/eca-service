@@ -20,6 +20,11 @@
     "fileExtension": "json"
   },
   {
+    "title": "Xml формат (.xml)",
+    "reportType": "XML",
+    "fileExtension": "xml"
+  },
+  {
     "title": "Текстовый формат (.txt)",
     "reportType": "TXT",
     "fileExtension": "txt"
