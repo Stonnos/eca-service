@@ -17,8 +17,9 @@ import com.ecaservice.server.service.experiment.ExperimentProcessorService;
 import com.ecaservice.server.service.experiment.ExperimentProgressService;
 import com.ecaservice.server.service.experiment.ExperimentStepService;
 import eca.dataminer.AbstractExperiment;
-import lombok.extern.slf4j.Slf4j;
+import eca.filter.ConstantAttributesFilter;
 import io.micrometer.tracing.annotation.NewSpan;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StopWatch;
 import weka.core.Attribute;
@@ -31,8 +32,6 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
-
-import static com.ecaservice.server.util.InstancesUtils.removeConstantAttributes;
 
 /**
  * Step handler for experiment model processing.
@@ -90,7 +89,8 @@ public class ExperimentModelProcessorStepHandler extends AbstractExperimentStepH
         try {
             experimentStepService.start(experimentStepEntity);
             Instances data = getInstances(experimentContext);
-            Instances filteredInstances = removeConstantAttributes(data);
+            ConstantAttributesFilter filter = new ConstantAttributesFilter();
+            Instances filteredInstances = filter.filterInstances(data);
             processExperiment(filteredInstances, experimentContext);
             saveModelToLocalStorage(experimentStepEntity, experimentContext.getExperimentHistory());
             saveMaxPctCorrectValue(experimentContext);
