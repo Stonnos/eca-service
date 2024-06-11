@@ -38,7 +38,9 @@ public class FeignClientOauth2Configuration {
         Assert.notNull(registration,
                 String.format("Client [%s] registration must be configured", clientRegistrationId));
         var clientRegistration = clientRegistration(oAuth2ClientProperties, registration);
-        log.info("Feign client [{}] registration has been configured", clientRegistrationId);
+        log.info("Feign client [{}] registration has been configured. Token url: {}, grant_type [{}], scopes {}",
+                clientRegistrationId, clientRegistration.getProviderDetails().getTokenUri(),
+                clientRegistration.getAuthorizationGrantType().getValue(), clientRegistration.getScopes());
         var clientRegistrationRepository = new InMemoryClientRegistrationRepository(clientRegistration);
         var oAuth2AuthorizedClientService = new InMemoryOAuth2AuthorizedClientService(clientRegistrationRepository);
         return new AuthorizedClientServiceOAuth2AuthorizedClientManager(clientRegistrationRepository,
