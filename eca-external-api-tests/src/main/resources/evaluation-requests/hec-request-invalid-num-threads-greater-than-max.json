@@ -5,7 +5,7 @@
     "classifierOptions": {
       "type": "heterogeneous_classifier",
       "numIterations": 10,
-      "numThreads": 15,
+      "numThreads": 50,
       "minError": 0.0,
       "maxError": 0.5,
       "classifierOptions": [
