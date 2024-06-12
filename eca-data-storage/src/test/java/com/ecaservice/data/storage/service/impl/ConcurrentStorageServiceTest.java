@@ -1,4 +1,4 @@
-package com.ecaservice.data.storage.service;
+package com.ecaservice.data.storage.service.impl;
 
 import com.ecaservice.core.filter.service.FilterTemplateService;
 import com.ecaservice.core.lock.config.CoreLockAutoConfiguration;
@@ -11,7 +11,13 @@ import com.ecaservice.data.storage.mapping.AttributeMapperImpl;
 import com.ecaservice.data.storage.repository.AttributeRepository;
 import com.ecaservice.data.storage.repository.AttributeValueRepository;
 import com.ecaservice.data.storage.repository.InstancesRepository;
-import com.ecaservice.data.storage.service.impl.StorageServiceImpl;
+import com.ecaservice.data.storage.service.AttributeService;
+import com.ecaservice.data.storage.service.InstancesBatchService;
+import com.ecaservice.data.storage.service.InstancesService;
+import com.ecaservice.data.storage.service.InstancesTransformer;
+import com.ecaservice.data.storage.service.SearchQueryCreator;
+import com.ecaservice.data.storage.service.StorageService;
+import com.ecaservice.data.storage.service.UserService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
