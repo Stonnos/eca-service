@@ -3,11 +3,11 @@ package com.ecaservice.oauth.repository;
 import com.ecaservice.oauth.entity.TfaCodeEntity;
 import com.ecaservice.oauth.entity.UserEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 /**
  * Repository to manage with {@link TfaCodeEntity} persistence entity.
@@ -17,20 +17,20 @@ import java.util.List;
 public interface TfaCodeRepository extends JpaRepository<TfaCodeEntity, Long> {
 
     /**
-     * Finds active tfa codes.
+     * Deletes active tfa codes for specified user.
      *
      * @param userEntity - user entity
-     * @param date       - date bound
-     * @return tfa codes list
+     * @param date       - now date
      */
-    @Query("select tc from TfaCodeEntity tc where tc.userEntity = :userEntity and tc.expireDate > :date")
-    List<TfaCodeEntity> findActiveCodes(@Param("userEntity") UserEntity userEntity,
-                                        @Param("date") LocalDateTime date);
+    @Modifying
+    @Query("delete from TfaCodeEntity tc where tc.userEntity = :userEntity and tc.expireDate > :date")
+    void deleteActiveCodes(@Param("userEntity") UserEntity userEntity,
+                           @Param("date") LocalDateTime date);
 
     /**
      * Finds tfa code entity.
      *
-     * @param token    - code value
+     * @param token - code value
      * @return tfa code entity
      */
     TfaCodeEntity findByToken(String token);

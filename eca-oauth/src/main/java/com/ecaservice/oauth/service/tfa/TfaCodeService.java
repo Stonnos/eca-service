@@ -17,7 +17,6 @@ import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.OAuth2ErrorCodes;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.CollectionUtils;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -90,13 +89,7 @@ public class TfaCodeService {
     }
 
     private void invalidatePreviousCodes(UserEntity userEntity) {
-        var previousCodes = tfaCodeRepository.findActiveCodes(userEntity, LocalDateTime.now());
-        if (!CollectionUtils.isEmpty(previousCodes)) {
-            log.info("Found [{}] active tfa codes for user [{}]", previousCodes.size(), userEntity.getId());
-            tfaCodeRepository.deleteAll(previousCodes);
-            log.info("[{}] active tfa codes has been invalidated for user [{}]", previousCodes.size(),
-                    userEntity.getId());
-        }
+        tfaCodeRepository.deleteActiveCodes(userEntity, LocalDateTime.now());
     }
 
     private void saveNewCode(String token, String code, UserEntity userEntity,
