@@ -1,5 +1,6 @@
 package com.ecaservice.oauth.security;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.oauth2.server.authorization.token.OAuth2TokenClaimsContext;
@@ -14,6 +15,7 @@ import java.util.stream.Collectors;
  *
  * @author Roman Batygin
  */
+@Slf4j
 public class OAuth2TokenCustomizerImpl implements OAuth2TokenCustomizer<OAuth2TokenClaimsContext> {
     @Override
     public void customize(OAuth2TokenClaimsContext context) {
@@ -24,6 +26,8 @@ public class OAuth2TokenCustomizerImpl implements OAuth2TokenCustomizer<OAuth2To
                 .stream()
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.toList());
+        log.info("Roles [{}] has been set to oauth2 token context for user [{}]", roles,
+                context.getPrincipal().getName());
         context.getClaims().claim(OAuth2TokenIntrospectionClaimAdditionalNames.ROLES, roles);
     }
 }

@@ -57,7 +57,7 @@ public class MenuConfigService {
                 .stream()
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.toList());
-        log.info("Gets menu config fow user [{}]", authentication.getName());
+        log.info("Gets menu config for user [{}] with roles [{}]", authentication.getName(), authorities);
         var allowedMenuItem = menuItems
                 .stream()
                 .filter(menuItem -> CollectionUtils.isEmpty(menuItem.getAvailableRoles()) ||
