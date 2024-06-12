@@ -26,6 +26,7 @@ import org.springframework.security.oauth2.core.OAuth2ErrorCodes;
 import org.springframework.security.oauth2.server.authorization.authentication.OAuth2ClientAuthenticationToken;
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClient;
 
+import static com.ecaservice.oauth.security.OAuth2AdditionalErrorCodes.CHANGE_PASSWORD_REQUIRED;
 import static com.ecaservice.oauth.util.Oauth2Utils.getAuthenticatedClientElseThrowInvalidClient;
 
 /**

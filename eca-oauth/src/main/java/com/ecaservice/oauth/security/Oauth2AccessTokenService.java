@@ -116,7 +116,7 @@ public class Oauth2AccessTokenService {
                 authenticatedUser.getName(), authorization.getAccessToken().getToken().getScopes(),
                 authorization.getAccessToken().getClaims());
         var oAuth2AccessTokenAuthenticationToken =
-                new OAuth2AccessTokenAuthenticationToken(registeredClient, authenticatedUser, accessToken,
+                new OAuth2AccessTokenAuthenticationToken(registeredClient, clientPrincipal, accessToken,
                         refreshToken);
         log.info("User [{}] has been authenticated", authenticatedUser.getName());
         return oAuth2AccessTokenAuthenticationToken;

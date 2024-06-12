@@ -14,6 +14,7 @@ import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
+import org.springframework.security.oauth2.core.OAuth2ErrorCodes;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
@@ -21,6 +22,8 @@ import org.springframework.util.CollectionUtils;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
+import static com.ecaservice.oauth.security.OAuth2AdditionalErrorCodes.INVALID_TFA_CODE;
+import static com.ecaservice.oauth.security.OAuth2AdditionalErrorCodes.TFA_CODE_EXPIRED;
 import static org.apache.commons.codec.digest.DigestUtils.md5Hex;
 
 /**
@@ -72,14 +75,14 @@ public class TfaCodeService {
     public TfaCodeAuthenticationRequest consumeAuthorizationCode(String token, String code) {
         var tfaCodeEntity = tfaCodeRepository.findByToken(md5Hex(token));
         if (tfaCodeEntity == null) {
-            throw new OAuth2AuthenticationException("invalid_token");
+            throw new OAuth2AuthenticationException(OAuth2ErrorCodes.INVALID_TOKEN);
         }
         String md5Code = md5Hex(code);
         if (!tfaCodeEntity.getCode().equals(md5Code)) {
-            throw new OAuth2AuthenticationException("invalid_code");
+            throw new OAuth2AuthenticationException(INVALID_TFA_CODE);
         }
         if (LocalDateTime.now().isAfter(tfaCodeEntity.getExpireDate())) {
-            throw new OAuth2AuthenticationException("tfa_code_expired");
+            throw new OAuth2AuthenticationException(TFA_CODE_EXPIRED);
         }
         Authentication authentication = serializationHelper.deserialize(tfaCodeEntity.getAuthentication());
         tfaCodeRepository.delete(tfaCodeEntity);
