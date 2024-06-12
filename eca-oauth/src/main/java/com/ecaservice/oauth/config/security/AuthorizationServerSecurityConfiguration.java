@@ -43,6 +43,8 @@ import org.springframework.security.oauth2.server.authorization.settings.OAuth2T
 import org.springframework.security.oauth2.server.authorization.settings.TokenSettings;
 import org.springframework.security.oauth2.server.authorization.token.OAuth2AccessTokenGenerator;
 import org.springframework.security.oauth2.server.authorization.token.OAuth2RefreshTokenGenerator;
+import org.springframework.security.oauth2.server.authorization.token.OAuth2TokenClaimsContext;
+import org.springframework.security.oauth2.server.authorization.token.OAuth2TokenCustomizer;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.util.matcher.RequestMatcher;
 
@@ -146,15 +148,27 @@ public class AuthorizationServerSecurityConfiguration {
     }
 
     /**
+     * Creates oauth2 token customizer.
+     *
+     * @return oauth2 token customizer
+     */
+    @Bean
+    public OAuth2TokenCustomizer<OAuth2TokenClaimsContext> oAuth2TokenCustomizer() {
+        return new OAuth2TokenCustomizerImpl();
+    }
+
+    /**
      * Creates oauth2 access token service.
      *
      * @param oAuth2AuthorizationService - oauth2 access token service
+     * @param oAuth2TokenCustomizer      - oauth2 token customizer
      * @return oauth2 access token service
      */
     @Bean
-    public Oauth2AccessTokenService oauth2AccessTokenService(OAuth2AuthorizationService oAuth2AuthorizationService) {
+    public Oauth2AccessTokenService oauth2AccessTokenService(OAuth2AuthorizationService oAuth2AuthorizationService,
+                                                             OAuth2TokenCustomizer<OAuth2TokenClaimsContext> oAuth2TokenCustomizer) {
         var oAuth2AccessTokenGenerator = new OAuth2AccessTokenGenerator();
-        oAuth2AccessTokenGenerator.setAccessTokenCustomizer(new OAuth2TokenCustomizerImpl());
+        oAuth2AccessTokenGenerator.setAccessTokenCustomizer(oAuth2TokenCustomizer);
         return new Oauth2AccessTokenService(oAuth2AuthorizationService, oAuth2AccessTokenGenerator,
                 new OAuth2RefreshTokenGenerator());
     }
