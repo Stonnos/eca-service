@@ -320,6 +320,8 @@ public class UserService {
         if (photoId == null) {
             throw new InvalidOperationException("User has no photo");
         }
+        userEntity.setPhotoId(null);
+        userEntityRepository.save(userEntity);
         userPhotoRepository.deleteById(photoId);
         log.info("User [{}] photo has been deleted", user);
     }
