@@ -111,6 +111,9 @@ table:
         - tableName: change_email_request
           creationTimestampColumnName: created
           storagePeriodInDays: 30
+        - tableName: oauth2_authorization
+          creationTimestampColumnName: access_token_issued_at
+          storagePeriodInDays: 30
 
 ## Swagger properties
 open-api:
