@@ -26,9 +26,9 @@ a|
 
 __Grant type:__ password
 
-__Token url:__ http://localhost:8080/eca-oauth/oauth/token
+__Token url:__ http://localhost:8080/eca-oauth/oauth2/token
 
-__Refresh token url:__ http://localhost:8080/eca-oauth/oauth/token
+__Refresh token url:__ http://localhost:8080/eca-oauth/oauth2/token
 
 
 __Scopes__:
@@ -1225,6 +1225,10 @@ a|
   "reportType" : "JSON",
   "fileExtension" : "json"
 }, {
+  "title" : "Xml формат (.xml)",
+  "reportType" : "XML",
+  "fileExtension" : "xml"
+}, {
   "title" : "Текстовый формат (.txt)",
   "reportType" : "TXT",
   "fileExtension" : "txt"
@@ -1454,6 +1458,8 @@ __string__
 * ARFF
 
 * JSON
+
+* XML
 
 * TXT
 
