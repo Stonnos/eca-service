@@ -118,7 +118,7 @@ table:
 ## Swagger properties
 open-api:
   basePath: /
-  title: Microservice for users managment
+  title: Microservice for users management
   description: API provides operations with users for ECA web application
   author: Roman Batygin
   email: roman.batygin@mail.ru

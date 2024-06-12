@@ -1,4 +1,4 @@
-= Microservice for users managment
+= Microservice for users management
 Автор: Roman Batygin
 (roman.batygin@mail.ru)
 :toc:
