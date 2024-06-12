@@ -197,6 +197,10 @@ lock:
       expireAfter: 7500000
 
 management:
+  observations:
+    annotations:
+      ## Enables span annotations processing
+      enabled: true
   tracing:
     sampling:
       probability: 1.0

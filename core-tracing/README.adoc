@@ -24,6 +24,10 @@
 [source,yml]
 ----
 management:
+  observations:
+    annotations:
+      ## Вкл./выкл. поддержку аннотаций @NewSpan
+      enabled: true
   zipkin:
     tracing:
       ## Вкл./выкл. отправки трейсов в zipkin

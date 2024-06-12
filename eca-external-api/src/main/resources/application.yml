@@ -85,6 +85,10 @@ auth-server:
   clientSecret: external_api_secret
 
 management:
+  observations:
+    annotations:
+      ## Enables span annotations processing
+      enabled: true
   tracing:
     sampling:
       probability: 1.0
