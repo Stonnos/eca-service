@@ -4,6 +4,7 @@ import com.ecaservice.common.web.exception.EntityNotFoundException;
 import com.ecaservice.common.web.exception.InvalidOperationException;
 import com.ecaservice.core.audit.annotation.Audit;
 import com.ecaservice.core.filter.service.FilterTemplateService;
+import com.ecaservice.core.lock.annotation.Locked;
 import com.ecaservice.server.filter.ClassifiersConfigurationFilter;
 import com.ecaservice.server.mapping.ClassifierOptionsDatabaseModelMapper;
 import com.ecaservice.server.mapping.ClassifiersConfigurationMapper;
@@ -129,6 +130,7 @@ public class ClassifiersConfigurationServiceImpl implements ClassifiersConfigura
 
     @Override
     @Audit(value = SET_ACTIVE_CONFIGURATION, correlationIdKey = "#id")
+    @Locked(lockName = "setActiveClassifiersConfiguration")
     @Transactional
     public ClassifiersConfiguration setActive(long id) {
         log.info("Request to set classifiers configuration [{}] as active", id);

@@ -12,6 +12,7 @@ import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.springframework.context.ApplicationContext;
+import org.springframework.core.annotation.Order;
 import org.springframework.dao.CannotAcquireLockException;
 import org.springframework.integration.support.locks.LockRegistry;
 import org.springframework.stereotype.Component;
@@ -24,8 +25,14 @@ import org.springframework.util.StringUtils;
  */
 @Slf4j
 @Aspect
+@Order(LockExecutionAspect.LOCK_ADVICE_ORDER)
 @Component
 public class LockExecutionAspect {
+
+    /**
+     * Lock advice order
+     */
+    public static final int LOCK_ADVICE_ORDER = 100;
 
     private static final String LOCK_KEY_FORMAT = "%s-%s";
 
@@ -59,6 +66,7 @@ public class LockExecutionAspect {
      */
     @Around("execution(@com.ecaservice.core.lock.annotation.Locked * * (..)) && @annotation(locked)")
     public Object around(ProceedingJoinPoint joinPoint, Locked locked) throws Throwable {
+        log.debug("Starting to around locked method [{}]", joinPoint.getSignature().getName());
         String lockKey = getLockKey(joinPoint, locked.lockName(), locked.key());
         LockRegistry lockRegistry = lockRegistryRepository.getRegistry(locked.lockRegistryKey());
         LockService lockService = new LockService(lockRegistry);
@@ -76,6 +84,7 @@ public class LockExecutionAspect {
             lockMeterService.trackSuccessLock(locked.lockName());
             Object result = joinPoint.proceed();
             unlock(lockService, locked.lockName(), lockKey);
+            log.debug("Around locked method [{}] has been processed", joinPoint.getSignature().getName());
             return result;
         } catch (CannotAcquireLockException ex) {
             log.error("Acquire lock error: {}", ex.getMessage());

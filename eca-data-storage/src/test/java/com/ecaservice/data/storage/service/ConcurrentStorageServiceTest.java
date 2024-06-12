@@ -32,14 +32,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
 /**
- * Unit tests for checking {@link ConcurrentStorageService} functionality.
+ * Unit tests for checking {@link StorageService} concurrent functionality.
  *
  * @author Roman Batygin
  */
 @EnableAspectJAutoProxy
 @Import({StorageServiceImpl.class, InstancesService.class, InstancesBatchService.class,
-        StorageTestConfiguration.class, ConcurrentStorageService.class,
-        AttributeService.class, AttributeMapperImpl.class, InstancesTransformer.class,
+        StorageTestConfiguration.class, AttributeService.class, AttributeMapperImpl.class, InstancesTransformer.class,
         CoreLockAutoConfiguration.class})
 class ConcurrentStorageServiceTest extends AbstractJpaTest {
 

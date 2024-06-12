@@ -3,6 +3,7 @@ package com.ecaservice.data.storage.service.impl;
 import com.ecaservice.common.web.exception.EntityNotFoundException;
 import com.ecaservice.core.audit.annotation.Audit;
 import com.ecaservice.core.filter.service.FilterTemplateService;
+import com.ecaservice.core.lock.annotation.Locked;
 import com.ecaservice.data.storage.entity.AttributeEntity;
 import com.ecaservice.data.storage.entity.AttributeType;
 import com.ecaservice.data.storage.entity.InstancesEntity;
@@ -92,6 +93,7 @@ public class StorageServiceImpl implements StorageService {
     @Override
     @NewSpan
     @Audit(value = SAVE_INSTANCES, correlationIdKey = "#result.id")
+    @Locked(lockName = "saveOrUpdateDataSet", key = "#relationName")
     @Transactional
     public InstancesEntity saveData(Instances instances, String relationName) {
         log.info("Starting to save instances with relation name [{}]", relationName);
