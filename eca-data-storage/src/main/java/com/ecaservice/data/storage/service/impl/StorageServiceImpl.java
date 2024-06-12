@@ -194,6 +194,7 @@ public class StorageServiceImpl implements StorageService {
 
     @Override
     @Audit(value = RENAME_INSTANCES, correlationIdKey = "#id")
+    @Locked(lockName = "saveOrUpdateDataSet", key = "#newTableName")
     @Transactional
     public String renameData(long id, String newName) {
         log.info("Starting to rename instances [{}] with new name [{}]", id, newName);
