@@ -35,8 +35,7 @@ public class FeignClientOauth2Configuration {
     public OAuth2AuthorizedClientManager feignOauthAuthorizedClientManager(
             OAuth2ClientProperties oAuth2ClientProperties) {
         var registration = oAuth2ClientProperties.getRegistration().get(clientRegistrationId);
-        Assert.notNull(registration,
-                String.format("Client [%s] registration must be configured", clientRegistrationId));
+        validateClientRegistration(oAuth2ClientProperties, registration);
         var clientRegistration = clientRegistration(oAuth2ClientProperties, registration);
         log.info("Feign client [{}] registration has been configured. Token url: {}, grant_type [{}], scopes {}",
                 clientRegistrationId, clientRegistration.getProviderDetails().getTokenUri(),
@@ -62,29 +61,35 @@ public class FeignClientOauth2Configuration {
 
     private ClientRegistration clientRegistration(OAuth2ClientProperties oAuth2ClientProperties,
                                                   OAuth2ClientProperties.Registration registration) {
-        String clientId = registration.getClientId();
-        Assert.notNull(clientId,
-                String.format("Client [%s] id must be configured", clientRegistrationId));
-        String clientSecret = registration.getClientSecret();
-        Assert.notNull(clientSecret,
-                String.format("Client [%s] secret must be configured", clientRegistrationId));
-        String grantType = registration.getAuthorizationGrantType();
-        Assert.notNull(grantType,
-                String.format("Client [%s] grant type must be configured", clientRegistrationId));
-        Assert.notNull(registration.getProvider(),
-                String.format("Client [%s] registration provider must be configured", clientRegistrationId));
         OAuth2ClientProperties.Provider provider = oAuth2ClientProperties.getProvider().get(registration.getProvider());
-        Assert.notNull(provider,
-                String.format("Client [%s] provider must be configured", clientRegistrationId));
         String tokenUri = provider.getTokenUri();
         Assert.notNull(tokenUri,
                 String.format("Client [%s] provider tokenUri must be configured", clientRegistrationId));
         return ClientRegistration.withRegistrationId(clientRegistrationId)
-                .clientId(clientId)
-                .clientSecret(clientSecret)
-                .authorizationGrantType(new AuthorizationGrantType(grantType))
+                .clientId(registration.getClientId())
+                .clientSecret(registration.getClientSecret())
+                .authorizationGrantType(new AuthorizationGrantType(registration.getAuthorizationGrantType()))
                 .scope(registration.getScope())
                 .tokenUri(tokenUri)
                 .build();
+    }
+
+    private void validateClientRegistration(OAuth2ClientProperties oAuth2ClientProperties,
+                                            OAuth2ClientProperties.Registration registration) {
+        Assert.notNull(registration,
+                String.format("Client [%s] registration must be configured", clientRegistrationId));
+        Assert.notNull(registration.getClientId(),
+                String.format("Client [%s] id must be configured", clientRegistrationId));
+        Assert.notNull(registration.getClientSecret(),
+                String.format("Client [%s] secret must be configured", clientRegistrationId));
+        Assert.notNull(registration.getAuthorizationGrantType(),
+                String.format("Client [%s] grant type must be configured", clientRegistrationId));
+        Assert.notNull(registration.getProvider(),
+                String.format("Client [%s] registration provider name must be configured", clientRegistrationId));
+        OAuth2ClientProperties.Provider provider = oAuth2ClientProperties.getProvider().get(registration.getProvider());
+        Assert.notNull(provider,
+                String.format("Client [%s] provider data must be configured", clientRegistrationId));
+        Assert.notNull(provider.getTokenUri(),
+                String.format("Client [%s] provider tokenUri must be configured", clientRegistrationId));
     }
 }
