@@ -57,11 +57,11 @@ curl eca_web:web_secret@localhost:8080/eca-oauth/oauth2/token -d grant_type=pass
 curl eca_web:web_secret@localhost:8080/eca-oauth/oauth2/token -d grant_type=refresh_token -d refresh_token=ZJgZvaMv99aheGf-fUQPbBuDRCo9bX2YmPyH6Wn3VRNFJIHwIOn5tTGbZ2uEPPs4GkzIW55ZqtVlzzhtzgNIGaz3KXMAZdhKND0COb6OrW4XVTnLh2QgcQkQiUSDA-jW
 ----
 
-== 3. Пример запроса на получение токена с использованием двухфакторной аутентификации:
+== 3. Пример запроса на получение токена с использованием двухфакторной аутентификации
 
 [source,bash]
 ----
-curl eca_web:web_secret@localhost:8080/eca-oauth/oauth2/token -d grant_type=tfa_code -d token=ff47d750-0b50-40f0-9dc8-454819685eea -d tfa_code=hFgU5G
+curl eca_web:web_secret@localhost:8080/eca-oauth/oauth2/token -d grant_type=tfa_code -d token=ff47d750-0b50-40f0-9dc8-454819685eea -d tfa_code=849674
 ----
 
 где *tfa_code* - одноразовый пароль для двухфакторной аутентификации, который должен прийти по почте.
@@ -78,13 +78,16 @@ curl eca_web:web_secret@localhost:8080/eca-oauth/oauth2/introspect -d token=5LG5
 [source,json]
 ----
 {
+  ## Признак активности токена
   "active": true,
   "sub": "admin",
   "aud": [
     "eca_web"
   ],
   "nbf": 1718556179,
+  ## Доступные scope
   "scope": "web",
+  ## Список ролей пользователя
   "roles": [
     "ROLE_USER"
   ],
