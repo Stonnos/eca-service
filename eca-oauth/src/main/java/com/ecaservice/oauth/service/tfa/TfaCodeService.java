@@ -7,7 +7,7 @@ import com.ecaservice.oauth.model.TfaCodeModel;
 import com.ecaservice.oauth.repository.TfaCodeRepository;
 import com.ecaservice.oauth.repository.UserEntityRepository;
 import com.ecaservice.oauth.security.model.TfaCodeAuthenticationRequest;
-import com.ecaservice.oauth.service.SerializationHelper;
+import com.ecaservice.oauth.service.AuthenticationJsonSerializer;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomStringUtils;
@@ -36,7 +36,7 @@ import static org.apache.commons.codec.digest.DigestUtils.md5Hex;
 public class TfaCodeService {
 
     private final TfaConfig tfaConfig;
-    private final SerializationHelper serializationHelper;
+    private final AuthenticationJsonSerializer authenticationJsonSerializer;
     private final UserEntityRepository userEntityRepository;
     private final TfaCodeRepository tfaCodeRepository;
 
@@ -83,7 +83,7 @@ public class TfaCodeService {
         if (LocalDateTime.now().isAfter(tfaCodeEntity.getExpireDate())) {
             throw new OAuth2AuthenticationException(TFA_CODE_EXPIRED);
         }
-        Authentication authentication = serializationHelper.deserialize(tfaCodeEntity.getAuthentication());
+        Authentication authentication = authenticationJsonSerializer.deserialize(tfaCodeEntity.getAuthentication());
         tfaCodeRepository.delete(tfaCodeEntity);
         return new TfaCodeAuthenticationRequest(tfaCodeEntity.getRegisteredClientId(), authentication);
     }
@@ -99,7 +99,7 @@ public class TfaCodeService {
         tfaCodeEntity.setCode(md5Hex(code));
         tfaCodeEntity.setRegisteredClientId(tfaCodeAuthenticationRequest.getClientId());
         tfaCodeEntity.setAuthentication(
-                serializationHelper.serialize(tfaCodeAuthenticationRequest.getAuthentication()));
+                authenticationJsonSerializer.serialize(tfaCodeAuthenticationRequest.getAuthentication()));
         tfaCodeEntity.setExpireDate(LocalDateTime.now().plusSeconds(tfaConfig.getCodeValiditySeconds()));
         tfaCodeEntity.setUserEntity(userEntity);
         tfaCodeEntity.setCreated(LocalDateTime.now());

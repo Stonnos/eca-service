@@ -7,13 +7,16 @@ import com.ecaservice.oauth.entity.UserEntity;
 import com.ecaservice.oauth.repository.TfaCodeRepository;
 import com.ecaservice.oauth.repository.UserEntityRepository;
 import com.ecaservice.oauth.security.model.TfaCodeAuthenticationRequest;
-import com.ecaservice.oauth.service.SerializationHelper;
+import com.ecaservice.oauth.service.AuthenticationJsonSerializer;
+import com.ecaservice.user.model.Role;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 
 import java.time.LocalDateTime;
@@ -23,15 +26,13 @@ import static com.ecaservice.oauth.TestHelperUtils.createUserEntity;
 import static org.apache.commons.codec.digest.DigestUtils.md5Hex;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
 
 /**
  * Unit tests for {@link TfaCodeService} class.
  *
  * @author Roman Batygin
  */
-@Import({TfaCodeService.class, TfaConfig.class})
+@Import({TfaCodeService.class, TfaConfig.class, AuthenticationJsonSerializer.class})
 class TfaCodeServiceTest extends AbstractJpaTest {
 
     private static final String USER = "user";
@@ -41,9 +42,7 @@ class TfaCodeServiceTest extends AbstractJpaTest {
     private static final String INVALID_CODE = "2";
     private static final String AUTHENTICATION = "auth";
     private static final String CLIENT_ID = "clientId";
-
-    @MockBean
-    private SerializationHelper serializationHelper;
+    private static final String PASSWORD = "pass";
 
     @Autowired
     private TfaConfig tfaConfig;
@@ -54,7 +53,6 @@ class TfaCodeServiceTest extends AbstractJpaTest {
     @Autowired
     private TfaCodeRepository tfaCodeRepository;
 
-    @Mock
     private Authentication authentication;
 
     private UserEntity userEntity;
@@ -62,9 +60,9 @@ class TfaCodeServiceTest extends AbstractJpaTest {
     @Override
     public void init() {
         userEntity = createAndSaveUser();
-        when(authentication.getName()).thenReturn(USER);
-        when(serializationHelper.serialize(any())).thenReturn(AUTHENTICATION);
-        when(serializationHelper.deserialize(any())).thenReturn(authentication);
+        var authorities = Collections.singletonList(new SimpleGrantedAuthority(Role.ROLE_SUPER_ADMIN));
+        UserDetails userDetails = new User(USER, PASSWORD, authorities);
+        authentication = new UsernamePasswordAuthenticationToken(userDetails, null, authorities);
     }
 
     @Override
