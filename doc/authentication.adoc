@@ -78,16 +78,13 @@ curl eca_web:web_secret@localhost:8080/eca-oauth/oauth2/introspect -d token=5LG5
 [source,json]
 ----
 {
-  ## Признак активности токена
   "active": true,
   "sub": "admin",
   "aud": [
     "eca_web"
   ],
   "nbf": 1718556179,
-  ## Доступные scope
   "scope": "web",
-  ## Список ролей пользователя
   "roles": [
     "ROLE_USER"
   ],
@@ -99,6 +96,17 @@ curl eca_web:web_secret@localhost:8080/eca-oauth/oauth2/introspect -d token=5LG5
   "token_type": "Bearer"
 }
 ----
+
+где
+
+* active - признак активности токена
+* sub - логин пользователя
+* scope - доступные scopes
+* roles - роли пользователя
+* client_id - идентификатор клиента
+* token_type - тип токена
+* exp - дата истечения срока действия токена в мс.
+* jti - id токена
 
 == 5. Пример запроса на отзыв access токена
 
