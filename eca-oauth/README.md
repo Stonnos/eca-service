@@ -65,35 +65,3 @@
 
     java -jar /target/eca-oauth.war
 
-Примеры запросов для получения токенов
--------------------------------------------------------
-
-1. Пример запроса на получение access token:
-
-    curl eca_web:web_secret@localhost:8080/eca-oauth/oauth/token -d grant_type=password -d username=admin -d password=secret
-    
-    где eca_web:web_secret - пара clientId и clientSecret
-
-    Запрос возвращает пару access_token/refresh_token:
-    
-    {"access_token":"cf4cd583-b9f1-4dce-8dcc-afefd1510974","token_type":"bearer","refresh_token":"7321ab3a-ee63-4e2e-bdfd-58aaca9fb263","expires_in":1799,"scope":"web"}
-    
-    В случае, если у пользователя установлен временный пароль, то запрос возвращает 403 ошибку с телом ответа:
-        
-    {"error":"change_password_required","error_description":"Password must be changed"}
-    
-    В случае, если настроена двухфакторная аутентификация, то запрос возвращает 403 ошибку с телом ответа:
-    
-    {"error":"tfa_required","error_description":"Two-factor authentication required","token": "ff47d750-0b50-40f0-9dc8-454819685eea","expires_in":"120"}
-    
-    где token - временный токен, expires_in - время действия одноразового пароля, который должен прийти по почте, привязанной к учетной записи пользователя
-
-2. Пример запроса на обновление access token на основе refresh token:
-
-    curl eca_web:web_secret@localhost:8080/eca-oauth/oauth/token -d grant_type=refresh_token -d refresh_token=7321ab3a-ee63-4e2e-bdfd-58aaca9fb263d
-
-3. Пример запроса на получение токена с использованием двухфакторной аутентификации:
-
-    curl eca_web:web_secret@localhost:8080/eca-oauth/oauth/token -d grant_type=tfa_code -d token=ff47d750-0b50-40f0-9dc8-454819685eea -d tfa_code=hFgU5G
-    
-    где tfa_code - одноразовый пароль для двухфакторной аутентификации, который должен прийти по почте
