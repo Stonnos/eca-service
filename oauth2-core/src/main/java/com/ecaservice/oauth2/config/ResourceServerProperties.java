@@ -28,6 +28,11 @@ public class ResourceServerProperties {
     public static class SecurityProperties {
 
         /**
+         * Allow bearer token uri query parameter?
+         */
+        private boolean allowUBearerTokenUriQueryParameter;
+
+        /**
          * Whitelist urls
          */
         private List<String> whitelistUrls = newArrayList();

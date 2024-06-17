@@ -40,6 +40,7 @@ app:
 resource:
   server:
     security:
+      allowUBearerTokenUriQueryParameter: true
       whitelistUrls:
         - /api/push/**
 

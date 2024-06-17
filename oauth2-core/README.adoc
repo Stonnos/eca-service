@@ -37,6 +37,8 @@ public class AppConfiguration {
 resource:
   server:
     security:
+      ## Вкл./выкл. передачи bearer token в параметрах запроса
+      allowUBearerTokenUriQueryParameter: false
       ## Список ручек для которых не требуется авторизация
       whitelistUrls:
         - /api/internal/**
