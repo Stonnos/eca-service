@@ -85,15 +85,15 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <java.version>17</java.version>
-        <lombok.version>1.18.26</lombok.version>
+        <java.version>21</java.version>
+        <lombok.version>1.18.32</lombok.version>
         <logback.version>1.4.11</logback.version>
         <slf4j.version>2.0.13</slf4j.version>
         <eca.version>6.9.9</eca.version>
         <h2.version>2.2.224</h2.version>
         <postresql.version>42.6.0</postresql.version>
         <liquibase.version>4.27.0</liquibase.version>
-        <maven-compiler-plugin.version>3.11.0</maven-compiler-plugin.version>
+        <maven-compiler-plugin.version>3.13.0</maven-compiler-plugin.version>
         <docker-maven-plugin.version>1.4.13</docker-maven-plugin.version>
         <maven-processor-plugin.version>4.5</maven-processor-plugin.version>
         <logstash-encoder.version>6.2</logstash-encoder.version>
