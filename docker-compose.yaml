@@ -83,7 +83,7 @@ services:
     environment:
       TZ: ${TIME_ZONE}
       SPRING_PROFILES_ACTIVE: "docker"
-      JAVA_OPTS: "-Xmx512m"
+      JAVA_OPTS: "-Xmx256m"
       MANAGEMENT_ZIPKIN_TRACING_ENABLED: ${ZIPKIN_ENABLED}
       MANAGEMENT_ZIPKIN_TRACING_ENDPOINT: ${ZIPKIN_URL}
     networks:
@@ -144,7 +144,7 @@ services:
     environment:
       TZ: ${TIME_ZONE}
       SPRING_PROFILES_ACTIVE: "docker"
-      JAVA_OPTS: "-Xmx512m"
+      JAVA_OPTS: "-Xmx384m"
       OPENAPI_BASEPATH: "/eca-mail"
       MANAGEMENT_ZIPKIN_TRACING_ENABLED: ${ZIPKIN_ENABLED}
       MANAGEMENT_ZIPKIN_TRACING_ENDPOINT: ${ZIPKIN_URL}
@@ -202,7 +202,7 @@ services:
     environment:
       TZ: ${TIME_ZONE}
       SPRING_PROFILES_ACTIVE: "docker"
-      JAVA_OPTS: "-Xmx512m"
+      JAVA_OPTS: "-Xmx384m"
       MANAGEMENT_ZIPKIN_TRACING_ENABLED: ${ZIPKIN_ENABLED}
       MANAGEMENT_ZIPKIN_TRACING_ENDPOINT: ${ZIPKIN_URL}
     networks:
@@ -217,7 +217,7 @@ services:
     environment:
       TZ: ${TIME_ZONE}
       SPRING_PROFILES_ACTIVE: "docker"
-      JAVA_OPTS: "-Xmx756m"
+      JAVA_OPTS: "-Xmx512m"
       MANAGEMENT_ZIPKIN_TRACING_ENABLED: ${ZIPKIN_ENABLED}
       MANAGEMENT_ZIPKIN_TRACING_ENDPOINT: ${ZIPKIN_URL}
     ports:
@@ -234,7 +234,7 @@ services:
     environment:
       TZ: ${TIME_ZONE}
       SPRING_PROFILES_ACTIVE: "docker"
-      JAVA_OPTS: "-Xmx512m"
+      JAVA_OPTS: "-Xmx384m"
       OPENAPI_BASEPATH: "/eca-web-push"
       MANAGEMENT_ZIPKIN_TRACING_ENABLED: ${ZIPKIN_ENABLED}
       MANAGEMENT_ZIPKIN_TRACING_ENDPOINT: ${ZIPKIN_URL}
@@ -248,7 +248,7 @@ services:
     environment:
       TZ: ${TIME_ZONE}
       SPRING_PROFILES_ACTIVE: "docker"
-      JAVA_OPTS: "-Xmx512m"
+      JAVA_OPTS: "-Xmx384m"
       OPENAPI_BASEPATH: "/eca-audit-log"
       MANAGEMENT_ZIPKIN_TRACING_ENABLED: ${ZIPKIN_ENABLED}
       MANAGEMENT_ZIPKIN_TRACING_ENDPOINT: ${ZIPKIN_URL}
@@ -282,7 +282,7 @@ services:
     environment:
       TZ: ${TIME_ZONE}
       SPRING_PROFILES_ACTIVE: "docker"
-      JAVA_OPTS: "-Xmx1g"
+      JAVA_OPTS: "-Xmx512m"
       OPENAPI_BASEPATH: "/external-api"
     networks:
       - default
