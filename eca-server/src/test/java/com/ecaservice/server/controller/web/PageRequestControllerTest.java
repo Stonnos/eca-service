@@ -16,7 +16,6 @@ import java.util.Map;
 
 import static com.ecaservice.server.PageRequestUtils.PAGE_NUMBER;
 import static com.ecaservice.server.PageRequestUtils.PAGE_SIZE;
-import static com.ecaservice.server.TestHelperUtils.bearerHeader;
 import static com.ecaservice.server.TestHelperUtils.createPageRequestDto;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -34,7 +33,7 @@ abstract class PageRequestControllerTest extends AbstractControllerTest {
 
     public void testGetPageWithNullPageNumber(String url, Map<String, List<String>> params) throws Exception {
         mockMvc.perform(post(url)
-                .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken()))
+                .header(HttpHeaders.AUTHORIZATION, getBearerToken())
                 .params(new LinkedMultiValueMap<>(params))
                 .content(objectMapper.writeValueAsString(createPageRequestDto(null, PAGE_SIZE)))
                 .contentType(MediaType.APPLICATION_JSON))
@@ -43,7 +42,7 @@ abstract class PageRequestControllerTest extends AbstractControllerTest {
 
     public void testGetPageWithNullPageSize(String url, Map<String, List<String>> params) throws Exception {
         mockMvc.perform(post(url)
-                .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken()))
+                .header(HttpHeaders.AUTHORIZATION, getBearerToken())
                 .params(new LinkedMultiValueMap<>(params))
                 .content(objectMapper.writeValueAsString(createPageRequestDto(PAGE_NUMBER, null)))
                 .contentType(MediaType.APPLICATION_JSON))
@@ -52,7 +51,7 @@ abstract class PageRequestControllerTest extends AbstractControllerTest {
 
     public void testGetPageWithZeroPageSize(String url, Map<String, List<String>> params) throws Exception {
         mockMvc.perform(post(url)
-                .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken()))
+                .header(HttpHeaders.AUTHORIZATION, getBearerToken())
                 .params(new LinkedMultiValueMap<>(params))
                 .content(objectMapper.writeValueAsString(createPageRequestDto(PAGE_NUMBER, 0)))
                 .contentType(MediaType.APPLICATION_JSON))
@@ -61,7 +60,7 @@ abstract class PageRequestControllerTest extends AbstractControllerTest {
 
     public void testGetPageWithNegativePageNumber(String url, Map<String, List<String>> params) throws Exception {
         mockMvc.perform(post(url)
-                .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken()))
+                .header(HttpHeaders.AUTHORIZATION, getBearerToken())
                 .params(new LinkedMultiValueMap<>(params))
                 .content(objectMapper.writeValueAsString(createPageRequestDto(PAGE_NUMBER, -1)))
                 .contentType(MediaType.APPLICATION_JSON))
@@ -74,7 +73,7 @@ abstract class PageRequestControllerTest extends AbstractControllerTest {
         pageRequest.getFilters()
                 .add(new FilterRequestDto(StringUtils.EMPTY, Collections.emptyList(), MatchMode.RANGE));
         mockMvc.perform(post(url)
-                .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken()))
+                .header(HttpHeaders.AUTHORIZATION, getBearerToken())
                 .params(new LinkedMultiValueMap<>(params))
                 .content(objectMapper.writeValueAsString(pageRequest))
                 .contentType(MediaType.APPLICATION_JSON))
@@ -86,7 +85,7 @@ abstract class PageRequestControllerTest extends AbstractControllerTest {
         pageRequest.getFilters().add(
                 new FilterRequestDto(ClassifierOptionsDatabaseModel_.CREATION_DATE, Collections.emptyList(), null));
         mockMvc.perform(post(url)
-                .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken()))
+                .header(HttpHeaders.AUTHORIZATION, getBearerToken())
                 .params(new LinkedMultiValueMap<>(params))
                 .content(objectMapper.writeValueAsString(pageRequest))
                 .contentType(MediaType.APPLICATION_JSON))

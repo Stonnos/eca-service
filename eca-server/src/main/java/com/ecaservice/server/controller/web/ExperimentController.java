@@ -48,9 +48,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.validation.Valid;
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -85,7 +85,7 @@ public class ExperimentController {
      * @param experimentRequestDto - experiment request dto
      * @return create experiment results dto
      */
-    @PreAuthorize("#oauth2.hasScope('web')")
+    @PreAuthorize("hasAuthority('SCOPE_web')")
     @Operation(
             description = "Creates experiment request with specified options",
             summary = "Creates experiment request with specified options",
@@ -148,7 +148,7 @@ public class ExperimentController {
      * @param pageRequestDto - page request dto
      * @return experiments page dto
      */
-    @PreAuthorize("#oauth2.hasScope('web')")
+    @PreAuthorize("hasAuthority('SCOPE_web')")
     @Operation(
             description = "Finds experiments with specified options",
             summary = "Finds experiments with specified options",
@@ -213,7 +213,7 @@ public class ExperimentController {
      * @param id - experiment id
      * @return experiment dto
      */
-    @PreAuthorize("#oauth2.hasScope('web')")
+    @PreAuthorize("hasAuthority('SCOPE_web')")
     @Operation(
             description = "Finds experiment with specified id",
             summary = "Finds experiment with specified id",
@@ -271,7 +271,7 @@ public class ExperimentController {
      * @param id - experiment results id
      * @return experiment results details dto
      */
-    @PreAuthorize("#oauth2.hasScope('web')")
+    @PreAuthorize("hasAuthority('SCOPE_web')")
     @Operation(
             description = "Finds experiment results details with specified id",
             summary = "Finds experiment results details with specified id",
@@ -329,7 +329,7 @@ public class ExperimentController {
      *
      * @return experiments request statuses statistics dto
      */
-    @PreAuthorize("#oauth2.hasScope('web')")
+    @PreAuthorize("hasAuthority('SCOPE_web')")
     @Operation(
             description = "Gets experiments request statuses statistics",
             summary = "Gets experiments request statuses statistics",
@@ -371,7 +371,7 @@ public class ExperimentController {
      * @param id - experiment id
      * @return ers report dto
      */
-    @PreAuthorize("#oauth2.hasScope('web')")
+    @PreAuthorize("hasAuthority('SCOPE_web')")
     @Operation(
             description = "Gets experiment ERS report",
             summary = "Gets experiment ERS report",
@@ -430,7 +430,7 @@ public class ExperimentController {
      * @param createdDateTo   - experiment created date to
      * @return chart data dto
      */
-    @PreAuthorize("#oauth2.hasScope('web')")
+    @PreAuthorize("hasAuthority('SCOPE_web')")
     @Operation(
             description = "Gets experiments statistics data (distribution diagram by experiment type)",
             summary = "Gets experiments statistics data (distribution diagram by experiment type)",
@@ -480,7 +480,7 @@ public class ExperimentController {
      * @param id - experiment id
      * @return experiment progress dto
      */
-    @PreAuthorize("#oauth2.hasScope('web')")
+    @PreAuthorize("hasAuthority('SCOPE_web')")
     @Operation(
             description = "Finds experiment progress with specified id",
             summary = "Finds experiment progress with specified id",
@@ -539,7 +539,7 @@ public class ExperimentController {
      * @param id - experiment id
      * @return s3 content response dto
      */
-    @PreAuthorize("#oauth2.hasScope('web')")
+    @PreAuthorize("hasAuthority('SCOPE_web')")
     @Operation(
             description = "Gets experiment results content url",
             summary = "Gets experiment results content url",

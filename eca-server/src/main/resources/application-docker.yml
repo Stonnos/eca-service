@@ -13,11 +13,17 @@ spring:
   jpa:
     hibernate:
       ddl-auto: validate
-    database-platform: org.hibernate.dialect.PostgreSQL9Dialect
   rabbitmq:
     host: rabbitmq
-  redis:
-    host: redis
+  data:
+    redis:
+      host: redis
+  security:
+    oauth2:
+      client:
+        provider:
+          api-client:
+            token-uri: http://eca-oauth:8080/oauth2/token
 
 eureka:
   client:
@@ -56,11 +62,6 @@ minio:
 
 auth-server:
   baseUrl: http://eca-oauth:8080
-
-service:
-  feign:
-    oauth:
-      tokenUrl: http://eca-oauth:8080
 
 lock:
   enabled: true

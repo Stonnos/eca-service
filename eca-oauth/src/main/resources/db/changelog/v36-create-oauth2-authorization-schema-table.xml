@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+        logicalFilePath="db/changelog/v36-create-oauth2-authorization-schema-table.xml"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="create_oauth2_authorization_schema_table" author="roman.batygin@mail.ru">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="oauth2_authorization"/>
+            </not>
+        </preConditions>
+        <sqlFile path="sql/oauth2-authorization-schema.sql"
+                 relativeToChangelogFile="true"
+                 splitStatements="false"
+                 stripComments="false"/>
+    </changeSet>
+</databaseChangeLog>

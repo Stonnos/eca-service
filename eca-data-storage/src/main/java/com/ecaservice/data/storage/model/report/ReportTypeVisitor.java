@@ -56,11 +56,4 @@ public interface ReportTypeVisitor<T> {
      * @return result data
      */
     T visitData();
-
-    /**
-     * Method executes in case in report type is DOCX.
-     *
-     * @return result data
-     */
-    T visitDocx();
 }

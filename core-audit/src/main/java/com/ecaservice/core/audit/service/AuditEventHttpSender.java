@@ -3,12 +3,11 @@ package com.ecaservice.core.audit.service;
 import com.ecaservice.audit.dto.AuditEventRequest;
 import com.ecaservice.core.redelivery.annotation.Retry;
 import com.ecaservice.core.redelivery.annotation.Retryable;
+import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Service;
-
-import javax.annotation.PostConstruct;
 
 import static com.ecaservice.core.redelivery.config.RedeliveryCoreAutoConfiguration.FEIGN_EXCEPTION_STRATEGY;
 

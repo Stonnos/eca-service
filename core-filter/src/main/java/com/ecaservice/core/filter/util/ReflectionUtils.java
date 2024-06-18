@@ -3,11 +3,10 @@ package com.ecaservice.core.filter.util;
 import com.ecaservice.core.filter.exception.FieldNotFoundException;
 import lombok.experimental.UtilityClass;
 import org.apache.commons.lang3.StringUtils;
-import org.hibernate.validator.internal.engine.path.PathImpl;
 
-import javax.validation.Path;
 import java.util.concurrent.ConcurrentHashMap;
 
+import static com.ecaservice.core.filter.util.Utils.splitByPointSeparator;
 import static org.springframework.util.ReflectionUtils.doWithFields;
 
 /**
@@ -43,14 +42,14 @@ public class ReflectionUtils {
         if (StringUtils.isBlank(fieldName)) {
             throw new IllegalArgumentException("Field name is blank string!");
         }
-        Path path = PathImpl.createPathFromString(fieldName);
+        String[] path = splitByPointSeparator(fieldName);
         return getTargetClazz(path, clazz);
     }
 
-    private static Class<?> getTargetClazz(Path path, Class<?> clazz) {
+    private static Class<?> getTargetClazz(String[] path, Class<?> clazz) {
         Class<?> currentClazz = clazz;
-        for (Path.Node node : path) {
-            currentClazz = getInternalFieldType(node.getName(), currentClazz);
+        for (String node : path) {
+            currentClazz = getInternalFieldType(node, currentClazz);
         }
         return currentClazz;
     }

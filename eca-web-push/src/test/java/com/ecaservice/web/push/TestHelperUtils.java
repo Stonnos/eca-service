@@ -45,6 +45,7 @@ public class TestHelperUtils {
     public static SystemPushRequest createSystemPushRequest() {
         var pushRequestDto = new SystemPushRequest();
         pushRequestDto.setRequestId(UUID.randomUUID().toString());
+        pushRequestDto.setCorrelationId(UUID.randomUUID().toString());
         pushRequestDto.setMessageType(EXPERIMENT_STATUS);
         pushRequestDto.setAdditionalProperties(Collections.singletonMap("key", "value"));
         return pushRequestDto;

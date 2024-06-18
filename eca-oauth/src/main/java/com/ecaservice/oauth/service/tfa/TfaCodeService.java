@@ -6,22 +6,23 @@ import com.ecaservice.oauth.entity.UserEntity;
 import com.ecaservice.oauth.model.TfaCodeModel;
 import com.ecaservice.oauth.repository.TfaCodeRepository;
 import com.ecaservice.oauth.repository.UserEntityRepository;
-import com.ecaservice.oauth.service.SerializationHelper;
+import com.ecaservice.oauth.security.model.TfaCodeAuthenticationRequest;
+import com.ecaservice.oauth.service.AuthenticationJsonSerializer;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.RandomStringUtils;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.oauth2.common.exceptions.InvalidGrantException;
-import org.springframework.security.oauth2.common.util.RandomValueStringGenerator;
-import org.springframework.security.oauth2.provider.OAuth2Authentication;
+import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
+import org.springframework.security.oauth2.core.OAuth2ErrorCodes;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.CollectionUtils;
 
-import javax.annotation.PostConstruct;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-import static com.ecaservice.common.web.util.MaskUtils.mask;
+import static com.ecaservice.oauth.security.OAuth2AdditionalErrorCodes.INVALID_TFA_CODE;
+import static com.ecaservice.oauth.security.OAuth2AdditionalErrorCodes.TFA_CODE_EXPIRED;
 import static org.apache.commons.codec.digest.DigestUtils.md5Hex;
 
 /**
@@ -35,28 +36,19 @@ import static org.apache.commons.codec.digest.DigestUtils.md5Hex;
 public class TfaCodeService {
 
     private final TfaConfig tfaConfig;
-    private final SerializationHelper serializationHelper;
+    private final AuthenticationJsonSerializer authenticationJsonSerializer;
     private final UserEntityRepository userEntityRepository;
     private final TfaCodeRepository tfaCodeRepository;
-    private final RandomValueStringGenerator generator = new RandomValueStringGenerator();
-
-    /**
-     * Initialization method
-     */
-    @PostConstruct
-    public void initialize() {
-        this.generator.setLength(tfaConfig.getCodeLength());
-    }
 
     /**
      * Creates 2fa authorization code.
      *
-     * @param authentication - authentication object
+     * @param tfaCodeAuthenticationRequest - tfa code authentication request
      * @return 2fa code model
      */
     @Transactional
-    public TfaCodeModel createAuthorizationCode(OAuth2Authentication authentication) {
-        String user = authentication.getName();
+    public TfaCodeModel createAuthorizationCode(TfaCodeAuthenticationRequest tfaCodeAuthenticationRequest) {
+        String user = tfaCodeAuthenticationRequest.getAuthentication().getName();
         var userEntity = userEntityRepository.findUser(user);
         if (userEntity == null) {
             throw new UsernameNotFoundException(String.format("User with login [%s] doesn't exists!", user));
@@ -64,8 +56,8 @@ public class TfaCodeService {
         //Invalidate previous code
         invalidatePreviousCodes(userEntity);
         String token = UUID.randomUUID().toString();
-        String code = generator.generate();
-        saveNewCode(token, code, userEntity, authentication);
+        String code = RandomStringUtils.random(tfaConfig.getCodeLength(), false, true);
+        saveNewCode(token, code, userEntity, tfaCodeAuthenticationRequest);
         return TfaCodeModel.builder()
                 .token(token)
                 .code(code)
@@ -74,42 +66,40 @@ public class TfaCodeService {
 
     /**
      * Consumes 2fa authorization code.
+     *
      * @param token - token value
-     * @param code - authorization code
-     * @return authentication object
+     * @param code  - authorization code
+     * @return tfa code authentication request
      */
-    public OAuth2Authentication consumeAuthorizationCode(String token, String code) {
+    public TfaCodeAuthenticationRequest consumeAuthorizationCode(String token, String code) {
         var tfaCodeEntity = tfaCodeRepository.findByToken(md5Hex(token));
         if (tfaCodeEntity == null) {
-            throw new InvalidGrantException(String.format("Invalid token: %s", mask(token)));
+            throw new OAuth2AuthenticationException(OAuth2ErrorCodes.INVALID_TOKEN);
         }
         String md5Code = md5Hex(code);
         if (!tfaCodeEntity.getCode().equals(md5Code)) {
-            throw new InvalidGrantException(String.format("Invalid code: %s", mask(code)));
+            throw new OAuth2AuthenticationException(INVALID_TFA_CODE);
         }
         if (LocalDateTime.now().isAfter(tfaCodeEntity.getExpireDate())) {
-            throw new InvalidGrantException(String.format("Code %s has been expired", mask(code)));
+            throw new OAuth2AuthenticationException(TFA_CODE_EXPIRED);
         }
-        OAuth2Authentication authentication = serializationHelper.deserialize(tfaCodeEntity.getAuthentication());
+        Authentication authentication = authenticationJsonSerializer.deserialize(tfaCodeEntity.getAuthentication());
         tfaCodeRepository.delete(tfaCodeEntity);
-        return authentication;
+        return new TfaCodeAuthenticationRequest(tfaCodeEntity.getRegisteredClientId(), authentication);
     }
 
     private void invalidatePreviousCodes(UserEntity userEntity) {
-        var previousCodes = tfaCodeRepository.findActiveCodes(userEntity, LocalDateTime.now());
-        if (!CollectionUtils.isEmpty(previousCodes)) {
-            log.info("Found [{}] active tfa codes for user [{}]", previousCodes.size(), userEntity.getId());
-            tfaCodeRepository.deleteAll(previousCodes);
-            log.info("[{}] active tfa codes has been invalidated for user [{}]", previousCodes.size(),
-                    userEntity.getId());
-        }
+        tfaCodeRepository.deleteActiveCodes(userEntity, LocalDateTime.now());
     }
 
-    private void saveNewCode(String token, String code, UserEntity userEntity, OAuth2Authentication authentication) {
+    private void saveNewCode(String token, String code, UserEntity userEntity,
+                             TfaCodeAuthenticationRequest tfaCodeAuthenticationRequest) {
         var tfaCodeEntity = new TfaCodeEntity();
         tfaCodeEntity.setToken(md5Hex(token));
         tfaCodeEntity.setCode(md5Hex(code));
-        tfaCodeEntity.setAuthentication(serializationHelper.serialize(authentication));
+        tfaCodeEntity.setRegisteredClientId(tfaCodeAuthenticationRequest.getClientId());
+        tfaCodeEntity.setAuthentication(
+                authenticationJsonSerializer.serialize(tfaCodeAuthenticationRequest.getAuthentication()));
         tfaCodeEntity.setExpireDate(LocalDateTime.now().plusSeconds(tfaConfig.getCodeValiditySeconds()));
         tfaCodeEntity.setUserEntity(userEntity);
         tfaCodeEntity.setCreated(LocalDateTime.now());

@@ -3,7 +3,6 @@ package com.ecaservice.oauth.controller.web;
 import com.ecaservice.common.error.model.ValidationErrorDto;
 import com.ecaservice.oauth.dto.UpdateUserNotificationOptionsDto;
 import com.ecaservice.oauth.service.UserProfileOptionsService;
-import com.ecaservice.user.model.UserDetailsImpl;
 import com.ecaservice.web.dto.model.UserProfileNotificationOptionsDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -13,11 +12,11 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -25,7 +24,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.validation.Valid;
+import java.security.Principal;
 
 import static com.ecaservice.config.swagger.OpenApi30Configuration.ECA_AUTHENTICATION_SECURITY_SCHEME;
 import static com.ecaservice.config.swagger.OpenApi30Configuration.SCOPE_WEB;
@@ -48,9 +47,10 @@ public class UserProfileOptionsController {
     /**
      * Gets user profile notification options.
      *
+     * @param principal - principal object
      * @return user profile notification options
      */
-    @PreAuthorize("#oauth2.hasScope('web')")
+    @PreAuthorize("hasAuthority('SCOPE_web')")
     @Operation(
             description = "Gets user profile notification options",
             summary = "Gets user profile notification options",
@@ -82,19 +82,18 @@ public class UserProfileOptionsController {
             }
     )
     @GetMapping(value = "/notifications")
-    public UserProfileNotificationOptionsDto getUserNotificationOptions(
-            @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        log.info("Get user [{}] notification options", userDetails.getId());
-        return userProfileOptionsService.getUserNotificationOptions(userDetails.getUsername());
+    public UserProfileNotificationOptionsDto getUserNotificationOptions(Principal principal) {
+        log.info("Get user [{}] notification options", principal.getName());
+        return userProfileOptionsService.getUserNotificationOptions(principal.getName());
     }
 
     /**
      * Updates user profile notification options.
      *
-     * @param userDetails                      - user details
+     * @param principal                        - principal object
      * @param updateUserNotificationOptionsDto - notification options dto for update
      */
-    @PreAuthorize("#oauth2.hasScope('web')")
+    @PreAuthorize("hasAuthority('SCOPE_web')")
     @Operation(
             description = "Updates user profile notification options",
             summary = "Updates user profile notification options",
@@ -135,12 +134,11 @@ public class UserProfileOptionsController {
             }
     )
     @PutMapping(value = "/update-notifications")
-    public void updateUserNotificationOptions(@AuthenticationPrincipal UserDetailsImpl userDetails,
+    public void updateUserNotificationOptions(Principal principal,
                                               @Valid @RequestBody
                                               UpdateUserNotificationOptionsDto updateUserNotificationOptionsDto) {
-        log.info("Received request to update user [{}] notification options", userDetails.getId());
-        userProfileOptionsService.updateUserNotificationOptions(userDetails.getUsername(),
-                updateUserNotificationOptionsDto);
-        log.info("Request to update user [{}] notification options has been processed", userDetails.getId());
+        log.info("Received request to update user [{}] notification options", principal.getName());
+        userProfileOptionsService.updateUserNotificationOptions(principal.getName(), updateUserNotificationOptionsDto);
+        log.info("Request to update user [{}] notification options has been processed", principal.getName());
     }
 }

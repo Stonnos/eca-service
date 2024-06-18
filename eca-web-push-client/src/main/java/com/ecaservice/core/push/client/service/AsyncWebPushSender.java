@@ -8,7 +8,7 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.PostConstruct;
+import jakarta.annotation.PostConstruct;
 
 import static com.ecaservice.core.push.client.config.EcaWebPushClientAutoConfiguration.WEB_PUSH_CLIENT_THREAD_POOL_TASK_EXECUTOR;
 
@@ -44,7 +44,7 @@ public class AsyncWebPushSender implements WebPushSender {
 
     @Override
     @Async(WEB_PUSH_CLIENT_THREAD_POOL_TASK_EXECUTOR)
-    public void send(AbstractPushRequest pushRequest) {
-        webPushSender.send(pushRequest);
+    public void sendPush(AbstractPushRequest pushRequest) {
+        webPushSender.sendPush(pushRequest);
     }
 }

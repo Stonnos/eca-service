@@ -39,7 +39,6 @@ import java.util.stream.Collectors;
 import static com.ecaservice.server.PageRequestUtils.PAGE_NUMBER;
 import static com.ecaservice.server.PageRequestUtils.TOTAL_ELEMENTS;
 import static com.ecaservice.server.TestHelperUtils.TEST_UUID;
-import static com.ecaservice.server.TestHelperUtils.bearerHeader;
 import static com.ecaservice.server.TestHelperUtils.buildEvaluationRequestDto;
 import static com.ecaservice.server.TestHelperUtils.buildOptimalEvaluationRequestDto;
 import static com.ecaservice.server.TestHelperUtils.createPageRequestDto;
@@ -101,7 +100,7 @@ class EvaluationControllerTest extends PageRequestControllerTest {
         when(evaluationRequestWebApiService.createEvaluationRequest(any(CreateEvaluationRequestDto.class)))
                 .thenReturn(expected);
         mockMvc.perform(post(CREATE_EVALUATION_URL)
-                        .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken()))
+                        .header(HttpHeaders.AUTHORIZATION, getBearerToken())
                         .content(objectMapper.writeValueAsString(createEvaluationRequestDto))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
@@ -128,7 +127,7 @@ class EvaluationControllerTest extends PageRequestControllerTest {
         when(evaluationRequestWebApiService.createOptimalEvaluationRequest(any(CreateOptimalEvaluationRequestDto.class)))
                 .thenReturn(expected);
         mockMvc.perform(post(CREATE_OPTIMAL_EVALUATION_URL)
-                        .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken()))
+                        .header(HttpHeaders.AUTHORIZATION, getBearerToken())
                         .content(objectMapper.writeValueAsString(createEvaluationRequestDto))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
@@ -167,7 +166,7 @@ class EvaluationControllerTest extends PageRequestControllerTest {
     void testGetEvaluationLogDetailsNotFound() throws Exception {
         when(evaluationLogRepository.findById(ID)).thenThrow(EntityNotFoundException.class);
         mockMvc.perform(get(DETAILS_URL, TEST_UUID)
-                        .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken())))
+                        .header(HttpHeaders.AUTHORIZATION, getBearerToken()))
                 .andExpect(status().isBadRequest());
     }
 
@@ -178,7 +177,7 @@ class EvaluationControllerTest extends PageRequestControllerTest {
         EvaluationLogDetailsDto evaluationLogDetailsDto = evaluationLogMapper.mapDetails(evaluationLog);
         when(evaluationLogDataService.getEvaluationLogDetails(evaluationLog)).thenReturn(evaluationLogDetailsDto);
         mockMvc.perform(get(DETAILS_URL, ID)
-                        .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken())))
+                        .header(HttpHeaders.AUTHORIZATION, getBearerToken()))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(content().json(objectMapper.writeValueAsString(evaluationLogDetailsDto)));
@@ -229,7 +228,7 @@ class EvaluationControllerTest extends PageRequestControllerTest {
         var pageDto = PageDto.of(evaluationLogsDtoList, PAGE_NUMBER, TOTAL_ELEMENTS);
         when(evaluationLogDataService.getEvaluationLogsPage(any(PageRequestDto.class))).thenReturn(pageDto);
         mockMvc.perform(post(LIST_URL)
-                        .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken()))
+                        .header(HttpHeaders.AUTHORIZATION, getBearerToken())
                         .content(objectMapper.writeValueAsString(createPageRequestDto()))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
@@ -248,7 +247,7 @@ class EvaluationControllerTest extends PageRequestControllerTest {
         RequestStatusStatisticsDto requestStatusStatisticsDto = new RequestStatusStatisticsDto();
         when(evaluationLogDataService.getRequestStatusesStatistics()).thenReturn(requestStatusStatisticsDto);
         mockMvc.perform(get(REQUEST_STATUS_STATISTICS_URL)
-                        .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken())))
+                        .header(HttpHeaders.AUTHORIZATION, getBearerToken()))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(content().json(objectMapper.writeValueAsString(requestStatusStatisticsDto)));
@@ -268,7 +267,7 @@ class EvaluationControllerTest extends PageRequestControllerTest {
         when(evaluationLogDataService.getClassifiersStatisticsData(null, null))
                 .thenReturn(chartDto);
         mockMvc.perform(get(CLASSIFIERS_STATISTICS_URL)
-                        .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken())))
+                        .header(HttpHeaders.AUTHORIZATION, getBearerToken()))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(content().json(objectMapper.writeValueAsString(chartDto)));
@@ -284,7 +283,7 @@ class EvaluationControllerTest extends PageRequestControllerTest {
     void testGetModelContentUrlForNotExistingEvaluationLog() throws Exception {
         when(evaluationLogDataService.getModelContentUrl(ID)).thenThrow(EntityNotFoundException.class);
         mockMvc.perform(get(MODEL_CONTENT_URL, ID)
-                        .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken())))
+                        .header(HttpHeaders.AUTHORIZATION, getBearerToken()))
                 .andExpect(status().isBadRequest());
     }
 
@@ -295,7 +294,7 @@ class EvaluationControllerTest extends PageRequestControllerTest {
                 .build();
         when(evaluationLogDataService.getModelContentUrl(ID)).thenReturn(s3ContentResponseDto);
         mockMvc.perform(get(MODEL_CONTENT_URL, ID)
-                        .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken())))
+                        .header(HttpHeaders.AUTHORIZATION, getBearerToken()))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(content().json(objectMapper.writeValueAsString(s3ContentResponseDto)));
@@ -304,7 +303,7 @@ class EvaluationControllerTest extends PageRequestControllerTest {
     private void internalTestCreateEvaluationBadRequest(CreateEvaluationRequestDto evaluationRequestDto)
             throws Exception {
         mockMvc.perform(post(CREATE_EVALUATION_URL)
-                        .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken()))
+                        .header(HttpHeaders.AUTHORIZATION, getBearerToken())
                         .content(objectMapper.writeValueAsString(evaluationRequestDto))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest());

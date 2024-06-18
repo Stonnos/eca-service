@@ -13,9 +13,10 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.scheduling.annotation.EnableAsync;
-import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
 import java.util.concurrent.Executor;
+
+import static com.ecaservice.common.web.concurrent.ThreadPoolExecutorFactory.createThreadPoolTaskExecutor;
 
 /**
  * Audit configuration class.
@@ -47,9 +48,7 @@ public class AuditCoreConfiguration {
     @Bean(name = AUDIT_EVENT_THREAD_POOL_TASK_EXECUTOR)
     @ConditionalOnProperty(value = "audit.asyncEvents", havingValue = "true")
     public Executor auditEventThreadPoolTaskExecutor(AuditProperties auditProperties) {
-        ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
-        executor.setCorePoolSize(auditProperties.getThreadPoolSize());
-        executor.setMaxPoolSize(auditProperties.getThreadPoolSize());
+        Executor executor = createThreadPoolTaskExecutor(auditProperties.getThreadPoolSize());
         log.info("[{}] audit client thread pool with size [{}] has been configured",
                 AUDIT_EVENT_THREAD_POOL_TASK_EXECUTOR, auditProperties.getThreadPoolSize());
         return executor;

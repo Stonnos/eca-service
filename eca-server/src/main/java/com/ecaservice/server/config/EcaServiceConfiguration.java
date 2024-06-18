@@ -2,11 +2,12 @@ package com.ecaservice.server.config;
 
 import com.ecaservice.common.web.annotation.EnableGlobalExceptionHandler;
 import com.ecaservice.config.swagger.annotation.EnableOpenApi;
-import com.ecaservice.core.filter.annotation.EnableFilters;
 import com.ecaservice.oauth2.annotation.Oauth2ResourceServer;
 import com.ecaservice.server.config.ers.ErsConfig;
 import com.ecaservice.server.model.entity.AbstractEvaluationEntity;
 import com.ecaservice.server.repository.EvaluationLogRepository;
+import io.micrometer.context.ContextExecutorService;
+import io.micrometer.context.ContextSnapshotFactory;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
@@ -18,11 +19,9 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.SchedulingConfigurer;
-import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.springframework.scheduling.config.ScheduledTaskRegistrar;
 
-import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -38,7 +37,6 @@ import java.util.concurrent.Executors;
 @EnableCaching
 @EnableAsync
 @EnableGlobalExceptionHandler
-@EnableFilters
 @Oauth2ResourceServer
 @EntityScan(basePackageClasses = AbstractEvaluationEntity.class)
 @EnableJpaRepositories(basePackageClasses = EvaluationLogRepository.class)
@@ -47,8 +45,6 @@ import java.util.concurrent.Executors;
                 ErsConfig.class, ClassifiersProperties.class, ProcessConfig.class})
 @RequiredArgsConstructor
 public class EcaServiceConfiguration implements SchedulingConfigurer {
-
-    public static final String ECA_THREAD_POOL_TASK_EXECUTOR = "ecaThreadPoolTaskExecutor";
 
     private final AppProperties appProperties;
 
@@ -59,21 +55,8 @@ public class EcaServiceConfiguration implements SchedulingConfigurer {
      */
     @Bean
     public ExecutorService executorService() {
-        return Executors.newCachedThreadPool();
-    }
-
-    /**
-     * Creates thread pool task executor bean.
-     *
-     * @param appProperties - common config bean
-     * @return thread pool task executor
-     */
-    @Bean(name = ECA_THREAD_POOL_TASK_EXECUTOR)
-    public Executor ecaThreadPoolTaskExecutor(AppProperties appProperties) {
-        ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
-        executor.setCorePoolSize(appProperties.getThreadPoolSize());
-        executor.setMaxPoolSize(appProperties.getThreadPoolSize());
-        return executor;
+        var executorService = Executors.newCachedThreadPool();
+        return ContextExecutorService.wrap(executorService, ContextSnapshotFactory.builder().build()::captureAll);
     }
 
     @Override

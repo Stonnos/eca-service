@@ -45,7 +45,7 @@ public class FilterTemplateController {
      *
      * @return filter fields list
      */
-    @PreAuthorize("#oauth2.hasScope('web')")
+    @PreAuthorize("hasAuthority('SCOPE_web')")
     @Operation(
             description = "Gets experiment filter fields",
             summary = "Gets experiment filter fields",
@@ -86,7 +86,7 @@ public class FilterTemplateController {
      *
      * @return filter fields list
      */
-    @PreAuthorize("#oauth2.hasScope('web')")
+    @PreAuthorize("hasAuthority('SCOPE_web')")
     @Operation(
             description = "Gets evaluation log filter fields",
             summary = "Gets evaluation log filter fields",
@@ -127,7 +127,7 @@ public class FilterTemplateController {
      *
      * @return filter fields list
      */
-    @PreAuthorize("#oauth2.hasScope('web')")
+    @PreAuthorize("hasAuthority('SCOPE_web')")
     @Operation(
             description = "Gets experiment types filter dictionary",
             summary = "Gets experiment types filter dictionary",
@@ -168,7 +168,7 @@ public class FilterTemplateController {
      *
      * @return filter fields list
      */
-    @PreAuthorize("#oauth2.hasScope('web')")
+    @PreAuthorize("hasAuthority('SCOPE_web')")
     @Operation(
             description = "Gets evaluation method filter dictionary",
             summary = "Gets evaluation method filter dictionary",
@@ -209,7 +209,7 @@ public class FilterTemplateController {
      *
      * @return filter fields list
      */
-    @PreAuthorize("#oauth2.hasScope('web')")
+    @PreAuthorize("hasAuthority('SCOPE_web')")
     @Operation(
             description = "Gets classifiers configuration history filter fields",
             summary = "Gets classifiers configuration history filter fields",

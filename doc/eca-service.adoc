@@ -433,6 +433,7 @@ image::./images/eca-oauth-db-schema.png[alt=Схема базы данных eca
 |first_name              |varchar(255)     |-|+|-                              |Имя пользователя
 |last_name               |varchar(255)     |-|+|-                              |Фамилия пользователя
 |middle_name             |varchar(255)     |-|+|-                              |Отчество пользователя
+|photo_id                |bigint           |-|-|fk_user_photo_id               |Внешний ключ фото пользователя
 |tfa_enabled             |boolean          |-|-|-                              |Вкл./выкл. двухфакторную аутентификацию
 |locked                  |boolean          |-|-|-                              |Вкл./выкл. блокировку пользователя
 |password_change_date    |timestamp        |-|-|-                              |Дата последнего изменения пароля
@@ -466,7 +467,6 @@ image::./images/eca-oauth-db-schema.png[alt=Схема базы данных eca
 |file_name               |varchar(255)     |-|-|-                              |Название файла с фотографией
 |file_extension          |varchar(255)     |-|-|-                              |Расширение файла
 |photo                   |bytea            |-|-|-                              |Фотография в двоичном виде
-|user_id                 |bigint           |-|+|fk_user_photo_user_id          |Внешний ключ пользователя
 |===
 
 ==== Таблица 3.{counter:db-table-id} - 'user_profile_options' - содержит данные о настройказ профилей пользователей
@@ -526,7 +526,7 @@ image::./images/eca-oauth-db-schema.png[alt=Схема базы данных eca
 |Название колонки|Тип|Unique|Not NULL|Индекс|Описание
 |id                      |bigint           |+|+|+                                          |Идентификатор записи (первичный ключ)
 |token                   |varchar(255)     |+|+|change_password_request_token_unique_index |Короткоживущий токен для смены пароля
-|confirmation_code       |varchar(255)     |+|-|-                                          |Код подтверждения из письма для смены пароля
+|confirmation_code       |varchar(255)     |-|+|-                                          |Код подтверждения из письма для смены пароля
 |expire_date             |timestamp        |-|+|-                                          |Дата истечения срока действия токена
 |confirmation_date       |timestamp        |-|-|-                                          |Дата подтверждения смены пароля
 |new_password            |varchar(255)     |-|+|-                                          |Хеш пароля для изменения
@@ -541,7 +541,7 @@ image::./images/eca-oauth-db-schema.png[alt=Схема базы данных eca
 |id                      |bigint           |+|+|+                                          |Идентификатор записи (первичный ключ)
 |token                   |varchar(255)     |+|+|change_email_request_token_unique_index    |Короткоживущий токен для изменения Email
 |expire_date             |timestamp        |-|+|-                                          |Дата истечения срока действия токена
-|confirmation_code       |varchar(255)     |+|-|-                                          |Код подтверждения из письма для смены email
+|confirmation_code       |varchar(255)     |-|+|-                                          |Код подтверждения из письма для смены email
 |confirmation_date       |timestamp        |-|-|-                                          |Дата подтверждения изменения Email
 |new_email               |varchar(255)     |-|+|-                                          |Новый Email
 |user_id                 |bigint           |-|+|fk_change_email_request_user_id            |Внешний ключ пользователя
@@ -553,7 +553,9 @@ image::./images/eca-oauth-db-schema.png[alt=Схема базы данных eca
 |===
 |Название колонки|Тип|Unique|Not NULL|Индекс|Описание
 |id                      |bigint           |+|+|+                                          |Идентификатор записи (первичный ключ)
-|token                   |varchar(255)     |+|+|tfa_code_token_unique_index                |Код подтверждения
+|token                   |varchar(255)     |+|+|tfa_code_token_unique_index                |Короткоживущий токен для выполнения tfa
+|code                    |varchar(255)     |-|+|-                                          |Код подтверждения 2fa
+|registered_client_id    |varchar(255)     |-|+|-                                          |Идентификатор клиента
 |expire_date             |timestamp        |-|+|-                                          |Дата истечения срока действия кода
 |authentication          |text             |-|+|-                                          |Сериализованный объект Authentication
 |user_id                 |bigint           |-|+|fk_tfa_code_user_id                        |Внешний ключ пользователя
@@ -561,7 +563,7 @@ image::./images/eca-oauth-db-schema.png[alt=Схема базы данных eca
 |===
 
 Таблицы *databasechangeloglock* и *databasechangeloglock* предназначены для управления миграциями базы данных.
-Таблицы с префиксом oauth_ предназначены для работы с библиотекой spring security oauth2.
+Таблицы с префиксом oauth2_ предназначены для работы с библиотекой spring security oauth2.
 
 === 3.5 Схема БД eca-ers
 
@@ -987,7 +989,7 @@ image::./images/data-loader-db-schema.png[alt=Схема базы данных e
 |===
 |Название колонки|Тип|Unique|Not NULL|Индекс|Описание
 |id                         |bigint           |+|+|+                                 |Идентификатор записи (первичный ключ)
-|name                       |varchar(255)     |-|+|-                                 |Название словаря
+|_name                       |varchar(255)     |-|+|-                                 |Название словаря
 |===
 
 ==== Таблица 3.{counter:db-table-id} - 'form_field_dictionary_value' - содержит данные значений словарей
@@ -995,12 +997,12 @@ image::./images/data-loader-db-schema.png[alt=Схема базы данных e
 |===
 |Название колонки|Тип|Unique|Not NULL|Индекс|Описание
 |id                         |bigint           |+|+|+                                               |Идентификатор записи (первичный ключ)
-|label                      |varchar(255)     |-|+|-                                               |Описание значения
-|value                      |varchar(255)     |-|+|-                                               |Код (значение)
+|_label                     |varchar(255)     |-|+|-                                               |Описание значения
+|_value                     |varchar(255)     |-|+|-                                               |Код (значение)
 |dictionary_id              |bigint           |-|+|fk_form_field_dictionary_value_dictionary_id    |Внешний ключ, ID словаря
 |===
 
-Таблица также содержит уникальный составной индекс form_field_dictionary_value_dictionary_id_unique_idx на поля (value, dictionary_id)
+Таблица также содержит уникальный составной индекс form_field_dictionary_value_dictionary_id_unique_idx на поля (_value, dictionary_id)
 
 ==== Таблица 3.{counter:db-table-id} - 'form_field' - содержит данные полей для шаблонов
 [cols="^20%,^14%,^8%,^8%,^8%,^30%",options="header"]
@@ -1077,7 +1079,7 @@ image::./images/data-loader-db-schema.png[alt=Схема базы данных e
 |===
 |Название колонки|Тип|Unique|Not NULL|Индекс|Описание
 |id                         |bigint           |+|+|+                                 |Идентификатор записи (первичный ключ)
-|name                       |varchar(255)     |-|+|filter_dictionary_name_unique_idx |Название словаря
+|_name                      |varchar(255)     |-|+|filter_dictionary_name_unique_idx |Название словаря
 |===
 
 ==== Таблица 3.{counter:db-table-id} - 'filter_dictionary_value' - содержит данные значений словарей
@@ -1085,8 +1087,8 @@ image::./images/data-loader-db-schema.png[alt=Схема базы данных e
 |===
 |Название колонки|Тип|Unique|Not NULL|Индекс|Описание
 |id                         |bigint           |+|+|+                                 |Идентификатор записи (первичный ключ)
-|label                      |varchar(255)     |-|+|-                                 |Описание значения
-|value                      |varchar(255)     |-|+|-                                 |Значение
+|_label                     |varchar(255)     |-|+|-                                 |Описание значения
+|_value                     |varchar(255)     |-|+|-                                 |Значение
 |filter_dictionary_id       |bigint           |-|+|fk_filter_dictionary_id           |Внешний ключ, ID словаря
 |===
 

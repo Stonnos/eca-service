@@ -1,8 +1,6 @@
 spring:
   application:
     name: eca-web
-  zipkin:
-    enabled: false
 
 eureka:
   client:
@@ -34,6 +32,9 @@ auth-server:
   clientSecret: 02#eca_service_tech6
 
 management:
+  tracing:
+    sampling:
+      probability: 1.0
   metrics:
     tags:
       application: ${spring.application.name}

@@ -1,0 +1,52 @@
+= Библиотека feign-oauth2
+:toc:
+:toc-title: Оглавление
+
+== Введение
+
+Библиотека реализует функционал для поддержки аутентификации feign client по протоколу oauth2.
+
+== 1. Базовые настройки библиотеки
+
+Для начала, необходимо добавить зависимость в pom.xml
+
+[source,xml]
+----
+<dependency>
+    <groupId>eca.service</groupId>
+    <artifactId>feign-oauth2</artifactId>
+    <version>${project.version}</version>
+</dependency>
+----
+
+В файле application.yml добавить настройки библиотеки
+
+[source,yml]
+----
+spring:
+  cloud:
+    openfeign:
+      oauth2:
+        ## Идентификатор клиента
+        clientRegistrationId: api-client
+  security:
+    oauth2:
+      client:
+        registration:
+          ## Идентификатор клиента
+          api-client:
+            ## Идентификатор клиента для получения токена
+            client-id: eca_service_tech
+            ## Секрет клиента для получения токена
+            client-secret: 02#eca_service_tech6
+            ## Запращиваемые scope
+            scope: web
+            ## Oauth2 grant type
+            authorization-grant-type: client_credentials
+            provider: api-client
+        provider:
+          ## Идентификатор клиента
+          api-client:
+            ## Url для получения авторизационного токена
+            token-uri: http://localhost:8080/oauth2/token
+----

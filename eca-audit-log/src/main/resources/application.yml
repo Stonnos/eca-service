@@ -10,9 +10,11 @@ spring:
   jpa:
     hibernate:
       ddl-auto: validate
-    database-platform: org.hibernate.dialect.PostgreSQL9Dialect
     properties:
       hibernate:
+        id:
+          ## Use one hibernate_sequence for all entities
+          db_structure_naming_strategy: legacy
         jdbc:
           lob:
             non_contextual_creation: true
@@ -25,8 +27,6 @@ spring:
     cache-names: global-filters, filter-templates, filter-dictionaries, sort-fields
     caffeine:
       spec: maximumSize=100, expireAfterWrite=18000s
-  zipkin:
-    enabled: false
 
 eureka:
   client:
@@ -61,12 +61,25 @@ springdoc:
       client-secret: swagger_secret
     disable-swagger-default-url: true
 
+resource:
+  server:
+    security:
+      whitelistUrls:
+        - /api/audit/event/**
+
 auth-server:
   baseUrl: http://localhost:8085/eca-oauth
   clientId: eca_service_tech
   clientSecret: 02#eca_service_tech6
 
 management:
+  observations:
+    annotations:
+      ## Enables span annotations processing
+      enabled: true
+  tracing:
+    sampling:
+      probability: 1.0
   metrics:
     tags:
       application: ${spring.application.name}

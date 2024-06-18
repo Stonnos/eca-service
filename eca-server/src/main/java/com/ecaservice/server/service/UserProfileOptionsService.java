@@ -5,7 +5,7 @@ import com.ecaservice.server.bpm.model.UserProfileOptionsNotificationEventModel;
 import com.ecaservice.user.profile.options.client.service.UserProfileOptionsProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.cloud.sleuth.annotation.NewSpan;
+import io.micrometer.tracing.annotation.NewSpan;
 import org.springframework.stereotype.Service;
 
 import java.util.stream.Collectors;

@@ -26,7 +26,7 @@
                 file="classifiers-form-templates/templates.csv"/>
     </changeSet>
 
-    <changeSet author="roman.batygin@mail.ru" id="lib_insert_classifier_form_field_dictionaries_1" context="data">
+    <changeSet author="roman.batygin@mail.ru" id="lib_insert_classifier_form_field_dictionaries_2" context="data">
         <preConditions onFail="MARK_RAN">
             <tableExists tableName="form_field_dictionary"/>
         </preConditions>
@@ -37,7 +37,7 @@
                 file="classifiers-form-templates/form-field-dictionaries.csv"/>
     </changeSet>
 
-    <changeSet author="roman.batygin@mail.ru" id="lib_insert_classifier_form_field_dictionaries_values_1" context="data">
+    <changeSet author="roman.batygin@mail.ru" id="lib_insert_classifier_form_field_dictionaries_values_2" context="data">
         <preConditions onFail="MARK_RAN">
             <tableExists tableName="form_field_dictionary_value"/>
         </preConditions>

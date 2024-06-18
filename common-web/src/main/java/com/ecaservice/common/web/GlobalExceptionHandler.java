@@ -3,6 +3,7 @@ package com.ecaservice.common.web;
 import com.ecaservice.common.error.model.ValidationErrorDto;
 import com.ecaservice.common.web.error.CommonErrorCode;
 import com.ecaservice.common.web.exception.ValidationErrorException;
+import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.ResponseEntity;
@@ -14,7 +15,6 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.multipart.MaxUploadSizeExceededException;
 
-import javax.validation.ConstraintViolationException;
 import java.util.Collections;
 import java.util.List;
 

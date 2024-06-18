@@ -29,6 +29,11 @@ public class ExperimentEmailEventHandler extends AbstractEmailEventHandler<Exper
     }
 
     @Override
+    public String getCorrelationId(ExperimentEmailEvent event) {
+        return event.getExperiment().getRequestId();
+    }
+
+    @Override
     public Map<String, String> createVariables(ExperimentEmailEvent event) {
         var experiment = event.getExperiment();
         Map<String, String> variablesMap = newHashMap();

@@ -46,7 +46,7 @@ public class InstancesExternalApiController {
      * @param instancesFile - instances file
      * @return upload response dto
      */
-    @PreAuthorize("#oauth2.hasScope('data-loader-api')")
+    @PreAuthorize("hasAuthority('SCOPE_data-loader-api')")
     @Operation(
             description = "Uploads train data file to storage",
             summary = "Uploads train data file to storage",

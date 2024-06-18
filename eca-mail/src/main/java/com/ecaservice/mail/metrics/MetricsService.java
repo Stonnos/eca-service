@@ -2,11 +2,10 @@ package com.ecaservice.mail.metrics;
 
 import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.MeterRegistry;
+import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-
-import javax.annotation.PostConstruct;
 
 import static com.ecaservice.mail.config.metrics.MetricConstants.SENDING_EMAIL_MESSAGE_ERRORS_METRIC;
 import static com.ecaservice.mail.config.metrics.MetricConstants.SENDING_EMAIL_MESSAGE_SUCCESS_METRIC;

@@ -12,11 +12,8 @@ public class EmailDuplicationException extends ValidationErrorException {
 
     /**
      * Constructor with parameters.
-     *
-     * @param userId - user id
      */
-    public EmailDuplicationException(Long userId) {
-        super(EcaOauthErrorCode.EMAIL_DUPLICATION,
-                String.format("Can't set email for user [%d], because its exists", userId));
+    public EmailDuplicationException() {
+        super(EcaOauthErrorCode.EMAIL_DUPLICATION, "Can't set email for account, because its exists");
     }
 }

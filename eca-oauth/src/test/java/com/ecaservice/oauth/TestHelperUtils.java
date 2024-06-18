@@ -72,18 +72,6 @@ public class TestHelperUtils {
     }
 
     /**
-     * Creates role.
-     *
-     * @return role
-     */
-    public static Role createRole() {
-        Role role = new Role();
-        role.setAuthority(Role.ROLE_ECA_USER);
-        role.setDescription(USER_ROLE_DESCRIPTION);
-        return role;
-    }
-
-    /**
      * Creates user entity.
      *
      * @return user entity

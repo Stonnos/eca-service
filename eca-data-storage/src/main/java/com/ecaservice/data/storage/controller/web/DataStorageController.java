@@ -30,6 +30,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -48,11 +49,10 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import weka.core.Instances;
 
-import javax.servlet.http.HttpServletResponse;
-import javax.validation.Valid;
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.Size;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.Size;
 import java.util.List;
 
 import static com.ecaservice.config.swagger.OpenApi30Configuration.ECA_AUTHENTICATION_SECURITY_SCHEME;
@@ -87,7 +87,7 @@ public class DataStorageController {
      * @param pageRequestDto - page request dto
      * @return instances tables page
      */
-    @PreAuthorize("#oauth2.hasScope('web')")
+    @PreAuthorize("hasAuthority('SCOPE_web')")
     @Operation(
             description = "Finds instances tables with specified options such as filter, sorting and paging",
             summary = "Finds instances tables with specified options such as filter, sorting and paging",
@@ -149,11 +149,11 @@ public class DataStorageController {
     /**
      * Saves instances into database.
      *
-     * @param trainingData - training data file with format, such as csv, xls, xlsx, arff, json, docx, data, txt
+     * @param trainingData - training data file with format, such as csv, xls, xlsx, arff, json, data, txt, xml
      * @param relationName - relation name
      * @return create instances results dto
      */
-    @PreAuthorize("#oauth2.hasScope('web')")
+    @PreAuthorize("hasAuthority('SCOPE_web')")
     @Operation(
             description = "Saves instances into database",
             summary = "Saves instances into database",
@@ -220,7 +220,7 @@ public class DataStorageController {
      * @param id - instances id
      * @return instances dto
      */
-    @PreAuthorize("#oauth2.hasScope('web')")
+    @PreAuthorize("hasAuthority('SCOPE_web')")
     @Operation(
             description = "Gets instances details",
             summary = "Gets instances details",
@@ -278,7 +278,7 @@ public class DataStorageController {
      * @param id           - instances id
      * @param relationName - new relation name
      */
-    @PreAuthorize("#oauth2.hasScope('web')")
+    @PreAuthorize("hasAuthority('SCOPE_web')")
     @Operation(
             description = "Renames data with specified id",
             summary = "Renames data with specified id",
@@ -323,7 +323,7 @@ public class DataStorageController {
      *
      * @param id - instances id
      */
-    @PreAuthorize("#oauth2.hasScope('web')")
+    @PreAuthorize("hasAuthority('SCOPE_web')")
     @Operation(
             description = "Deletes instances with specified id",
             summary = "Deletes instances with specified id",
@@ -368,7 +368,7 @@ public class DataStorageController {
      * @param pageRequestDto - page request dto
      * @return response entity
      */
-    @PreAuthorize("#oauth2.hasScope('web')")
+    @PreAuthorize("hasAuthority('SCOPE_web')")
     @Operation(
             description = "Finds data page for specified instances",
             summary = "Finds data page for specified instances",
@@ -434,7 +434,7 @@ public class DataStorageController {
      * @param id - instances id
      * @return attributes list
      */
-    @PreAuthorize("#oauth2.hasScope('web')")
+    @PreAuthorize("hasAuthority('SCOPE_web')")
     @Operation(
             description = "Gets attributes list for specified instances",
             summary = "Gets attributes list for specified instances",
@@ -489,7 +489,7 @@ public class DataStorageController {
      *
      * @return instances reports info list
      */
-    @PreAuthorize("#oauth2.hasScope('web')")
+    @PreAuthorize("hasAuthority('SCOPE_web')")
     @Operation(
             description = "Gets instances reports info",
             summary = "Gets instances reports info",
@@ -535,7 +535,7 @@ public class DataStorageController {
      *
      * @param classAttributeId - class attribute id
      */
-    @PreAuthorize("#oauth2.hasScope('web')")
+    @PreAuthorize("hasAuthority('SCOPE_web')")
     @Operation(
             description = "Sets class attribute for specified instances",
             summary = "Sets class attribute for specified instances",
@@ -578,7 +578,7 @@ public class DataStorageController {
      *
      * @param id - attribute id
      */
-    @PreAuthorize("#oauth2.hasScope('web')")
+    @PreAuthorize("hasAuthority('SCOPE_web')")
     @Operation(
             description = "Selects attribute for classification",
             summary = "Selects attribute for classification",
@@ -621,7 +621,7 @@ public class DataStorageController {
      *
      * @param id - attribute id
      */
-    @PreAuthorize("#oauth2.hasScope('web')")
+    @PreAuthorize("hasAuthority('SCOPE_web')")
     @Operation(
             description = "Unselects attribute for classification",
             summary = "Unselects attribute for classification",
@@ -664,7 +664,7 @@ public class DataStorageController {
      *
      * @param id - instances id
      */
-    @PreAuthorize("#oauth2.hasScope('web')")
+    @PreAuthorize("hasAuthority('SCOPE_web')")
     @Operation(
             description = "Selects all attributes for classification",
             summary = "Selects all attributes for classification",
@@ -710,7 +710,7 @@ public class DataStorageController {
      * @param httpServletResponse - http servlet response
      * @throws Exception in case of error
      */
-    @PreAuthorize("#oauth2.hasScope('web')")
+    @PreAuthorize("hasAuthority('SCOPE_web')")
     @Operation(
             description = "Download instances report with specified type",
             summary = "Download instances report with specified type",
@@ -760,7 +760,7 @@ public class DataStorageController {
      * @param id - attribute id
      * @return attribute statistics
      */
-    @PreAuthorize("#oauth2.hasScope('web')")
+    @PreAuthorize("hasAuthority('SCOPE_web')")
     @Operation(
             description = "Gets instances statistics",
             summary = "Gets instances statistics",
@@ -818,7 +818,7 @@ public class DataStorageController {
      * @param id - attribute id
      * @return attribute statistics
      */
-    @PreAuthorize("#oauth2.hasScope('web')")
+    @PreAuthorize("hasAuthority('SCOPE_web')")
     @Operation(
             description = "Gets attribute statistics",
             summary = "Gets attribute statistics",

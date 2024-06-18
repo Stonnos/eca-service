@@ -56,7 +56,4 @@
         </preConditions>
         <dropTable tableName="email_request"/>
     </changeSet>
-
-    <!-- Includes redelivery lib changelog file -->
-    <include file="redelivery-changelog.xml" relativeToChangelogFile="true"/>
 </databaseChangeLog>

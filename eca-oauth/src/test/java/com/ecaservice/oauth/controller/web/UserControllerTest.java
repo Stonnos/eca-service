@@ -42,6 +42,7 @@ import static com.ecaservice.oauth.util.FieldConstraints.LOGIN_MAX_LENGTH;
 import static com.ecaservice.oauth.util.FieldConstraints.LOGIN_MIN_LENGTH;
 import static com.ecaservice.oauth.util.FieldConstraints.PERSON_NAME_MAX_SIZE;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -82,10 +83,10 @@ class UserControllerTest extends AbstractControllerTest {
     private static final String PHOTO_PNG = "photo.png";
     private static final int CONTENT_LENGTH = 32;
     private static final long USER_ID = 1L;
+    private static final String USER_NAME = "admin";
     private static final String USER_ID_PARAM = "userId";
     private static final long LOCK_USER_ID = 2L;
     private static final String TFA_ENABLED_PARAM = "enabled";
-    private static final String PUSH_ENABLED_PARAM = "enabled";
     private static final String INVALID_PERSON_DATA = "ивfd";
 
     private final MockMultipartFile photoFile =
@@ -288,14 +289,6 @@ class UserControllerTest extends AbstractControllerTest {
     }
 
     @Test
-    void testLockYourself() throws Exception {
-        mockMvc.perform(post(LOCK_URL)
-                        .param(USER_ID_PARAM, String.valueOf(USER_ID))
-                        .header(HttpHeaders.AUTHORIZATION, getBearerToken()))
-                .andExpect(status().isForbidden());
-    }
-
-    @Test
     void testLockUser() throws Exception {
         mockMvc.perform(post(LOCK_URL)
                         .param(USER_ID_PARAM, String.valueOf(LOCK_USER_ID))
@@ -336,27 +329,13 @@ class UserControllerTest extends AbstractControllerTest {
     @Test
     void testGetUserInfoOk() throws Exception {
         UserEntity userEntity = createUserEntity();
-        userEntity.setId(USER_ID);
         UserDto expected = userMapper.map(userEntity);
-        when(userService.getUserInfo(USER_ID)).thenReturn(expected);
+        when(userService.getUserDetails(anyString())).thenReturn(expected);
         mockMvc.perform(get(GET_USER_INFO_URL)
                         .header(HttpHeaders.AUTHORIZATION, getBearerToken()))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(content().json(objectMapper.writeValueAsString(expected)));
-    }
-
-    @Test
-    void testLogoutUnauthorized() throws Exception {
-        mockMvc.perform(post(LOGOUT_URL))
-                .andExpect(status().isUnauthorized());
-    }
-
-    @Test
-    void testLogout() throws Exception {
-        mockMvc.perform(post(LOGOUT_URL)
-                        .header(HttpHeaders.AUTHORIZATION, getBearerToken()))
-                .andExpect(status().isOk());
     }
 
     @Test
@@ -372,7 +351,7 @@ class UserControllerTest extends AbstractControllerTest {
                         .param(TFA_ENABLED_PARAM, Boolean.TRUE.toString())
                         .header(HttpHeaders.AUTHORIZATION, getBearerToken()))
                 .andExpect(status().isOk());
-        verify(userService, atLeastOnce()).enableTfa(USER_ID);
+        verify(userService, atLeastOnce()).enableTfa(anyString());
     }
 
     @Test
@@ -381,7 +360,7 @@ class UserControllerTest extends AbstractControllerTest {
                         .param(TFA_ENABLED_PARAM, Boolean.FALSE.toString())
                         .header(HttpHeaders.AUTHORIZATION, getBearerToken()))
                 .andExpect(status().isOk());
-        verify(userService, atLeastOnce()).disableTfa(USER_ID);
+        verify(userService, atLeastOnce()).disableTfa(anyString());
     }
 
     @Test
@@ -464,7 +443,7 @@ class UserControllerTest extends AbstractControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(updateUserInfo)))
                 .andExpect(status().isOk());
-        verify(userService, atLeastOnce()).updateUserInfo(USER_ID, updateUserInfo);
+        verify(userService, atLeastOnce()).updateUserInfo(USER_NAME, updateUserInfo);
     }
 
     @Test
@@ -478,7 +457,7 @@ class UserControllerTest extends AbstractControllerTest {
         mockMvc.perform(delete(DELETE_PHOTO_URL)
                         .header(HttpHeaders.AUTHORIZATION, getBearerToken()))
                 .andExpect(status().isOk());
-        verify(userService, atLeastOnce()).deletePhoto(USER_ID);
+        verify(userService, atLeastOnce()).deletePhoto(anyString());
     }
 
     @Test
@@ -501,7 +480,7 @@ class UserControllerTest extends AbstractControllerTest {
                         .file(photoFile)
                         .header(HttpHeaders.AUTHORIZATION, getBearerToken()))
                 .andExpect(status().isOk());
-        verify(userService, atLeastOnce()).updatePhoto(USER_ID, photoFile);
+        verify(userService, atLeastOnce()).updatePhoto(USER_NAME, photoFile);
     }
 
     private void testCreateUserBadRequest(CreateUserDto createUserDto) throws Exception {

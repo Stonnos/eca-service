@@ -10,9 +10,11 @@ spring:
   jpa:
     hibernate:
       ddl-auto: validate
-    database-platform: org.hibernate.dialect.PostgreSQL9Dialect
     properties:
       hibernate:
+        id:
+          ## Use one hibernate_sequence for all entities
+          db_structure_naming_strategy: legacy
         jdbc:
           lob:
             non_contextual_creation: true
@@ -30,8 +32,6 @@ spring:
       simple:
         concurrency: 10
         maxConcurrency: 10
-  zipkin:
-    enabled: false
 
 eureka:
   client:
@@ -44,9 +44,6 @@ external-api:
   experimentRequestTimeoutMinutes: 300
   classifierDownloadUrlExpirationDays: 7
   delaySeconds: 10
-
-classifiers-options:
-  maximumFractionDigits: 4
 
 queue:
   evaluationRequestQueue: evaluation-request-queue
@@ -88,6 +85,13 @@ auth-server:
   clientSecret: external_api_secret
 
 management:
+  observations:
+    annotations:
+      ## Enables span annotations processing
+      enabled: true
+  tracing:
+    sampling:
+      probability: 1.0
   metrics:
     tags:
       application: ${spring.application.name}

@@ -26,9 +26,9 @@ a|
 
 __Grant type:__ password
 
-__Token url:__ http://localhost:8080/eca-oauth/oauth/token
+__Token url:__ http://localhost:8080/eca-oauth/oauth2/token
 
-__Refresh token url:__ http://localhost:8080/eca-oauth/oauth/token
+__Refresh token url:__ http://localhost:8080/eca-oauth/oauth2/token
 
 
 __Scopes__:
@@ -220,6 +220,7 @@ a|
 ----
 {
   "requestId" : "1d2de514-3a87-4620-9b97-c260e24340de",
+  "correlationId" : "1cec4e54-0f46-4d70-ad19-a8f9f1a0e33c",
   "receiver" : "test@mail.ru",
   "templateCode" : "NEW_EXPERIMENT",
   "variables" : {
@@ -930,6 +931,25 @@ __string__
 |*Name*|*Description*|*Schema*
 |*requestId**
 |Request id
+a|
+__string__
+
+
+*Min. length*: 1
+
+*Max. length*: 36
+
+
+
+
+
+
+
+*Pattern*: `^[0-9a-f]{8}-[0-9a-f]{4}-[34][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$`
+
+
+|*correlationId**
+|Correlation id
 a|
 __string__
 

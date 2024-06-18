@@ -39,10 +39,21 @@ public abstract class AbstractPushEventHandler<E extends AbstractPushEvent, R ex
     public R handleEvent(E event) {
         var pushRequest = internalCreatePushRequest(event);
         pushRequest.setRequestId(UUID.randomUUID().toString());
+        pushRequest.setCorrelationId(getCorrelationId(event));
         pushRequest.setMessageType(getMessageType(event));
         pushRequest.setMessageText(getMessageText(event));
         pushRequest.setAdditionalProperties(createAdditionalProperties(event));
         return pushRequest;
+    }
+
+    /**
+     * Gets correlation id.
+     *
+     * @param event - push event
+     * @return correlation id
+     */
+    protected String getCorrelationId(E event) {
+        return UUID.randomUUID().toString();
     }
 
     /**

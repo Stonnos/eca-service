@@ -10,7 +10,7 @@ import org.apache.commons.lang3.math.NumberUtils;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.PostConstruct;
+import jakarta.annotation.PostConstruct;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
@@ -62,7 +62,7 @@ public class InstancesDataValidator implements InstancesValidator {
         if (StringUtils.isNotEmpty(value)) {
             switch (attributeModel.getType()) {
                 case NUMERIC:
-                    if (!NumberUtils.isParsable(value)) {
+                    if (!NumberUtils.isCreatable(value)) {
                         String errorMessage =
                                 String.format("Invalid numeric value [%s] at row [%d], attribute [%s] index [%d]",
                                         value, rowIdx, attributeModel.getName(), attrIdx);

@@ -21,9 +21,11 @@ spring:
   jpa:
     hibernate:
       ddl-auto: validate
-    database-platform: org.hibernate.dialect.PostgreSQL9Dialect
     properties:
       hibernate:
+        id:
+          ## Use one hibernate_sequence for all entities
+          db_structure_naming_strategy: legacy
         jdbc:
           lob:
             non_contextual_creation: true
@@ -34,12 +36,6 @@ spring:
     cache-names: global-filters, filter-templates, filter-dictionaries, sort-fields
     caffeine:
       spec: maximumSize=100, expireAfterWrite=18000s
-  sleuth:
-    baggage:
-      correlation-fields: tx.id
-      remote-fields: tx.id
-  zipkin:
-    enabled: false
 
 eureka:
   client:
@@ -69,6 +65,12 @@ springdoc:
       client-secret: swagger_secret
     disable-swagger-default-url: true
 
+resource:
+  server:
+    security:
+      whitelistUrls:
+        - /emails/**
+
 auth-server:
   baseUrl: http://localhost:8085/eca-oauth
   clientId: eca_service_tech
@@ -93,6 +95,19 @@ table:
           storagePeriodInDays: 30
 
 management:
+  observations:
+    annotations:
+      ## Enables span annotations processing
+      enabled: true
+  tracing:
+    sampling:
+      probability: 1.0
+    baggage:
+      correlation:
+        fields:
+          - tx.id
+      remote-fields:
+        - tx.id
   metrics:
     tags:
       application: ${spring.application.name}

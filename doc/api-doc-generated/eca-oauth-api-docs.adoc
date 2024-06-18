@@ -1,4 +1,4 @@
-= Microservice for users managment
+= Microservice for users management
 Автор: Roman Batygin
 (roman.batygin@mail.ru)
 :toc:
@@ -26,9 +26,9 @@ a|
 
 __Grant type:__ password
 
-__Token url:__ http://localhost:8080/eca-oauth/oauth/token
+__Token url:__ http://localhost:8080/eca-oauth/oauth2/token
 
-__Refresh token url:__ http://localhost:8080/eca-oauth/oauth/token
+__Refresh token url:__ http://localhost:8080/eca-oauth/oauth2/token
 
 
 __Scopes__:
@@ -41,7 +41,7 @@ __Scopes__:
 
 __Grant type:__ client_credentials
 
-__Token url:__ http://localhost:8080/eca-oauth/oauth/token
+__Token url:__ http://localhost:8080/eca-oauth/oauth2/token
 
 
 
@@ -701,49 +701,6 @@ a|
 ----
 |===
 
-== Logout current user and revokes access/refresh token pair
-
-__POST__ */users/logout* - Logout current user and revokes access/refresh token pair
-
-*Security requirement*
-
-[cols="^50%,^50%",options="header"]
-|===
-|*Name*|*Scopes*
-|
-<<EcaAuth>>
-a|
-
-* web
-
-|===
-
-
-
-*Api responses*
-[width=100%]
-|===
-|*Code*|*Description*|*Content type*|*Schema*|*Example*
-|200
-|OK
-|*-*
-|-
-a|
--
-|401
-|Not authorized
-|*application/json*
-|-
-a|
-[source,json]
-----
-{
-  "error" : "unauthorized",
-  "error_description" : "Full authentication is required to access this resource"
-}
-----
-|===
-
 == Locks user
 
 __POST__ */users/lock* - Locks user
@@ -1160,7 +1117,7 @@ a|
 
 == Verify reset password token
 
-__POST__ */password/verify-token* - Verify reset password token
+__POST__ */reset-password/verify-token* - Verify reset password token
 
 
 
@@ -1207,7 +1164,7 @@ false
 
 == Reset password with specified token
 
-__POST__ */password/reset* - Reset password with specified token
+__POST__ */reset-password/reset* - Reset password with specified token
 
 
 *Request body*
@@ -1291,7 +1248,7 @@ a|
 
 == Creates reset password request
 
-__POST__ */password/create-reset-request* - Creates reset password request
+__POST__ */reset-password/create-reset-request* - Creates reset password request
 
 
 *Request body*
@@ -1842,6 +1799,98 @@ a|
   "code" : "InvalidToken",
   "errorMessage" : "Invalid token"
 } ]
+----
+|===
+
+== Gets current user menu config for web application
+
+__GET__ */web-config/menu* - Gets current user menu config for web application
+
+*Security requirement*
+
+[cols="^50%,^50%",options="header"]
+|===
+|*Name*|*Scopes*
+|
+<<EcaAuth>>
+a|
+
+* web
+
+|===
+
+
+
+*Api responses*
+[width=100%]
+|===
+|*Code*|*Description*|*Content type*|*Schema*|*Example*
+|200
+|OK
+|*application/json*
+|
+__array__
+<<<MenuItemDto>>
+>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+a|
+[source,json]
+----
+[ {
+  "label" : "Эксперименты",
+  "routerLink" : "/dashboard/experiments",
+  "items" : null
+}, {
+  "label" : "Классификаторы",
+  "routerLink" : "/dashboard/classifiers",
+  "items" : null
+}, {
+  "label" : "Оптимальные настройки классификаторов",
+  "routerLink" : "/dashboard/classifiers-options-requests",
+  "items" : null
+}, {
+  "label" : "Датасеты",
+  "routerLink" : "/dashboard/instances",
+  "items" : null
+}, {
+  "label" : "Пользователи",
+  "routerLink" : "/dashboard/users",
+  "items" : null
+}, {
+  "label" : "Шаблоны email сообщений",
+  "routerLink" : "/dashboard/email-templates",
+  "items" : null
+}, {
+  "label" : "Журнал аудита",
+  "routerLink" : "/dashboard/audit-logs",
+  "items" : null
+} ]
+----
+|401
+|Not authorized
+|*application/json*
+|-
+a|
+[source,json]
+----
+{
+  "error" : "unauthorized",
+  "error_description" : "Full authentication is required to access this resource"
+}
 ----
 |===
 
@@ -3865,6 +3914,72 @@ __string__
 |Is request active (created and not expired and not confirmed)?
 a|
 __boolean__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|===
+=== MenuItemDto
+:table-caption: Table
+.Menu item model
+[width=100%]
+|===
+|*Name*|*Description*|*Schema*
+|*label*
+|Item label
+a|
+__string__
+
+
+
+
+*Max. length*: 255
+
+
+
+
+
+
+
+
+
+
+|*routerLink*
+|Router link
+a|
+__string__
+
+
+
+
+*Max. length*: 255
+
+
+
+
+
+
+
+
+
+
+|*items*
+|Menu items
+a|
+__array__
+<<<MenuItemDto>>
+>
 
 
 

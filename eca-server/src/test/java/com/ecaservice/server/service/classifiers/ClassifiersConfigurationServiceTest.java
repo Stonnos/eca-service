@@ -62,7 +62,7 @@ import static org.mockito.Mockito.when;
 @EnableAspectJAutoProxy
 @Import({ClassifiersConfigurationServiceImpl.class, ClassifiersConfigurationMapperImpl.class, AppProperties.class,
         DateTimeConverter.class, ClassifierOptionsDatabaseModelMapperImpl.class,
-        ConcurrentClassifiersConfigurationService.class, CoreLockAutoConfiguration.class,
+        CoreLockAutoConfiguration.class,
         ClassifiersConfigurationHistoryService.class, ClassifiersConfigurationHistoryMapperImpl.class})
 class ClassifiersConfigurationServiceTest extends AbstractJpaTest {
 

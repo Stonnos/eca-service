@@ -39,7 +39,7 @@ public class PushTokenController {
      *
      * @return push token dto
      */
-    @PreAuthorize("#oauth2.hasScope('web')")
+    @PreAuthorize("hasAuthority('SCOPE_web')")
     @Operation(
             description = "Obtains push token for current user",
             summary = "Obtains push token for current user",

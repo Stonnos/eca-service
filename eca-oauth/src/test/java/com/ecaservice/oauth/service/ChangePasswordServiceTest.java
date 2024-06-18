@@ -43,7 +43,7 @@ import static org.mockito.Mockito.verify;
 class ChangePasswordServiceTest extends AbstractJpaTest {
 
     private static final String NEW_PASSWORD = "#123dCgrh56$f";
-    private static final long INVALID_USER_ID = 1000L;
+    private static final String INVALID_USERNAME = "abc";
     private static final String PASSWORD = "pa66word!";
     private static final String CONFIRMATION_CODE = "code";
 
@@ -57,7 +57,7 @@ class ChangePasswordServiceTest extends AbstractJpaTest {
     private ChangePasswordRequestRepository changePasswordRequestRepository;
 
     @MockBean
-    private Oauth2TokenService oauth2TokenService;
+    private Oauth2RevokeTokenService oauth2RevokeTokenService;
 
     private ChangePasswordService changePasswordService;
 
@@ -68,7 +68,7 @@ class ChangePasswordServiceTest extends AbstractJpaTest {
     @Override
     public void init() {
         passwordEncoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
-        changePasswordService = new ChangePasswordService(appProperties, passwordEncoder, oauth2TokenService,
+        changePasswordService = new ChangePasswordService(appProperties, passwordEncoder, oauth2RevokeTokenService,
                 passwordValidationService, changePasswordRequestRepository, userEntityRepository);
         userEntity = createAndSaveUser();
     }
@@ -89,7 +89,7 @@ class ChangePasswordServiceTest extends AbstractJpaTest {
     void testCreateChangePasswordRequestShouldThrowPasswordsMatchedException() {
         ChangePasswordRequest changePasswordRequest = new ChangePasswordRequest(PASSWORD, PASSWORD);
         assertThrows(PasswordsMatchedException.class,
-                () -> changePasswordService.createChangePasswordRequest(userEntity.getId(), changePasswordRequest));
+                () -> changePasswordService.createChangePasswordRequest(userEntity.getLogin(), changePasswordRequest));
     }
 
     @Test
@@ -113,26 +113,24 @@ class ChangePasswordServiceTest extends AbstractJpaTest {
     void testCreateChangePasswordRequestWithChangePasswordRequestAlreadyExistsException() {
         ChangePasswordRequest changePasswordRequest = new ChangePasswordRequest(PASSWORD, NEW_PASSWORD);
         TokenModel actual =
-                changePasswordService.createChangePasswordRequest(userEntity.getId(), changePasswordRequest);
+                changePasswordService.createChangePasswordRequest(userEntity.getLogin(), changePasswordRequest);
         assertThat(actual).isNotNull();
-        Long userId = userEntity.getId();
         assertThrows(ChangePasswordRequestAlreadyExistsException.class,
-                () -> changePasswordService.createChangePasswordRequest(userId, changePasswordRequest));
+                () -> changePasswordService.createChangePasswordRequest(userEntity.getLogin(), changePasswordRequest));
         assertThat(changePasswordRequestRepository.count()).isOne();
     }
 
     @Test
     void testCreateChangePasswordRequestWithInvalidPassword() {
         ChangePasswordRequest changePasswordRequest = new ChangePasswordRequest(NEW_PASSWORD, NEW_PASSWORD);
-        Long userId = userEntity.getId();
         assertThrows(InvalidPasswordException.class,
-                () -> changePasswordService.createChangePasswordRequest(userId, changePasswordRequest));
+                () -> changePasswordService.createChangePasswordRequest(userEntity.getLogin(), changePasswordRequest));
     }
 
     @Test
     void testCreateChangePasswordRequestForNotExistingUser() {
         assertThrows(EntityNotFoundException.class,
-                () -> changePasswordService.createChangePasswordRequest(INVALID_USER_ID, new ChangePasswordRequest()));
+                () -> changePasswordService.createChangePasswordRequest(INVALID_USERNAME, new ChangePasswordRequest()));
     }
 
     @Test
@@ -172,7 +170,7 @@ class ChangePasswordServiceTest extends AbstractJpaTest {
         assertThat(actual.getConfirmationDate()).isNotNull();
         assertThat(actual.getUserEntity().getPasswordChangeDate()).isNotNull();
         assertThat(actual.getUserEntity().getPassword()).isEqualTo(changePasswordRequestEntity.getNewPassword());
-        verify(oauth2TokenService, atLeastOnce()).revokeTokens(any(UserEntity.class));
+        verify(oauth2RevokeTokenService, atLeastOnce()).revokeTokens(any(UserEntity.class));
     }
 
     @Test
@@ -206,14 +204,14 @@ class ChangePasswordServiceTest extends AbstractJpaTest {
     @Test
     void testGetActiveChangePasswordRequestStatus() {
         ChangePasswordRequest changePasswordRequest = new ChangePasswordRequest(PASSWORD, NEW_PASSWORD);
-        changePasswordService.createChangePasswordRequest(userEntity.getId(), changePasswordRequest);
-        var changePasswordRequestStatus = changePasswordService.getChangePasswordRequestStatus(userEntity.getId());
+        changePasswordService.createChangePasswordRequest(userEntity.getLogin(), changePasswordRequest);
+        var changePasswordRequestStatus = changePasswordService.getChangePasswordRequestStatus(userEntity.getLogin());
         assertThat(changePasswordRequestStatus).isNotNull();
         assertThat(changePasswordRequestStatus.isActive()).isTrue();
     }
 
     private void internalTestGetNotActiveChangePasswordRequestStatus() {
-        var changePasswordRequestStatus = changePasswordService.getChangePasswordRequestStatus(userEntity.getId());
+        var changePasswordRequestStatus = changePasswordService.getChangePasswordRequestStatus(userEntity.getLogin());
         assertThat(changePasswordRequestStatus).isNotNull();
         assertThat(changePasswordRequestStatus.isActive()).isFalse();
     }
@@ -241,7 +239,7 @@ class ChangePasswordServiceTest extends AbstractJpaTest {
     private void internalTestCreateChangePasswordRequest() {
         ChangePasswordRequest changePasswordRequest = new ChangePasswordRequest(PASSWORD, NEW_PASSWORD);
         TokenModel actual =
-                changePasswordService.createChangePasswordRequest(userEntity.getId(), changePasswordRequest);
+                changePasswordService.createChangePasswordRequest(userEntity.getLogin(), changePasswordRequest);
         assertThat(actual).isNotNull();
         assertThat(actual.getToken()).isNotNull();
         assertThat(actual.getLogin()).isNotNull();

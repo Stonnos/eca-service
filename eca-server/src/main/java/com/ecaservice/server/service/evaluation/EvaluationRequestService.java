@@ -17,9 +17,10 @@ import com.ecaservice.server.service.data.InstancesLoaderService;
 import com.ecaservice.server.service.evaluation.initializers.ClassifierInitializerService;
 import eca.core.evaluation.EvaluationResults;
 import eca.core.model.ClassificationModel;
+import eca.filter.ConstantAttributesFilter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.cloud.sleuth.annotation.NewSpan;
+import io.micrometer.tracing.annotation.NewSpan;
 import org.springframework.stereotype.Service;
 import weka.classifiers.AbstractClassifier;
 import weka.core.Instances;
@@ -103,12 +104,14 @@ public class EvaluationRequestService {
                 evaluationLog.getClassifierInfo().getClassifierName(), evaluationLog.getTrainingDataUuid());
         try {
             Instances data = instancesLoaderService.loadInstances(evaluationLog.getTrainingDataUuid());
+            ConstantAttributesFilter filter = new ConstantAttributesFilter();
+            Instances filteredInstances = filter.filterInstances(data);
             //Initialize classifier options based on training data
-            AbstractClassifier classifier = initializeClassifier(data, evaluationLog);
+            AbstractClassifier classifier = initializeClassifier(filteredInstances, evaluationLog);
             //Save updated classifier options
             updateClassifierOptions(classifier, evaluationLog);
             var evaluationResultsDataModel =
-                    internalProcessRequest(classifier, data, evaluationLog);
+                    internalProcessRequest(classifier, filteredInstances, evaluationLog);
             evaluationLogService.finishEvaluation(evaluationLog, RequestStatus.FINISHED);
             return evaluationResultsDataModel;
         } catch (EvaluationTimeoutException ex) {

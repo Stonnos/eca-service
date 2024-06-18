@@ -111,13 +111,6 @@ export class UsersService {
     return this.http.post(this.serviceUrl + '/unlock', formData, { headers: headers })
   }
 
-  public logoutRequest(): Observable<any> {
-    const headers = new HttpHeaders({
-      'Authorization': Utils.getBearerTokenHeader()
-    });
-    return this.http.post(this.serviceUrl + '/logout', null, { headers: headers });
-  }
-
   public setPushEnabled(enabled: boolean) {
     const headers = new HttpHeaders({
       'Authorization': Utils.getBearerTokenHeader()

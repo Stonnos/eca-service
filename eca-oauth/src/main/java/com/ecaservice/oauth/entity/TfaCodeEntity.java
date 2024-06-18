@@ -4,9 +4,9 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
 
 /**
  * Two - factor authentication code persistence entity.
@@ -19,6 +19,12 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "tfa_code")
 public class TfaCodeEntity extends TokenEntity {
+
+    /**
+     * Registered client id
+     */
+    @Column(name = "registered_client_id", nullable = false)
+    private String registeredClientId;
 
     /**
      * Two - factor authentication code value

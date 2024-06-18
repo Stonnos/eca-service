@@ -32,7 +32,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 class ChangeEmailServiceTest extends AbstractJpaTest {
 
     private static final String NEW_EMAIL = "newemail@mail.ru";
-    private static final long INVALID_USER_ID = 1000L;
+    private static final String INVALID_USERNAME = "abc";
     private static final String CONFIRMATION_CODE = "code";
 
     @Autowired
@@ -89,18 +89,18 @@ class ChangeEmailServiceTest extends AbstractJpaTest {
 
     @Test
     void testCreateChangeEmailRequestWithChangeEmailRequestAlreadyExistsException() {
-        var actual = changeEmailService.createChangeEmailRequest(userEntity.getId(), NEW_EMAIL);
+        var actual = changeEmailService.createChangeEmailRequest(userEntity.getLogin(), NEW_EMAIL);
         assertThat(actual).isNotNull();
-        Long userId = userEntity.getId();
+        String username = userEntity.getLogin();
         assertThrows(ChangeEmailRequestAlreadyExistsException.class,
-                () -> changeEmailService.createChangeEmailRequest(userId, NEW_EMAIL));
+                () -> changeEmailService.createChangeEmailRequest(username, NEW_EMAIL));
         assertThat(changeEmailRequestRepository.count()).isOne();
     }
 
     @Test
     void testCreateChangeEmailRequestForNotExistingUser() {
         assertThrows(EntityNotFoundException.class,
-                () -> changeEmailService.createChangeEmailRequest(INVALID_USER_ID, NEW_EMAIL));
+                () -> changeEmailService.createChangeEmailRequest(INVALID_USERNAME, NEW_EMAIL));
     }
 
     @Test
@@ -148,7 +148,7 @@ class ChangeEmailServiceTest extends AbstractJpaTest {
     void testGetActiveChangeEmailRequest() {
         var changeEmailRequestEntity = createAndSaveChangeEmailRequestEntity(
                 LocalDateTime.now().plusMinutes(appProperties.getChangeEmail().getValidityMinutes()), null);
-        var changeEmailStatusDto = changeEmailService.getChangeEmailRequestStatus(userEntity.getId());
+        var changeEmailStatusDto = changeEmailService.getChangeEmailRequestStatus(userEntity.getLogin());
         assertThat(changeEmailStatusDto).isNotNull();
         assertThat(changeEmailStatusDto.isActive()).isTrue();
         assertThat(changeEmailStatusDto.getNewEmail()).isEqualTo(changeEmailRequestEntity.getNewEmail());
@@ -175,7 +175,7 @@ class ChangeEmailServiceTest extends AbstractJpaTest {
     }
 
     private void testInactiveChangeEmailRequestStatus() {
-        var changeEmailStatusDto = changeEmailService.getChangeEmailRequestStatus(userEntity.getId());
+        var changeEmailStatusDto = changeEmailService.getChangeEmailRequestStatus(userEntity.getLogin());
         assertThat(changeEmailStatusDto).isNotNull();
         assertThat(changeEmailStatusDto.isActive()).isFalse();
     }
@@ -194,7 +194,7 @@ class ChangeEmailServiceTest extends AbstractJpaTest {
     }
 
     private void internalTestCreateChangeEmailRequest(String email) {
-        var actual = changeEmailService.createChangeEmailRequest(userEntity.getId(), email);
+        var actual = changeEmailService.createChangeEmailRequest(userEntity.getLogin(), email);
         assertThat(actual).isNotNull();
         assertThat(actual.getToken()).isNotNull();
         assertThat(actual.getLogin()).isNotNull();

@@ -48,7 +48,7 @@ public class ClassifiersTemplatesController {
      * @param classifierGroupTemplatesType - classifier group templates type
      * @return form templates list
      */
-    @PreAuthorize("#oauth2.hasScope('web')")
+    @PreAuthorize("hasAuthority('SCOPE_web')")
     @Operation(
             description = "Gets classifiers form templates",
             summary = "Gets classifiers form templates",

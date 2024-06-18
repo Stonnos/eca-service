@@ -33,10 +33,5 @@
     "title": "Формат данных (.data)",
     "reportType": "DATA",
     "fileExtension": "data"
-  },
-  {
-    "title": "Microsoft Word (.docx)",
-    "reportType": "DOCX",
-    "fileExtension": "docx"
   }
 ]

@@ -3,10 +3,10 @@ package com.ecaservice.ers.filter;
 import com.ecaservice.core.filter.service.FilterTemplateService;
 import com.ecaservice.core.filter.specification.FilterFieldCustomizer;
 
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.Expression;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.Expression;
+import jakarta.persistence.criteria.Predicate;
+import jakarta.persistence.criteria.Root;
 
 import static com.ecaservice.core.filter.util.FilterTemplateUtils.findValuesByLabel;
 import static com.ecaservice.core.filter.util.FilterUtils.buildExpression;

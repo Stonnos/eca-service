@@ -12,11 +12,8 @@ public class ChangePasswordRequestAlreadyExistsException extends ValidationError
 
     /**
      * Constructor with parameters.
-     *
-     * @param userId - user id
      */
-    public ChangePasswordRequestAlreadyExistsException(Long userId) {
-        super(EcaOauthErrorCode.ACTIVE_CHANGE_PASSWORD_REQUEST,
-                String.format("Active change password request already exists for user [%d]", userId));
+    public ChangePasswordRequestAlreadyExistsException() {
+        super(EcaOauthErrorCode.ACTIVE_CHANGE_PASSWORD_REQUEST, "Active change password request already exists");
     }
 }

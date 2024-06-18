@@ -3,8 +3,8 @@ package com.ecaservice.classifier.options.model;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
-import javax.validation.constraints.DecimalMax;
-import javax.validation.constraints.DecimalMin;
+import jakarta.validation.constraints.DecimalMax;
+import jakarta.validation.constraints.DecimalMin;
 import java.io.Serializable;
 
 import static com.ecaservice.classifier.options.model.Constraints.DECIMAL_VALUE_0_STRING;

@@ -81,31 +81,4 @@
         </preConditions>
         <dropColumn tableName="classifier_input_options" columnName="evaluation_log_id"/>
     </changeSet>
-
-    <!-- Changed classifier name field in filter template -->
-    <changeSet id="7" author="roman.batygin@mail.ru" context="data">
-        <preConditions onFail="MARK_RAN">
-            <tableExists tableName="filter_field"/>
-            <sqlCheck expectedResult="1">
-                select count(*) from filter_field where filter_template_id = 2 and field_name = 'classifierName'
-            </sqlCheck>
-        </preConditions>
-        <update tableName="filter_field">
-            <column name="field_name" value="classifierInfo.classifierName"/>
-            <where>filter_template_id = 2 and field_name = 'classifierName'</where>
-        </update>
-    </changeSet>
-
-    <changeSet id="8" author="roman.batygin@mail.ru" context="data">
-        <preConditions onFail="MARK_RAN">
-            <tableExists tableName="global_filter_field"/>
-            <sqlCheck expectedResult="1">
-                select count(*) from global_filter_field where global_filter_template_id = 2 and field_name = 'classifierName'
-            </sqlCheck>
-        </preConditions>
-        <update tableName="global_filter_field">
-            <column name="field_name" value="classifierInfo.classifierName"/>
-            <where>global_filter_template_id = 2 and field_name = 'classifierName'</where>
-        </update>
-    </changeSet>
 </databaseChangeLog>

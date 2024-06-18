@@ -64,6 +64,7 @@ class NotificationMapperTest {
         assertThat(pushRequestDto.getMessageType()).isEqualTo(userPushNotificationRequest.getMessageType());
         assertThat(pushRequestDto.isShowMessage()).isTrue();
         assertThat(pushRequestDto.getRequestId()).isEqualTo(userPushNotificationRequest.getRequestId());
+        assertThat(pushRequestDto.getCorrelationId()).isEqualTo(userPushNotificationRequest.getCorrelationId());
         assertThat(pushRequestDto.getPushType()).isEqualTo(PushType.USER_NOTIFICATION);
         assertThat(pushRequestDto.getAdditionalProperties()).containsAllEntriesOf(
                 userPushNotificationRequest.getAdditionalProperties());
@@ -78,6 +79,7 @@ class NotificationMapperTest {
         assertThat(pushRequestDto.getMessageType()).isEqualTo(systemPushRequest.getMessageType());
         assertThat(pushRequestDto.isShowMessage()).isEqualTo(systemPushRequest.isShowMessage());
         assertThat(pushRequestDto.getRequestId()).isEqualTo(systemPushRequest.getRequestId());
+        assertThat(pushRequestDto.getCorrelationId()).isEqualTo(systemPushRequest.getCorrelationId());
         assertThat(pushRequestDto.getPushType()).isEqualTo(PushType.SYSTEM);
         assertThat(pushRequestDto.getAdditionalProperties()).containsAllEntriesOf(
                 systemPushRequest.getAdditionalProperties());

@@ -15,6 +15,7 @@ import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 import java.util.Collections;
@@ -30,9 +31,15 @@ import static com.google.common.collect.Maps.newHashMap;
  */
 @Slf4j
 @Aspect
+@Order(AuditAspect.AUDIT_ADVICE_ORDER)
 @Component
 @RequiredArgsConstructor
 public class AuditAspect {
+
+    /**
+     * Audit advice order
+     */
+    public static final int AUDIT_ADVICE_ORDER = 0;
 
     private static final String RESULT_EXPRESSION_PREFIX = "#result";
 

@@ -1,6 +1,7 @@
 package com.ecaservice.classifier.template.processor.config;
 
-import com.ecaservice.core.form.template.annotation.EnableFormTemplates;
+import com.ecaservice.core.form.template.config.CoreFormTemplatesConfiguration;
+import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -11,7 +12,7 @@ import org.springframework.context.annotation.Configuration;
  * @author Roman Batygin
  */
 @Configuration
-@EnableFormTemplates
+@AutoConfigureAfter(CoreFormTemplatesConfiguration.class)
 @ComponentScan({"com.ecaservice.classifier.template.processor"})
 @EnableConfigurationProperties(ClassifiersTemplateProperties.class)
 public class ClassifiersTemplateProcessorAutoConfiguration {

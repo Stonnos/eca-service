@@ -9,10 +9,10 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
-import javax.validation.constraints.Size;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 import java.util.Map;
 
 import static com.ecaservice.web.push.dto.FieldConstraints.MAX_ADDITIONAL_PROPERTIES_SIZE;
@@ -47,14 +47,24 @@ public abstract class AbstractPushRequest {
     private final PushType pushType;
 
     /**
-     * Request id (used for cross system logging)
+     * Request id
      */
     @NotBlank
     @Pattern(regexp = UUID_PATTERN)
     @Size(min = VALUE_1, max = UUID_MAX_LENGTH)
-    @Schema(description = "Request id (used for cross system logging)",
+    @Schema(description = "Request id",
             example = "1d2de514-3a87-4620-9b97-c260e24340de", requiredMode = Schema.RequiredMode.REQUIRED)
     private String requestId;
+
+    /**
+     * Correlation id
+     */
+    @NotBlank
+    @Pattern(regexp = UUID_PATTERN)
+    @Size(min = VALUE_1, max = UUID_MAX_LENGTH)
+    @Schema(description = "Correlation id",
+            example = "98a57ab7-6494-4d9d-b793-c807fdf02692", requiredMode = Schema.RequiredMode.REQUIRED)
+    private String correlationId;
 
     /**
      * Message type

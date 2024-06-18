@@ -25,7 +25,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Import(EcaDsConfig.class)
 class ReportsConfigurationServiceTest {
 
-    private static final int EXPECTED_REPORTS_SIZE = 8;
+    private static final int EXPECTED_REPORTS_SIZE = 7;
 
     @Autowired
     private EcaDsConfig ecaDsConfig;

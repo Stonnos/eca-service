@@ -5,10 +5,10 @@ import lombok.experimental.UtilityClass;
 import org.springframework.data.domain.Sort;
 import org.springframework.util.CollectionUtils;
 
-import javax.persistence.criteria.Expression;
-import javax.persistence.criteria.Join;
-import javax.persistence.criteria.JoinType;
-import javax.persistence.criteria.Root;
+import jakarta.persistence.criteria.Expression;
+import jakarta.persistence.criteria.Join;
+import jakarta.persistence.criteria.JoinType;
+import jakarta.persistence.criteria.Root;
 import java.util.List;
 
 import static com.ecaservice.core.filter.util.Utils.splitByPointSeparator;

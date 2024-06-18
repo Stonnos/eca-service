@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.validation.constraints.Size;
+import jakarta.validation.constraints.Size;
 
 import static com.ecaservice.config.swagger.OpenApi30Configuration.ECA_AUTHENTICATION_SECURITY_SCHEME;
 import static com.ecaservice.config.swagger.OpenApi30Configuration.SCOPE_INTERNAL_API;
@@ -48,7 +48,7 @@ public class UserApiController {
      * @param login - user login
      * @return user info dto
      */
-    @PreAuthorize("#oauth2.hasScope('internal-api')")
+    @PreAuthorize("hasAuthority('SCOPE_internal-api')")
     @Operation(
             description = "Gets user info",
             summary = "Gets user info",

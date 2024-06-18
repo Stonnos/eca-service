@@ -14,7 +14,6 @@ import java.util.Collections;
 
 import static com.ecaservice.server.PageRequestUtils.PAGE_NUMBER;
 import static com.ecaservice.server.PageRequestUtils.TOTAL_ELEMENTS;
-import static com.ecaservice.server.TestHelperUtils.bearerHeader;
 import static com.ecaservice.server.TestHelperUtils.createPageRequestDto;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
@@ -67,7 +66,7 @@ class InstancesInfoControllerTest extends PageRequestControllerTest {
         var pageDto = PageDto.of(instancesInfoPage, PAGE_NUMBER, TOTAL_ELEMENTS);
         when(instancesInfoService.getNextPage(any(PageRequestDto.class))).thenReturn(pageDto);
         mockMvc.perform(post(LIST_URL)
-                .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken()))
+                .header(HttpHeaders.AUTHORIZATION, getBearerToken())
                 .content(objectMapper.writeValueAsString(createPageRequestDto()))
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())

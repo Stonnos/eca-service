@@ -206,4 +206,28 @@
         </addColumn>
     </changeSet>
 
+    <changeSet id="rename_form_field_dictionary_name_column" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="form_field_dictionary"/>
+            <columnExists tableName="form_field_dictionary" columnName="name"/>
+        </preConditions>
+        <renameColumn tableName="form_field_dictionary" oldColumnName="name" newColumnName="_name"/>
+    </changeSet>
+
+    <changeSet id="rename_form_field_dictionary_value_value_column" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="form_field_dictionary_value"/>
+            <columnExists tableName="form_field_dictionary_value" columnName="value"/>
+        </preConditions>
+        <renameColumn tableName="form_field_dictionary_value" oldColumnName="value" newColumnName="_value"/>
+    </changeSet>
+
+    <changeSet id="rename_form_field_dictionary_value_label_column" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="form_field_dictionary_value"/>
+            <columnExists tableName="form_field_dictionary_value" columnName="label"/>
+        </preConditions>
+        <renameColumn tableName="form_field_dictionary_value" oldColumnName="label" newColumnName="_label"/>
+    </changeSet>
+
 </databaseChangeLog>

@@ -1,4 +1,4 @@
-id;label;value;filter_dictionary_id
+id;_label;_value;filter_dictionary_id
 1;Действия пользователя в личном кабинете;USER_PROFILE_ACTIONS;1
 2;Действия с конфигурациями классификаторов;CLASSIFIERS_CONFIGURATIONS_ACTIONS;1
 3;Действия с обучающими выборками;DATA_STORAGE_ACTIONS;1

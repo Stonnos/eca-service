@@ -1,11 +1,11 @@
 package com.ecaservice.server.util;
 
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.Cleanup;
 import lombok.experimental.UtilityClass;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 
-import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.OutputStream;
 

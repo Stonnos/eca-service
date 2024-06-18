@@ -28,7 +28,6 @@ import java.util.Map;
 
 import static com.ecaservice.server.PageRequestUtils.PAGE_NUMBER;
 import static com.ecaservice.server.PageRequestUtils.TOTAL_ELEMENTS;
-import static com.ecaservice.server.TestHelperUtils.bearerHeader;
 import static com.ecaservice.server.TestHelperUtils.createClassifiersConfigurationDto;
 import static com.ecaservice.server.TestHelperUtils.createClassifiersConfigurationHistoryDto;
 import static com.ecaservice.server.TestHelperUtils.createPageRequestDto;
@@ -121,7 +120,7 @@ class ClassifiersConfigurationControllerTest extends PageRequestControllerTest {
         when(classifiersConfigurationService.getClassifiersConfigurations(any(PageRequestDto.class))).thenReturn(
                 pageDto);
         mockMvc.perform(post(LIST_URL)
-                .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken()))
+                .header(HttpHeaders.AUTHORIZATION, getBearerToken())
                 .content(objectMapper.writeValueAsString(createPageRequestDto()))
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
@@ -172,7 +171,7 @@ class ClassifiersConfigurationControllerTest extends PageRequestControllerTest {
         when(classifiersConfigurationHistoryService.getNextPage(anyLong(), any(PageRequestDto.class)))
                 .thenReturn(pageDto);
         mockMvc.perform(post(HISTORY_URL)
-                .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken()))
+                .header(HttpHeaders.AUTHORIZATION, getBearerToken())
                 .param(CONFIGURATION_ID_PARAM, String.valueOf(CONFIGURATION_ID))
                 .content(objectMapper.writeValueAsString(createPageRequestDto()))
                 .contentType(MediaType.APPLICATION_JSON))
@@ -192,7 +191,7 @@ class ClassifiersConfigurationControllerTest extends PageRequestControllerTest {
         doThrow(EntityNotFoundException.class).when(classifiersConfigurationService)
                 .getClassifiersConfigurationDetails(ID);
         mockMvc.perform(get(DETAIL_URL, ID)
-                .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken())))
+                .header(HttpHeaders.AUTHORIZATION, getBearerToken()))
                 .andExpect(status().isBadRequest());
     }
 
@@ -202,7 +201,7 @@ class ClassifiersConfigurationControllerTest extends PageRequestControllerTest {
         when(classifiersConfigurationService.getClassifiersConfigurationDetails(ID)).thenReturn(
                 classifiersConfigurationDto);
         mockMvc.perform(get(DETAIL_URL, ID)
-                .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken())))
+                .header(HttpHeaders.AUTHORIZATION, getBearerToken()))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(content().json(objectMapper.writeValueAsString(classifiersConfigurationDto)));
@@ -218,14 +217,14 @@ class ClassifiersConfigurationControllerTest extends PageRequestControllerTest {
     @Test
     void testDeleteClassifiersConfigurationWithNullId() throws Exception {
         mockMvc.perform(delete(DELETE_URL)
-                .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken())))
+                .header(HttpHeaders.AUTHORIZATION, getBearerToken()))
                 .andExpect(status().isBadRequest());
     }
 
     @Test
     void testDeleteClassifiersConfigurationOk() throws Exception {
         mockMvc.perform(delete(DELETE_URL)
-                .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken()))
+                .header(HttpHeaders.AUTHORIZATION, getBearerToken())
                 .param(ID_PARAM, String.valueOf(ID)))
                 .andExpect(status().isOk());
     }
@@ -234,7 +233,7 @@ class ClassifiersConfigurationControllerTest extends PageRequestControllerTest {
     void testDeleteConfigurationWithIllegalStateException() throws Exception {
         doThrow(new IllegalStateException()).when(classifiersConfigurationService).delete(ID);
         mockMvc.perform(delete(DELETE_URL)
-                .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken()))
+                .header(HttpHeaders.AUTHORIZATION, getBearerToken())
                 .param(ID_PARAM, String.valueOf(ID)))
                 .andExpect(status().isBadRequest());
     }
@@ -249,14 +248,14 @@ class ClassifiersConfigurationControllerTest extends PageRequestControllerTest {
     @Test
     void testSetActiveClassifiersConfigurationWithNullId() throws Exception {
         mockMvc.perform(post(SET_ACTIVE_URL)
-                .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken())))
+                .header(HttpHeaders.AUTHORIZATION, getBearerToken()))
                 .andExpect(status().isBadRequest());
     }
 
     @Test
     void testSetActiveClassifiersConfigurationOk() throws Exception {
         mockMvc.perform(post(SET_ACTIVE_URL)
-                .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken()))
+                .header(HttpHeaders.AUTHORIZATION, getBearerToken())
                 .param(ID_PARAM, String.valueOf(ID)))
                 .andExpect(status().isOk());
     }
@@ -265,7 +264,7 @@ class ClassifiersConfigurationControllerTest extends PageRequestControllerTest {
     void testSetActiveNotExistingClassifiersConfiguration() throws Exception {
         doThrow(EntityNotFoundException.class).when(classifiersConfigurationService).setActive(ID);
         mockMvc.perform(post(SET_ACTIVE_URL)
-                .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken()))
+                .header(HttpHeaders.AUTHORIZATION, getBearerToken())
                 .param(ID_PARAM, String.valueOf(ID)))
                 .andExpect(status().isBadRequest());
     }
@@ -274,7 +273,7 @@ class ClassifiersConfigurationControllerTest extends PageRequestControllerTest {
     void testSetActiveClassifiersConfigurationWithIllegalStateException() throws Exception {
         doThrow(new IllegalStateException()).when(classifiersConfigurationService).setActive(ID);
         mockMvc.perform(post(SET_ACTIVE_URL)
-                .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken()))
+                .header(HttpHeaders.AUTHORIZATION, getBearerToken())
                 .param(ID_PARAM, String.valueOf(ID)))
                 .andExpect(status().isBadRequest());
     }
@@ -292,7 +291,7 @@ class ClassifiersConfigurationControllerTest extends PageRequestControllerTest {
     @Test
     void testSaveEmptyClassifiersConfiguration() throws Exception {
         mockMvc.perform(post(SAVE_URL)
-                .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken())))
+                .header(HttpHeaders.AUTHORIZATION, getBearerToken()))
                 .andExpect(status().isBadRequest());
     }
 
@@ -301,7 +300,7 @@ class ClassifiersConfigurationControllerTest extends PageRequestControllerTest {
         CreateClassifiersConfigurationDto createClassifiersConfigurationDto =
                 new CreateClassifiersConfigurationDto(StringUtils.EMPTY);
         mockMvc.perform(post(SAVE_URL)
-                .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken()))
+                .header(HttpHeaders.AUTHORIZATION, getBearerToken())
                 .content(objectMapper.writeValueAsString(createClassifiersConfigurationDto))
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest());
@@ -312,7 +311,7 @@ class ClassifiersConfigurationControllerTest extends PageRequestControllerTest {
         CreateClassifiersConfigurationDto createClassifiersConfigurationDto = new CreateClassifiersConfigurationDto(
                 StringUtils.repeat('Q', FieldConstraints.CONFIGURATION_NAME_MAX_LENGTH + 1));
         mockMvc.perform(post(SAVE_URL)
-                .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken()))
+                .header(HttpHeaders.AUTHORIZATION, getBearerToken())
                 .content(objectMapper.writeValueAsString(createClassifiersConfigurationDto))
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest());
@@ -323,7 +322,7 @@ class ClassifiersConfigurationControllerTest extends PageRequestControllerTest {
         CreateClassifiersConfigurationDto createClassifiersConfigurationDto =
                 new CreateClassifiersConfigurationDto(CONFIGURATION_NAME);
         mockMvc.perform(post(SAVE_URL)
-                .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken()))
+                .header(HttpHeaders.AUTHORIZATION, getBearerToken())
                 .content(objectMapper.writeValueAsString(createClassifiersConfigurationDto))
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
@@ -342,7 +341,7 @@ class ClassifiersConfigurationControllerTest extends PageRequestControllerTest {
     @Test
     void testUpdateEmptyClassifiersConfiguration() throws Exception {
         mockMvc.perform(put(UPDATE_URL)
-                .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken())))
+                .header(HttpHeaders.AUTHORIZATION, getBearerToken()))
                 .andExpect(status().isBadRequest());
     }
 
@@ -351,7 +350,7 @@ class ClassifiersConfigurationControllerTest extends PageRequestControllerTest {
         UpdateClassifiersConfigurationDto updateClassifiersConfigurationDto =
                 new UpdateClassifiersConfigurationDto(ID, StringUtils.EMPTY);
         mockMvc.perform(put(UPDATE_URL)
-                .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken()))
+                .header(HttpHeaders.AUTHORIZATION, getBearerToken())
                 .content(objectMapper.writeValueAsString(updateClassifiersConfigurationDto))
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest());
@@ -362,7 +361,7 @@ class ClassifiersConfigurationControllerTest extends PageRequestControllerTest {
         UpdateClassifiersConfigurationDto updateClassifiersConfigurationDto = new UpdateClassifiersConfigurationDto(ID,
                 StringUtils.repeat('Q', FieldConstraints.CONFIGURATION_NAME_MAX_LENGTH + 1));
         mockMvc.perform(put(UPDATE_URL)
-                .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken()))
+                .header(HttpHeaders.AUTHORIZATION, getBearerToken())
                 .content(objectMapper.writeValueAsString(updateClassifiersConfigurationDto))
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest());
@@ -373,7 +372,7 @@ class ClassifiersConfigurationControllerTest extends PageRequestControllerTest {
         UpdateClassifiersConfigurationDto updateClassifiersConfigurationDto =
                 new UpdateClassifiersConfigurationDto(ID, CONFIGURATION_NAME);
         mockMvc.perform(put(UPDATE_URL)
-                .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken()))
+                .header(HttpHeaders.AUTHORIZATION, getBearerToken())
                 .content(objectMapper.writeValueAsString(updateClassifiersConfigurationDto))
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
@@ -390,7 +389,7 @@ class ClassifiersConfigurationControllerTest extends PageRequestControllerTest {
         doThrow(EntityNotFoundException.class).when(classifiersConfigurationService)
                 .getClassifiersConfigurationReport(ID);
         mockMvc.perform(get(REPORT_URL, ID)
-                .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken())))
+                .header(HttpHeaders.AUTHORIZATION, getBearerToken()))
                 .andExpect(status().isBadRequest());
     }
 
@@ -401,7 +400,7 @@ class ClassifiersConfigurationControllerTest extends PageRequestControllerTest {
         when(classifiersConfigurationService.getClassifiersConfigurationReport(ID)).thenReturn(
                 classifiersConfigurationBean);
         mockMvc.perform(get(REPORT_URL, ID)
-                .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken())))
+                .header(HttpHeaders.AUTHORIZATION, getBearerToken()))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_OCTET_STREAM_VALUE));
     }
@@ -419,7 +418,7 @@ class ClassifiersConfigurationControllerTest extends PageRequestControllerTest {
     void testCopyClassifiersConfigurationWithEmptyName() throws Exception {
         var configurationDto = new UpdateClassifiersConfigurationDto(ID, StringUtils.EMPTY);
         mockMvc.perform(post(COPY_URL)
-                .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken()))
+                .header(HttpHeaders.AUTHORIZATION, getBearerToken())
                 .content(objectMapper.writeValueAsString(configurationDto))
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest());
@@ -430,7 +429,7 @@ class ClassifiersConfigurationControllerTest extends PageRequestControllerTest {
         var configurationDto = new UpdateClassifiersConfigurationDto(ID,
                 StringUtils.repeat('Q', FieldConstraints.CONFIGURATION_NAME_MAX_LENGTH + 1));
         mockMvc.perform(post(COPY_URL)
-                .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken()))
+                .header(HttpHeaders.AUTHORIZATION, getBearerToken())
                 .content(objectMapper.writeValueAsString(configurationDto))
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest());
@@ -440,7 +439,7 @@ class ClassifiersConfigurationControllerTest extends PageRequestControllerTest {
     void testCopyClassifiersConfigurationOk() throws Exception {
         var configurationDto = new UpdateClassifiersConfigurationDto(ID, CONFIGURATION_NAME);
         mockMvc.perform(post(COPY_URL)
-                .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken()))
+                .header(HttpHeaders.AUTHORIZATION, getBearerToken())
                 .content(objectMapper.writeValueAsString(configurationDto))
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());

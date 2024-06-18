@@ -6,7 +6,7 @@ import com.ecaservice.server.model.entity.ExperimentStepEntity;
 import com.ecaservice.server.model.experiment.ExperimentContext;
 import com.ecaservice.server.service.experiment.ExperimentStepService;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.cloud.sleuth.annotation.NewSpan;
+import io.micrometer.tracing.annotation.NewSpan;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Component;
 

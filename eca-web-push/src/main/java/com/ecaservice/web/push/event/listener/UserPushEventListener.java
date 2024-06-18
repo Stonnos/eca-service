@@ -40,12 +40,14 @@ public class UserPushEventListener {
     @EventListener
     public void handlePushEvent(UserPushEvent userPushEvent) {
         var userPushNotificationRequest = userPushEvent.getUserPushNotificationRequest();
-        log.info("Starting to handle user notification push event [{}]", userPushNotificationRequest.getRequestId());
+        log.info("Starting to handle user notification push event [{}], correlation id [{}]",
+                userPushNotificationRequest.getRequestId(), userPushNotificationRequest.getCorrelationId());
         var pushTokens = getValidPushTokens(userPushNotificationRequest);
         log.info("[{}] valid push tokens has been found for push event [{}] with receivers [{}]", pushTokens.size(),
                 userPushNotificationRequest.getRequestId(), userPushNotificationRequest.getReceivers());
         pushTokens.forEach(pushTokenEntity -> sendPush(pushTokenEntity, userPushNotificationRequest));
-        log.info("User notification push event [{}] has been processed", userPushNotificationRequest.getRequestId());
+        log.info("User notification push event [{}] has been processed, correlation id [{}]",
+                userPushNotificationRequest.getRequestId(), userPushNotificationRequest.getCorrelationId());
     }
 
     private List<PushTokenEntity> getValidPushTokens(UserPushNotificationRequest userPushNotificationRequest) {
@@ -57,17 +59,19 @@ public class UserPushEventListener {
         String tokenId = encryptorBase64AdapterService.decrypt(pushTokenEntity.getTokenId());
         String queue = String.format("%s/%s", queueConfig.getPushQueue(), tokenId);
         try {
-            log.info("Starting to sent user push request [{}, [{}]] to ws queue for user [{}]",
+            log.info("Starting to sent user push request [{}, [{}]], correlation id [{}] to ws queue for user [{}]",
                     userPushNotificationRequest.getRequestId(), userPushNotificationRequest.getMessageType(),
-                    pushTokenEntity.getUser());
+                    userPushNotificationRequest.getCorrelationId(), pushTokenEntity.getUser());
             var pushRequestDto = notificationMapper.mapUserPushRequest(userPushNotificationRequest);
             messagingTemplate.convertAndSend(queue, pushRequestDto);
-            log.info("User [{}] push request [{}, [{}]] has been send to ws queue", pushTokenEntity.getUser(),
-                    userPushNotificationRequest.getRequestId(), userPushNotificationRequest.getMessageType());
+            log.info("User [{}] push request [{}, [{}]], correlation id [{}] has been send to ws queue",
+                    pushTokenEntity.getUser(), userPushNotificationRequest.getRequestId(),
+                    userPushNotificationRequest.getMessageType(), userPushNotificationRequest.getCorrelationId());
         } catch (Exception ex) {
-            log.error("Error while sent user push request [{}, [{}]] to ws queue for user [{}]: {}",
+            log.error(
+                    "Error while sent user push request [{}, [{}]], correlation id [{}] to ws queue for user [{}]: {}",
                     userPushNotificationRequest.getRequestId(), userPushNotificationRequest.getMessageType(),
-                    pushTokenEntity.getUser(), ex.getMessage());
+                    userPushNotificationRequest.getCorrelationId(), pushTokenEntity.getUser(), ex.getMessage());
         }
     }
 }

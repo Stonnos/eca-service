@@ -1,14 +1,15 @@
 package com.ecaservice.auto.test.entity.autotest;
 
 import com.ecaservice.auto.test.model.evaluation.EvaluationResultsDetailsMatch;
+import com.vladmihalcea.hibernate.type.json.JsonType;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import org.hibernate.annotations.Type;
 
-import javax.persistence.Column;
-import javax.persistence.DiscriminatorValue;
-import javax.persistence.Entity;
+import jakarta.persistence.Column;
+import jakarta.persistence.DiscriminatorValue;
+import jakarta.persistence.Entity;
 
 /**
  * Evaluation results test step persistence entity.
@@ -25,7 +26,7 @@ public class EvaluationResultsTestStepEntity extends BaseTestStepEntity<Evaluati
     /**
      * Evaluation results details
      */
-    @Type(type = "jsonb")
+    @Type(JsonType.class)
     @Column(name = "evaluation_results_details", columnDefinition = "jsonb")
     private EvaluationResultsDetailsMatch evaluationResultsDetails;
 

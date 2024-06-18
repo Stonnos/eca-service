@@ -4,7 +4,6 @@ import com.ecaservice.oauth.dto.CreateUserDto;
 import com.ecaservice.oauth.dto.UpdateUserInfoDto;
 import com.ecaservice.oauth.entity.UserEntity;
 import com.ecaservice.user.dto.UserInfoDto;
-import com.ecaservice.user.model.UserDetailsImpl;
 import com.ecaservice.web.dto.model.UserDto;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -26,12 +25,15 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Import({RoleMapperImpl.class, UserMapperImpl.class})
 class UserMapperTest {
 
+    private static final long PHOTO_ID = 1L;
+
     @Autowired
     private UserMapper userMapper;
 
     @Test
     void testMapUserEntityToUserDto() {
         UserEntity userEntity = createUserEntity();
+        userEntity.setPhotoId(PHOTO_ID);
         UserDto userDto = userMapper.map(userEntity);
         assertThat(userDto).isNotNull();
         assertThat(userDto.getId()).isEqualTo(userEntity.getId());
@@ -46,6 +48,7 @@ class UserMapperTest {
         assertThat(userDto.isTfaEnabled()).isEqualTo(userEntity.isTfaEnabled());
         assertThat(userDto.isLocked()).isEqualTo(userEntity.isLocked());
         assertThat(userDto.isLockAllowed()).isTrue();
+        assertThat(userDto.getPhotoId()).isEqualTo(userEntity.getPhotoId());
     }
 
     @Test
@@ -67,18 +70,6 @@ class UserMapperTest {
         assertThat(userEntity.getFirstName()).isEqualTo(createUserDto.getFirstName());
         assertThat(userEntity.getLastName()).isEqualTo(createUserDto.getLastName());
         assertThat(userEntity.getMiddleName()).isEqualTo(createUserDto.getMiddleName());
-    }
-
-    @Test
-    void testMapUserEntityToUserDetails() {
-        UserEntity userEntity = createUserEntity();
-        UserDetailsImpl userDetails = userMapper.mapDetails(userEntity);
-        assertThat(userDetails).isNotNull();
-        assertThat(userDetails.getId()).isEqualTo(userEntity.getId());
-        assertThat(userDetails.getUsername()).isEqualTo(userEntity.getLogin());
-        assertThat(userDetails.getAuthorities()).isNotEmpty();
-        assertThat(userDetails.getAuthorities()).hasSameSizeAs(userEntity.getRoles());
-        assertThat(userDetails.isAccountNonLocked()).isTrue();
     }
 
     @Test

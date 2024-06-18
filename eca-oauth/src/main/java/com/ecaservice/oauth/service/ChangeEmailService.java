@@ -16,11 +16,10 @@ import com.ecaservice.oauth.repository.UserEntityRepository;
 import com.ecaservice.web.dto.model.ChangeEmailRequestStatusDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.oauth2.common.util.RandomValueStringGenerator;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.annotation.PostConstruct;
 import java.time.LocalDateTime;
 import java.util.Objects;
 import java.util.Optional;
@@ -42,42 +41,34 @@ import static org.apache.commons.codec.digest.DigestUtils.md5Hex;
 public class ChangeEmailService {
 
     private final AppProperties appProperties;
-    private final RandomValueStringGenerator generator = new RandomValueStringGenerator();
     private final ChangeEmailRequestRepository changeEmailRequestRepository;
     private final UserEntityRepository userEntityRepository;
 
     /**
-     * Initialization method.
-     */
-    @PostConstruct
-    public void initialize() {
-        this.generator.setLength(appProperties.getChangeEmail().getConfirmationCodeLength());
-    }
-
-    /**
      * Creates change email request.
      *
-     * @param userId   - user id
+     * @param user   - user id
      * @param newEmail - new email
      * @return token model
      */
     @Audit(CREATE_CHANGE_EMAIL_REQUEST)
-    public TokenModel createChangeEmailRequest(Long userId, String newEmail) {
-        log.info("Starting to create change email request for user [{}], new email [{}]", userId, maskEmail(newEmail));
-        UserEntity userEntity = userEntityRepository.findById(userId)
-                .orElseThrow(() -> new EntityNotFoundException(UserEntity.class, userId));
+    public TokenModel createChangeEmailRequest(String user, String newEmail) {
+        log.info("Starting to create change email request for user [{}], new email [{}]", user, maskEmail(newEmail));
+        UserEntity userEntity = userEntityRepository.findByLogin(user)
+                .orElseThrow(() -> new EntityNotFoundException(UserEntity.class, user));
         if (Objects.equals(userEntity.getEmail(), newEmail)) {
-            throw new EmailAlreadyBoundException(userId);
+            throw new EmailAlreadyBoundException();
         }
         if (userEntityRepository.existsByEmail(newEmail)) {
-            throw new EmailDuplicationException(userId);
+            throw new EmailDuplicationException();
         }
         LocalDateTime now = LocalDateTime.now();
         if (changeEmailRequestRepository
                 .existsByUserEntityAndExpireDateAfterAndConfirmationDateIsNull(userEntity, now)) {
-            throw new ChangeEmailRequestAlreadyExistsException(userId);
+            throw new ChangeEmailRequestAlreadyExistsException();
         }
-        String confirmationCode = generator.generate();
+        String confirmationCode =
+                RandomStringUtils.random(appProperties.getChangeEmail().getConfirmationCodeLength(), false, true);
         LocalDateTime expireDate = now.plusMinutes(appProperties.getChangeEmail().getValidityMinutes());
         var changeEmailRequestEntity = saveChangeEmailRequest(newEmail, userEntity, confirmationCode, expireDate);
         log.info("Change email request [{}] has been created for user [{}], new email [{}]",
@@ -94,23 +85,23 @@ public class ChangeEmailService {
     /**
      * Gets change email request status for specified user.
      *
-     * @param userId - user id
+     * @param user - username
      * @return change email request status dto
      */
-    public ChangeEmailRequestStatusDto getChangeEmailRequestStatus(Long userId) {
-        log.info("Gets change email request status for user [{}]", userId);
-        var userEntity = userEntityRepository.findById(userId)
-                .orElseThrow(() -> new EntityNotFoundException(UserEntity.class, userId));
+    public ChangeEmailRequestStatusDto getChangeEmailRequestStatus(String user) {
+        log.info("Gets change email request status for user [{}]", user);
+        var userEntity = userEntityRepository.findByLogin(user)
+                .orElseThrow(() -> new EntityNotFoundException(UserEntity.class, user));
         var changeEmailRequestOpt = getLastActiveChangeEmailRequest(userEntity);
         if (changeEmailRequestOpt.isEmpty()) {
-            log.info("No one active change email request has been found for user [{}]", userId);
+            log.info("No one active change email request has been found for user [{}]", user);
             return ChangeEmailRequestStatusDto.builder()
                     .active(false)
                     .build();
         } else {
             var changeEmailRequest = changeEmailRequestOpt.get();
             log.info("Active change email request [{}] has been found for user [{}]", changeEmailRequest.getToken(),
-                    userId);
+                    user);
             return ChangeEmailRequestStatusDto.builder()
                     .active(true)
                     .token(changeEmailRequest.getToken())

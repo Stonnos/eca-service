@@ -46,7 +46,6 @@ import java.util.UUID;
 
 import static com.ecaservice.server.PageRequestUtils.PAGE_NUMBER;
 import static com.ecaservice.server.PageRequestUtils.TOTAL_ELEMENTS;
-import static com.ecaservice.server.TestHelperUtils.bearerHeader;
 import static com.ecaservice.server.TestHelperUtils.buildExperimentRequestDto;
 import static com.ecaservice.server.TestHelperUtils.createPageRequestDto;
 import static org.mockito.ArgumentMatchers.any;
@@ -105,7 +104,7 @@ class ExperimentControllerTest extends PageRequestControllerTest {
     void testGetExperimentDetailsNotFound() throws Exception {
         when(experimentDataService.getById(ID)).thenThrow(EntityNotFoundException.class);
         mockMvc.perform(get(DETAILS_URL, ID)
-                        .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken())))
+                        .header(HttpHeaders.AUTHORIZATION, getBearerToken()))
                 .andExpect(status().isBadRequest());
     }
 
@@ -115,7 +114,7 @@ class ExperimentControllerTest extends PageRequestControllerTest {
         when(experimentDataService.getById(ID)).thenReturn(experiment);
         ExperimentDto experimentDto = experimentMapper.map(experiment);
         mockMvc.perform(get(DETAILS_URL, ID)
-                        .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken())))
+                        .header(HttpHeaders.AUTHORIZATION, getBearerToken()))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(content().json(objectMapper.writeValueAsString(experimentDto)));
@@ -139,7 +138,7 @@ class ExperimentControllerTest extends PageRequestControllerTest {
                 .build();
         when(experimentRequestWebApiService.createExperiment(experimentRequestDto)).thenReturn(expected);
         mockMvc.perform(post(CREATE_EXPERIMENT_URL)
-                .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken()))
+                .header(HttpHeaders.AUTHORIZATION, getBearerToken())
                 .content(objectMapper.writeValueAsString(experimentRequestDto))
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
@@ -220,7 +219,7 @@ class ExperimentControllerTest extends PageRequestControllerTest {
         when(experimentPage.getContent()).thenReturn(experiments);
         when(experimentDataService.getNextPage(any(PageRequestDto.class))).thenReturn(experimentPage);
         mockMvc.perform(post(LIST_URL)
-                        .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken()))
+                        .header(HttpHeaders.AUTHORIZATION, getBearerToken())
                         .content(objectMapper.writeValueAsString(createPageRequestDto()))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
@@ -239,7 +238,7 @@ class ExperimentControllerTest extends PageRequestControllerTest {
         RequestStatusStatisticsDto requestStatusStatisticsDto = new RequestStatusStatisticsDto();
         when(experimentDataService.getRequestStatusesStatistics()).thenReturn(requestStatusStatisticsDto);
         mockMvc.perform(get(REQUEST_STATUS_STATISTICS_URL)
-                        .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken())))
+                        .header(HttpHeaders.AUTHORIZATION, getBearerToken()))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(content().json(objectMapper.writeValueAsString(requestStatusStatisticsDto)));
@@ -255,7 +254,7 @@ class ExperimentControllerTest extends PageRequestControllerTest {
     void testGetExperimentResultsDetailsNotFound() throws Exception {
         when(experimentResultsEntityRepository.findById(EXPERIMENT_RESULTS_ID)).thenReturn(Optional.empty());
         mockMvc.perform(get(EXPERIMENT_RESULTS_DETAILS_URL, EXPERIMENT_RESULTS_ID)
-                        .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken())))
+                        .header(HttpHeaders.AUTHORIZATION, getBearerToken()))
                 .andExpect(status().isBadRequest());
     }
 
@@ -272,7 +271,7 @@ class ExperimentControllerTest extends PageRequestControllerTest {
         when(experimentResultsService.getExperimentResultsDetails(experimentResultsEntity)).thenReturn(
                 experimentResultsDetailsDto);
         mockMvc.perform(get(EXPERIMENT_RESULTS_DETAILS_URL, EXPERIMENT_RESULTS_ID)
-                        .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken())))
+                        .header(HttpHeaders.AUTHORIZATION, getBearerToken()))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(content().json(objectMapper.writeValueAsString(experimentResultsDetailsDto)));
@@ -287,7 +286,7 @@ class ExperimentControllerTest extends PageRequestControllerTest {
     void testGetErsReportForNotExistingExperiment() throws Exception {
         when(experimentDataService.getById(ID)).thenThrow(EntityNotFoundException.class);
         mockMvc.perform(get(ERS_REPORT_URL, ID)
-                        .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken())))
+                        .header(HttpHeaders.AUTHORIZATION, getBearerToken()))
                 .andExpect(status().isBadRequest());
     }
 
@@ -297,7 +296,7 @@ class ExperimentControllerTest extends PageRequestControllerTest {
         when(experimentDataService.getById(ID)).thenReturn(new Experiment());
         when(experimentResultsService.getErsReport(any(Experiment.class))).thenReturn(expected);
         mockMvc.perform(get(ERS_REPORT_URL, ID)
-                        .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken())))
+                        .header(HttpHeaders.AUTHORIZATION, getBearerToken()))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(content().json(objectMapper.writeValueAsString(expected)));
@@ -317,7 +316,7 @@ class ExperimentControllerTest extends PageRequestControllerTest {
         when(experimentDataService.getExperimentsStatistics(null, null))
                 .thenReturn(chartDto);
         mockMvc.perform(get(EXPERIMENT_TYPES_STATISTICS_URL)
-                        .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken())))
+                        .header(HttpHeaders.AUTHORIZATION, getBearerToken()))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(content().json(objectMapper.writeValueAsString(chartDto)));
@@ -333,7 +332,7 @@ class ExperimentControllerTest extends PageRequestControllerTest {
     void testGetExperimentProgressForNotExistingExperiment() throws Exception {
         when(experimentDataService.getById(ID)).thenThrow(EntityNotFoundException.class);
         mockMvc.perform(get(EXPERIMENT_PROGRESS_URL, ID)
-                        .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken())))
+                        .header(HttpHeaders.AUTHORIZATION, getBearerToken()))
                 .andExpect(status().isBadRequest());
     }
 
@@ -343,7 +342,7 @@ class ExperimentControllerTest extends PageRequestControllerTest {
         when(experimentProgressService.getExperimentProgress(any(Experiment.class)))
                 .thenThrow(EntityNotFoundException.class);
         mockMvc.perform(get(EXPERIMENT_PROGRESS_URL, ID)
-                        .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken())))
+                        .header(HttpHeaders.AUTHORIZATION, getBearerToken()))
                 .andExpect(status().isBadRequest());
     }
 
@@ -359,7 +358,7 @@ class ExperimentControllerTest extends PageRequestControllerTest {
         when(experimentProgressService.getExperimentProgress(any(Experiment.class))).thenReturn(
                 experimentProgressEntity);
         mockMvc.perform(get(EXPERIMENT_PROGRESS_URL, ID)
-                        .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken())))
+                        .header(HttpHeaders.AUTHORIZATION, getBearerToken()))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(content().json(objectMapper.writeValueAsString(expected)));
@@ -375,7 +374,7 @@ class ExperimentControllerTest extends PageRequestControllerTest {
     void testGetExperimentResultsContentUrlForNotExistingExperiment() throws Exception {
         when(experimentDataService.getExperimentResultsContentUrl(ID)).thenThrow(EntityNotFoundException.class);
         mockMvc.perform(get(EXPERIMENT_RESULTS_CONTENT_URL, ID)
-                        .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken())))
+                        .header(HttpHeaders.AUTHORIZATION, getBearerToken()))
                 .andExpect(status().isBadRequest());
     }
 
@@ -386,7 +385,7 @@ class ExperimentControllerTest extends PageRequestControllerTest {
                 .build();
         when(experimentDataService.getExperimentResultsContentUrl(ID)).thenReturn(s3ContentResponseDto);
         mockMvc.perform(get(EXPERIMENT_RESULTS_CONTENT_URL, ID)
-                        .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken())))
+                        .header(HttpHeaders.AUTHORIZATION, getBearerToken()))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(content().json(objectMapper.writeValueAsString(s3ContentResponseDto)));
@@ -395,7 +394,7 @@ class ExperimentControllerTest extends PageRequestControllerTest {
     private void internalTestCreateExperimentBadRequest(CreateExperimentRequestDto experimentRequestDto)
             throws Exception {
         mockMvc.perform(post(CREATE_EXPERIMENT_URL)
-                        .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken()))
+                        .header(HttpHeaders.AUTHORIZATION, getBearerToken())
                         .content(objectMapper.writeValueAsString(experimentRequestDto))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest());
