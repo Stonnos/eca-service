@@ -1,10 +1,12 @@
 package com.ecaservice.common.web.concurrent;
 
+import io.micrometer.context.ContextExecutorService;
 import io.micrometer.context.ContextSnapshotFactory;
 import lombok.experimental.UtilityClass;
-import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
 import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  * Thread pool executor factory.
@@ -21,11 +23,7 @@ public class ThreadPoolExecutorFactory {
      * @return thread pool task executor
      */
     public static Executor createThreadPoolTaskExecutor(int poolSize) {
-        ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
-        executor.setCorePoolSize(poolSize);
-        executor.setMaxPoolSize(poolSize);
-        ContextSnapshotFactory contextSnapshotFactory = ContextSnapshotFactory.builder().build();
-        executor.setThreadFactory(runnable -> new Thread(contextSnapshotFactory.captureAll().wrap(runnable)));
-        return executor;
+        ExecutorService executor = Executors.newFixedThreadPool(poolSize);
+        return ContextExecutorService.wrap(executor, ContextSnapshotFactory.builder().build()::captureAll);
     }
 }

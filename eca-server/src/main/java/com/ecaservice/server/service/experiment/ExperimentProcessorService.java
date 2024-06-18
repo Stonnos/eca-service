@@ -16,6 +16,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
 
+import static com.ecaservice.common.web.util.LogHelper.TX_ID;
+import static com.ecaservice.common.web.util.LogHelper.putMdc;
+
 /**
  * Experiment processing service.
  *
@@ -44,6 +47,7 @@ public class ExperimentProcessorService {
                                                           Cancelable cancelable,
                                                           InitializationParams initializationParams) {
         Assert.notNull(initializationParams, "Initialization params is not specified!");
+        putMdc(TX_ID, experiment.getRequestId());
         log.info("Starting to initialize experiment [{}]", experiment.getRequestId());
         AbstractExperiment<?> abstractExperiment =
                 experiment.getExperimentType().handle(experimentInitializer, initializationParams);

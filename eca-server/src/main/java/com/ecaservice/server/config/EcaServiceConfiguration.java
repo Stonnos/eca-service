@@ -6,6 +6,8 @@ import com.ecaservice.oauth2.annotation.Oauth2ResourceServer;
 import com.ecaservice.server.config.ers.ErsConfig;
 import com.ecaservice.server.model.entity.AbstractEvaluationEntity;
 import com.ecaservice.server.repository.EvaluationLogRepository;
+import io.micrometer.context.ContextExecutorService;
+import io.micrometer.context.ContextSnapshotFactory;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
@@ -20,11 +22,8 @@ import org.springframework.scheduling.annotation.SchedulingConfigurer;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.springframework.scheduling.config.ScheduledTaskRegistrar;
 
-import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-
-import static com.ecaservice.common.web.concurrent.ThreadPoolExecutorFactory.createThreadPoolTaskExecutor;
 
 /**
  * Eca - service configuration.
@@ -47,8 +46,6 @@ import static com.ecaservice.common.web.concurrent.ThreadPoolExecutorFactory.cre
 @RequiredArgsConstructor
 public class EcaServiceConfiguration implements SchedulingConfigurer {
 
-    public static final String ECA_THREAD_POOL_TASK_EXECUTOR = "ecaThreadPoolTaskExecutor";
-
     private final AppProperties appProperties;
 
     /**
@@ -58,18 +55,8 @@ public class EcaServiceConfiguration implements SchedulingConfigurer {
      */
     @Bean
     public ExecutorService executorService() {
-        return Executors.newCachedThreadPool();
-    }
-
-    /**
-     * Creates thread pool task executor bean.
-     *
-     * @param appProperties - common config bean
-     * @return thread pool task executor
-     */
-    @Bean(name = ECA_THREAD_POOL_TASK_EXECUTOR)
-    public Executor ecaThreadPoolTaskExecutor(AppProperties appProperties) {
-        return createThreadPoolTaskExecutor(appProperties.getThreadPoolSize());
+        var executorService = Executors.newCachedThreadPool();
+        return ContextExecutorService.wrap(executorService, ContextSnapshotFactory.builder().build()::captureAll);
     }
 
     @Override
