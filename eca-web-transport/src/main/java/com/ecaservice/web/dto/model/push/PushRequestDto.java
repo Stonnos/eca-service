@@ -34,14 +34,24 @@ public class PushRequestDto {
     private PushType pushType;
 
     /**
-     * Request id (used for cross system logging)
+     * Request id
      */
     @NotBlank
     @Pattern(regexp = UUID_PATTERN)
     @Size(min = VALUE_1, max = UUID_MAX_LENGTH)
-    @Schema(description = "Request id (used for cross system logging)",
+    @Schema(description = "Request id",
             example = "1d2de514-3a87-4620-9b97-c260e24340de", requiredMode = Schema.RequiredMode.REQUIRED)
     private String requestId;
+
+    /**
+     * Correlation id
+     */
+    @NotBlank
+    @Pattern(regexp = UUID_PATTERN)
+    @Size(min = VALUE_1, max = UUID_MAX_LENGTH)
+    @Schema(description = "Correlation id",
+            example = "98a57ab7-6494-4d9d-b793-c807fdf02692", requiredMode = Schema.RequiredMode.REQUIRED)
+    private String correlationId;
 
     /**
      * Message type

@@ -38,20 +38,23 @@ public class SystemPushNotificationRequestHandler extends AbstractPushRequestHan
 
     @Override
     public void handle(SystemPushRequest systemPushRequest) {
-        log.info("Received system push request [{}], message type [{}], additional properties {}",
+        log.info("Received system push request [{}] message type [{}], correlation id [{}], additional properties {}",
                 systemPushRequest.getRequestId(), systemPushRequest.getMessageType(),
-                systemPushRequest.getAdditionalProperties());
+                systemPushRequest.getCorrelationId(), systemPushRequest.getAdditionalProperties());
         String queue = queueConfig.getPushQueue();
         try {
-            log.info("Starting to sent system push request [{}, [{}]] to queue [{}]", systemPushRequest.getRequestId(),
-                    systemPushRequest.getMessageType(), queue);
+            log.info("Starting to sent system push request [{}, [{}]], correlation id [{}] to queue [{}]",
+                    systemPushRequest.getRequestId(), systemPushRequest.getMessageType(),
+                    systemPushRequest.getCorrelationId(), queue);
             var pushRequestDto = notificationMapper.map(systemPushRequest);
             messagingTemplate.convertAndSend(queue, pushRequestDto);
-            log.info("System push request [{}, [{}]] has been send to queue [{}]", systemPushRequest.getRequestId(),
-                    systemPushRequest.getMessageType(), queue);
+            log.info("System push request [{}, [{}]], correlation id [{}] has been send to queue [{}]",
+                    systemPushRequest.getRequestId(), systemPushRequest.getMessageType(),
+                    systemPushRequest.getCorrelationId(), queue);
         } catch (Exception ex) {
-            log.info("Error while sent system push request [{}, [{}]] to queue [{}]: {}",
-                    systemPushRequest.getRequestId(), systemPushRequest.getMessageType(), queue, ex.getMessage());
+            log.info("Error while sent system push request [{}, [{}]], correlation id [{}] to queue [{}]: {}",
+                    systemPushRequest.getRequestId(), systemPushRequest.getMessageType(),
+                    systemPushRequest.getCorrelationId(), queue, ex.getMessage());
         }
     }
 }

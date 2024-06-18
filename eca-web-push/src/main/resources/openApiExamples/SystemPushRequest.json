@@ -1,6 +1,7 @@
 {
   "pushType": "SYSTEM",
   "requestId": "1d2de514-3a87-4620-9b97-c260e24340de",
+  "correlationId": "98a57ab7-6494-4d9d-b793-c807fdf02692",
   "messageType": "EXPERIMENT_STATUS",
   "messageText": "Поступила новая заявка на эксперимент 1cec4e54-0f46-4d70-ad19-a8f9f1a0e33c",
   "showMessage": true,

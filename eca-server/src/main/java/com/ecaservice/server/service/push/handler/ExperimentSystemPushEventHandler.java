@@ -33,6 +33,11 @@ public class ExperimentSystemPushEventHandler extends AbstractSystemPushEventHan
     }
 
     @Override
+    protected String getCorrelationId(ExperimentSystemPushEvent experimentSystemPushEvent) {
+        return experimentSystemPushEvent.getExperiment().getRequestId();
+    }
+
+    @Override
     protected String getMessageType(ExperimentSystemPushEvent experimentSystemPushEvent) {
         return experimentSystemPushEvent.getPushMessageParams().getMessageType();
     }

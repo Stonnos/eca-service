@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import jakarta.validation.Valid;
+
 import java.util.List;
 
 /**
@@ -74,12 +75,14 @@ public class WebPushController {
     @PostMapping(value = "/send")
     @SuppressWarnings("unchecked")
     public void sentPushNotification(@Valid @RequestBody AbstractPushRequest pushRequest) {
-        log.info("Received push request [{}] with type [{}], message code [{}]", pushRequest.getRequestId(),
-                pushRequest.getPushType(), pushRequest.getMessageType());
+        log.info("Received push request [{}], correlation id [{}] with type [{}], message code [{}]",
+                pushRequest.getRequestId(), pushRequest.getCorrelationId(), pushRequest.getPushType(),
+                pushRequest.getMessageType());
         var handler = getRequestHandler(pushRequest);
         handler.handle(pushRequest);
-        log.info("Push request [{}] with type [{}], message code [{}] has been processed", pushRequest.getRequestId(),
-                pushRequest.getPushType(), pushRequest.getMessageType());
+        log.info("Push request [{}] with type [{}], correlation id [{}], message code [{}] has been processed",
+                pushRequest.getRequestId(),
+                pushRequest.getPushType(), pushRequest.getCorrelationId(), pushRequest.getMessageType());
     }
 
     private AbstractPushRequestHandler getRequestHandler(AbstractPushRequest pushRequest) {
