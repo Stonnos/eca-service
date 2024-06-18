@@ -71,7 +71,7 @@ public class WebPushEventListener {
 
     private void sendWebPush(AbstractPushRequest pushRequest) {
         try {
-            webPushSender.send(pushRequest);
+            webPushSender.sendPush(pushRequest);
         } catch (Exception ex) {
             log.error("Error while sent push request [{}], type [{}], message type [{}]: {}",
                     pushRequest.getRequestId(), pushRequest.getPushType(), pushRequest.getMessageType(),

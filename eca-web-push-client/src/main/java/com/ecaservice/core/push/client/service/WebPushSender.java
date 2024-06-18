@@ -12,5 +12,5 @@ public interface WebPushSender {
      *
      * @param pushRequest - push request
      */
-    void send(AbstractPushRequest pushRequest);
+    void sendPush(AbstractPushRequest pushRequest);
 }

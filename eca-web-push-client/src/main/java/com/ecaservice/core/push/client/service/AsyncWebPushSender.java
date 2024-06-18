@@ -44,7 +44,7 @@ public class AsyncWebPushSender implements WebPushSender {
 
     @Override
     @Async(WEB_PUSH_CLIENT_THREAD_POOL_TASK_EXECUTOR)
-    public void send(AbstractPushRequest pushRequest) {
-        webPushSender.send(pushRequest);
+    public void sendPush(AbstractPushRequest pushRequest) {
+        webPushSender.sendPush(pushRequest);
     }
 }

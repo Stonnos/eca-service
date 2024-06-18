@@ -82,7 +82,7 @@ class WebPushListenerTest extends AbstractJpaTest {
     void testHandlePushEventWithEmptyClassifiersConfigurationHistory() {
         var event = new SetActiveClassifiersConfigurationPushEvent(this, CURRENT_USER, classifiersConfiguration);
         webPushEventListener.handlePushEvent(event);
-        verify(webPushSender, never()).send(any(AbstractPushRequest.class));
+        verify(webPushSender, never()).sendPush(any(AbstractPushRequest.class));
     }
 
     @Test
@@ -91,7 +91,7 @@ class WebPushListenerTest extends AbstractJpaTest {
         mockGetUserProfileOptions(true);
         var event = new SetActiveClassifiersConfigurationPushEvent(this, CURRENT_USER, classifiersConfiguration);
         webPushEventListener.handlePushEvent(event);
-        verify(webPushSender, atLeastOnce()).send(any(AbstractPushRequest.class));
+        verify(webPushSender, atLeastOnce()).sendPush(any(AbstractPushRequest.class));
     }
 
     @Test
@@ -100,7 +100,7 @@ class WebPushListenerTest extends AbstractJpaTest {
         mockGetUserProfileOptions(false);
         var event = new SetActiveClassifiersConfigurationPushEvent(this, CURRENT_USER, classifiersConfiguration);
         webPushEventListener.handlePushEvent(event);
-        verify(webPushSender, never()).send(any(AbstractPushRequest.class));
+        verify(webPushSender, never()).sendPush(any(AbstractPushRequest.class));
     }
 
     private void saveConfiguration() {
