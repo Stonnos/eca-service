@@ -6,6 +6,8 @@ import com.ecaservice.oauth2.annotation.Oauth2ResourceServer;
 import com.ecaservice.server.config.ers.ErsConfig;
 import com.ecaservice.server.model.entity.AbstractEvaluationEntity;
 import com.ecaservice.server.repository.EvaluationLogRepository;
+import io.micrometer.context.ContextExecutorService;
+import io.micrometer.context.ContextSnapshotFactory;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
@@ -53,7 +55,8 @@ public class EcaServiceConfiguration implements SchedulingConfigurer {
      */
     @Bean
     public ExecutorService executorService() {
-        return Executors.newCachedThreadPool();
+        var executorService = Executors.newCachedThreadPool();
+        return ContextExecutorService.wrap(executorService, ContextSnapshotFactory.builder().build()::captureAll);
     }
 
     @Override
