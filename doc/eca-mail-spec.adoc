@@ -25,6 +25,7 @@
 ----
 {
   "requestId": "7c798c0e-251f-41cb-82b0-e8a371718b60",
+  "correlationId": "1cec4e54-0f46-4d70-ad19-a8f9f1a0e33c",
   "receiver": "test@mail.ru",
   "templateCode": "NEW_EXPERIMENT",
   "variables": {
@@ -44,6 +45,11 @@
 |+
 |Уникальный идентификатор запроса
 |
+|correlationId
+|string
+|+
+|Идентификатор корреляции
+|Может быть использован для сквозного логирования или родительского процесса
 |receiver
 |string
 |+
