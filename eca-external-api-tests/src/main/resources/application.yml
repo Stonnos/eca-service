@@ -16,6 +16,23 @@ spring:
     hibernate:
       ddl-auto: update
     database-platform: org.hibernate.dialect.H2Dialect
+  cloud:
+    openfeign:
+      oauth2:
+        clientRegistrationId: api-client
+  security:
+    oauth2:
+      client:
+        registration:
+          api-client:
+            client-id: external-api
+            client-secret: external_api_secret
+            scope: external-api, data-loader-api
+            authorization-grant-type: client_credentials
+            provider: api-client
+        provider:
+          api-client:
+            token-uri: http://localhost:8080/eca-oauth/oauth2/token
 
 external-api-tests:
   url: http://localhost:8080
@@ -29,13 +46,6 @@ external-api-tests:
 
 data-loader:
   url: http://localhost:8080/eca-data-loader
-
-service:
-  feign:
-    oauth:
-      tokenUrl: http://localhost:8080/eca-oauth
-      clientId: external-api
-      clientSecret: external_api_secret
 
 process:
   ids:

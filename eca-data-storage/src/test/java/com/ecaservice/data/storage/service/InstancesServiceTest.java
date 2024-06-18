@@ -4,11 +4,10 @@ import com.ecaservice.data.storage.AbstractJpaTest;
 import com.ecaservice.data.storage.config.EcaDsConfig;
 import eca.data.db.InstancesExtractor;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Import;
 import org.springframework.jdbc.core.JdbcTemplate;
 import weka.core.Instances;
-
-import javax.inject.Inject;
 
 import static com.ecaservice.data.storage.TestHelperUtils.createInstancesEntity;
 import static com.ecaservice.data.storage.TestHelperUtils.loadInstances;
@@ -26,9 +25,9 @@ class InstancesServiceTest extends AbstractJpaTest {
     private static final String TABLE_NAME = "test_table";
     private static final String SELECT_COUNT_FORMAT = "SELECT count(*) FROM %s";
 
-    @Inject
+    @Autowired
     private InstancesService instancesService;
-    @Inject
+    @Autowired
     private JdbcTemplate jdbcTemplate;
 
     private Instances instances;

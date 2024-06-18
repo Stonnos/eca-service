@@ -14,10 +14,10 @@ import com.ecaservice.ers.repository.EvaluationResultsSortRepository;
 import com.ecaservice.ers.repository.InstancesInfoRepository;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Import;
 import org.springframework.util.DigestUtils;
 
-import javax.inject.Inject;
 import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
@@ -38,15 +38,15 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 @Import({ClassifierOptionsService.class, ErsConfig.class, SortFieldService.class})
 class ClassifierOptionsServiceTest extends AbstractJpaTest {
 
-    @Inject
+    @Autowired
     private InstancesInfoRepository instancesInfoRepository;
-    @Inject
+    @Autowired
     private EvaluationResultsInfoRepository evaluationResultsInfoRepository;
-    @Inject
+    @Autowired
     private EvaluationResultsSortRepository evaluationResultsSortRepository;
-    @Inject
+    @Autowired
     private ClassifierOptionsService classifierOptionsService;
-    @Inject
+    @Autowired
     private ErsConfig ersConfig;
 
     @Override

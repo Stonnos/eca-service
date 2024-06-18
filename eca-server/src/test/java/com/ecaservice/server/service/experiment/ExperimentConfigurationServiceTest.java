@@ -18,13 +18,13 @@ import com.ecaservice.server.service.classifiers.ClassifierOptionsService;
 import com.ecaservice.server.service.classifiers.ClassifiersConfigurationHistoryService;
 import com.ecaservice.server.service.classifiers.ClassifiersFormTemplateProvider;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.test.util.ReflectionTestUtils;
 
-import javax.inject.Inject;
 import java.io.IOException;
 import java.util.List;
 
@@ -51,13 +51,13 @@ class ExperimentConfigurationServiceTest extends AbstractJpaTest {
     private MessageTemplateProcessor messageTemplateProcessor;
     @MockBean
     private ClassifiersFormTemplateProvider classifiersFormTemplateProvider;
-    @Inject
+    @Autowired
     private ClassifierOptionsService classifierOptionsService;
-    @Inject
+    @Autowired
     private ClassifierOptionsDatabaseModelRepository classifierOptionsDatabaseModelRepository;
-    @Inject
+    @Autowired
     private ClassifiersConfigurationRepository classifiersConfigurationRepository;
-    @Inject
+    @Autowired
     private ExperimentConfig experimentConfig;
 
     private PathMatchingResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();

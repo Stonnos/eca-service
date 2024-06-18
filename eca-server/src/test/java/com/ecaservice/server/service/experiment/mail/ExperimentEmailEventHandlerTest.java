@@ -9,12 +9,12 @@ import com.ecaservice.server.model.entity.Experiment;
 import com.ecaservice.server.model.entity.RequestStatus;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import javax.inject.Inject;
 import java.util.List;
 import java.util.Map;
 
@@ -34,7 +34,7 @@ class ExperimentEmailEventHandlerTest {
 
     private static final String TEMPLATE_CODE = "FINISHED_EXPERIMENT";
 
-    @Inject
+    @Autowired
     private ExperimentEmailEventHandler experimentEmailEventHandler;
 
     @Test

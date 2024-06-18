@@ -6,11 +6,10 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import weka.core.Instances;
-
-import javax.inject.Inject;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
@@ -29,7 +28,7 @@ class NeuralNetworkInitializerTest {
     private static final int DEFAULT_NUM_INSTANCES = 100;
     private static final String HIDDEN_LAYER = "5,4,7";
 
-    @Inject
+    @Autowired
     private NeuralNetworkInitializer neuralNetworkInitializer;
 
     @Mock

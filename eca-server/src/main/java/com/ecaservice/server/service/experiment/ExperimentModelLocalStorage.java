@@ -6,6 +6,7 @@ import eca.dataminer.AbstractExperiment;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
+import io.micrometer.tracing.annotation.NewSpan;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StopWatch;
 
@@ -36,6 +37,7 @@ public class ExperimentModelLocalStorage {
      * @param experiment - experiment model
      * @throws IOException in case of I/O errors
      */
+    @NewSpan
     public void saveModelAsZip(String requestId, AbstractExperiment<?> experiment) throws IOException {
         log.info("Starting to save experiment [{}] model to local storage", requestId);
         StopWatch stopWatch = new StopWatch();
@@ -85,6 +87,7 @@ public class ExperimentModelLocalStorage {
      *
      * @param requestId - experiment request id
      */
+    @NewSpan
     public void deleteModel(String requestId) {
         File file = getModelZipFile(requestId);
         deleteFile(file);

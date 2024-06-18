@@ -12,10 +12,10 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import javax.inject.Inject;
 import java.util.Collections;
 import java.util.List;
 
@@ -34,7 +34,7 @@ import static org.mockito.Mockito.when;
 @Import(ClassifierOptionsInfoMapperImpl.class)
 class ClassifierOptionsRequestServiceTest {
 
-    @Inject
+    @Autowired
     private ClassifierOptionsInfoMapper classifierOptionsInfoMapper;
 
     @Mock

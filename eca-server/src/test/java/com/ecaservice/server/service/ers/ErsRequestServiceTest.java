@@ -31,9 +31,9 @@ import eca.metrics.KNearestNeighbours;
 import feign.FeignException;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Import;
 
-import javax.inject.Inject;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
@@ -54,7 +54,7 @@ class ErsRequestServiceTest extends AbstractJpaTest {
 
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
-    @Inject
+    @Autowired
     private EvaluationLogRepository evaluationLogRepository;
     @Mock
     private ErsClient ersClient;
@@ -62,17 +62,17 @@ class ErsRequestServiceTest extends AbstractJpaTest {
     private ErsRequestSender ersRequestSender;
     @Mock
     private EvaluationResultsService evaluationResultsService;
-    @Inject
+    @Autowired
     private ClassifierOptionsRequestModelRepository classifierOptionsRequestModelRepository;
-    @Inject
+    @Autowired
     private ErsErrorHandler ersErrorHandler;
-    @Inject
+    @Autowired
     private ClassifierReportMapper classifierReportMapper;
-    @Inject
+    @Autowired
     private ErsResponseStatusMapper ersResponseStatusMapper;
-    @Inject
+    @Autowired
     private ErsRequestRepository ersRequestRepository;
-    @Inject
+    @Autowired
     private InstancesInfoRepository instancesInfoRepository;
 
     private ErsRequestService ersRequestService;

@@ -16,6 +16,7 @@ import com.ecaservice.server.service.InstancesInfoService;
 import com.ecaservice.server.service.data.InstancesMetaDataService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import io.micrometer.tracing.annotation.NewSpan;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -52,6 +53,7 @@ public class ExperimentService {
      * @param experimentRequestData - experiment request data
      * @return created experiment entity
      */
+    @NewSpan
     public Experiment createExperiment(ExperimentRequestData experimentRequestData) {
         log.info("Starting to create experiment [{}] request for data uuid [{}], evaluation method [{}], email [{}]",
                 experimentRequestData.getExperimentType(), experimentRequestData.getDataUuid(),
@@ -83,6 +85,7 @@ public class ExperimentService {
      *
      * @param experiment - experiment entity
      */
+    @NewSpan
     @Transactional
     public void startExperiment(Experiment experiment) {
         log.info("Starting to set in progress status for experiment [{}]", experiment.getRequestId());
@@ -99,6 +102,7 @@ public class ExperimentService {
      *
      * @param experiment - experiment entity
      */
+    @NewSpan
     public void processExperiment(Experiment experiment) {
         log.info("Starting to process experiment [{}]", experiment.getRequestId());
         experimentStepProcessor.processExperimentSteps(experiment);
@@ -111,6 +115,7 @@ public class ExperimentService {
      * @param experiment    - experiment entity
      * @param requestStatus - final request status (FINISHED, ERROR, TIMEOUT)
      */
+    @NewSpan
     public void finishExperiment(Experiment experiment, RequestStatus requestStatus) {
         log.info("Starting to set experiment [{}] final status [{}]", experiment.getRequestId(), requestStatus);
         if (!FINAL_STATUSES.contains(requestStatus)) {

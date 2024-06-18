@@ -9,9 +9,10 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableAsync;
-import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
 import java.util.concurrent.Executor;
+
+import static com.ecaservice.common.web.concurrent.ThreadPoolExecutorFactory.createThreadPoolTaskExecutor;
 
 /**
  * Eca web client client configuration class.
@@ -41,9 +42,7 @@ public class EcaWebPushClientAutoConfiguration {
     @Bean(name = WEB_PUSH_CLIENT_THREAD_POOL_TASK_EXECUTOR)
     @ConditionalOnProperty(value = "web-push.client.async", havingValue = "true")
     public Executor webPushClientEventThreadPoolTaskExecutor(EcaWebPushClientProperties ecaWebPushClientProperties) {
-        ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
-        executor.setCorePoolSize(ecaWebPushClientProperties.getThreadPoolSize());
-        executor.setMaxPoolSize(ecaWebPushClientProperties.getThreadPoolSize());
+        Executor executor = createThreadPoolTaskExecutor(ecaWebPushClientProperties.getThreadPoolSize());
         log.info("[{}] web push client thread pool with size [{}] has been configured",
                 WEB_PUSH_CLIENT_THREAD_POOL_TASK_EXECUTOR, ecaWebPushClientProperties.getThreadPoolSize());
         return executor;

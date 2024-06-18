@@ -27,12 +27,12 @@ import com.ecaservice.web.dto.model.PageRequestDto;
 import com.ecaservice.web.dto.model.SortFieldRequestDto;
 import com.google.common.collect.Sets;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.testcontainers.shaded.com.fasterxml.jackson.core.JsonProcessingException;
 import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
 
-import javax.inject.Inject;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -66,11 +66,11 @@ class ClassifierOptionsServiceTest extends AbstractJpaTest {
     private static final String MESSAGE = "message";
     private static final String TEMPLATE_TITLE = "title";
 
-    @Inject
+    @Autowired
     private ClassifierOptionsDatabaseModelRepository classifierOptionsDatabaseModelRepository;
-    @Inject
+    @Autowired
     private ClassifiersConfigurationHistoryRepository classifiersConfigurationHistoryRepository;
-    @Inject
+    @Autowired
     private ClassifiersConfigurationRepository classifiersConfigurationRepository;
     @MockBean
     private UserService userService;
@@ -82,7 +82,7 @@ class ClassifierOptionsServiceTest extends AbstractJpaTest {
     private ClassifiersFormTemplateProvider classifiersFormTemplateProvider;
     @MockBean
     private MessageTemplateProcessor messageTemplateProcessor;
-    @Inject
+    @Autowired
     private ClassifierOptionsService classifierOptionsService;
 
     private final ObjectMapper objectMapper = new ObjectMapper();

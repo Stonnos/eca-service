@@ -10,9 +10,11 @@ spring:
   jpa:
     hibernate:
       ddl-auto: validate
-    database-platform: org.hibernate.dialect.PostgreSQL9Dialect
     properties:
       hibernate:
+        id:
+          ## Use one hibernate_sequence for all entities
+          db_structure_naming_strategy: legacy
         jdbc:
           lob:
             non_contextual_creation: true
@@ -21,10 +23,6 @@ spring:
   liquibase:
     contexts: schema,data
     change-log: classpath:db/liquibase-changelog.xml
-  sleuth:
-    baggage:
-      correlation-fields: tx.id
-      remote-fields: tx.id
 
 eureka:
   client:
@@ -38,6 +36,13 @@ app:
   encrypt:
     password: pa66word!
     salt: s@lt#
+
+resource:
+  server:
+    security:
+      allowUBearerTokenUriQueryParameter: true
+      whitelistUrls:
+        - /api/push/**
 
 auth-server:
   baseUrl: http://localhost:8085/eca-oauth
@@ -68,6 +73,19 @@ springdoc:
     disable-swagger-default-url: true
 
 management:
+  observations:
+    annotations:
+      ## Enables span annotations processing
+      enabled: true
+  tracing:
+    sampling:
+      probability: 1.0
+    baggage:
+      correlation:
+        fields:
+          - tx.id
+      remote-fields:
+        - tx.id
   metrics:
     tags:
       application: ${spring.application.name}

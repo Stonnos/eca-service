@@ -2,11 +2,11 @@ package com.ecaservice.user.profile.options.cache.client.entity;
 
 import lombok.Data;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import java.time.LocalDateTime;
 
 import static com.ecaservice.user.profile.options.cache.client.util.FieldConstraints.USER_PROFILE_OPTIONS_JSON_MAX_LENGTH;

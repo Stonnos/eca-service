@@ -8,12 +8,12 @@ import com.ecaservice.mail.model.Email;
 import com.ecaservice.mail.model.EmailStatus;
 import com.ecaservice.mail.repository.EmailRepository;
 import com.ecaservice.mail.service.MailSenderService;
+import jakarta.mail.MessagingException;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 
-import javax.inject.Inject;
-import javax.mail.MessagingException;
 import java.time.LocalDateTime;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -28,9 +28,9 @@ import static org.mockito.Mockito.verify;
 @Import(MailConfig.class)
 class MailSchedulerTest extends AbstractJpaTest {
 
-    @Inject
+    @Autowired
     private MailConfig mailConfig;
-    @Inject
+    @Autowired
     private EmailRepository emailRepository;
     @MockBean
     private MailSenderService mailSenderService;

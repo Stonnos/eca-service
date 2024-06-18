@@ -20,16 +20,17 @@ import com.ecaservice.web.dto.model.RequestStatusStatisticsDto;
 import com.ecaservice.web.dto.model.S3ContentResponseDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import io.micrometer.tracing.annotation.NewSpan;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
-import javax.persistence.EntityManager;
-import javax.persistence.Tuple;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.Tuple;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -69,6 +70,7 @@ public class ExperimentDataService {
      *
      * @param experiment - experiment entity
      */
+    @NewSpan
     public void removeExperimentModel(Experiment experiment) {
         try {
             log.info("Starting to remove experiment [{}] model file", experiment.getRequestId());
@@ -122,6 +124,7 @@ public class ExperimentDataService {
      *
      * @return requests status statistics dto
      */
+    @NewSpan
     public RequestStatusStatisticsDto getRequestStatusesStatistics() {
         log.info("Request get experiments statuses statistics");
         List<RequestStatusStatistics> requestStatusStatistics = experimentRepository.getRequestStatusesStatistics();
@@ -137,6 +140,7 @@ public class ExperimentDataService {
      * @param createdDateTo   - experiment created date to
      * @return experiments statistics
      */
+    @NewSpan
     public ChartDto getExperimentsStatistics(LocalDate createdDateFrom, LocalDate createdDateTo) {
         log.info("Starting to get experiments statistics data with created date from [{}] to [{}]",
                 createdDateFrom, createdDateTo);

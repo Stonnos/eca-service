@@ -20,9 +20,6 @@ import org.springframework.validation.annotation.Validated;
 
 import java.time.LocalDateTime;
 
-import static com.ecaservice.common.web.util.LogHelper.TX_ID;
-import static com.ecaservice.common.web.util.LogHelper.getMdc;
-
 /**
  * Email service.
  *
@@ -49,7 +46,8 @@ public class EmailService {
      */
     @Locked(lockName = "saveEmail", key = "#emailRequest.requestId")
     public Email saveEmail(@ValidEmailRequest EmailRequest emailRequest) {
-        log.info("Received email request with uuid '{}'.", emailRequest.getRequestId());
+        log.info("Received email request with uuid [{}], correlation id [{}].", emailRequest.getRequestId(),
+                emailRequest.getCorrelationId());
         TemplateEntity templateEntity = templateRepository.findByCode(emailRequest.getTemplateCode())
                 .orElseThrow(() -> new EntityNotFoundException(TemplateEntity.class, emailRequest.getTemplateCode()));
         if (emailRepository.existsByUuid(emailRequest.getRequestId())) {
@@ -61,10 +59,11 @@ public class EmailService {
         String encodedMessage = encryptorBase64AdapterService.encrypt(message);
         email.setMessage(encodedMessage);
         email.setUuid(emailRequest.getRequestId());
-        email.setTxId(getMdc(TX_ID));
+        email.setTxId(emailRequest.getCorrelationId());
         email.setSaveDate(LocalDateTime.now());
         emailRepository.save(email);
-        log.info("Email request with uuid '{}' has been saved.", emailRequest.getRequestId());
+        log.info("Email request with uuid [{}], correlation id [{}] has been saved.", emailRequest.getRequestId(),
+                emailRequest.getCorrelationId());
         return email;
     }
 }

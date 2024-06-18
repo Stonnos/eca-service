@@ -56,5 +56,13 @@ public class FieldConstraints {
      */
     public static final int PERSON_NAME_MIN_SIZE = 2;
 
+    /**
+     * Notification event options max size
+     */
     public static final int NOTIFICATION_EVENT_OPTIONS_MAX_SIZE = 50;
+
+    /**
+     * User profile options data event message body max size
+     */
+    public static final int USER_PROFILE_OPTIONS_DATA_EVENT_MESSAGE_BODY_MAX_SIZE = 2048;
 }

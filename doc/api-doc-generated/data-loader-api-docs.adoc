@@ -26,7 +26,7 @@ a|
 
 __Grant type:__ client_credentials
 
-__Token url:__ http://localhost:8080/eca-oauth/oauth/token
+__Token url:__ http://localhost:8080/eca-oauth/oauth2/token
 
 
 

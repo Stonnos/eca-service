@@ -12,11 +12,11 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.core.MessageProperties;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import javax.inject.Inject;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Arrays;
@@ -40,9 +40,9 @@ class ExperimentMapperTest {
 
     private static final String EXPERIMENT_PATH = "experiment.model";
 
-    @Inject
+    @Autowired
     private CrossValidationConfig crossValidationConfig;
-    @Inject
+    @Autowired
     private ExperimentMapper experimentMapper;
 
     @Test

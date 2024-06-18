@@ -14,6 +14,7 @@ import com.ecaservice.data.storage.repository.InstancesRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.Cacheable;
+import io.micrometer.tracing.annotation.NewSpan;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import weka.core.Attribute;
@@ -49,6 +50,7 @@ public class AttributeService {
      * @param attributeNames  - attribute names list
      * @return saved attributes list
      */
+    @NewSpan
     public List<AttributeEntity> saveAttributes(InstancesEntity instancesEntity,
                                                 Instances instances,
                                                 List<String> attributeNames) {
@@ -79,6 +81,7 @@ public class AttributeService {
      * @param instancesEntity - instances entity
      * @return attributes list
      */
+    @NewSpan
     public List<AttributeEntity> getSelectedAttributes(InstancesEntity instancesEntity) {
         log.debug("Gets selected attributes list for instances [{}]", instancesEntity.getRelationName());
         return attributeRepository.findByInstancesEntityAndSelectedIsTrueOrderByIndex(instancesEntity);

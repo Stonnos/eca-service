@@ -15,13 +15,13 @@ import eca.text.NumericFormatFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import javax.inject.Inject;
 import java.text.DecimalFormat;
 import java.util.List;
 import java.util.stream.IntStream;
@@ -122,7 +122,7 @@ class ClassifierOptionsInfoProcessorTest {
     @MockBean
     private FormTemplateProvider formTemplateProvider;
 
-    @Inject
+    @Autowired
     private ClassifierOptionsInfoProcessor classifierOptionsInfoProcessor;
 
     @BeforeEach

@@ -14,11 +14,11 @@ import com.ecaservice.oauth.repository.UserNotificationEventOptionsRepository;
 import com.ecaservice.oauth.repository.UserProfileOptionsRepository;
 import com.ecaservice.user.profile.options.dto.UserNotificationEventType;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.context.annotation.Import;
 
-import javax.inject.Inject;
 import java.util.Collections;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
@@ -46,18 +46,20 @@ class UserProfileOptionsServiceTest extends AbstractJpaTest {
 
     @MockBean
     private LockMeterService lockMeterService;
+    @MockBean
+    private UserProfileOptionsDataEventService userProfileOptionsDataEventService;
 
-    @Inject
+    @Autowired
     private UserProfileProperties userProfileProperties;
 
-    @Inject
+    @Autowired
     private UserEntityRepository userEntityRepository;
-    @Inject
+    @Autowired
     private UserProfileOptionsRepository userProfileOptionsRepository;
-    @Inject
+    @Autowired
     private UserNotificationEventOptionsRepository userNotificationEventOptionsRepository;
 
-    @Inject
+    @Autowired
     private UserProfileOptionsService userProfileOptionsService;
 
     private UserEntity userEntity;

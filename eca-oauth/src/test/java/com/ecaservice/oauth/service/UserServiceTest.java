@@ -28,6 +28,7 @@ import com.ecaservice.web.dto.model.UserDto;
 import com.google.common.collect.Sets;
 import org.apache.commons.io.FilenameUtils;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.Page;
@@ -35,7 +36,6 @@ import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.inject.Inject;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.Iterator;
@@ -65,29 +65,31 @@ import static org.mockito.Mockito.when;
 class UserServiceTest extends AbstractJpaTest {
 
     private static final String PASSWORD = "pa66word!";
-    private static final long USER_ID = 1L;
+    private static final String INVALID_USERNAME = "abc";
     private static final String PHOTO_FILE_NAME = "image.png";
     private static final int BYTE_ARRAY_LENGTH = 32;
     private static final int PAGE = 0;
     private static final int SIZE = 10;
 
-    @Inject
+    @Autowired
     private AppProperties appProperties;
-    @Inject
+    @Autowired
     private UserMapper userMapper;
-    @Inject
+    @Autowired
     private UserEntityRepository userEntityRepository;
-    @Inject
+    @Autowired
     private RoleRepository roleRepository;
-    @Inject
+    @Autowired
     private UserPhotoRepository userPhotoRepository;
 
     @MockBean
-    private Oauth2TokenService oauth2TokenService;
+    private Oauth2RevokeTokenService oauth2RevokeTokenService;
     @MockBean
     private UserProfileOptionsConfigurationService userProfileOptionsConfigurationService;
     @MockBean
     private FilterTemplateService filterTemplateService;
+    @MockBean
+    private UserProfileOptionsDataEventService userProfileOptionsDataEventService;
 
     private UserService userService;
 
@@ -95,9 +97,9 @@ class UserServiceTest extends AbstractJpaTest {
     public void init() {
         roleRepository.save(createRoleEntity());
         PasswordEncoder passwordEncoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
-        userService = new UserService(appProperties, passwordEncoder, userMapper, oauth2TokenService,
-                userProfileOptionsConfigurationService, filterTemplateService, userEntityRepository, roleRepository,
-                userPhotoRepository);
+        userService = new UserService(appProperties, passwordEncoder, userMapper, oauth2RevokeTokenService,
+                userProfileOptionsConfigurationService, userProfileOptionsDataEventService, filterTemplateService,
+                userEntityRepository, roleRepository, userPhotoRepository);
         when(filterTemplateService.getGlobalFilterFields(USERS_TEMPLATE)).thenReturn(
                 List.of(UserEntity_.LOGIN,
                         UserEntity_.EMAIL,
@@ -107,9 +109,9 @@ class UserServiceTest extends AbstractJpaTest {
 
     @Override
     public void deleteAll() {
-        userPhotoRepository.deleteAll();
         userEntityRepository.deleteAll();
         roleRepository.deleteAll();
+        userPhotoRepository.deleteAll();
     }
 
     @Test
@@ -134,7 +136,7 @@ class UserServiceTest extends AbstractJpaTest {
     void testUpdateUserInfo() {
         UserEntity userEntity = createAndSaveUser();
         UpdateUserInfoDto updateUserInfoDto = createUpdateUserInfoDto();
-        userService.updateUserInfo(userEntity.getId(), updateUserInfoDto);
+        userService.updateUserInfo(userEntity.getLogin(), updateUserInfoDto);
         UserEntity actual = userEntityRepository.findById(userEntity.getId()).orElse(null);
         assertThat(actual).isNotNull();
         assertThat(actual.getFirstName()).isEqualTo(updateUserInfoDto.getFirstName());
@@ -158,7 +160,7 @@ class UserServiceTest extends AbstractJpaTest {
     @Test
     void testGetUserDetails() {
         UserEntity userEntity = createAndSaveUser();
-        var userDto = userService.getUserInfo(userEntity.getId());
+        var userDto = userService.getUserDetails(userEntity.getLogin());
         assertThat(userDto).isNotNull();
         assertThat(userDto.getLogin()).isEqualTo(userEntity.getLogin());
         assertThat(userDto.getEmail()).isEqualTo(userEntity.getEmail());
@@ -232,7 +234,7 @@ class UserServiceTest extends AbstractJpaTest {
     @Test
     void testEnableTfa() {
         UserEntity userEntity = createAndSaveUser();
-        userService.enableTfa(userEntity.getId());
+        userService.enableTfa(userEntity.getLogin());
         UserEntity actual = userEntityRepository.findById(userEntity.getId()).orElse(null);
         assertThat(actual).isNotNull();
         assertThat(actual.isTfaEnabled()).isTrue();
@@ -243,12 +245,12 @@ class UserServiceTest extends AbstractJpaTest {
         UserEntity userEntity = createAndSaveUser();
         userEntity.setTfaEnabled(true);
         userEntityRepository.save(userEntity);
-        assertThrows(InvalidOperationException.class, () -> userService.enableTfa(userEntity.getId()));
+        assertThrows(InvalidOperationException.class, () -> userService.enableTfa(userEntity.getLogin()));
     }
 
     @Test
     void testEnableTfaForNotExistingUser() {
-        assertThrows(EntityNotFoundException.class, () -> userService.enableTfa(USER_ID));
+        assertThrows(EntityNotFoundException.class, () -> userService.enableTfa(INVALID_USERNAME));
     }
 
     @Test
@@ -256,7 +258,7 @@ class UserServiceTest extends AbstractJpaTest {
         UserEntity userEntity = createAndSaveUser();
         userEntity.setTfaEnabled(true);
         userEntityRepository.save(userEntity);
-        userService.disableTfa(userEntity.getId());
+        userService.disableTfa(userEntity.getLogin());
         UserEntity actual = userEntityRepository.findById(userEntity.getId()).orElse(null);
         assertThat(actual).isNotNull();
         assertThat(actual.isTfaEnabled()).isFalse();
@@ -265,28 +267,40 @@ class UserServiceTest extends AbstractJpaTest {
     @Test
     void testDisableTfaShouldThrowIllegalStateException() {
         UserEntity userEntity = createAndSaveUser();
-        assertThrows(InvalidOperationException.class, () -> userService.disableTfa(userEntity.getId()));
+        assertThrows(InvalidOperationException.class, () -> userService.disableTfa(userEntity.getLogin()));
     }
 
     @Test
     void testDisableTfaForNotExistingUser() {
-        assertThrows(EntityNotFoundException.class, () -> userService.disableTfa(USER_ID));
+        assertThrows(EntityNotFoundException.class, () -> userService.disableTfa(INVALID_USERNAME));
     }
 
     @Test
     void testUpdatePhotoForNotExistingUser() {
         MultipartFile file = mock(MultipartFile.class);
-        assertThrows(EntityNotFoundException.class, () -> userService.updatePhoto(USER_ID, file));
+        assertThrows(EntityNotFoundException.class, () -> userService.updatePhoto(INVALID_USERNAME, file));
+    }
+
+    @Test
+    void testSaveNewPhoto() throws IOException {
+        UserEntity userEntity = createAndSaveUser();
+        savePhoto(userEntity);
+        UserPhoto userPhoto = userPhotoRepository.findAll().iterator().next();
+        assertThat(userPhoto).isNotNull();
+        assertThat(userPhoto.getFileName()).isEqualTo(PHOTO_FILE_NAME);
+        assertThat(userPhoto.getFileExtension()).isEqualTo(FilenameUtils.getExtension(PHOTO_FILE_NAME));
+        assertThat(userPhoto.getPhoto()).isNotNull();
+        assertThat(userPhoto.getPhoto()).hasSize(BYTE_ARRAY_LENGTH);
     }
 
     @Test
     void testUpdatePhoto() throws IOException {
-        MultipartFile file = mock(MultipartFile.class);
-        when(file.getOriginalFilename()).thenReturn(PHOTO_FILE_NAME);
-        when(file.getBytes()).thenReturn(new byte[BYTE_ARRAY_LENGTH]);
         UserEntity userEntity = createAndSaveUser();
-        userService.updatePhoto(userEntity.getId(), file);
-        UserPhoto userPhoto = userPhotoRepository.findByUserEntity(userEntity);
+        savePhoto(userEntity);
+        savePhoto(userEntity);
+        var userPhotos = userPhotoRepository.findAll();
+        assertThat(userPhotos).hasSize(1);
+        UserPhoto userPhoto = userPhotos.iterator().next();
         assertThat(userPhoto).isNotNull();
         assertThat(userPhoto.getFileName()).isEqualTo(PHOTO_FILE_NAME);
         assertThat(userPhoto.getFileExtension()).isEqualTo(FilenameUtils.getExtension(PHOTO_FILE_NAME));
@@ -300,18 +314,18 @@ class UserServiceTest extends AbstractJpaTest {
         when(file.getOriginalFilename()).thenReturn("file.txt");
         when(file.getBytes()).thenReturn(new byte[BYTE_ARRAY_LENGTH]);
         UserEntity userEntity = createAndSaveUser();
-        assertThrows(InvalidFileException.class, () -> userService.updatePhoto(userEntity.getId(), file));
+        assertThrows(InvalidFileException.class, () -> userService.updatePhoto(userEntity.getLogin(), file));
     }
 
     @Test
     void testDeletePhotoForNotExistingUser() {
-        assertThrows(EntityNotFoundException.class, () -> userService.deletePhoto(USER_ID));
+        assertThrows(EntityNotFoundException.class, () -> userService.deletePhoto(INVALID_USERNAME));
     }
 
     @Test
     void testDeleteNotExistingPhoto() {
         UserEntity userEntity = createAndSaveUser();
-        assertThrows(EntityNotFoundException.class, () -> userService.deletePhoto(userEntity.getId()));
+        assertThrows(InvalidOperationException.class, () -> userService.deletePhoto(userEntity.getLogin()));
     }
 
     @Test
@@ -320,9 +334,9 @@ class UserServiceTest extends AbstractJpaTest {
         when(file.getOriginalFilename()).thenReturn(PHOTO_FILE_NAME);
         when(file.getBytes()).thenReturn(new byte[BYTE_ARRAY_LENGTH]);
         UserEntity userEntity = createAndSaveUser();
-        userService.updatePhoto(userEntity.getId(), file);
-        userService.deletePhoto(userEntity.getId());
-        assertThat(userPhotoRepository.findByUserEntity(userEntity)).isNull();
+        userService.updatePhoto(userEntity.getLogin(), file);
+        userService.deletePhoto(userEntity.getLogin());
+        assertThat(userPhotoRepository.findAll()).isEmpty();
     }
 
     @Test
@@ -345,7 +359,7 @@ class UserServiceTest extends AbstractJpaTest {
         UserEntity actual = userEntityRepository.findById(userEntity.getId()).orElse(null);
         assertThat(actual).isNotNull();
         assertThat(actual.isLocked()).isTrue();
-        verify(oauth2TokenService, atLeastOnce()).revokeTokens(any(UserEntity.class));
+        verify(oauth2RevokeTokenService, atLeastOnce()).revokeTokens(any(UserEntity.class));
     }
 
     @Test
@@ -374,6 +388,13 @@ class UserServiceTest extends AbstractJpaTest {
         UserEntity userEntity = createAndSaveUser();
         Long userId = userEntity.getId();
         assertThrows(InvalidOperationException.class, () -> userService.unlock(userId));
+    }
+
+    private void savePhoto(UserEntity userEntity) throws IOException {
+        MultipartFile file = mock(MultipartFile.class);
+        when(file.getOriginalFilename()).thenReturn(PHOTO_FILE_NAME);
+        when(file.getBytes()).thenReturn(new byte[BYTE_ARRAY_LENGTH]);
+        userService.updatePhoto(userEntity.getLogin(), file);
     }
 
     private UserEntity createAndSaveUser() {

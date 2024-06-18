@@ -2,6 +2,12 @@ spring:
   application:
     name: eca-auto-tests
   ## Auto tests datasource properties
+  jpa:
+    properties:
+      hibernate:
+        id:
+          ## Use one hibernate_sequence for all entities
+          db_structure_naming_strategy: legacy
   datasource:
     driver-class-name: org.postgresql.Driver
     jdbc-url: jdbc:postgresql://localhost:5433/eca_auto_tests
@@ -9,7 +15,6 @@ spring:
     password: postgres
     jpa:
       ddlAuto: update
-      databasePlatform: org.hibernate.dialect.PostgreSQL9Dialect
   ## Eca server datasource properties
   ecaserverdatasource:
     driver-class-name: org.postgresql.Driver
@@ -18,7 +23,6 @@ spring:
     password: postgres
     jpa:
       ddlAuto: validate
-      databasePlatform: org.hibernate.dialect.PostgreSQL9Dialect
   cache:
     cache-names: instances
     caffeine:
@@ -28,6 +32,23 @@ spring:
       simple:
         concurrency: 10
         maxConcurrency: 10
+  cloud:
+    openfeign:
+      oauth2:
+        clientRegistrationId: api-client
+  security:
+    oauth2:
+      client:
+        registration:
+          api-client:
+            client-id: external-api
+            client-secret: external_api_secret
+            scope: data-loader-api
+            authorization-grant-type: client_credentials
+            provider: api-client
+        provider:
+          api-client:
+            token-uri: http://localhost:8080/eca-oauth/oauth2/token
 
 ## Swagger properties
 open-api:
@@ -41,9 +62,6 @@ open-api:
 springdoc:
   swagger-ui:
     disable-swagger-default-url: true
-
-classifiers-options:
-  maximumFractionDigits: 4
 
 mail:
   userName: rbatsw@gmail.com
@@ -67,13 +85,6 @@ auto-tests:
 
 data-loader:
   url: http://localhost:8080/eca-data-loader
-
-service:
-  feign:
-    oauth:
-      tokenUrl: http://localhost:8080/eca-oauth
-      clientId: external-api
-      clientSecret: external_api_secret
 
 server:
   port: 8093

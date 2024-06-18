@@ -13,12 +13,12 @@ import com.ecaservice.s3.client.minio.service.MinioStorageService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import eca.data.file.model.InstancesModel;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Import;
 import org.springframework.mock.web.MockMultipartFile;
 
-import javax.inject.Inject;
 import java.io.IOException;
 
 import static com.ecaservice.data.loader.TestHelperUtils.createInstancesMockMultipartFile;
@@ -27,6 +27,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.when;
 
 /**
  * Unit tests for checking {@link UploadInstancesService} functionality.
@@ -34,16 +35,21 @@ import static org.mockito.Mockito.doThrow;
  * @author Roman Batygin
  */
 @ComponentScan(basePackageClasses = InstancesValidator.class)
-@Import({UploadInstancesService.class, ObjectMapper.class, AppProperties.class})
+@Import({UploadInstancesService.class, ObjectMapper.class, AppProperties.class,
+        InstancesReader.class, InstancesDeserializer.class})
 class UploadInstancesServiceTest extends AbstractJpaTest {
+
+    private static final String USER = "user";
 
     @MockBean
     private MinioStorageService minioStorageService;
+    @MockBean
+    private UserService userService;
 
-    @Inject
+    @Autowired
     private InstancesRepository instancesRepository;
 
-    @Inject
+    @Autowired
     private UploadInstancesService uploadInstancesService;
 
     @Override
@@ -53,6 +59,7 @@ class UploadInstancesServiceTest extends AbstractJpaTest {
 
     @Test
     void testUploadInstances() throws IOException {
+        when(userService.getCurrentUser()).thenReturn(USER);
         MockMultipartFile multipartFile = createInstancesMockMultipartFile();
         InstancesModel instancesModel = loadInstances();
         var uploadInstancesResponseDto = uploadInstancesService.uploadInstances(multipartFile);
@@ -67,7 +74,17 @@ class UploadInstancesServiceTest extends AbstractJpaTest {
         assertThat(actual.getObjectPath()).isNotNull();
         assertThat(actual.getMd5Hash()).isNotNull();
         assertThat(actual.getExpireAt()).isNotNull();
+        assertThat(actual.getClientId()).isEqualTo(USER);
         assertNumClasses(instancesModel, actual);
+    }
+
+    @Test
+    void testUploadExistingInstances() {
+        when(userService.getCurrentUser()).thenReturn(USER);
+        MockMultipartFile multipartFile = createInstancesMockMultipartFile();
+        uploadInstancesService.uploadInstances(multipartFile);
+        uploadInstancesService.uploadInstances(multipartFile);
+        assertThat(instancesRepository.count()).isOne();
     }
 
     @Test

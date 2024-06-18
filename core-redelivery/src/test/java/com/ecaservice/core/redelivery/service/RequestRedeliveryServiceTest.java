@@ -5,10 +5,10 @@ import com.ecaservice.core.redelivery.config.RedeliveryProperties;
 import com.ecaservice.core.redelivery.entity.RetryRequest;
 import com.ecaservice.core.redelivery.repository.RetryRequestRepository;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 
-import javax.inject.Inject;
 import java.time.LocalDateTime;
 import java.util.stream.IntStream;
 
@@ -31,9 +31,9 @@ class RequestRedeliveryServiceTest extends AbstractJpaTest {
     @MockBean
     private RetryService retryService;
 
-    @Inject
+    @Autowired
     private RetryRequestRepository retryRequestRepository;
-    @Inject
+    @Autowired
     private RequestRedeliveryService requestRedeliveryService;
 
     @Override

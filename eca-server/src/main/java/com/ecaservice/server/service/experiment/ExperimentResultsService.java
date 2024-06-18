@@ -22,6 +22,7 @@ import eca.core.evaluation.EvaluationResults;
 import eca.dataminer.AbstractExperiment;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import io.micrometer.tracing.annotation.NewSpan;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import weka.classifiers.AbstractClassifier;
@@ -57,6 +58,7 @@ public class ExperimentResultsService {
      * @param experimentHistory - experiment history
      * @return experiment results entities list
      */
+    @NewSpan
     public List<ExperimentResultsEntity> saveExperimentResults(Experiment experiment,
                                                                AbstractExperiment<?> experimentHistory) {
         log.info("Starting to save experiment [{}] results to ERS sent", experiment.getRequestId());
@@ -103,6 +105,7 @@ public class ExperimentResultsService {
      * @param experiment - experiment entity
      * @return ERS report dto
      */
+    @NewSpan
     public ExperimentErsReportDto getErsReport(Experiment experiment) {
         log.info("Starting to fetch experiment [{}] ERS report", experiment.getRequestId());
         ExperimentErsReportDto experimentErsReportDto = new ExperimentErsReportDto();

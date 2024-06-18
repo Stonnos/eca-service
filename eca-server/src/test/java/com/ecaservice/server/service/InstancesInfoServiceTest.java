@@ -9,11 +9,11 @@ import com.ecaservice.server.repository.InstancesInfoRepository;
 import com.ecaservice.web.dto.model.PageRequestDto;
 import com.ecaservice.web.dto.model.SortFieldRequestDto;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import weka.core.Instances;
 
-import javax.inject.Inject;
 import java.util.Collections;
 
 import static com.ecaservice.server.PageRequestUtils.PAGE_NUMBER;
@@ -36,10 +36,10 @@ class InstancesInfoServiceTest extends AbstractJpaTest {
     @MockBean
     private FilterTemplateService filterTemplateService;
 
-    @Inject
+    @Autowired
     private InstancesInfoRepository instancesInfoRepository;
 
-    @Inject
+    @Autowired
     private InstancesInfoService instancesInfoService;
 
     private Instances data;

@@ -5,9 +5,8 @@ import com.ecaservice.external.api.entity.EvaluationRequestEntity;
 import com.ecaservice.external.api.entity.RequestStageType;
 import com.ecaservice.external.api.repository.EvaluationRequestRepository;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Import;
-
-import javax.inject.Inject;
 
 import static com.ecaservice.external.api.TestHelperUtils.createEvaluationRequestEntity;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -22,9 +21,9 @@ class RequestStageHandlerTest extends AbstractJpaTest {
 
     private static final String ERROR_MESSAGE = "Error";
 
-    @Inject
+    @Autowired
     private EvaluationRequestRepository evaluationRequestRepository;
-    @Inject
+    @Autowired
     private RequestStageHandler requestStageHandler;
 
     @Override

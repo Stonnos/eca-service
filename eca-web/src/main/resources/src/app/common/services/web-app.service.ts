@@ -8,8 +8,6 @@ import { Utils } from "../util/utils";
 @Injectable()
 export class WebAppService {
 
-  private serviceUrl = environment.webAppUrl + '/api/web';
-
   public constructor(private http: HttpClient) {
   }
 
@@ -18,6 +16,6 @@ export class WebAppService {
       'Content-type': 'application/json; charset=utf-8',
       'Authorization': Utils.getBearerTokenHeader()
     });
-    return this.http.get<MenuItemDto[]>(this.serviceUrl + '/menu-bar', { headers: headers });
+    return this.http.get<MenuItemDto[]>(environment.oauthUrl + '/web-config' + '/menu', { headers: headers });
   }
 }

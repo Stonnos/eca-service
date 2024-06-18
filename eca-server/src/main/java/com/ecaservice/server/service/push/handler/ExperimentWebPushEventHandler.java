@@ -35,6 +35,11 @@ public class ExperimentWebPushEventHandler extends AbstractUserPushNotificationE
     }
 
     @Override
+    protected String getCorrelationId(ExperimentWebPushEvent experimentWebPushEvent) {
+        return experimentWebPushEvent.getExperiment().getRequestId();
+    }
+
+    @Override
     protected String getMessageType(ExperimentWebPushEvent experimentWebPushEvent) {
         return experimentWebPushEvent.getPushMessageParams().getMessageType();
     }

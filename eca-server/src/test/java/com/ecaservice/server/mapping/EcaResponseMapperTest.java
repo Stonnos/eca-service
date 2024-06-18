@@ -6,10 +6,10 @@ import com.ecaservice.server.model.entity.Experiment;
 import com.ecaservice.server.model.entity.RequestStatus;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import javax.inject.Inject;
 import java.util.Map;
 import java.util.UUID;
 
@@ -34,7 +34,7 @@ class EcaResponseMapperTest {
             RequestStatus.ERROR, TechnicalStatus.ERROR
     );
 
-    @Inject
+    @Autowired
     private EcaResponseMapper ecaResponseMapper;
 
     @Test

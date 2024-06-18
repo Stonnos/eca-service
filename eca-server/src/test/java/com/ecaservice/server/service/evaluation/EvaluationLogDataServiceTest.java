@@ -41,11 +41,11 @@ import eca.trees.ID3;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.Page;
 
-import javax.inject.Inject;
-import javax.persistence.EntityManager;
+import jakarta.persistence.EntityManager;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Arrays;
@@ -79,17 +79,17 @@ class EvaluationLogDataServiceTest extends AbstractJpaTest {
     private static final String CART_DESCRIPTION = "Алгоритм CART";
     private static final String C45_DESCRIPTION = "Алгоритм C45";
 
-    @Inject
+    @Autowired
     private EvaluationLogRepository evaluationLogRepository;
-    @Inject
+    @Autowired
     private InstancesInfoRepository instancesInfoRepository;
-    @Inject
+    @Autowired
     private EvaluationResultsRequestEntityRepository evaluationResultsRequestEntityRepository;
-    @Inject
+    @Autowired
     private EntityManager entityManager;
-    @Inject
+    @Autowired
     private AppProperties appProperties;
-    @Inject
+    @Autowired
     private EvaluationLogMapper evaluationLogMapper;
 
     @Mock

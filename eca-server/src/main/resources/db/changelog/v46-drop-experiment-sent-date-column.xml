@@ -12,16 +12,4 @@
         </preConditions>
         <dropColumn tableName="experiment" columnName="sent_date"/>
     </changeSet>
-
-    <changeSet id="2" author="roman.batygin@mail.ru" context="data">
-        <preConditions onFail="MARK_RAN">
-            <tableExists tableName="filter_field"/>
-            <sqlCheck expectedResult="1">
-                select count(*) from filter_field where filter_template_id = 1 and field_name = 'sentDate'
-            </sqlCheck>
-        </preConditions>
-        <delete tableName="filter_field">
-            <where>filter_template_id = 1 and field_name = 'sentDate'</where>
-        </delete>
-    </changeSet>
 </databaseChangeLog>

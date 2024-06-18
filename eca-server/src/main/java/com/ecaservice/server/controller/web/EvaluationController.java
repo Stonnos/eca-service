@@ -40,9 +40,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.validation.Valid;
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import java.time.LocalDate;
 
 import static com.ecaservice.config.swagger.OpenApi30Configuration.ECA_AUTHENTICATION_SECURITY_SCHEME;
@@ -72,7 +72,7 @@ public class EvaluationController {
      * @param evaluationRequestDto - evaluation request dto
      * @return evaluation response dto
      */
-    @PreAuthorize("#oauth2.hasScope('web')")
+    @PreAuthorize("hasAuthority('SCOPE_web')")
     @Operation(
             description = "Creates classifier evaluation request with specified options",
             summary = "Creates classifier evaluation request with specified options",
@@ -135,7 +135,7 @@ public class EvaluationController {
      * @param evaluationRequestDto - optimal evaluation request dto
      * @return evaluation response dto
      */
-    @PreAuthorize("#oauth2.hasScope('web')")
+    @PreAuthorize("hasAuthority('SCOPE_web')")
     @Operation(
             description = "Creates classifier evaluation request with optimal classifiers options",
             summary = "Creates classifier evaluation request with optimal classifiers options",
@@ -198,7 +198,7 @@ public class EvaluationController {
      * @param pageRequestDto - page request dto
      * @return evaluations logs page
      */
-    @PreAuthorize("#oauth2.hasScope('web')")
+    @PreAuthorize("hasAuthority('SCOPE_web')")
     @Operation(
             description = "Finds evaluation logs with specified options",
             summary = "Finds evaluation logs with specified options",
@@ -261,7 +261,7 @@ public class EvaluationController {
      * @param id - evaluation log id
      * @return evaluation log details report
      */
-    @PreAuthorize("#oauth2.hasScope('web')")
+    @PreAuthorize("hasAuthority('SCOPE_web')")
     @Operation(
             description = "Gets evaluation log details",
             summary = "Gets evaluation log details",
@@ -319,7 +319,7 @@ public class EvaluationController {
      *
      * @return evaluations request statuses statistics dto
      */
-    @PreAuthorize("#oauth2.hasScope('web')")
+    @PreAuthorize("hasAuthority('SCOPE_web')")
     @Operation(
             description = "Gets evaluations request statuses statistics",
             summary = "Gets evaluations request statuses statistics",
@@ -362,7 +362,7 @@ public class EvaluationController {
      * @param createdDateTo   - created date to
      * @return classifiers statistics data
      */
-    @PreAuthorize("#oauth2.hasScope('web')")
+    @PreAuthorize("hasAuthority('SCOPE_web')")
     @Operation(
             description = "Gets classifiers statistics data (distribution diagram by classifier)",
             summary = "Gets classifiers statistics data (distribution diagram by classifier)",
@@ -412,7 +412,7 @@ public class EvaluationController {
      * @param id - evaluation id
      * @return s3 content response dto
      */
-    @PreAuthorize("#oauth2.hasScope('web')")
+    @PreAuthorize("hasAuthority('SCOPE_web')")
     @Operation(
             description = "Gets classifier model content url",
             summary = "Gets classifier model content url",

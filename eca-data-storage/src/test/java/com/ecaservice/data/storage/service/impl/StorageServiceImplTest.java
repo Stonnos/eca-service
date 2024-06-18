@@ -26,13 +26,12 @@ import eca.data.db.InstancesExtractor;
 import eca.data.db.InstancesResultSetConverter;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.Page;
-import org.springframework.security.oauth2.common.util.RandomValueStringGenerator;
 import weka.core.Instances;
 
-import javax.inject.Inject;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
@@ -57,7 +56,7 @@ import static org.mockito.Mockito.when;
  * @author Roman Batygin
  */
 @Import({StorageServiceImpl.class, InstancesService.class, InstancesBatchService.class,
-        RandomValueStringGenerator.class, StorageTestConfiguration.class, AttributeService.class,
+        StorageTestConfiguration.class, AttributeService.class,
         AttributeMapperImpl.class, SearchQueryCreator.class, InstancesTransformer.class,
         InstancesResultSetConverter.class, InstancesExtractor.class})
 class StorageServiceImplTest extends AbstractJpaTest {
@@ -74,14 +73,14 @@ class StorageServiceImplTest extends AbstractJpaTest {
     private static final String DURATION_ATTRIBUTE = "duration";
     private static final String COLUMN_NAME = "column1";
 
-    @Inject
+    @Autowired
     private StorageServiceImpl storageService;
 
-    @Inject
+    @Autowired
     private InstancesRepository instancesRepository;
-    @Inject
+    @Autowired
     private AttributeRepository attributeRepository;
-    @Inject
+    @Autowired
     private AttributeValueRepository attributeValueRepository;
 
     @MockBean

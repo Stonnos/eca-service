@@ -2,24 +2,24 @@ package com.ecaservice.mail.controller;
 
 import com.ecaservice.common.web.annotation.EnableGlobalExceptionHandler;
 import com.ecaservice.mail.TestHelperUtils;
-import com.ecaservice.mail.service.EmailService;
-import com.ecaservice.notification.dto.EmailRequest;
-import com.ecaservice.notification.dto.EmailResponse;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ecaservice.mail.mapping.EmailRequestMapper;
 import com.ecaservice.mail.mapping.EmailRequestMapperImpl;
 import com.ecaservice.mail.model.Email;
 import com.ecaservice.mail.model.EmailStatus;
+import com.ecaservice.mail.service.EmailService;
+import com.ecaservice.notification.dto.EmailRequest;
+import com.ecaservice.notification.dto.EmailResponse;
+import com.ecaservice.oauth2.test.configuration.annotation.MockSecurity;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
-import javax.inject.Inject;
 import java.time.LocalDateTime;
 
 import static org.mockito.Mockito.when;
@@ -32,9 +32,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  *
  * @author Roman Batygin
  */
+@MockSecurity
 @EnableGlobalExceptionHandler
 @WebMvcTest(controllers = EmailController.class)
-@AutoConfigureMockMvc(addFilters = false)
 @Import(EmailRequestMapperImpl.class)
 class EmailControllerTest {
 
@@ -46,10 +46,10 @@ class EmailControllerTest {
     @MockBean
     private EmailService emailService;
 
-    @Inject
+    @Autowired
     private MockMvc mockMvc;
 
-    @Inject
+    @Autowired
     private EmailRequestMapper emailRequestMapper;
 
     private final ObjectMapper objectMapper = new ObjectMapper();

@@ -1,14 +1,13 @@
 package com.ecaservice.oauth2.test.controller;
 
 import com.ecaservice.common.web.annotation.EnableGlobalExceptionHandler;
-import com.ecaservice.oauth2.test.configuration.annotation.Oauth2TestConfiguration;
-import com.ecaservice.oauth2.test.token.TokenService;
+import com.ecaservice.oauth2.test.configuration.annotation.Oauth2ResourceServerTestConfiguration;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.Getter;
 import org.junit.jupiter.api.BeforeEach;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.web.servlet.MockMvc;
 
-import javax.inject.Inject;
+import static com.ecaservice.oauth2.test.util.TokenUtils.ACCESS_TOKEN;
 
 /**
  * Abstract class for controllers tests.
@@ -16,30 +15,23 @@ import javax.inject.Inject;
  * @author Roman Batygin
  */
 @EnableGlobalExceptionHandler
-@Oauth2TestConfiguration
+@Oauth2ResourceServerTestConfiguration
 public abstract class AbstractControllerTest {
 
     private static final String BEARER_TOKEN_FORMAT = "Bearer %s";
 
-    @Getter
-    private String accessToken;
-
-    @Inject
-    private TokenService tokenService;
-
-    @Inject
+    @Autowired
     protected MockMvc mockMvc;
 
     protected final ObjectMapper objectMapper = new ObjectMapper();
 
     @BeforeEach
-    void init() throws Exception {
-        accessToken = tokenService.obtainAccessToken();
+    void init() {
         before();
     }
 
     public String getBearerToken() {
-        return String.format(BEARER_TOKEN_FORMAT, getAccessToken());
+        return String.format(BEARER_TOKEN_FORMAT, ACCESS_TOKEN);
     }
 
     public void before() {

@@ -80,16 +80,6 @@ public enum ReportType {
         public <T> T handle(ReportTypeVisitor<T> reportTypeVisitor) {
             return reportTypeVisitor.visitData();
         }
-    },
-
-    /**
-     * Docx report type.
-     */
-    DOCX("docx") {
-        @Override
-        public <T> T handle(ReportTypeVisitor<T> reportTypeVisitor) {
-            return reportTypeVisitor.visitDocx();
-        }
     };
 
     /**

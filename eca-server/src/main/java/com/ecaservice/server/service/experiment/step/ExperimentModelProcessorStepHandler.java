@@ -4,19 +4,21 @@ import com.ecaservice.s3.client.minio.exception.ObjectStorageException;
 import com.ecaservice.server.config.ExperimentConfig;
 import com.ecaservice.server.exception.EvaluationTimeoutException;
 import com.ecaservice.server.exception.experiment.ExperimentException;
-import com.ecaservice.server.service.TaskWorker;
 import com.ecaservice.server.model.entity.Experiment;
 import com.ecaservice.server.model.entity.ExperimentStep;
 import com.ecaservice.server.model.entity.ExperimentStepEntity;
 import com.ecaservice.server.model.experiment.ExperimentContext;
 import com.ecaservice.server.model.experiment.InitializationParams;
 import com.ecaservice.server.repository.ExperimentRepository;
+import com.ecaservice.server.service.TaskWorker;
 import com.ecaservice.server.service.data.InstancesLoaderService;
 import com.ecaservice.server.service.experiment.ExperimentModelLocalStorage;
 import com.ecaservice.server.service.experiment.ExperimentProcessorService;
 import com.ecaservice.server.service.experiment.ExperimentProgressService;
 import com.ecaservice.server.service.experiment.ExperimentStepService;
 import eca.dataminer.AbstractExperiment;
+import eca.filter.ConstantAttributesFilter;
+import io.micrometer.tracing.annotation.NewSpan;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StopWatch;
@@ -30,8 +32,6 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
-
-import static com.ecaservice.server.util.InstancesUtils.removeConstantAttributes;
 
 /**
  * Step handler for experiment model processing.
@@ -82,13 +82,15 @@ public class ExperimentModelProcessorStepHandler extends AbstractExperimentStepH
         this.experimentRepository = experimentRepository;
     }
 
+    @NewSpan("processExperimentModelStep")
     @Override
     public void handle(ExperimentContext experimentContext,
                        ExperimentStepEntity experimentStepEntity) {
         try {
             experimentStepService.start(experimentStepEntity);
             Instances data = getInstances(experimentContext);
-            Instances filteredInstances = removeConstantAttributes(data);
+            ConstantAttributesFilter filter = new ConstantAttributesFilter();
+            Instances filteredInstances = filter.filterInstances(data);
             processExperiment(filteredInstances, experimentContext);
             saveModelToLocalStorage(experimentStepEntity, experimentContext.getExperimentHistory());
             saveMaxPctCorrectValue(experimentContext);

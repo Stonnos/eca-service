@@ -4,10 +4,10 @@ import com.ecaservice.external.api.dto.EvaluationStatus;
 import com.ecaservice.external.api.entity.RequestStageType;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import javax.inject.Inject;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -30,7 +30,7 @@ class EvaluationStatusMapperTest {
             RequestStageType.EXCEEDED, EvaluationStatus.TIMEOUT
     );
 
-    @Inject
+    @Autowired
     private EvaluationStatusMapper evaluationStatusMapper;
 
     @Test

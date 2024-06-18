@@ -2,11 +2,11 @@ package com.ecaservice.core.filter.entity;
 
 import lombok.Data;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 
 /**
  * Filter field value persistence model. Using for reference filter type
@@ -25,12 +25,12 @@ public class FilterDictionaryValue {
     /**
      * Label string
      */
-    @Column(nullable = false)
+    @Column(name = "_label", nullable = false)
     private String label;
 
     /**
      * String value
      */
-    @Column(nullable = false)
+    @Column(name = "_value", nullable = false)
     private String value;
 }

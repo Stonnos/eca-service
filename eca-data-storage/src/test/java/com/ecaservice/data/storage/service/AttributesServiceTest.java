@@ -9,11 +9,10 @@ import com.ecaservice.data.storage.repository.AttributeRepository;
 import com.ecaservice.data.storage.repository.AttributeValueRepository;
 import com.ecaservice.data.storage.repository.InstancesRepository;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Import;
 import weka.core.Attribute;
 import weka.core.Instances;
-
-import javax.inject.Inject;
 
 import java.util.List;
 import java.util.UUID;
@@ -38,14 +37,14 @@ class AttributesServiceTest extends AbstractJpaTest {
     private static final String TEST_TABLE = "test_table";
     private static final String COLUMN_NAME = "column1";
 
-    @Inject
+    @Autowired
     private InstancesRepository instancesRepository;
-    @Inject
+    @Autowired
     private AttributeRepository attributeRepository;
-    @Inject
+    @Autowired
     private AttributeValueRepository attributeValueRepository;
 
-    @Inject
+    @Autowired
     private AttributeService attributeService;
 
     private Instances instances;

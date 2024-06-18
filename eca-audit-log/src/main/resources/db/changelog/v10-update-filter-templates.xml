@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+        logicalFilePath="db/changelog/v10-update-filter-templates.xml"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet author="roman.batygin@mail.ru" id="insert_sort_templates_2" context="data">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="sort_template"/>
+        </preConditions>
+        <loadUpdateData
+                tableName="sort_template"
+                primaryKey="id"
+                separator=";"
+                file="filter-templates/sort-templates.csv"/>
+    </changeSet>
+
+    <changeSet author="roman.batygin@mail.ru" id="insert_sort_templates_fields_2" context="data">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="sort_template"/>
+            <tableExists tableName="sort_field"/>
+        </preConditions>
+        <loadUpdateData
+                tableName="sort_field"
+                primaryKey="id"
+                separator=";"
+                file="filter-templates/sort-fields.csv"/>
+    </changeSet>
+
+    <changeSet author="roman.batygin@mail.ru" id="insert_global_filter_templates_2" context="data">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="global_filter_template"/>
+        </preConditions>
+        <loadUpdateData
+                tableName="global_filter_template"
+                primaryKey="id"
+                separator=";"
+                file="filter-templates/global-filter-templates.csv"/>
+    </changeSet>
+
+    <changeSet author="roman.batygin@mail.ru" id="insert_global_filter_templates_fields_2" context="data">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="global_filter_template"/>
+            <tableExists tableName="global_filter_field"/>
+        </preConditions>
+        <loadUpdateData
+                tableName="global_filter_field"
+                primaryKey="id"
+                separator=";"
+                file="filter-templates/global-filter-fields.csv"/>
+    </changeSet>
+
+    <changeSet author="roman.batygin@mail.ru" id="insert_filter_dictionaries_3" context="data">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="filter_dictionary"/>
+        </preConditions>
+        <loadUpdateData
+                tableName="filter_dictionary"
+                primaryKey="id"
+                separator=";"
+                file="filter-templates/filter-dictionaries.csv"/>
+    </changeSet>
+
+    <changeSet author="roman.batygin@mail.ru" id="insert_filter_dictionaries_values_3" context="data">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="filter_dictionary"/>
+            <tableExists tableName="filter_dictionary_value"/>
+        </preConditions>
+        <loadUpdateData
+                tableName="filter_dictionary_value"
+                primaryKey="id"
+                separator=";"
+                file="filter-templates/filter-dictionary-values.csv"/>
+    </changeSet>
+
+    <changeSet author="roman.batygin@mail.ru" id="insert_filter_template_2" context="data">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="filter_template"/>
+        </preConditions>
+        <loadUpdateData
+                tableName="filter_template"
+                primaryKey="id"
+                separator=";"
+                file="filter-templates/filter-templates.csv"/>
+    </changeSet>
+
+    <changeSet author="roman.batygin@mail.ru" id="insert_filter_template_fields_2" context="data">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="filter_template"/>
+            <tableExists tableName="filter_field"/>
+        </preConditions>
+        <loadUpdateData
+                tableName="filter_field"
+                primaryKey="id"
+                separator=";"
+                file="filter-templates/filter-fields.csv"/>
+    </changeSet>
+
+</databaseChangeLog>

@@ -2,10 +2,10 @@ package com.ecaservice.oauth.service;
 
 import com.ecaservice.oauth.model.DigitRule;
 import com.ecaservice.oauth.model.LowerCaseCharacterRule;
-import com.ecaservice.oauth.model.SpecialCharacterRule;
 import com.ecaservice.oauth.model.MinLengthRule;
 import com.ecaservice.oauth.model.PasswordRuleVisitor;
 import com.ecaservice.oauth.model.RepeatCharacterRule;
+import com.ecaservice.oauth.model.SpecialCharacterRule;
 import com.ecaservice.oauth.model.UpperCaseCharacterRule;
 import org.passay.CharacterRule;
 import org.passay.EnglishCharacterData;

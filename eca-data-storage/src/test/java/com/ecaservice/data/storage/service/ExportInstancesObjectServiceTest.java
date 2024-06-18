@@ -9,10 +9,10 @@ import com.ecaservice.data.storage.repository.InstancesRepository;
 import com.ecaservice.data.storage.service.data.UploadInstancesObjectService;
 import eca.data.file.model.InstancesModel;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 
-import javax.inject.Inject;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -40,12 +40,12 @@ class ExportInstancesObjectServiceTest extends AbstractJpaTest {
     @MockBean
     private StorageService storageService;
 
-    @Inject
+    @Autowired
     private InstancesRepository instancesRepository;
-    @Inject
+    @Autowired
     private ExportInstancesObjectRepository exportInstancesObjectRepository;
 
-    @Inject
+    @Autowired
     private ExportInstancesObjectService exportInstancesObjectService;
 
     private InstancesEntity instancesEntity;

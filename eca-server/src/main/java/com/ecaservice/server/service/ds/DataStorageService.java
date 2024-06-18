@@ -10,6 +10,7 @@ import feign.FeignException;
 import feign.RetryableException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import io.micrometer.tracing.annotation.NewSpan;
 import org.springframework.stereotype.Service;
 
 /**
@@ -31,6 +32,7 @@ public class DataStorageService {
      * @param uuid - instances uuid
      * @return instances object
      */
+    @NewSpan
     public ExportInstancesResponseDto exportValidInstances(String uuid) {
         log.info("Starting to export valid instances [{}] from data editor to central data storage", uuid);
         try {

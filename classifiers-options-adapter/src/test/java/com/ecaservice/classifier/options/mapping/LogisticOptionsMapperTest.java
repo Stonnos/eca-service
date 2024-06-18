@@ -4,10 +4,9 @@ import com.ecaservice.classifier.options.model.LogisticOptions;
 import eca.regression.Logistic;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-
-import javax.inject.Inject;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -22,7 +21,7 @@ class LogisticOptionsMapperTest {
 
     private static final int MAX_ITS = 500;
 
-    @Inject
+    @Autowired
     private LogisticOptionsMapper logisticOptionsMapper;
 
     @Test

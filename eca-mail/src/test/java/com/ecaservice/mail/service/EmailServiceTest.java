@@ -16,11 +16,11 @@ import com.ecaservice.mail.service.template.TemplateProcessorService;
 import com.ecaservice.notification.dto.EmailRequest;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.context.annotation.Import;
 
-import javax.inject.Inject;
 import java.util.Optional;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
@@ -51,10 +51,10 @@ class EmailServiceTest extends AbstractJpaTest {
     private TemplateRepository templateRepository;
     @MockBean
     private LockMeterService lockMeterService;
-    @Inject
+    @Autowired
     private EmailRepository emailRepository;
 
-    @Inject
+    @Autowired
     private EmailService emailService;
 
     private EmailRequest emailRequest;

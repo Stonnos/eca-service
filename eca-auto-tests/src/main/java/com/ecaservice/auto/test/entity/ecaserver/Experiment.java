@@ -3,8 +3,8 @@ package com.ecaservice.auto.test.entity.ecaserver;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
 
 /**
  * Experiment persistence entity.

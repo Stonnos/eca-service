@@ -29,9 +29,9 @@ import eca.dataminer.AbstractExperiment;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Import;
 
-import javax.inject.Inject;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
@@ -55,15 +55,15 @@ class ExperimentResultsServiceTest extends AbstractJpaTest {
     private ClassifierOptionsInfoProcessor classifierOptionsInfoProcessor;
     @Mock
     private ClassifierOptionsAdapter classifierOptionsAdapter;
-    @Inject
+    @Autowired
     private ExperimentResultsRequestRepository experimentResultsRequestRepository;
-    @Inject
+    @Autowired
     private ExperimentResultsMapper experimentResultsMapper;
-    @Inject
+    @Autowired
     private ExperimentRepository experimentRepository;
-    @Inject
+    @Autowired
     private InstancesInfoRepository instancesInfoRepository;
-    @Inject
+    @Autowired
     private ExperimentResultsEntityRepository experimentResultsEntityRepository;
 
     private ExperimentResultsService experimentResultsService;

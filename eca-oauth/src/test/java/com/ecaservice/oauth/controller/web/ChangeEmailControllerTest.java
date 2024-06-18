@@ -6,6 +6,7 @@ import com.ecaservice.oauth.service.ChangeEmailService;
 import com.ecaservice.oauth2.test.controller.AbstractControllerTest;
 import com.ecaservice.web.dto.model.ChangeEmailRequestStatusDto;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.ApplicationEventPublisher;
@@ -13,12 +14,11 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
-import javax.inject.Inject;
 import java.util.UUID;
 
 import static com.ecaservice.oauth.TestHelperUtils.createChangeEmailRequestEntity;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -54,28 +54,28 @@ class ChangeEmailControllerTest extends AbstractControllerTest {
     @MockBean
     private ApplicationEventPublisher applicationEventPublisher;
 
-    @Inject
+    @Autowired
     private MockMvc mockMvc;
 
     @Test
     void testCreateChangeEmailRequestWithEmptyEmail() throws Exception {
         mockMvc.perform(post(REQUEST_URL)
-                .header(HttpHeaders.AUTHORIZATION, getBearerToken()))
+                        .header(HttpHeaders.AUTHORIZATION, getBearerToken()))
                 .andExpect(status().isBadRequest());
     }
 
     @Test
     void testCreateChangeEmailRequestWithInvalidNewEmail() throws Exception {
         mockMvc.perform(post(REQUEST_URL)
-                .param(NEW_EMAIL_PARAM, INVALID_EMAIL)
-                .header(HttpHeaders.AUTHORIZATION, getBearerToken()))
+                        .param(NEW_EMAIL_PARAM, INVALID_EMAIL)
+                        .header(HttpHeaders.AUTHORIZATION, getBearerToken()))
                 .andExpect(status().isBadRequest());
     }
 
     @Test
     void testCreateChangeEmailUnauthorized() throws Exception {
         mockMvc.perform(post(REQUEST_URL)
-                .param(NEW_EMAIL_PARAM, EMAIL))
+                        .param(NEW_EMAIL_PARAM, EMAIL))
                 .andExpect(status().isUnauthorized());
     }
 
@@ -87,15 +87,15 @@ class ChangeEmailControllerTest extends AbstractControllerTest {
                 .newEmail(EMAIL)
                 .active(true)
                 .build();
-        when(changeEmailService.createChangeEmailRequest(anyLong(), any(String.class)))
+        when(changeEmailService.createChangeEmailRequest(anyString(), any(String.class)))
                 .thenReturn(TokenModel.builder()
                         .token(token)
                         .email(EMAIL)
                         .build()
                 );
         mockMvc.perform(post(REQUEST_URL)
-                .param(NEW_EMAIL_PARAM, EMAIL)
-                .header(HttpHeaders.AUTHORIZATION, getBearerToken()))
+                        .param(NEW_EMAIL_PARAM, EMAIL)
+                        .header(HttpHeaders.AUTHORIZATION, getBearerToken()))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(content().json(objectMapper.writeValueAsString(changeEmailRequestStatusDto)));
@@ -104,8 +104,8 @@ class ChangeEmailControllerTest extends AbstractControllerTest {
     @Test
     void testConfirmChangeEmailUnauthorized() throws Exception {
         mockMvc.perform(post(CONFIRM_URL)
-                .param(TOKEN_PARAM, TOKEN_VALUE)
-                .param(CONFIRMATION_CODE_PARAM, CONFIRMATION_CODE))
+                        .param(TOKEN_PARAM, TOKEN_VALUE)
+                        .param(CONFIRMATION_CODE_PARAM, CONFIRMATION_CODE))
                 .andExpect(status().isUnauthorized());
     }
 
@@ -115,9 +115,9 @@ class ChangeEmailControllerTest extends AbstractControllerTest {
         when(changeEmailService.confirmChangeEmail(TOKEN_VALUE, CONFIRMATION_CODE)).thenReturn(
                 changeEmailRequestEntity);
         mockMvc.perform(post(CONFIRM_URL)
-                .param(TOKEN_PARAM, TOKEN_VALUE)
-                .param(CONFIRMATION_CODE_PARAM, CONFIRMATION_CODE)
-                .header(HttpHeaders.AUTHORIZATION, getBearerToken()))
+                        .param(TOKEN_PARAM, TOKEN_VALUE)
+                        .param(CONFIRMATION_CODE_PARAM, CONFIRMATION_CODE)
+                        .header(HttpHeaders.AUTHORIZATION, getBearerToken()))
                 .andExpect(status().isOk());
         verify(changeEmailService, atLeastOnce()).confirmChangeEmail(TOKEN_VALUE, CONFIRMATION_CODE);
     }
@@ -125,8 +125,8 @@ class ChangeEmailControllerTest extends AbstractControllerTest {
     @Test
     void testConfirmChangeEmailRequestWithNullToken() throws Exception {
         mockMvc.perform(post(CONFIRM_URL)
-                .param(CONFIRMATION_CODE_PARAM, CONFIRMATION_CODE)
-                .header(HttpHeaders.AUTHORIZATION, getBearerToken()))
+                        .param(CONFIRMATION_CODE_PARAM, CONFIRMATION_CODE)
+                        .header(HttpHeaders.AUTHORIZATION, getBearerToken()))
                 .andExpect(status().isBadRequest());
     }
 
@@ -149,9 +149,9 @@ class ChangeEmailControllerTest extends AbstractControllerTest {
         var changeEmailRequestStatusDto = ChangeEmailRequestStatusDto.builder()
                 .active(false)
                 .build();
-        when(changeEmailService.getChangeEmailRequestStatus(anyLong())).thenReturn(changeEmailRequestStatusDto);
+        when(changeEmailService.getChangeEmailRequestStatus(anyString())).thenReturn(changeEmailRequestStatusDto);
         mockMvc.perform(get(REQUEST_STATUS_URL)
-                .header(HttpHeaders.AUTHORIZATION, getBearerToken()))
+                        .header(HttpHeaders.AUTHORIZATION, getBearerToken()))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(content().json(objectMapper.writeValueAsString(changeEmailRequestStatusDto)));

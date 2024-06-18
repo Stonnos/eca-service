@@ -6,10 +6,9 @@ import com.ecaservice.web.dto.model.ClassificationCostsDto;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-
-import javax.inject.Inject;
 
 /**
  * Unit tests that checks {@link ClassificationCostsMapper} functionality.
@@ -20,7 +19,7 @@ import javax.inject.Inject;
 @Import(ClassificationCostsMapperImpl.class)
 class ClassificationCostsMapperTest {
 
-    @Inject
+    @Autowired
     private ClassificationCostsMapper classificationCostsMapper;
 
     @Test

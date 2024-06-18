@@ -4,8 +4,8 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
-import javax.validation.constraints.DecimalMax;
-import javax.validation.constraints.DecimalMin;
+import jakarta.validation.constraints.DecimalMax;
+import jakarta.validation.constraints.DecimalMin;
 
 import static com.ecaservice.classifier.options.model.Constraints.DECIMAL_VALUE_0_5_STRING;
 import static com.ecaservice.classifier.options.model.Constraints.DECIMAL_VALUE_0_STRING;

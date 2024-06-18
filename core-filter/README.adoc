@@ -19,11 +19,10 @@
 </dependency>
 ----
 
-С помощью аннотации @EnableFilters импортировать бины библиотеки
+Добавить аннотации для конфигурации библиотеки
 
 [source,java]
 ----
-@EnableFilters
 // Подключить библиотеку spring кэша
 @EnableCaching
 // Если в вашем модуле есть JPA сущности, то указать путь для сканирования
@@ -35,7 +34,7 @@ public class AppConfiguration {
 }
 ----
 
-В конфигурационный файл liquibase, добавить путь к файлу filter-template-changelog.xml со скриптами для создания служебных таблиц фильтрации.
+В конфигурационный файл liquibase, добавить путь к файлам со скриптами для создания служебных таблиц фильтрации.
 
 [source,xml]
 ----
@@ -46,6 +45,9 @@ public class AppConfiguration {
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
     <!-- your change sets -->
     <include file="../filter-template-changelog.xml" relativeToChangelogFile="true"/>
+    <!-- your change sets -->
+    <!-- rename filter dictionary columns migration changeset -->
+    <include file="../rename-filter-dictionary-columns-changelog.xml" relativeToChangelogFile="true"/>
 </databaseChangeLog>
 ----
 
@@ -95,7 +97,7 @@ spring:
 |===
 |Название колонки|Тип|Unique|Not NULL|Индекс|Описание
 |id                         |bigint           |+|+|+                                   |Идентификатор записи (первичный ключ)
-|name                       |varchar(255)     |-|+|filter_dictionary_name_unique_idx   |Название словаря
+|_name                      |varchar(255)     |-|+|filter_dictionary_name_unique_idx   |Название словаря
 |===
 
 Таблица 2.5 - 'filter_dictionary_value' - содержит данные значений словарей
@@ -103,8 +105,8 @@ spring:
 |===
 |Название колонки|Тип|Unique|Not NULL|Индекс|Описание
 |id                         |bigint           |+|+|+                                 |Идентификатор записи (первичный ключ)
-|label                      |varchar(255)     |-|+|-                                 |Описание значения
-|value                      |varchar(255)     |-|+|-                                 |Значение
+|_label                     |varchar(255)     |-|+|-                                 |Описание значения
+|_value                     |varchar(255)     |-|+|-                                 |Значение
 |filter_dictionary_id       |bigint           |-|+|fk_filter_dictionary_id           |Внешний ключ, ID словаря
 |===
 

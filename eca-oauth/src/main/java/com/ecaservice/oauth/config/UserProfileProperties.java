@@ -31,6 +31,11 @@ public class UserProfileProperties {
     private List<UserNotificationEventProperties> notificationEventOptions;
 
     /**
+     * Data event retry interval seconds
+     */
+    private Integer dataEventRetryIntervalSeconds;
+
+    /**
      * Rabbit properties
      */
     private RabbitProperties rabbit = new RabbitProperties();

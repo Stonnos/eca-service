@@ -3,7 +3,7 @@ package com.ecaservice.ers.dto;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
-import javax.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotNull;
 
 import static com.ecaservice.ers.dto.Constraints.MAX_LENGTH_255;
 

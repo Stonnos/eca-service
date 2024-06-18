@@ -1,0 +1,53 @@
+= Библиотека oauth2-core (resource server)
+:toc:
+:toc-title: Оглавление
+
+== Введение
+
+В данном документе приведена инструкция для подключения библиотеки oauth2-core (resource server).
+
+== 1. Подключение библиотеки
+
+Для начала, необходимо добавить зависимость в pom.xml
+
+[source,xml]
+----
+<dependency>
+    <groupId>eca.service</groupId>
+    <artifactId>oauth2-core</artifactId>
+    <version>${project.version}</version>
+</dependency>
+----
+
+Добавить аннотации для конфигурации библиотеки
+
+[source,java]
+----
+// Подключить использования сервера ресурсов
+@Oauth2ResourceServer
+@Configuration
+public class AppConfiguration {
+}
+----
+
+В файле application.yml добавить настройки библиотеки
+
+[source,yml]
+----
+resource:
+  server:
+    security:
+      ## Вкл./выкл. передачи bearer token в параметрах запроса
+      allowUBearerTokenUriQueryParameter: false
+      ## Список ручек для которых не требуется авторизация
+      whitelistUrls:
+        - /api/internal/**
+
+auth-server:
+  ## URL сервиса авторизации для проверки валидности access token
+  baseUrl: http://localhost:8080/eca-oauth
+  ## Идентификатор клиента
+  clientId: eca_service_tech
+  ## Пароль клиента
+  clientSecret: 02#eca_service_tech6
+----

@@ -18,10 +18,10 @@ import com.ecaservice.user.profile.options.dto.UserNotificationEventType;
 import com.ecaservice.user.profile.options.dto.UserProfileOptionsDto;
 import com.ecaservice.web.push.dto.AbstractPushRequest;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 
-import javax.inject.Inject;
 import java.util.Collections;
 import java.util.List;
 
@@ -52,12 +52,12 @@ class WebPushListenerTest extends AbstractJpaTest {
     @MockBean
     private UserProfileOptionsProvider userProfileOptionsProvider;
 
-    @Inject
+    @Autowired
     private ClassifiersConfigurationRepository classifiersConfigurationRepository;
-    @Inject
+    @Autowired
     private ClassifiersConfigurationHistoryRepository classifiersConfigurationHistoryRepository;
 
-    @Inject
+    @Autowired
     private SetActiveClassifiersConfigurationPushEventHandler setActiveClassifiersConfigurationPushEventHandler;
 
     private ClassifiersConfiguration classifiersConfiguration;
@@ -82,7 +82,7 @@ class WebPushListenerTest extends AbstractJpaTest {
     void testHandlePushEventWithEmptyClassifiersConfigurationHistory() {
         var event = new SetActiveClassifiersConfigurationPushEvent(this, CURRENT_USER, classifiersConfiguration);
         webPushEventListener.handlePushEvent(event);
-        verify(webPushSender, never()).send(any(AbstractPushRequest.class));
+        verify(webPushSender, never()).sendPush(any(AbstractPushRequest.class));
     }
 
     @Test
@@ -91,7 +91,7 @@ class WebPushListenerTest extends AbstractJpaTest {
         mockGetUserProfileOptions(true);
         var event = new SetActiveClassifiersConfigurationPushEvent(this, CURRENT_USER, classifiersConfiguration);
         webPushEventListener.handlePushEvent(event);
-        verify(webPushSender, atLeastOnce()).send(any(AbstractPushRequest.class));
+        verify(webPushSender, atLeastOnce()).sendPush(any(AbstractPushRequest.class));
     }
 
     @Test
@@ -100,7 +100,7 @@ class WebPushListenerTest extends AbstractJpaTest {
         mockGetUserProfileOptions(false);
         var event = new SetActiveClassifiersConfigurationPushEvent(this, CURRENT_USER, classifiersConfiguration);
         webPushEventListener.handlePushEvent(event);
-        verify(webPushSender, never()).send(any(AbstractPushRequest.class));
+        verify(webPushSender, never()).sendPush(any(AbstractPushRequest.class));
     }
 
     private void saveConfiguration() {

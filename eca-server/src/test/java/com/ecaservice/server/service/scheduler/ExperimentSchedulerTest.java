@@ -16,11 +16,11 @@ import com.ecaservice.server.service.experiment.ExperimentProcessManager;
 import com.ecaservice.server.service.experiment.ExperimentProgressService;
 import com.ecaservice.server.service.experiment.ExperimentService;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Import;
 
-import javax.inject.Inject;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -35,13 +35,13 @@ import static org.mockito.Mockito.verify;
 @Import({ExperimentConfig.class, AppProperties.class})
 class ExperimentSchedulerTest extends AbstractJpaTest {
 
-    @Inject
+    @Autowired
     private ExperimentConfig experimentConfig;
-    @Inject
+    @Autowired
     private ExperimentRepository experimentRepository;
-    @Inject
+    @Autowired
     private ExperimentStepRepository experimentStepRepository;
-    @Inject
+    @Autowired
     private InstancesInfoRepository instancesInfoRepository;
 
     @MockBean

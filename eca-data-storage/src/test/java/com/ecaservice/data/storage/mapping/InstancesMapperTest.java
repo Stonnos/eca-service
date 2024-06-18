@@ -1,15 +1,13 @@
 package com.ecaservice.data.storage.mapping;
 
 import com.ecaservice.data.storage.entity.InstancesEntity;
-import com.ecaservice.data.storage.model.report.ReportProperties;
-import com.ecaservice.data.storage.model.report.ReportType;
 import com.ecaservice.web.dto.model.InstancesDto;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import javax.inject.Inject;
 import java.util.Collections;
 import java.util.List;
 
@@ -28,7 +26,7 @@ class InstancesMapperTest {
 
     private static final long ID = 1L;
 
-    @Inject
+    @Autowired
     private InstancesMapper instancesMapper;
 
     @Test

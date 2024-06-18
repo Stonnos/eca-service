@@ -3,6 +3,8 @@ package com.ecaservice.mail.service;
 import com.ecaservice.common.web.crypto.EncryptorBase64AdapterService;
 import com.ecaservice.mail.model.Email;
 import com.ecaservice.mail.model.EmailStatus;
+import jakarta.mail.MessagingException;
+import jakarta.mail.internet.MimeMessage;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -10,8 +12,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.mail.javamail.JavaMailSender;
 
-import javax.mail.MessagingException;
-import javax.mail.internet.MimeMessage;
 import java.time.LocalDateTime;
 
 import static com.ecaservice.mail.TestHelperUtils.createEmail;

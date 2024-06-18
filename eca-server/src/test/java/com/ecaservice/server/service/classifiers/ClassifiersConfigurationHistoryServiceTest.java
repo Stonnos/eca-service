@@ -14,10 +14,10 @@ import com.ecaservice.server.service.UserService;
 import com.ecaservice.web.dto.model.PageRequestDto;
 import com.ecaservice.web.dto.model.SortFieldRequestDto;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 
-import javax.inject.Inject;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
@@ -45,11 +45,11 @@ class ClassifiersConfigurationHistoryServiceTest extends AbstractJpaTest {
     private static final int PAGE_SIZE = 10;
     private static final String SEARCH_QUERY = "Создана";
 
-    @Inject
+    @Autowired
     private ClassifiersConfigurationHistoryRepository classifiersConfigurationHistoryRepository;
-    @Inject
+    @Autowired
     private ClassifiersConfigurationRepository classifiersConfigurationRepository;
-    @Inject
+    @Autowired
     private ClassifiersConfigurationHistoryService classifiersConfigurationHistoryService;
     @MockBean
     private FilterTemplateService filterTemplateService;

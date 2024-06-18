@@ -8,6 +8,7 @@ import {
 } from "../../../../../../target/generated-sources/typescript/eca-web-dto";
 import { HttpErrorResponse } from "@angular/common/http";
 import { UsersService } from "../users/services/users.service";
+import { AuthService } from "../auth/services/auth.service";
 import { WebAppService } from "../common/services/web-app.service";
 import { EventService } from "../common/event/event.service";
 import { EventType } from "../common/event/event.type";
@@ -45,6 +46,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
                      private webAppService: WebAppService,
                      private messageService: MessageService,
                      private eventService: EventService,
+                     private authService: AuthService,
                      private userNotificationsService: UserNotificationsService,
                      private pushService: PushService) {
   }
@@ -93,7 +95,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   }
 
   public logout() {
-    this.usersService.logoutRequest()
+    this.authService.logoutRequest()
       .subscribe({
         next: () => {
           this.logoutService.logout();

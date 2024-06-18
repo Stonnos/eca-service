@@ -12,12 +12,12 @@ import feign.FeignException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.inject.Inject;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.UUID;
@@ -41,7 +41,7 @@ class UploadInstancesObjectServiceTest {
     @MockBean
     private DataLoaderApiClient dataLoaderApiClient;
 
-    @Inject
+    @Autowired
     private UploadInstancesObjectService uploadInstancesObjectService;
 
     private final ObjectMapper objectMapper = new ObjectMapper();

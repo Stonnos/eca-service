@@ -1,7 +1,6 @@
 package com.ecaservice.external.api.test.bpm.service.task;
 
 import com.ecaservice.external.api.test.bpm.model.TaskType;
-import com.ecaservice.external.api.test.model.EvaluationTestDataModel;
 import com.ecaservice.external.api.test.model.ExperimentTestDataModel;
 import com.ecaservice.external.api.test.service.api.ExternalApiClient;
 import lombok.extern.slf4j.Slf4j;

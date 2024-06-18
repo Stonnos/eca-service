@@ -5,7 +5,7 @@
     <parent>
         <artifactId>eca-service</artifactId>
         <groupId>eca.service</groupId>
-        <version>6.5.1</version>
+        <version>7.0.0</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -68,8 +68,14 @@
         </dependency>
 
         <dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-starter-sleuth</artifactId>
+            <groupId>org.hibernate.validator</groupId>
+            <artifactId>hibernate-validator</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>eca.service</groupId>
+            <artifactId>core-tracing</artifactId>
+            <version>${project.version}</version>
         </dependency>
 
         <dependency>
@@ -85,25 +91,7 @@
 
         <dependency>
             <groupId>eca.service</groupId>
-            <artifactId>common-web</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>eca.service</groupId>
             <artifactId>eca-web-transport</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>eca.service</groupId>
-            <artifactId>oauth2-core</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>eca.service</groupId>
-            <artifactId>swagger-core</artifactId>
             <version>${project.version}</version>
         </dependency>
 
@@ -119,8 +107,6 @@
                     <include>application-docker.yml</include>
                     <include>application-docker-prod.yml</include>
                     <include>logback-spring.xml</include>
-                    <include>menu-bar.json</include>
-                    <include>openApiExamples/**</include>
                 </includes>
             </resource>
             <resource>

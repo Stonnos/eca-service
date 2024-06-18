@@ -18,6 +18,7 @@ import com.ecaservice.web.dto.model.PageRequestDto;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.ApplicationEventPublisher;
@@ -28,7 +29,6 @@ import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.util.MimeTypeUtils;
 
-import javax.inject.Inject;
 import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.List;
@@ -36,7 +36,6 @@ import java.util.Map;
 
 import static com.ecaservice.server.PageRequestUtils.PAGE_NUMBER;
 import static com.ecaservice.server.PageRequestUtils.TOTAL_ELEMENTS;
-import static com.ecaservice.server.TestHelperUtils.bearerHeader;
 import static com.ecaservice.server.TestHelperUtils.createClassifierOptionsDto;
 import static com.ecaservice.server.TestHelperUtils.createClassifiersConfiguration;
 import static com.ecaservice.server.TestHelperUtils.createDecisionTreeOptions;
@@ -82,7 +81,7 @@ class ClassifierOptionsControllerTest extends PageRequestControllerTest {
     @MockBean
     private ApplicationEventPublisher applicationEventPublisher;
 
-    @Inject
+    @Autowired
     private ClassifierOptionsDatabaseModelMapper classifierOptionsDatabaseModelMapper;
 
     @Test
@@ -93,7 +92,7 @@ class ClassifierOptionsControllerTest extends PageRequestControllerTest {
     @Test
     void testGetClassifiersOptionsPageWithNullConfigurationId() throws Exception {
         mockMvc.perform(post(PAGE_URL)
-                .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken()))
+                .header(HttpHeaders.AUTHORIZATION, getBearerToken())
                 .content(objectMapper.writeValueAsString(createPageRequestDto()))
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest());
@@ -142,7 +141,7 @@ class ClassifierOptionsControllerTest extends PageRequestControllerTest {
         when(page.getContent()).thenReturn(classifierOptionsDatabaseModels);
         when(classifierOptionsService.getNextPage(anyLong(), any(PageRequestDto.class))).thenReturn(pageDto);
         mockMvc.perform(post(PAGE_URL)
-                .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken()))
+                .header(HttpHeaders.AUTHORIZATION, getBearerToken())
                 .param(CONFIGURATION_ID_PARAM, String.valueOf(CONFIGURATION_ID))
                 .content(objectMapper.writeValueAsString(createPageRequestDto()))
                 .contentType(MediaType.APPLICATION_JSON))
@@ -161,7 +160,7 @@ class ClassifierOptionsControllerTest extends PageRequestControllerTest {
     @Test
     void testDeleteOptionsWithNotSpecifiedConfigurationId() throws Exception {
         mockMvc.perform(delete(DELETE_URL)
-                .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken())))
+                .header(HttpHeaders.AUTHORIZATION, getBearerToken()))
                 .andExpect(status().isBadRequest());
     }
 
@@ -169,7 +168,7 @@ class ClassifierOptionsControllerTest extends PageRequestControllerTest {
     void testDeleteNotExistingOptions() throws Exception {
         doThrow(EntityNotFoundException.class).when(classifierOptionsService).deleteOptions(CONFIGURATION_ID);
         mockMvc.perform(delete(DELETE_URL)
-                .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken()))
+                .header(HttpHeaders.AUTHORIZATION, getBearerToken())
                 .param(ID_PARAM, String.valueOf(CONFIGURATION_ID)))
                 .andExpect(status().isBadRequest());
     }
@@ -178,7 +177,7 @@ class ClassifierOptionsControllerTest extends PageRequestControllerTest {
     void testDeleteOptionsForBuildInConfiguration() throws Exception {
         doThrow(new IllegalStateException()).when(classifierOptionsService).deleteOptions(CONFIGURATION_ID);
         mockMvc.perform(delete(DELETE_URL)
-                .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken()))
+                .header(HttpHeaders.AUTHORIZATION, getBearerToken())
                 .param(ID_PARAM, String.valueOf(CONFIGURATION_ID)))
                 .andExpect(status().isBadRequest());
     }
@@ -190,7 +189,7 @@ class ClassifierOptionsControllerTest extends PageRequestControllerTest {
         options.setId(CONFIGURATION_ID);
         when(classifierOptionsService.deleteOptions(CONFIGURATION_ID)).thenReturn(options);
         mockMvc.perform(delete(DELETE_URL)
-                .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken()))
+                .header(HttpHeaders.AUTHORIZATION, getBearerToken())
                 .param(ID_PARAM, String.valueOf(CONFIGURATION_ID)))
                 .andExpect(status().isOk());
     }
@@ -207,7 +206,7 @@ class ClassifierOptionsControllerTest extends PageRequestControllerTest {
     void testUploadOptionsWithNotSpecifiedConfigurationId() throws Exception {
         mockMvc.perform(multipart(UPLOAD_URL)
                 .file(createClassifierOptionsFileMock())
-                .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken())))
+                .header(HttpHeaders.AUTHORIZATION, getBearerToken()))
                 .andExpect(status().isBadRequest());
     }
 
@@ -215,7 +214,7 @@ class ClassifierOptionsControllerTest extends PageRequestControllerTest {
     void testUploadOptionsWithNotSpecifiedFile() throws Exception {
         mockMvc.perform(multipart(UPLOAD_URL)
                 .param(CONFIGURATION_ID_PARAM, String.valueOf(CONFIGURATION_ID))
-                .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken())))
+                .header(HttpHeaders.AUTHORIZATION, getBearerToken()))
                 .andExpect(status().isBadRequest());
     }
 
@@ -224,7 +223,7 @@ class ClassifierOptionsControllerTest extends PageRequestControllerTest {
         mockMvc.perform(multipart(UPLOAD_URL)
                 .file(createClassifierOptionsFileMock())
                 .param(CONFIGURATION_ID_PARAM, String.valueOf(CONFIGURATION_ID))
-                .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken())))
+                .header(HttpHeaders.AUTHORIZATION, getBearerToken()))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON));
     }
@@ -236,7 +235,7 @@ class ClassifierOptionsControllerTest extends PageRequestControllerTest {
         mockMvc.perform(multipart(UPLOAD_URL)
                 .file(multipartFile)
                 .param(CONFIGURATION_ID_PARAM, String.valueOf(CONFIGURATION_ID))
-                .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken())))
+                .header(HttpHeaders.AUTHORIZATION, getBearerToken()))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON));
     }
@@ -256,7 +255,7 @@ class ClassifierOptionsControllerTest extends PageRequestControllerTest {
         var decisionTreesOptions = createDecisionTreeOptions();
         mockMvc.perform(post(ADD_URL)
                 .content(objectMapper.writeValueAsString(decisionTreesOptions))
-                .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken()))
+                .header(HttpHeaders.AUTHORIZATION, getBearerToken())
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest());
     }
@@ -271,7 +270,7 @@ class ClassifierOptionsControllerTest extends PageRequestControllerTest {
         mockMvc.perform(post(ADD_URL)
                 .content(objectMapper.writeValueAsString(decisionTreesOptions))
                 .param(CONFIGURATION_ID_PARAM, String.valueOf(CONFIGURATION_ID))
-                .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken()))
+                .header(HttpHeaders.AUTHORIZATION, getBearerToken())
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
     }

@@ -4,6 +4,8 @@ import com.ecaservice.auto.test.exception.EmailParseException;
 import com.ecaservice.auto.test.model.EmailMessage;
 import com.ecaservice.auto.test.model.EmailType;
 import com.ecaservice.auto.test.model.EmailTypeVisitor;
+import jakarta.mail.MessagingException;
+import jakarta.mail.internet.MimeMessage;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -11,8 +13,6 @@ import org.springframework.integration.annotation.Transformer;
 import org.springframework.messaging.Message;
 import org.springframework.stereotype.Service;
 
-import javax.mail.MessagingException;
-import javax.mail.internet.MimeMessage;
 import java.io.IOException;
 import java.util.function.Supplier;
 import java.util.regex.Matcher;

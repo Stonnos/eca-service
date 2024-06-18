@@ -46,7 +46,7 @@ public class InstancesExternalApiController {
      * @param instancesFile - instances file
      * @return upload response dto
      */
-    @PreAuthorize("#oauth2.hasScope('data-loader-api')")
+    @PreAuthorize("hasAuthority('SCOPE_data-loader-api')")
     @Operation(
             description = "Uploads train data file to storage",
             summary = "Uploads train data file to storage",
@@ -94,6 +94,8 @@ public class InstancesExternalApiController {
             @Parameter(description = "Training data file", required = true)
             @RequestParam MultipartFile instancesFile) {
         log.info("Request to upload train data file [{}]", instancesFile.getOriginalFilename());
-        return uploadInstancesService.uploadInstances(instancesFile);
+        var uploadInstancesResponseDto = uploadInstancesService.uploadInstances(instancesFile);
+        log.info("Request to upload train data file [{}] has been processed", instancesFile.getOriginalFilename());
+        return uploadInstancesResponseDto;
     }
 }

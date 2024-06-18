@@ -4,10 +4,9 @@ import com.ecaservice.ers.dto.InstancesReport;
 import com.ecaservice.ers.model.InstancesInfo;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-
-import javax.inject.Inject;
 
 import static com.ecaservice.ers.TestHelperUtils.buildInstancesInfo;
 import static com.ecaservice.ers.TestHelperUtils.buildInstancesReport;
@@ -22,7 +21,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Import(InstancesMapperImpl.class)
 class InstancesMapperTest {
 
-    @Inject
+    @Autowired
     private InstancesMapper instancesMapper;
 
     @Test

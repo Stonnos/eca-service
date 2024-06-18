@@ -17,9 +17,11 @@ spring:
   jpa:
     hibernate:
       ddl-auto: validate
-    database-platform: org.hibernate.dialect.PostgreSQL9Dialect
     properties:
       hibernate:
+        id:
+          ## Use one hibernate_sequence for all entities
+          db_structure_naming_strategy: legacy
         jdbc:
           lob:
             non_contextual_creation: true
@@ -30,8 +32,6 @@ spring:
     change-log: classpath:db/liquibase-changelog.xml
   cache:
     type: caffeine
-  redis:
-    client-type: jedis
   rabbitmq:
     listener:
       simple:
@@ -44,10 +44,23 @@ spring:
     redis:
       repositories:
         enabled: false
-  sleuth:
-    baggage:
-      correlation-fields: tx.id
-      remote-fields: tx.id
+  cloud:
+    openfeign:
+      oauth2:
+        clientRegistrationId: api-client
+  security:
+    oauth2:
+      client:
+        registration:
+          api-client:
+            client-id: eca_service_tech
+            client-secret: 02#eca_service_tech6
+            scope: internal-api
+            authorization-grant-type: client_credentials
+            provider: api-client
+        provider:
+          api-client:
+            token-uri: http://localhost:8085/oauth2/token
 
 eureka:
   client:
@@ -168,13 +181,6 @@ auth-server:
   clientId: eca_service_tech
   clientSecret: 02#eca_service_tech6
 
-service:
-  feign:
-    oauth:
-      tokenUrl: http://localhost:8085/eca-oauth
-      clientId: eca_service_tech
-      clientSecret: 02#eca_service_tech6
-
 processes:
   processExperimentId: ExperimentProcess
   processEvaluationId: ProcessEvaluationWebRequest
@@ -191,6 +197,19 @@ lock:
       expireAfter: 7500000
 
 management:
+  observations:
+    annotations:
+      ## Enables span annotations processing
+      enabled: true
+  tracing:
+    sampling:
+      probability: 1.0
+    baggage:
+      correlation:
+        fields:
+          - tx.id
+      remote-fields:
+        - tx.id
   metrics:
     tags:
       application: ${spring.application.name}

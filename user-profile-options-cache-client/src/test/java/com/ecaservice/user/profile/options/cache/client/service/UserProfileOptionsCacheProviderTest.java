@@ -5,10 +5,9 @@ import com.ecaservice.user.profile.options.cache.client.repository.UserProfileOp
 import com.ecaservice.user.profile.options.client.service.UserProfileOptionsClient;
 import com.ecaservice.user.profile.options.dto.UserProfileOptionsDto;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
-
-import javax.inject.Inject;
 
 import static com.ecaservice.user.profile.options.cache.client.TestHelperUtils.createEserProfileOptionsData;
 import static com.ecaservice.user.profile.options.cache.client.TestHelperUtils.loadUserProfileOptionsDto;
@@ -28,10 +27,10 @@ class UserProfileOptionsCacheProviderTest extends AbstractJpaTest {
     @MockBean
     private UserProfileOptionsClient userProfileOptionsClient;
 
-    @Inject
+    @Autowired
     private UserProfileOptionsDataRepository userProfileOptionsDataRepository;
 
-    @Inject
+    @Autowired
     private UserProfileOptionsCacheProvider userProfileOptionsCacheProvider;
 
     @Override

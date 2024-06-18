@@ -49,6 +49,11 @@ public class EvaluationWebPushEventHandler extends AbstractUserPushNotificationE
     }
 
     @Override
+    protected String getCorrelationId(EvaluationWebPushEvent evaluationWebPushEvent) {
+        return evaluationWebPushEvent.getEvaluationLog().getRequestId();
+    }
+
+    @Override
     protected String getMessageType(EvaluationWebPushEvent evaluationWebPushEvent) {
         return evaluationWebPushEvent.getPushMessageParams().getMessageType();
     }

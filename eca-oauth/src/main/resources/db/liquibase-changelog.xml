@@ -23,6 +23,7 @@
     <include file="db/changelog/v16-add-user-password-date-column.xml"/>
     <include file="db/changelog/v17-add-user-last-name-column.xml"/>
     <include file="db/changelog/v18-add-user-locked-column.xml"/>
+    <include file="../redelivery-changelog.xml" relativeToChangelogFile="true"/>
     <include file="../audit-changelog.xml" relativeToChangelogFile="true"/>
     <include file="db/changelog/v19-insert-audit-codes-and-events.xml"/>
     <include file="db/changelog/v20-create-change-email-request-table.xml"/>
@@ -42,4 +43,9 @@
     <include file="db/changelog/v32-drop-user-push-enabled-column.xml"/>
     <include file="db/changelog/v33-add-confirmation-code-to-change-password-request-table.xml"/>
     <include file="db/changelog/v34-add-created-date-to-temporary-tables.xml"/>
+    <include file="db/changelog/v35-create-user-profile-options-data-event-table.xml"/>
+    <include file="db/changelog/v36-create-oauth2-authorization-schema-table.xml"/>
+    <include file="db/changelog/v37-drop-oauth-tables.xml"/>
+    <include file="db/changelog/v38-add-registered-client-id-to-tfa-code-table.xml"/>
+    <include file="db/changelog/v39-added-user-photo-id-column.xml"/>
 </databaseChangeLog>

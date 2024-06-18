@@ -83,7 +83,9 @@ services:
     environment:
       TZ: ${TIME_ZONE}
       SPRING_PROFILES_ACTIVE: "docker"
-      JAVA_OPTS: "-Xmx512m"
+      JAVA_OPTS: "-Xmx256m"
+      MANAGEMENT_ZIPKIN_TRACING_ENABLED: ${ZIPKIN_ENABLED}
+      MANAGEMENT_ZIPKIN_TRACING_ENDPOINT: ${ZIPKIN_URL}
     networks:
       - default
 
@@ -105,6 +107,8 @@ services:
       AUDIT_THREADPOOLSIZE: ${AUDIT_THREAD_POOL_SIZE}
       REDELIVERY_ENABLED: "true"
       OPENAPI_BASEPATH: "/eca-server"
+      MANAGEMENT_ZIPKIN_TRACING_ENABLED: ${ZIPKIN_ENABLED}
+      MANAGEMENT_ZIPKIN_TRACING_ENDPOINT: ${ZIPKIN_URL}
     networks:
       - default
     depends_on:
@@ -119,12 +123,14 @@ services:
     environment:
       TZ: ${TIME_ZONE}
       SPRING_PROFILES_ACTIVE: "docker"
-      JAVA_OPTS: "-Xmx756m"
+      JAVA_OPTS: "-Xmx512m"
       AUDIT_ENABLED: "true"
       AUDIT_ASYNCEVENTS: ${AUDIT_ASYNC_EVENTS}
       AUDIT_THREADPOOLSIZE: ${AUDIT_THREAD_POOL_SIZE}
       REDELIVERY_ENABLED: "true"
       OPENAPI_BASEPATH: "/eca-oauth"
+      MANAGEMENT_ZIPKIN_TRACING_ENABLED: ${ZIPKIN_ENABLED}
+      MANAGEMENT_ZIPKIN_TRACING_ENDPOINT: ${ZIPKIN_URL}
     networks:
       - default
     depends_on:
@@ -138,8 +144,10 @@ services:
     environment:
       TZ: ${TIME_ZONE}
       SPRING_PROFILES_ACTIVE: "docker"
-      JAVA_OPTS: "-Xmx512m"
+      JAVA_OPTS: "-Xmx384m"
       OPENAPI_BASEPATH: "/eca-mail"
+      MANAGEMENT_ZIPKIN_TRACING_ENABLED: ${ZIPKIN_ENABLED}
+      MANAGEMENT_ZIPKIN_TRACING_ENDPOINT: ${ZIPKIN_URL}
     networks:
       - default
     depends_on:
@@ -159,6 +167,8 @@ services:
       AUDIT_THREADPOOLSIZE: ${AUDIT_THREAD_POOL_SIZE}
       REDELIVERY_ENABLED: "true"
       OPENAPI_BASEPATH: "/eca-ds"
+      MANAGEMENT_ZIPKIN_TRACING_ENABLED: ${ZIPKIN_ENABLED}
+      MANAGEMENT_ZIPKIN_TRACING_ENDPOINT: ${ZIPKIN_URL}
     networks:
       - default
     depends_on:
@@ -172,12 +182,14 @@ services:
     environment:
       TZ: ${TIME_ZONE}
       SPRING_PROFILES_ACTIVE: "docker"
-      JAVA_OPTS: "-Xmx1g"
+      JAVA_OPTS: "-Xmx512m"
       AUDIT_ENABLED: "true"
       AUDIT_ASYNCEVENTS: ${AUDIT_ASYNC_EVENTS}
       AUDIT_THREADPOOLSIZE: ${AUDIT_THREAD_POOL_SIZE}
       REDELIVERY_ENABLED: "true"
       OPENAPI_BASEPATH: "/eca-ers"
+      MANAGEMENT_ZIPKIN_TRACING_ENABLED: ${ZIPKIN_ENABLED}
+      MANAGEMENT_ZIPKIN_TRACING_ENDPOINT: ${ZIPKIN_URL}
     networks:
       - default
     depends_on:
@@ -190,11 +202,12 @@ services:
     environment:
       TZ: ${TIME_ZONE}
       SPRING_PROFILES_ACTIVE: "docker"
-      JAVA_OPTS: "-Xmx512m"
+      JAVA_OPTS: "-Xmx384m"
+      MANAGEMENT_ZIPKIN_TRACING_ENABLED: ${ZIPKIN_ENABLED}
+      MANAGEMENT_ZIPKIN_TRACING_ENDPOINT: ${ZIPKIN_URL}
     networks:
       - default
     depends_on:
-      - eca-server
       - discovery-server
 
   api-gateway:
@@ -203,7 +216,9 @@ services:
     environment:
       TZ: ${TIME_ZONE}
       SPRING_PROFILES_ACTIVE: "docker"
-      JAVA_OPTS: "-Xmx756m"
+      JAVA_OPTS: "-Xmx512m"
+      MANAGEMENT_ZIPKIN_TRACING_ENABLED: ${ZIPKIN_ENABLED}
+      MANAGEMENT_ZIPKIN_TRACING_ENDPOINT: ${ZIPKIN_URL}
     ports:
       - "8080:8080"
     networks:
@@ -218,8 +233,10 @@ services:
     environment:
       TZ: ${TIME_ZONE}
       SPRING_PROFILES_ACTIVE: "docker"
-      JAVA_OPTS: "-Xmx512m"
+      JAVA_OPTS: "-Xmx384m"
       OPENAPI_BASEPATH: "/eca-web-push"
+      MANAGEMENT_ZIPKIN_TRACING_ENABLED: ${ZIPKIN_ENABLED}
+      MANAGEMENT_ZIPKIN_TRACING_ENDPOINT: ${ZIPKIN_URL}
     networks:
       - default
 
@@ -230,8 +247,10 @@ services:
     environment:
       TZ: ${TIME_ZONE}
       SPRING_PROFILES_ACTIVE: "docker"
-      JAVA_OPTS: "-Xmx512m"
+      JAVA_OPTS: "-Xmx384m"
       OPENAPI_BASEPATH: "/eca-audit-log"
+      MANAGEMENT_ZIPKIN_TRACING_ENABLED: ${ZIPKIN_ENABLED}
+      MANAGEMENT_ZIPKIN_TRACING_ENDPOINT: ${ZIPKIN_URL}
     networks:
       - default
     depends_on:
@@ -247,26 +266,12 @@ services:
       SPRING_PROFILES_ACTIVE: "docker"
       JAVA_OPTS: "-Xmx512m"
       OPENAPI_BASEPATH: "/eca-data-loader"
+      MANAGEMENT_ZIPKIN_TRACING_ENABLED: ${ZIPKIN_ENABLED}
+      MANAGEMENT_ZIPKIN_TRACING_ENDPOINT: ${ZIPKIN_URL}
     networks:
       - default
     depends_on:
       - eca-db
-      - discovery-server
-
-  eca-external-api:
-    image: eca-external-api
-    container_name: eca-external-api
-    restart: always
-    environment:
-      TZ: ${TIME_ZONE}
-      SPRING_PROFILES_ACTIVE: "docker"
-      JAVA_OPTS: "-Xmx1g"
-      OPENAPI_BASEPATH: "/external-api"
-    networks:
-      - default
-    depends_on:
-      - eca-db
-      - rabbitmq
       - discovery-server
 
 networks:

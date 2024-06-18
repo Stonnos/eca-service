@@ -12,10 +12,10 @@ import com.ecaservice.server.service.AbstractJpaTest;
 import com.ecaservice.server.service.evaluation.ClassifiersDataCleaner;
 import com.ecaservice.server.service.evaluation.EvaluationProcessManager;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 
-import javax.inject.Inject;
 import java.util.UUID;
 
 import static org.mockito.Mockito.atLeastOnce;
@@ -29,12 +29,12 @@ import static org.mockito.Mockito.verify;
 @Import(ClassifiersProperties.class)
 class EvaluationSchedulerTest extends AbstractJpaTest {
 
-    @Inject
+    @Autowired
     private EvaluationLogRepository evaluationLogRepository;
-    @Inject
+    @Autowired
     private InstancesInfoRepository instancesInfoRepository;
 
-    @Inject
+    @Autowired
     private ClassifiersProperties classifiersProperties;
 
     @MockBean

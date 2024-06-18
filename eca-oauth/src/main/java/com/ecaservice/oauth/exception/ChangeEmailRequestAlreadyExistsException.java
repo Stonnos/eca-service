@@ -12,11 +12,8 @@ public class ChangeEmailRequestAlreadyExistsException extends ValidationErrorExc
 
     /**
      * Constructor with parameters.
-     *
-     * @param userId - user id
      */
-    public ChangeEmailRequestAlreadyExistsException(Long userId) {
-        super(EcaOauthErrorCode.ACTIVE_CHANGE_EMAIL_REQUEST,
-                String.format("Active change email request already exists for user [%d]", userId));
+    public ChangeEmailRequestAlreadyExistsException() {
+        super(EcaOauthErrorCode.ACTIVE_CHANGE_EMAIL_REQUEST, "Active change email request already exists");
     }
 }

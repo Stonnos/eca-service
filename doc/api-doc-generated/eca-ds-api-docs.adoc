@@ -26,9 +26,9 @@ a|
 
 __Grant type:__ password
 
-__Token url:__ http://localhost:8080/eca-oauth/oauth/token
+__Token url:__ http://localhost:8080/eca-oauth/oauth2/token
 
-__Refresh token url:__ http://localhost:8080/eca-oauth/oauth/token
+__Refresh token url:__ http://localhost:8080/eca-oauth/oauth2/token
 
 
 __Scopes__:
@@ -1236,10 +1236,6 @@ a|
   "title" : "Формат данных (.data)",
   "reportType" : "DATA",
   "fileExtension" : "data"
-}, {
-  "title" : "Microsoft Word (.docx)",
-  "reportType" : "DOCX",
-  "fileExtension" : "docx"
 } ]
 ----
 |401
@@ -1468,8 +1464,6 @@ __string__
 * TXT
 
 * DATA
-
-* DOCX
 |===
 
 *Api responses*

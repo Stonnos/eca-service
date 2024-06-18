@@ -10,8 +10,8 @@ import com.ecaservice.data.storage.report.InstancesReportService;
 import com.ecaservice.data.storage.report.ReportsConfigurationService;
 import com.ecaservice.data.storage.repository.InstancesRepository;
 import com.ecaservice.data.storage.service.AttributeService;
-import com.ecaservice.data.storage.service.InstancesStatisticsService;
 import com.ecaservice.data.storage.service.InstancesLoader;
+import com.ecaservice.data.storage.service.InstancesStatisticsService;
 import com.ecaservice.data.storage.service.impl.StorageServiceImpl;
 import com.ecaservice.oauth2.test.controller.AbstractControllerTest;
 import com.ecaservice.web.dto.model.AttributeDto;
@@ -23,6 +23,7 @@ import com.ecaservice.web.dto.model.PageDto;
 import com.ecaservice.web.dto.model.PageRequestDto;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
@@ -33,12 +34,10 @@ import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.util.MimeTypeUtils;
 import weka.core.Instances;
 
-import javax.inject.Inject;
 import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.List;
 
-import static com.ecaservice.data.storage.TestHelperUtils.bearerHeader;
 import static com.ecaservice.data.storage.TestHelperUtils.createAttributeDto;
 import static com.ecaservice.data.storage.TestHelperUtils.createInstancesEntity;
 import static com.ecaservice.data.storage.TestHelperUtils.createPageRequestDto;
@@ -115,7 +114,7 @@ class DataStorageControllerTest extends AbstractControllerTest {
     @MockBean
     private InstancesStatisticsService instancesStatisticsService;
 
-    @Inject
+    @Autowired
     private InstancesMapper instancesMapper;
 
     private final MockMultipartFile trainingData =
@@ -145,7 +144,7 @@ class DataStorageControllerTest extends AbstractControllerTest {
                 .build();
         mockMvc.perform(multipart(SAVE_URL)
                         .file(trainingData)
-                        .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken()))
+                        .header(HttpHeaders.AUTHORIZATION, getBearerToken())
                         .param(RELATION_NAME_PARAM, TABLE_NAME))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
@@ -160,7 +159,7 @@ class DataStorageControllerTest extends AbstractControllerTest {
                 new InstancesExistsException(TABLE_NAME));
         mockMvc.perform(multipart(SAVE_URL)
                         .file(trainingData)
-                        .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken()))
+                        .header(HttpHeaders.AUTHORIZATION, getBearerToken())
                         .param(RELATION_NAME_PARAM, TABLE_NAME))
                 .andExpect(status().isBadRequest());
     }
@@ -175,7 +174,7 @@ class DataStorageControllerTest extends AbstractControllerTest {
     @Test
     void testRenameData() throws Exception {
         mockMvc.perform(put(RENAME_URL)
-                .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken()))
+                .header(HttpHeaders.AUTHORIZATION, getBearerToken())
                 .param(ID_PARAM, String.valueOf(ID))
                 .param(RELATION_NAME_PARAM, TABLE_NAME)).andExpect(status().isOk());
     }
@@ -184,7 +183,7 @@ class DataStorageControllerTest extends AbstractControllerTest {
     void testRenameDataWithExistingTableName() throws Exception {
         doThrow(new InstancesExistsException(TABLE_NAME)).when(storageService).renameData(ID, TABLE_NAME);
         mockMvc.perform(put(RENAME_URL)
-                .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken()))
+                .header(HttpHeaders.AUTHORIZATION, getBearerToken())
                 .param(ID_PARAM, String.valueOf(ID))
                 .param(RELATION_NAME_PARAM, TABLE_NAME)).andExpect(status().isBadRequest());
     }
@@ -199,7 +198,7 @@ class DataStorageControllerTest extends AbstractControllerTest {
     @Test
     void testDeleteData() throws Exception {
         mockMvc.perform(delete(DELETE_URL)
-                        .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken()))
+                        .header(HttpHeaders.AUTHORIZATION, getBearerToken())
                         .param(ID_PARAM, String.valueOf(ID)))
                 .andExpect(status().isOk());
     }
@@ -221,7 +220,7 @@ class DataStorageControllerTest extends AbstractControllerTest {
         when(instancesEntityPage.getContent()).thenReturn(instancesDtoList);
         when(storageService.getNextPage(any(PageRequestDto.class))).thenReturn(instancesEntityPage);
         mockMvc.perform(post(LIST_URL)
-                        .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken()))
+                        .header(HttpHeaders.AUTHORIZATION, getBearerToken())
                         .content(objectMapper.writeValueAsString(createPageRequestDto()))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
@@ -240,7 +239,7 @@ class DataStorageControllerTest extends AbstractControllerTest {
     void testGetAttributes() throws Exception {
         when(storageService.getAttributes(ID)).thenReturn(EXPECTED_ATTRIBUTES);
         mockMvc.perform(get(ATTRIBUTES_URL, ID)
-                        .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken()))
+                        .header(HttpHeaders.AUTHORIZATION, getBearerToken())
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
@@ -261,7 +260,7 @@ class DataStorageControllerTest extends AbstractControllerTest {
         var expected = PageDto.of(Collections.singletonList(VALUES), PAGE_NUMBER, TOTAL_ELEMENTS);
         when(storageService.getData(anyLong(), any(PageRequestDto.class))).thenReturn(expected);
         mockMvc.perform(post(DATA_PAGE_URL)
-                        .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken()))
+                        .header(HttpHeaders.AUTHORIZATION, getBearerToken())
                         .param(ID_PARAM, String.valueOf(ID))
                         .content(objectMapper.writeValueAsString(createPageRequestDto()))
                         .contentType(MediaType.APPLICATION_JSON))
@@ -283,7 +282,7 @@ class DataStorageControllerTest extends AbstractControllerTest {
         when(storageService.getById(ID)).thenReturn(instancesEntity);
         var expected = instancesMapper.map(instancesEntity);
         mockMvc.perform(get(DETAILS_URL, ID)
-                        .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken()))
+                        .header(HttpHeaders.AUTHORIZATION, getBearerToken())
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
@@ -301,7 +300,7 @@ class DataStorageControllerTest extends AbstractControllerTest {
     @Test
     void testDownloadInstancesReportOk() throws Exception {
         mockMvc.perform(get(DOWNLOAD_REPORT_URL)
-                        .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken()))
+                        .header(HttpHeaders.AUTHORIZATION, getBearerToken())
                         .param(REPORT_TYPE_PARAM, ReportType.XLS.name())
                         .param(ID_PARAM, String.valueOf(ID)))
                 .andExpect(status().isOk());
@@ -319,7 +318,7 @@ class DataStorageControllerTest extends AbstractControllerTest {
         var expected = instancesMapper.mapReportPropertiesList(reportPropertiesList);
         when(reportsConfigurationService.getReportProperties()).thenReturn(reportPropertiesList);
         mockMvc.perform(get(REPORTS_INFO_URL)
-                        .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken())))
+                        .header(HttpHeaders.AUTHORIZATION, getBearerToken()))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(content().json(objectMapper.writeValueAsString(expected)));
@@ -335,7 +334,7 @@ class DataStorageControllerTest extends AbstractControllerTest {
     @Test
     void testSetClass() throws Exception {
         mockMvc.perform(put(SET_CLASS_URL)
-                        .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken()))
+                        .header(HttpHeaders.AUTHORIZATION, getBearerToken())
                         .param(CLASS_ATTRIBUTE_ID_PARAM, String.valueOf(ID)))
                 .andExpect(status().isOk());
     }
@@ -343,7 +342,7 @@ class DataStorageControllerTest extends AbstractControllerTest {
     @Test
     void testSetClassWithNullClassAttributeId() throws Exception {
         mockMvc.perform(put(SET_CLASS_URL)
-                        .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken())))
+                        .header(HttpHeaders.AUTHORIZATION, getBearerToken()))
                 .andExpect(status().isBadRequest());
     }
 
@@ -357,7 +356,7 @@ class DataStorageControllerTest extends AbstractControllerTest {
     @Test
     void testSelectAttribute() throws Exception {
         mockMvc.perform(put(SELECT_ATTRIBUTE_URL)
-                        .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken()))
+                        .header(HttpHeaders.AUTHORIZATION, getBearerToken())
                         .param(ID_PARAM, String.valueOf(ID)))
                 .andExpect(status().isOk());
     }
@@ -365,7 +364,7 @@ class DataStorageControllerTest extends AbstractControllerTest {
     @Test
     void testSelectAttributeWithNullId() throws Exception {
         mockMvc.perform(put(SELECT_ATTRIBUTE_URL)
-                        .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken())))
+                        .header(HttpHeaders.AUTHORIZATION, getBearerToken()))
                 .andExpect(status().isBadRequest());
     }
 
@@ -379,7 +378,7 @@ class DataStorageControllerTest extends AbstractControllerTest {
     @Test
     void testUnselectAttribute() throws Exception {
         mockMvc.perform(put(UNSELECT_ATTRIBUTE_URL)
-                        .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken()))
+                        .header(HttpHeaders.AUTHORIZATION, getBearerToken())
                         .param(ID_PARAM, String.valueOf(ID)))
                 .andExpect(status().isOk());
     }
@@ -387,7 +386,7 @@ class DataStorageControllerTest extends AbstractControllerTest {
     @Test
     void testUnselectAttributeWithNullId() throws Exception {
         mockMvc.perform(put(UNSELECT_ATTRIBUTE_URL)
-                        .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken())))
+                        .header(HttpHeaders.AUTHORIZATION, getBearerToken()))
                 .andExpect(status().isBadRequest());
     }
 
@@ -401,7 +400,7 @@ class DataStorageControllerTest extends AbstractControllerTest {
     @Test
     void testSelectAllAttributes() throws Exception {
         mockMvc.perform(put(SELECT_ALL_ATTRIBUTES_URL)
-                        .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken()))
+                        .header(HttpHeaders.AUTHORIZATION, getBearerToken())
                         .param(ID_PARAM, String.valueOf(ID)))
                 .andExpect(status().isOk());
     }
@@ -409,7 +408,7 @@ class DataStorageControllerTest extends AbstractControllerTest {
     @Test
     void testSelectAllAttributesWithNullId() throws Exception {
         mockMvc.perform(put(SELECT_ALL_ATTRIBUTES_URL)
-                        .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken())))
+                        .header(HttpHeaders.AUTHORIZATION, getBearerToken()))
                 .andExpect(status().isBadRequest());
     }
 
@@ -425,7 +424,7 @@ class DataStorageControllerTest extends AbstractControllerTest {
         AttributeStatisticsDto attributeStatisticsDto = new AttributeStatisticsDto();
         when(instancesStatisticsService.getAttributeStatistics(ID)).thenReturn(attributeStatisticsDto);
         mockMvc.perform(get(GET_ATTRIBUTE_STATISTICS_URL, ID)
-                        .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken()))
+                        .header(HttpHeaders.AUTHORIZATION, getBearerToken())
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
@@ -444,7 +443,7 @@ class DataStorageControllerTest extends AbstractControllerTest {
         InstancesStatisticsDto attributeStatisticsDto = new InstancesStatisticsDto();
         when(instancesStatisticsService.getInstancesStatistics(ID)).thenReturn(attributeStatisticsDto);
         mockMvc.perform(get(GET_INSTANCES_STATISTICS_URL, ID)
-                        .header(HttpHeaders.AUTHORIZATION, bearerHeader(getAccessToken()))
+                        .header(HttpHeaders.AUTHORIZATION, getBearerToken())
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))

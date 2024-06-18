@@ -20,13 +20,12 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import weka.core.Instances;
-
-import javax.inject.Inject;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.any;
@@ -43,9 +42,9 @@ import static org.mockito.Mockito.when;
 @Import({ExperimentConfig.class, CrossValidationConfig.class})
 class ExperimentInitializationVisitorTest {
 
-    @Inject
+    @Autowired
     private ExperimentConfig experimentConfig;
-    @Inject
+    @Autowired
     private CrossValidationConfig crossValidationConfig;
     @Mock
     private ClassifiersSetSearcher classifiersSetSearcher;

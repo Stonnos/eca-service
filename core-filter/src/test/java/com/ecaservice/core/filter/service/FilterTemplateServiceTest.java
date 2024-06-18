@@ -16,9 +16,9 @@ import com.ecaservice.core.filter.repository.SortTemplateRepository;
 import com.ecaservice.web.dto.model.FilterDictionaryDto;
 import com.ecaservice.web.dto.model.FilterFieldDto;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Import;
 
-import javax.inject.Inject;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -35,16 +35,16 @@ class FilterTemplateServiceTest extends AbstractJpaTest {
 
     public static final String FILTER_TEMPLATE_TYPE = "template";
     public static final String DICTIONARY_NAME = "dictionaryName";
-    @Inject
+    @Autowired
     private FilterTemplateRepository filterTemplateRepository;
-    @Inject
+    @Autowired
     private GlobalFilterTemplateRepository globalFilterTemplateRepository;
-    @Inject
+    @Autowired
     private SortTemplateRepository sortTemplateRepository;
-    @Inject
+    @Autowired
     private FilterDictionaryRepository filterDictionaryRepository;
 
-    @Inject
+    @Autowired
     private FilterTemplateService filterTemplateService;
 
     @Override

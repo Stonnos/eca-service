@@ -1,13 +1,16 @@
 package com.ecaservice.oauth.service;
 
 import com.ecaservice.oauth.entity.UserEntity;
-import com.ecaservice.oauth.mapping.UserMapper;
 import com.ecaservice.oauth.repository.UserEntityRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+
+import java.util.stream.Collectors;
 
 /**
  * Implements user details service.
@@ -18,7 +21,6 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class UserDetailsServiceImpl implements UserDetailsService {
 
-    private final UserMapper userMapper;
     private final UserEntityRepository userEntityRepository;
 
     @Override
@@ -28,6 +30,16 @@ public class UserDetailsServiceImpl implements UserDetailsService {
             throw new UsernameNotFoundException(
                     String.format("User with login or email [%s] doesn't exists!", username));
         }
-        return userMapper.mapDetails(userEntity);
+        var authorities = userEntity.getRoles().stream()
+                .map(roleEntity -> new SimpleGrantedAuthority(roleEntity.getRoleName()))
+                .collect(Collectors.toList());
+        return new User(userEntity.getLogin(),
+                userEntity.getPassword(),
+                true,
+                true,
+                true,
+                !userEntity.isLocked(),
+                authorities
+        );
     }
 }

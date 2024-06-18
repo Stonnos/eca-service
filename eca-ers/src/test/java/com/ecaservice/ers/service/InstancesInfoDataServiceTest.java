@@ -9,10 +9,10 @@ import com.ecaservice.web.dto.model.PageRequestDto;
 import com.ecaservice.web.dto.model.SortFieldRequestDto;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 
-import javax.inject.Inject;
 import java.util.Arrays;
 import java.util.Collections;
 
@@ -37,10 +37,10 @@ class InstancesInfoDataServiceTest extends AbstractJpaTest {
     @MockBean
     private FilterTemplateService filterTemplateService;
 
-    @Inject
+    @Autowired
     private InstancesInfoRepository instancesInfoRepository;
 
-    @Inject
+    @Autowired
     private InstancesDataService instancesDataService;
 
 

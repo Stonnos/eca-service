@@ -14,6 +14,7 @@ import feign.FeignException;
 import feign.RetryableException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import io.micrometer.tracing.annotation.NewSpan;
 import org.springframework.stereotype.Service;
 
 /**
@@ -37,6 +38,7 @@ public class UploadInstancesObjectService {
      * @param instancesModel - instances bytes array
      * @return upload instances response
      */
+    @NewSpan
     public UploadInstancesResponseDto uploadInstances(String instancesUuid, InstancesModel instancesModel) {
         try {
             log.info("Starting to upload instances [{}] to central data storage", instancesUuid);

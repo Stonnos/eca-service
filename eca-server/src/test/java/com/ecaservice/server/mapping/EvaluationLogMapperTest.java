@@ -16,11 +16,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.core.MessageProperties;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-
-import javax.inject.Inject;
 
 import java.util.UUID;
 
@@ -38,9 +37,9 @@ import static org.mockito.Mockito.when;
         ClassifierInfoMapperImpl.class, CrossValidationConfig.class})
 class EvaluationLogMapperTest {
 
-    @Inject
+    @Autowired
     private CrossValidationConfig crossValidationConfig;
-    @Inject
+    @Autowired
     private EvaluationLogMapper evaluationLogMapper;
 
     @Test

@@ -6,6 +6,7 @@ import com.ecaservice.s3.client.minio.metrics.MinioStorageMetricsService;
 import com.ecaservice.s3.client.minio.model.GetPresignedUrlObject;
 import com.ecaservice.s3.client.minio.model.UploadObject;
 import io.micrometer.core.annotation.Timed;
+import io.micrometer.tracing.annotation.NewSpan;
 import io.minio.GetObjectArgs;
 import io.minio.GetPresignedObjectUrlArgs;
 import io.minio.MinioClient;
@@ -47,6 +48,7 @@ public class MinioStorageService {
      *
      * @param uploadObject - upload object
      */
+    @NewSpan
     @Timed(value = OBJECT_REQUEST_METRIC)
     public void uploadObject(UploadObject uploadObject) {
         String bucket = minioClientProperties.getBucketName();
@@ -109,6 +111,7 @@ public class MinioStorageService {
      *
      * @param objectPath - object path
      */
+    @NewSpan
     @Timed(value = OBJECT_REQUEST_METRIC)
     public void removeObject(String objectPath) {
         String bucket = minioClientProperties.getBucketName();
@@ -140,6 +143,7 @@ public class MinioStorageService {
      * @param presignedUrlObject - presigned url object
      * @return presigned url
      */
+    @NewSpan
     @Timed(value = OBJECT_REQUEST_METRIC)
     public String getObjectPresignedUrl(GetPresignedUrlObject presignedUrlObject) {
         log.info("Gets presigned url for object path [{}]", presignedUrlObject.getObjectPath());
@@ -173,6 +177,7 @@ public class MinioStorageService {
      * @param presignedUrlObject - presigned url object
      * @return presigned proxy url
      */
+    @NewSpan
     @Timed(value = OBJECT_REQUEST_METRIC)
     public String getObjectPresignedProxyUrl(GetPresignedUrlObject presignedUrlObject) {
         log.info("Gets presigned proxy url for object path [{}]", presignedUrlObject.getObjectPath());

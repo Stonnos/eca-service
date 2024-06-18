@@ -8,7 +8,7 @@ import { CreateResetPasswordRequest } from "../model/create-reset-password.reque
 @Injectable()
 export class ResetPasswordService {
 
-  private serviceUrl = environment.oauthUrl + '/password';
+  private serviceUrl = environment.oauthUrl + '/reset-password';
 
   public constructor(private http: HttpClient) {
   }

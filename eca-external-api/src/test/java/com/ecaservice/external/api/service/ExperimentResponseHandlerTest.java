@@ -7,9 +7,9 @@ import com.ecaservice.external.api.entity.RequestStageType;
 import com.ecaservice.external.api.mapping.EcaRequestMapperImpl;
 import com.ecaservice.external.api.repository.ExperimentRequestRepository;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Import;
 
-import javax.inject.Inject;
 import java.util.UUID;
 
 import static com.ecaservice.external.api.TestHelperUtils.createExperimentRequestEntity;
@@ -25,10 +25,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Import({ExperimentResponseHandler.class, EcaRequestMapperImpl.class, RequestStageHandler.class})
 class ExperimentResponseHandlerTest extends AbstractJpaTest {
 
-    @Inject
+    @Autowired
     private ExperimentRequestRepository experimentRequestRepository;
 
-    @Inject
+    @Autowired
     private ExperimentResponseHandler experimentResponseHandler;
 
     @Override

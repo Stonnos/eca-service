@@ -2,11 +2,12 @@ package com.ecaservice.data.loader.entity;
 
 import lombok.Data;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
 import java.time.LocalDateTime;
 
 /**
@@ -16,7 +17,10 @@ import java.time.LocalDateTime;
  */
 @Data
 @Entity
-@Table(name = "instances")
+@Table(name = "instances",uniqueConstraints = {
+        @UniqueConstraint(columnNames = {"client_id", "md5_hash"},
+                name = "instances_client_id_md5_hash_unique_index")
+})
 public class InstancesEntity {
 
     @Id
@@ -76,6 +80,12 @@ public class InstancesEntity {
      */
     @Column(name = "md5_hash", nullable = false)
     private String md5Hash;
+
+    /**
+     * Username (client id)
+     */
+    @Column(name = "client_id")
+    private String clientId;
 
     /**
      * Instances object path

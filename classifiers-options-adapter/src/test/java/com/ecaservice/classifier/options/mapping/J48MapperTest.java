@@ -6,10 +6,9 @@ import eca.trees.J48;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-
-import javax.inject.Inject;
 
 /**
  * Unit tests for checking {@link J48Mapper} functionality.
@@ -20,7 +19,7 @@ import javax.inject.Inject;
 @Import(J48MapperImpl.class)
 class J48MapperTest {
 
-    @Inject
+    @Autowired
     private J48Mapper j48Mapper;
 
     @Test

@@ -11,10 +11,10 @@ import com.ecaservice.server.service.AbstractJpaTest;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 
-import javax.inject.Inject;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
@@ -32,18 +32,18 @@ import static org.mockito.Mockito.verify;
 @Import({ExperimentDataCleaner.class, AppProperties.class})
 class ExperimentDataCleanerTest extends AbstractJpaTest {
 
-    @Inject
+    @Autowired
     private ExperimentRepository experimentRepository;
-    @Inject
+    @Autowired
     private InstancesInfoRepository instancesInfoRepository;
 
     @MockBean
     private ExperimentDataService experimentDataService;
 
-    @Inject
+    @Autowired
     private AppProperties appProperties;
 
-    @Inject
+    @Autowired
     private ExperimentDataCleaner experimentDataCleaner;
 
     @Captor

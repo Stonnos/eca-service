@@ -1,7 +1,5 @@
 package com.ecaservice.oauth.service;
 
-import com.ecaservice.core.redelivery.annotation.Retry;
-import com.ecaservice.core.redelivery.annotation.Retryable;
 import com.ecaservice.oauth.config.UserProfileProperties;
 import com.ecaservice.user.profile.options.dto.UserProfileOptionsDto;
 import lombok.RequiredArgsConstructor;
@@ -17,7 +15,6 @@ import org.springframework.stereotype.Service;
  */
 @Slf4j
 @Service
-@Retryable
 @RequiredArgsConstructor
 public class UserProfileOptionsDataEventSender {
 
@@ -29,7 +26,6 @@ public class UserProfileOptionsDataEventSender {
      *
      * @param userProfileOptionsDto - user profile options data event
      */
-    @Retry(value = "userProfileOptionsDataEvent")
     public void send(UserProfileOptionsDto userProfileOptionsDto) {
         log.info("Starting to send user [{}] profile options data event to mq: [{}]", userProfileOptionsDto.getUser(),
                 userProfileOptionsDto);

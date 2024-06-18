@@ -53,11 +53,11 @@ import eca.ensemble.forests.DecisionTreeType;
 import feign.FeignException;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import weka.core.Instances;
 
-import javax.inject.Inject;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
@@ -108,19 +108,19 @@ class OptimalClassifierOptionsFetcherTest extends AbstractJpaTest {
     private InstancesMetaDataService instancesMetaDataService;
     @MockBean
     private InstancesLoaderService instancesLoaderService;
-    @Inject
+    @Autowired
     private ErsConfig ersConfig;
-    @Inject
+    @Autowired
     private ClassifierOptionsRequestModelRepository classifierOptionsRequestModelRepository;
-    @Inject
+    @Autowired
     private ErsRequestRepository ersRequestRepository;
-    @Inject
+    @Autowired
     private EvaluationLogRepository evaluationLogRepository;
-    @Inject
+    @Autowired
     private InstancesInfoRepository instancesInfoRepository;
-    @Inject
+    @Autowired
     private ClassifierOptionsRequestRepository classifierOptionsRequestRepository;
-    @Inject
+    @Autowired
     private OptimalClassifierOptionsFetcher optimalClassifierOptionsFetcher;
 
     private InstancesRequestDataModel instancesRequestDataModel;

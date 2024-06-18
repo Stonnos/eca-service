@@ -12,11 +12,8 @@ public class PasswordsMatchedException extends ValidationErrorException {
 
     /**
      * Constructor with parameters.
-     *
-     * @param userId - user id
      */
-    public PasswordsMatchedException(Long userId) {
-        super(EcaOauthErrorCode.PASSWORD_MATCHED,
-                String.format("Old and new passwords matched for user [%d]", userId));
+    public PasswordsMatchedException() {
+        super(EcaOauthErrorCode.PASSWORD_MATCHED, "Old and new passwords matched");
     }
 }

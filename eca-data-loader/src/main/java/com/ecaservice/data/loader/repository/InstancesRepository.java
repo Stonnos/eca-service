@@ -26,6 +26,15 @@ public interface InstancesRepository extends JpaRepository<InstancesEntity, Long
     Optional<InstancesEntity> findByUuid(String uuid);
 
     /**
+     * Finds instances by client id and md5 hash.
+     *
+     * @param clientId - client id
+     * @param md5Hash  - md5 hash
+     * @return instances entity
+     */
+    InstancesEntity findByClientIdAndMd5Hash(String clientId, String md5Hash);
+
+    /**
      * Finds not deleted instances ids.
      *
      * @param dateTime - date time threshold value

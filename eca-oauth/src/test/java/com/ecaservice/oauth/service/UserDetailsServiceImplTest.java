@@ -6,11 +6,11 @@ import com.ecaservice.oauth.mapping.RoleMapperImpl;
 import com.ecaservice.oauth.mapping.UserMapperImpl;
 import com.ecaservice.oauth.repository.UserEntityRepository;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Import;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
-import javax.inject.Inject;
 import java.util.Collections;
 
 import static com.ecaservice.oauth.TestHelperUtils.createUserEntity;
@@ -27,10 +27,10 @@ class UserDetailsServiceImplTest extends AbstractJpaTest {
 
     private static final String USER = "user";
 
-    @Inject
+    @Autowired
     private UserEntityRepository userEntityRepository;
 
-    @Inject
+    @Autowired
     private UserDetailsServiceImpl userDetailsService;
 
     @Override

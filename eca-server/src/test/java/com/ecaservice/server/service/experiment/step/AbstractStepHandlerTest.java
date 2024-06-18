@@ -12,9 +12,9 @@ import com.ecaservice.server.repository.ExperimentStepRepository;
 import com.ecaservice.server.repository.InstancesInfoRepository;
 import com.ecaservice.server.service.AbstractJpaTest;
 import lombok.Getter;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StopWatch;
 
-import javax.inject.Inject;
 import java.util.UUID;
 import java.util.function.BiConsumer;
 
@@ -31,15 +31,15 @@ abstract class AbstractStepHandlerTest extends AbstractJpaTest {
     private ExperimentStepEntity experimentStepEntity;
 
     @Getter
-    @Inject
+    @Autowired
     private ExperimentProgressRepository experimentProgressRepository;
     @Getter
-    @Inject
+    @Autowired
     private ExperimentStepRepository experimentStepRepository;
     @Getter
-    @Inject
+    @Autowired
     private ExperimentRepository experimentRepository;
-    @Inject
+    @Autowired
     private InstancesInfoRepository instancesInfoRepository;
 
     @Override

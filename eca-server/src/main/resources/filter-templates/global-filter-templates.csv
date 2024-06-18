@@ -1,0 +1,6 @@
+id;filter_name;template_type
+1;experimentFilter;EXPERIMENT
+2;evaluationLogFilter;EVALUATION_LOG
+4;classifiersConfigurationFilter;CLASSIFIERS_CONFIGURATION
+5;classifiersConfigurationHistoryFilter;CLASSIFIERS_CONFIGURATION_HISTORY
+6;instancesInfoFilter;INSTANCES_INFO

@@ -3,10 +3,9 @@ package com.ecaservice.core.redelivery.service;
 import com.ecaservice.core.redelivery.test.service.TestServiceA;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-
-import javax.inject.Inject;
 
 /**
  * Unit tests for {@link RedeliveryValidationService} class.
@@ -17,7 +16,7 @@ import javax.inject.Inject;
 @Import({RedeliveryValidationService.class, TestServiceA.class})
 class RedeliveryValidationTest {
 
-    @Inject
+    @Autowired
     private RedeliveryValidationService redeliveryValidationService;
 
     /***

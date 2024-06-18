@@ -5,11 +5,10 @@ import com.ecaservice.core.redelivery.test.service.TestServiceB;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-
-import javax.inject.Inject;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -22,7 +21,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 @Import({TestServiceA.class, TestServiceB.class})
 class RedeliveryValidationFailedTest {
 
-    @Inject
+    @Autowired
     private ApplicationContext applicationContext;
 
     private RedeliveryValidationService redeliveryValidationService;

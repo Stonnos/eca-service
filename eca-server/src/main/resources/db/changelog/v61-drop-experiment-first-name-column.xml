@@ -13,13 +13,4 @@
        <dropColumn tableName="experiment" columnName="first_name"/>
     </changeSet>
 
-    <changeSet id="remove_experiment_first_name_column_from_global_filter" author="roman.batygin@mail.ru" context="data">
-        <preConditions onFail="MARK_RAN">
-            <sqlCheck expectedResult="1">select count(*) from global_filter_field where global_filter_template_id = 1 and field_name = 'firstName'</sqlCheck>
-        </preConditions>
-        <delete tableName="global_filter_field">
-            <where>global_filter_template_id = 1 and field_name = 'firstName'</where>
-        </delete>
-    </changeSet>
-
 </databaseChangeLog>

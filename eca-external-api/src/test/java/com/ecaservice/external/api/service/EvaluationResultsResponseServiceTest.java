@@ -11,11 +11,11 @@ import com.ecaservice.external.api.repository.ExperimentRequestRepository;
 import com.ecaservice.s3.client.minio.service.ObjectStorageService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import javax.inject.Inject;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -38,11 +38,11 @@ class EvaluationResultsResponseServiceTest extends AbstractJpaTest {
     @MockBean
     private ObjectStorageService objectStorageService;
 
-    @Inject
+    @Autowired
     private EvaluationRequestRepository evaluationRequestRepository;
-    @Inject
+    @Autowired
     private ExperimentRequestRepository experimentRequestRepository;
-    @Inject
+    @Autowired
     private EvaluationResultsResponseService evaluationResultsResponseService;
 
     @Override

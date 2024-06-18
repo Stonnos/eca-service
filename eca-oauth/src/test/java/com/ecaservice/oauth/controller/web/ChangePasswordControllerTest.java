@@ -9,6 +9,7 @@ import com.ecaservice.web.dto.model.ChangePasswordRequestStatusDto;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.ApplicationEventPublisher;
@@ -16,13 +17,12 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
-import javax.inject.Inject;
-
 import java.util.UUID;
 
 import static com.ecaservice.oauth.TestHelperUtils.createChangePasswordRequestEntity;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -57,10 +57,10 @@ class ChangePasswordControllerTest extends AbstractControllerTest {
     @MockBean
     private ApplicationEventPublisher applicationEventPublisher;
 
-    @Inject
+    @Autowired
     private MockMvc mockMvc;
 
-    private ObjectMapper objectMapper = new ObjectMapper();
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
     @Test
     void testCreateChangePasswordRequestWithEmptyOldPassword() throws Exception {
@@ -95,7 +95,7 @@ class ChangePasswordControllerTest extends AbstractControllerTest {
     void testCreateChangePasswordRequestOk() throws Exception {
         String token = UUID.randomUUID().toString();
         ChangePasswordRequest changePasswordRequest = new ChangePasswordRequest(PASSWORD, PASSWORD);
-        when(changePasswordService.createChangePasswordRequest(anyLong(), any(ChangePasswordRequest.class)))
+        when(changePasswordService.createChangePasswordRequest(anyString(), any(ChangePasswordRequest.class)))
                 .thenReturn(
                         TokenModel.builder()
                                 .token(token)
@@ -163,7 +163,7 @@ class ChangePasswordControllerTest extends AbstractControllerTest {
         var changePasswordRequestStatusDto = ChangePasswordRequestStatusDto.builder()
                 .active(false)
                 .build();
-        when(changePasswordService.getChangePasswordRequestStatus(anyLong()))
+        when(changePasswordService.getChangePasswordRequestStatus(anyString()))
                 .thenReturn(changePasswordRequestStatusDto);
         mockMvc.perform(get(REQUEST_STATUS_URL)
                         .header(HttpHeaders.AUTHORIZATION, getBearerToken()))

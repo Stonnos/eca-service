@@ -21,10 +21,10 @@ import com.ecaservice.web.dto.model.SortFieldRequestDto;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 
-import javax.inject.Inject;
 import java.util.Arrays;
 import java.util.Collections;
 
@@ -59,12 +59,12 @@ public class EvaluationResultsHistoryServiceTest extends AbstractJpaTest {
     @MockBean
     private ClassifierOptionsProcessor classifierOptionsProcessor;
 
-    @Inject
+    @Autowired
     private EvaluationResultsInfoRepository evaluationResultsInfoRepository;
-    @Inject
+    @Autowired
     private InstancesInfoRepository instancesInfoRepository;
 
-    @Inject
+    @Autowired
     private EvaluationResultsHistoryService evaluationResultsHistoryService;
 
     @Override

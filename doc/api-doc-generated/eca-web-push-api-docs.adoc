@@ -19,18 +19,16 @@ API provides operations with notifications center and web pushes
 |*oauth2*
 |Oauth2 authentication
 
-*Client credentials location:* __header__
 
-*Bearer format:* __Authorization: Bearer <access token>__
 a|
 
 *Flow*
 
 __Grant type:__ password
 
-__Token url:__ http://localhost:8080/eca-oauth/oauth/token
+__Token url:__ http://localhost:8080/eca-oauth/oauth2/token
 
-__Refresh token url:__ http://localhost:8080/eca-oauth/oauth/token
+__Refresh token url:__ http://localhost:8080/eca-oauth/oauth2/token
 
 
 __Scopes__:
@@ -399,6 +397,7 @@ a|
 {
   "pushType" : "SYSTEM",
   "requestId" : "1d2de514-3a87-4620-9b97-c260e24340de",
+  "correlationId" : "98a57ab7-6494-4d9d-b793-c807fdf02692",
   "messageType" : "EXPERIMENT_STATUS",
   "messageText" : "Поступила новая заявка на эксперимент 1cec4e54-0f46-4d70-ad19-a8f9f1a0e33c",
   "showMessage" : true,
@@ -616,7 +615,7 @@ __string__
 
 
 
-*Max. length*: 1,000
+*Max. length*: 1 000
 
 
 
@@ -721,7 +720,7 @@ __(int64)__
 
 *Minimum*: 1*
 
-*Maximum*: 9,223,372,036,854,775,807*
+*Maximum*: 9 223 372 036 854 775 807*
 
 
 
@@ -932,7 +931,7 @@ __(int32)__
 
 *Minimum*: 0*
 
-*Maximum*: 2,147,483,647*
+*Maximum*: 2 147 483 647*
 
 
 
@@ -954,7 +953,7 @@ __(int64)__
 
 *Minimum*: 0*
 
-*Maximum*: 9,223,372,036,854,775,807*
+*Maximum*: 9 223 372 036 854 775 807*
 
 
 
@@ -983,7 +982,7 @@ __(int32)__
 
 *Minimum*: 0*
 
-*Maximum*: 2,147,483,647*
+*Maximum*: 2 147 483 647*
 
 
 
@@ -1046,7 +1045,26 @@ __string__
 
 * USER_NOTIFICATION
 |*requestId**
-|Request id (used for cross system logging)
+|Request id
+a|
+__string__
+
+
+*Min. length*: 1
+
+*Max. length*: 36
+
+
+
+
+
+
+
+*Pattern*: `^[0-9a-f]{8}-[0-9a-f]{4}-[34][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$`
+
+
+|*correlationId**
+|Correlation id
 a|
 __string__
 
@@ -1155,7 +1173,26 @@ __string__
 
 * USER_NOTIFICATION
 |*requestId**
-|Request id (used for cross system logging)
+|Request id
+a|
+__string__
+
+
+*Min. length*: 1
+
+*Max. length*: 36
+
+
+
+
+
+
+
+*Pattern*: `^[0-9a-f]{8}-[0-9a-f]{4}-[34][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$`
+
+
+|*correlationId**
+|Correlation id
 a|
 __string__
 
@@ -1283,7 +1320,26 @@ __string__
 
 * USER_NOTIFICATION
 |*requestId**
-|Request id (used for cross system logging)
+|Request id
+a|
+__string__
+
+
+*Min. length*: 1
+
+*Max. length*: 36
+
+
+
+
+
+
+
+*Pattern*: `^[0-9a-f]{8}-[0-9a-f]{4}-[34][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$`
+
+
+|*correlationId**
+|Correlation id
 a|
 __string__
 
@@ -1360,13 +1416,13 @@ __array__
 
 
 
-|*initiator**
+|*initiator*
 |Initiator user
 a|
 __string__
 
 
-*Min. length*: 1
+*Min. length*: 0
 
 *Max. length*: 255
 
@@ -1395,7 +1451,7 @@ __array__
 
 *Min. items*: 1
 
-*Max. items*: 1,000
+*Max. items*: 1 000
 
 
 
@@ -1440,7 +1496,7 @@ __(int64)__
 
 *Minimum*: 0*
 
-*Maximum*: 9,223,372,036,854,775,807*
+*Maximum*: 9 223 372 036 854 775 807*
 
 
 

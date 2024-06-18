@@ -4,10 +4,9 @@ import com.ecaservice.ers.dto.StatisticsReport;
 import com.ecaservice.ers.model.StatisticsInfo;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-
-import javax.inject.Inject;
 
 import static com.ecaservice.ers.TestHelperUtils.buildStatisticsInfo;
 import static com.ecaservice.ers.TestHelperUtils.buildStatisticsReport;
@@ -22,7 +21,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Import(StatisticsReportMapperImpl.class)
 class StatisticsReportMapperTest {
 
-    @Inject
+    @Autowired
     private StatisticsReportMapper statisticsReportMapper;
 
     @Test

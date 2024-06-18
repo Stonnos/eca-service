@@ -4,6 +4,7 @@ import { Observable } from "rxjs/internal/Observable";
 import { UserModel } from "../model/user.model";
 import { AuthenticationKeys } from "../model/auth.keys";
 import { environment } from "../../../environments/environment";
+import { Utils } from "../../common/util/utils";
 
 @Injectable()
 export class AuthService {
@@ -43,13 +44,24 @@ export class AuthService {
     localStorage.setItem(AuthenticationKeys.REFRESH_TOKEN, token.refresh_token);
   }
 
+  public logoutRequest(): Observable<any> {
+    const headers = new HttpHeaders({
+      'Content-type': 'application/x-www-form-urlencoded; charset=utf-8',
+      'Authorization': this.getHttpBasicAuthorizationHeader()
+    });
+    const params = new URLSearchParams();
+    params.append('token', Utils.getBearerTokenHeader());
+    const options = { headers: headers };
+    return this.http.post(this.serviceUrl + '/oauth2/revoke', params.toString(), options);
+  }
+
   private performTokenRequest(params: URLSearchParams): Observable<any> {
     const headers = new HttpHeaders({
       'Content-type': 'application/x-www-form-urlencoded; charset=utf-8',
       'Authorization': this.getHttpBasicAuthorizationHeader()
     });
     const options = { headers: headers };
-    return this.http.post(this.serviceUrl + '/oauth/token', params.toString(), options);
+    return this.http.post(this.serviceUrl + '/oauth2/token', params.toString(), options);
   }
 
   private getHttpBasicAuthorizationHeader(): string {

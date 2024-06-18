@@ -8,14 +8,11 @@ import com.ecaservice.oauth.entity.UserEntity;
 import com.ecaservice.oauth.entity.UserPhoto;
 import com.ecaservice.oauth.event.model.UserCreatedEmailEvent;
 import com.ecaservice.oauth.event.model.UserLockedEmailEvent;
-import com.ecaservice.oauth.event.model.UserProfileOptionsDataEvent;
 import com.ecaservice.oauth.event.model.UserUnLockedEmailEvent;
-import com.ecaservice.oauth.exception.UserLockNotAllowedException;
 import com.ecaservice.oauth.mapping.UserMapper;
 import com.ecaservice.oauth.repository.UserPhotoRepository;
 import com.ecaservice.oauth.service.PasswordService;
 import com.ecaservice.oauth.service.UserService;
-import com.ecaservice.user.model.UserDetailsImpl;
 import com.ecaservice.web.dto.model.PageDto;
 import com.ecaservice.web.dto.model.PageRequestDto;
 import com.ecaservice.web.dto.model.UserDictionaryDto;
@@ -31,6 +28,9 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
@@ -38,10 +38,6 @@ import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.oauth2.common.OAuth2AccessToken;
-import org.springframework.security.oauth2.provider.OAuth2Authentication;
-import org.springframework.security.oauth2.provider.token.DefaultTokenServices;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -54,9 +50,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.validation.Valid;
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
 import java.security.Principal;
 
 import static com.ecaservice.config.swagger.OpenApi30Configuration.ECA_AUTHENTICATION_SECURITY_SCHEME;
@@ -80,16 +73,16 @@ public class UserController {
     private final UserService userService;
     private final PasswordService passwordService;
     private final UserMapper userMapper;
-    private final DefaultTokenServices tokenServices;
     private final ApplicationEventPublisher applicationEventPublisher;
     private final UserPhotoRepository userPhotoRepository;
 
     /**
      * Gets current authenticated user info.
      *
+     * @param principal - principal object
      * @return users list
      */
-    @PreAuthorize("#oauth2.hasScope('web')")
+    @PreAuthorize("hasAuthority('SCOPE_web')")
     @Operation(
             description = "Gets current authenticated user info",
             summary = "Gets current authenticated user info",
@@ -121,51 +114,18 @@ public class UserController {
             }
     )
     @GetMapping(value = "/user-info")
-    public UserDto getUserInfo(@AuthenticationPrincipal UserDetailsImpl userDetails) {
-        log.debug("Request get current user [{}]", userDetails.getId());
-        return userService.getUserInfo(userDetails.getId());
-    }
-
-    /**
-     * Logout current user and revokes access/refresh token pair.
-     *
-     * @param authentication - oauth2 authentication
-     */
-    @PreAuthorize("#oauth2.hasScope('web')")
-    @Operation(
-            description = "Logout current user and revokes access/refresh token pair",
-            summary = "Logout current user and revokes access/refresh token pair",
-            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME, scopes = SCOPE_WEB),
-            responses = {
-                    @ApiResponse(description = "OK", responseCode = "200"),
-                    @ApiResponse(description = "Not authorized", responseCode = "401",
-                            content = @Content(
-                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                    examples = {
-                                            @ExampleObject(
-                                                    name = "NotAuthorizedResponse",
-                                                    ref = "#/components/examples/NotAuthorizedResponse"
-                                            ),
-                                    }
-                            )
-                    )
-            }
-    )
-    @PostMapping(value = "/logout")
-    public void logout(Principal authentication) {
-        log.info("Request to logout user: [{}]", authentication.getName());
-        OAuth2Authentication oAuth2Authentication = (OAuth2Authentication) authentication;
-        OAuth2AccessToken auth2AccessToken = tokenServices.getAccessToken(oAuth2Authentication);
-        tokenServices.revokeToken(auth2AccessToken.getValue());
-        log.info("User [{}] has been logout", authentication.getName());
+    public UserDto getUserDetails(Principal principal) {
+        log.debug("Request get current user [{}]", principal.getName());
+        return userService.getUserDetails(principal.getName());
     }
 
     /**
      * Enable/disable tfa for current authenticated user.
      *
-     * @param enabled - tfa enabled?
+     * @param principal - principal object
+     * @param enabled   - tfa enabled?
      */
-    @PreAuthorize("#oauth2.hasScope('web')")
+    @PreAuthorize("hasAuthority('SCOPE_web')")
     @Operation(
             description = "Enable/disable tfa for current authenticated user",
             summary = "Enable/disable tfa for current authenticated user",
@@ -196,12 +156,12 @@ public class UserController {
             }
     )
     @PostMapping(value = "/tfa")
-    public void tfa(@AuthenticationPrincipal UserDetailsImpl userDetails,
+    public void tfa(Principal principal,
                     @Parameter(description = "Tfa enabled flag", required = true) @RequestParam boolean enabled) {
         if (enabled) {
-            userService.enableTfa(userDetails.getId());
+            userService.enableTfa(principal.getName());
         } else {
-            userService.disableTfa(userDetails.getId());
+            userService.disableTfa(principal.getName());
         }
     }
 
@@ -211,7 +171,7 @@ public class UserController {
      * @param pageRequestDto - page request dto
      * @return users page
      */
-    @PreAuthorize("#oauth2.hasScope('web') and hasRole('ROLE_SUPER_ADMIN')")
+    @PreAuthorize("hasAuthority('SCOPE_web') and hasRole('ROLE_SUPER_ADMIN')")
     @Operation(
             description = "Finds users with specified options",
             summary = "Finds users with specified options",
@@ -285,7 +245,7 @@ public class UserController {
      * @param pageRequestDto - page request dto
      * @return users dictionary page
      */
-    @PreAuthorize("#oauth2.hasScope('web')")
+    @PreAuthorize("hasAuthority('SCOPE_web')")
     @Operation(
             description = "Finds users dictionary with specified options such as filter, sorting and paging",
             summary = "Finds users dictionary with specified options such as filter, sorting and paging",
@@ -347,7 +307,7 @@ public class UserController {
      *
      * @param createUserDto - create user dto
      */
-    @PreAuthorize("#oauth2.hasScope('web') and hasRole('ROLE_SUPER_ADMIN')")
+    @PreAuthorize("hasAuthority('SCOPE_web') and hasRole('ROLE_SUPER_ADMIN')")
     @Operation(
             description = "Creates new user",
             summary = "Creates new user",
@@ -414,17 +374,16 @@ public class UserController {
         String password = passwordService.generatePassword();
         UserEntity userEntity = userService.createUser(createUserDto, password);
         applicationEventPublisher.publishEvent(new UserCreatedEmailEvent(this, userEntity, password));
-        applicationEventPublisher.publishEvent(new UserProfileOptionsDataEvent(this, userEntity));
         return userMapper.map(userEntity);
     }
 
     /**
      * Updates info for current authenticated user.
      *
-     * @param userDetails       - user details
+     * @param principal         - principal object
      * @param updateUserInfoDto - user info dto
      */
-    @PreAuthorize("#oauth2.hasScope('web')")
+    @PreAuthorize("hasAuthority('SCOPE_web')")
     @Operation(
             description = "Updates info for current authenticated user",
             summary = "Updates info for current authenticated user",
@@ -465,19 +424,19 @@ public class UserController {
             }
     )
     @PutMapping(value = "/update-info")
-    public void updateUserInfo(@AuthenticationPrincipal UserDetailsImpl userDetails,
+    public void updateUserInfo(Principal principal,
                                @Valid @RequestBody UpdateUserInfoDto updateUserInfoDto) {
-        log.info("Received request to update user [{}] info", userDetails.getId());
-        userService.updateUserInfo(userDetails.getId(), updateUserInfoDto);
+        log.info("Received request to update user [{}] info", principal.getName());
+        userService.updateUserInfo(principal.getName(), updateUserInfoDto);
     }
 
     /**
      * Uploads photo for current authenticated user.
      *
-     * @param userDetails - user details
-     * @param file        - user photo file
+     * @param principal - principal object
+     * @param file      - user photo file
      */
-    @PreAuthorize("#oauth2.hasScope('web')")
+    @PreAuthorize("hasAuthority('SCOPE_web')")
     @Operation(
             description = "Uploads photo for current authenticated user",
             summary = "Uploads photo for current authenticated user",
@@ -499,10 +458,10 @@ public class UserController {
             }
     )
     @PostMapping(value = "/upload-photo", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public void uploadPhoto(@AuthenticationPrincipal UserDetailsImpl userDetails,
+    public void uploadPhoto(Principal principal,
                             @Parameter(description = "Photo file", required = true) @RequestParam MultipartFile file) {
-        log.info("Uploads photo [{}] for user [{}]", file.getOriginalFilename(), userDetails.getId());
-        userService.updatePhoto(userDetails.getId(), file);
+        log.info("Uploads photo [{}] for user [{}]", file.getOriginalFilename(), principal.getName());
+        userService.updatePhoto(principal.getName(), file);
     }
 
     /**
@@ -511,7 +470,7 @@ public class UserController {
      * @param id - photo id
      * @return user photo as byte array
      */
-    @PreAuthorize("#oauth2.hasScope('web')")
+    @PreAuthorize("hasAuthority('SCOPE_web')")
     @Operation(
             description = "Downloads user photo",
             summary = "Downloads user photo",
@@ -547,17 +506,19 @@ public class UserController {
     public ResponseEntity<ByteArrayResource> downloadPhoto(
             @Parameter(description = "Photo id", required = true, example = "1")
             @Min(VALUE_1) @Max(Long.MAX_VALUE) @PathVariable Long id) {
+        log.info("Request to download user photo [{}]", id);
         UserPhoto userPhoto = userPhotoRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException(UserPhoto.class, id));
+        log.info("User photo [{}] has been fetched from db", id);
         return buildAttachmentResponse(userPhoto.getPhoto(), userPhoto.getFileName());
     }
 
     /**
      * Deletes photo for current authenticated user
      *
-     * @param userDetails - user details
+     * @param principal - principal object
      */
-    @PreAuthorize("#oauth2.hasScope('web')")
+    @PreAuthorize("hasAuthority('SCOPE_web')")
     @Operation(
             description = "Deletes photo for current authenticated user",
             summary = "Deletes photo for current authenticated user",
@@ -590,18 +551,17 @@ public class UserController {
             }
     )
     @DeleteMapping(value = "/delete-photo")
-    public void deletePhoto(@AuthenticationPrincipal UserDetailsImpl userDetails) {
-        log.info("Deletes photo for user [{}]", userDetails.getId());
-        userService.deletePhoto(userDetails.getId());
+    public void deletePhoto(Principal principal) {
+        log.info("Deletes photo for user [{}]", principal.getName());
+        userService.deletePhoto(principal.getName());
     }
 
     /**
      * Locks user.
      *
-     * @param userDetails - user details
-     * @param userId      - user id
+     * @param userId - user id
      */
-    @PreAuthorize("#oauth2.hasScope('web') and hasRole('ROLE_SUPER_ADMIN')")
+    @PreAuthorize("hasAuthority('SCOPE_web') and hasRole('ROLE_SUPER_ADMIN')")
     @Operation(
             description = "Locks user",
             summary = "Locks user",
@@ -634,14 +594,10 @@ public class UserController {
             }
     )
     @PostMapping(value = "/lock")
-    public void lock(@AuthenticationPrincipal UserDetailsImpl userDetails,
-                     @Parameter(description = "User id", example = "1", required = true)
+    public void lock(@Parameter(description = "User id", example = "1", required = true)
                      @Min(VALUE_1) @Max(Long.MAX_VALUE)
                      @RequestParam Long userId) {
         log.info("Received request for user [{}] locking", userId);
-        if (userDetails.getId().equals(userId)) {
-            throw new UserLockNotAllowedException();
-        }
         var userEntity = userService.lock(userId);
         applicationEventPublisher.publishEvent(new UserLockedEmailEvent(this, userEntity));
     }
@@ -651,7 +607,7 @@ public class UserController {
      *
      * @param userId - user id
      */
-    @PreAuthorize("#oauth2.hasScope('web') and hasRole('ROLE_SUPER_ADMIN')")
+    @PreAuthorize("hasAuthority('SCOPE_web') and hasRole('ROLE_SUPER_ADMIN')")
     @Operation(
             description = "Unlocks user",
             summary = "Unlocks user",

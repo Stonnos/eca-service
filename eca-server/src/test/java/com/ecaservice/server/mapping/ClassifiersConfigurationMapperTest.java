@@ -8,10 +8,10 @@ import com.ecaservice.web.dto.model.CreateClassifiersConfigurationDto;
 import com.ecaservice.web.dto.model.UpdateClassifiersConfigurationDto;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import javax.inject.Inject;
 import java.time.LocalDateTime;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -29,7 +29,7 @@ class ClassifiersConfigurationMapperTest {
     private static final long ID = 1L;
     private static final String CREATED_BY = "user";
 
-    @Inject
+    @Autowired
     private ClassifiersConfigurationMapper classifiersConfigurationMapper;
 
     @Test

@@ -2,17 +2,17 @@ package com.ecaservice.mail.mapping;
 
 import com.ecaservice.mail.TestHelperUtils;
 import com.ecaservice.mail.config.MailConfig;
-import com.ecaservice.notification.dto.EmailRequest;
-import com.ecaservice.notification.dto.EmailResponse;
 import com.ecaservice.mail.model.Email;
 import com.ecaservice.mail.model.EmailStatus;
+import com.ecaservice.notification.dto.EmailRequest;
+import com.ecaservice.notification.dto.EmailResponse;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import javax.inject.Inject;
 import java.time.LocalDateTime;
 
 /**
@@ -22,7 +22,7 @@ import java.time.LocalDateTime;
 @Import(EmailRequestMapperImpl.class)
 class EmailRequestMapperTest {
 
-    @Inject
+    @Autowired
     private EmailRequestMapper emailRequestMapper;
 
     @Test

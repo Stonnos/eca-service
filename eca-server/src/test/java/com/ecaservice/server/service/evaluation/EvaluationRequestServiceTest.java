@@ -30,11 +30,11 @@ import com.ecaservice.server.service.data.InstancesMetaDataService;
 import com.ecaservice.server.service.evaluation.initializers.ClassifierInitializerService;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import weka.core.Instances;
 
-import javax.inject.Inject;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.List;
@@ -64,30 +64,30 @@ class EvaluationRequestServiceTest extends AbstractJpaTest {
     @MockBean
     private FilterTemplateService filterTemplateService;
 
-    @Inject
+    @Autowired
     private CrossValidationConfig crossValidationConfig;
-    @Inject
+    @Autowired
     private EvaluationLogRepository evaluationLogRepository;
-    @Inject
+    @Autowired
     private EvaluationLogMapper evaluationLogMapper;
-    @Inject
+    @Autowired
     private EvaluationService evaluationService;
-    @Inject
+    @Autowired
     private ExecutorService executorService;
-    @Inject
+    @Autowired
     private ClassifiersProperties classifiersProperties;
-    @Inject
+    @Autowired
     private AppProperties appProperties;
-    @Inject
+    @Autowired
     private InstancesInfoService instancesInfoService;
-    @Inject
+    @Autowired
     private EvaluationLogService evaluationLogService;
-    @Inject
+    @Autowired
     private ClassifierInfoRepository classifierInfoRepository;
 
     @Mock
     private ClassifierInitializerService classifierInitializerService;
-    @Inject
+    @Autowired
     private ClassifierOptionsAdapter classifierOptionsAdapter;
     @Mock
     private ObjectStorageService objectStorageService;

@@ -6,12 +6,11 @@ import com.ecaservice.notification.dto.EmailRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-
-import javax.inject.Inject;
 
 import static com.ecaservice.common.web.crypto.factory.EncryptFactory.getAesBytesEncryptor;
 import static com.ecaservice.core.mail.client.TestHelperUtils.createEmailRequest;
@@ -28,7 +27,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Import(EcaMailClientProperties.class)
 class EmailRequestConverterTest {
 
-    @Inject
+    @Autowired
     private EcaMailClientProperties ecaMailClientProperties;
 
     private EmailRequestConverter emailRequestConverter;

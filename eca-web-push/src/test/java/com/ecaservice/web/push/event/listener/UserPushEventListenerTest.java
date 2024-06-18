@@ -12,12 +12,12 @@ import com.ecaservice.web.push.repository.PushTokenRepository;
 import com.ecaservice.web.push.service.PushTokenService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import javax.inject.Inject;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
@@ -47,14 +47,14 @@ class UserPushEventListenerTest extends AbstractJpaTest {
     @MockBean
     private SimpMessagingTemplate messagingTemplate;
 
-    @Inject
+    @Autowired
     private PushTokenRepository pushTokenRepository;
-    @Inject
+    @Autowired
     private EncryptorBase64AdapterService encryptorBase64AdapterService;
-    @Inject
+    @Autowired
     private AppProperties appProperties;
 
-    @Inject
+    @Autowired
     private UserPushEventListener userPushEventListener;
 
     @Override

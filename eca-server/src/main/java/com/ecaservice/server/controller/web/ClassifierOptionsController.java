@@ -6,7 +6,6 @@ import com.ecaservice.common.web.error.CommonErrorCode;
 import com.ecaservice.common.web.exception.ValidationErrorException;
 import com.ecaservice.server.event.model.push.AddClassifierOptionsPushEvent;
 import com.ecaservice.server.event.model.push.DeleteClassifierOptionsPushEvent;
-import com.ecaservice.server.exception.ClassifierOptionsException;
 import com.ecaservice.server.service.UserService;
 import com.ecaservice.server.service.classifiers.ClassifierOptionsService;
 import com.ecaservice.server.service.classifiers.ClassifiersConfigurationService;
@@ -39,10 +38,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.validation.ConstraintViolationException;
-import javax.validation.Valid;
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
+import jakarta.validation.ConstraintViolationException;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import java.io.InputStream;
 import java.util.Collections;
 
@@ -77,7 +76,7 @@ public class ClassifierOptionsController {
      * @param pageRequestDto - page request dto
      * @return response entity
      */
-    @PreAuthorize("#oauth2.hasScope('web')")
+    @PreAuthorize("hasAuthority('SCOPE_web')")
     @Operation(
             description = "Finds classifiers options configs page",
             summary = "Finds classifiers options configs page",
@@ -145,7 +144,7 @@ public class ClassifierOptionsController {
      * @param configurationId        - configuration id
      * @param classifiersOptionsFile - classifier options file
      */
-    @PreAuthorize("#oauth2.hasScope('web')")
+    @PreAuthorize("hasAuthority('SCOPE_web')")
     @Operation(
             description = "Uploads new classifier options file for specified configuration",
             summary = "Uploads new classifier options file for specified configuration",
@@ -235,7 +234,7 @@ public class ClassifierOptionsController {
      * @param classifierOptions - classifier options
      * @return classifier options dto
      */
-    @PreAuthorize("#oauth2.hasScope('web')")
+    @PreAuthorize("hasAuthority('SCOPE_web')")
     @Operation(
             description = "Adds new classifier options for specified configuration",
             summary = "Adds new classifier options for specified configuration",
@@ -303,7 +302,7 @@ public class ClassifierOptionsController {
      *
      * @param id - classifier options id
      */
-    @PreAuthorize("#oauth2.hasScope('web')")
+    @PreAuthorize("hasAuthority('SCOPE_web')")
     @Operation(
             description = "Classifier options id",
             summary = "Classifier options id",

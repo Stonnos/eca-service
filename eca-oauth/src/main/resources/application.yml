@@ -10,9 +10,11 @@ spring:
   jpa:
     hibernate:
       ddl-auto: validate
-    database-platform: org.hibernate.dialect.PostgreSQL9Dialect
     properties:
       hibernate:
+        id:
+          ## Use one hibernate_sequence for all entities
+          db_structure_naming_strategy: legacy
         jdbc:
           lob:
             non_contextual_creation: true
@@ -46,6 +48,10 @@ app:
     validityMinutes: 15
   changeEmail:
     validityMinutes: 2880
+  security:
+    whitelistUrls:
+      - /api/internal/user/options/**
+      - /reset-password/**
 
 mail:
   client:
@@ -84,6 +90,7 @@ userProfile:
       webPushEnabled: true
       emailSupported: false
       webPushSupported: true
+  dataEventRetryIntervalSeconds: 30
   rabbit:
     exchangeName: user-profile-options-exchange
 
@@ -104,11 +111,14 @@ table:
         - tableName: change_email_request
           creationTimestampColumnName: created
           storagePeriodInDays: 30
+        - tableName: oauth2_authorization
+          creationTimestampColumnName: access_token_issued_at
+          storagePeriodInDays: 30
 
 ## Swagger properties
 open-api:
   basePath: /
-  title: Microservice for users managment
+  title: Microservice for users management
   description: API provides operations with users for ECA web application
   author: Roman Batygin
   email: roman.batygin@mail.ru
@@ -129,6 +139,13 @@ springdoc:
     disable-swagger-default-url: true
 
 management:
+  observations:
+    annotations:
+      ## Enables span annotations processing
+      enabled: true
+  tracing:
+    sampling:
+      probability: 1.0
   metrics:
     tags:
       application: ${spring.application.name}

@@ -2,7 +2,6 @@ package com.ecaservice.oauth.config;
 
 import com.ecaservice.common.web.annotation.EnableGlobalExceptionHandler;
 import com.ecaservice.config.swagger.annotation.EnableOpenApi;
-import com.ecaservice.core.filter.annotation.EnableFilters;
 import com.ecaservice.oauth.entity.UserEntity;
 import com.ecaservice.oauth.repository.UserEntityRepository;
 import org.passay.PasswordGenerator;
@@ -21,7 +20,6 @@ import org.springframework.scheduling.annotation.EnableScheduling;
  * @author Roman Batygin
  */
 @Configuration
-@EnableFilters
 @EnableCaching
 @EnableScheduling
 @EnableOpenApi

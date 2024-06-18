@@ -27,6 +27,9 @@ springdoc:
     disable-swagger-default-url: true
 
 management:
+  tracing:
+    sampling:
+      probability: 1.0
   metrics:
     tags:
       application: ${spring.application.name}

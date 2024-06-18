@@ -11,11 +11,11 @@ import com.ecaservice.web.push.mapping.NotificationMapperImpl;
 import com.ecaservice.web.push.repository.NotificationRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import javax.inject.Inject;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
@@ -41,14 +41,14 @@ class UserNotificationServiceTest extends AbstractJpaTest {
     private static final String OTHER_USER = "otherUser";
     private static final int PAGE_SIZE = 25;
 
-    @Inject
+    @Autowired
     private AppProperties appProperties;
-    @Inject
+    @Autowired
     private NotificationRepository notificationRepository;
     @MockBean
     private UserService userService;
 
-    @Inject
+    @Autowired
     private UserNotificationService userNotificationService;
 
     @Override

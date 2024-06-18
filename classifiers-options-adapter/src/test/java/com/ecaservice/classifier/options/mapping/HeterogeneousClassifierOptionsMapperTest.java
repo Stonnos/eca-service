@@ -7,10 +7,9 @@ import eca.ensemble.ModifiedHeterogeneousClassifier;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-
-import javax.inject.Inject;
 
 /**
  * Unit tests for checking {@link HeterogeneousClassifierOptionsMapper} functionality.
@@ -21,7 +20,7 @@ import javax.inject.Inject;
 @Import({HeterogeneousClassifierOptionsMapperImpl.class, HeterogeneousClassifierFactory.class})
 class HeterogeneousClassifierOptionsMapperTest {
 
-    @Inject
+    @Autowired
     private HeterogeneousClassifierOptionsMapper heterogeneousClassifierOptionsMapper;
 
     @Test

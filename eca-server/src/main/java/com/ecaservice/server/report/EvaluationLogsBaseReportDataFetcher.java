@@ -11,11 +11,11 @@ import com.ecaservice.server.report.model.EvaluationLogBean;
 import com.ecaservice.server.repository.InstancesInfoRepository;
 import com.ecaservice.server.service.evaluation.EvaluationLogDataService;
 import com.ecaservice.web.dto.model.PageRequestDto;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.PostConstruct;
-import javax.inject.Inject;
+import jakarta.annotation.PostConstruct;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -42,7 +42,7 @@ public class EvaluationLogsBaseReportDataFetcher extends
      * @param evaluationLogDataService - evaluation log service bean
      * @param evaluationLogMapper      - evaluation log mapper bean
      */
-    @Inject
+    @Autowired
     public EvaluationLogsBaseReportDataFetcher(FilterTemplateService filterService,
                                                InstancesInfoRepository instancesInfoRepository,
                                                EvaluationLogDataService evaluationLogDataService,

@@ -73,6 +73,9 @@ eureka:
       defaultZone: http://discovery-server:8761/eureka
 
 management:
+  tracing:
+    sampling:
+      probability: 1.0
   metrics:
     tags:
       application: ${spring.application.name}

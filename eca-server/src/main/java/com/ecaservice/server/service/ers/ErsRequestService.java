@@ -24,6 +24,7 @@ import feign.RetryableException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.Cacheable;
+import io.micrometer.tracing.annotation.NewSpan;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -58,6 +59,7 @@ public class ErsRequestService {
      *
      * @param ersEvaluationRequestData - ers evaluation request data
      */
+    @NewSpan
     public void saveEvaluationResults(ErsEvaluationRequestData ersEvaluationRequestData) {
         var ersRequest = ersEvaluationRequestData.getErsRequest();
         ersRequest.setRequestId(UUID.randomUUID().toString());
@@ -78,6 +80,7 @@ public class ErsRequestService {
      * @param evaluationResultsRequest - evaluation results request
      * @param ersRequest               - evaluation results service request
      */
+    @NewSpan
     public void saveEvaluationResults(EvaluationResultsRequest evaluationResultsRequest, ErsRequest ersRequest) {
         try {
             ersRequest.setRequestDate(LocalDateTime.now());
@@ -103,6 +106,7 @@ public class ErsRequestService {
      * @param requestId - ERS request id
      * @return evaluation results simple response
      */
+    @NewSpan
     @Cacheable(value = CacheNames.EVALUATION_RESULTS_CACHE_NAME)
     public GetEvaluationResultsResponse getEvaluationResults(String requestId) {
         log.info("Starting to get evaluation results simple response for request id [{}]", requestId);
@@ -120,6 +124,7 @@ public class ErsRequestService {
      * @param requestModel             - classifier options request entity
      * @return optimal classifier options
      */
+    @NewSpan
     public ClassifierOptionsResult getOptimalClassifierOptions(ClassifierOptionsRequest classifierOptionsRequest,
                                                                ClassifierOptionsRequestModel requestModel) {
         requestModel.setRequestDate(LocalDateTime.now());

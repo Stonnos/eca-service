@@ -5,10 +5,9 @@ import com.ecaservice.web.push.dto.UserPushNotificationRequest;
 import com.ecaservice.web.push.entity.NotificationEntity;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-
-import javax.inject.Inject;
 
 import static com.ecaservice.web.push.TestHelperUtils.createNotificationEntity;
 import static com.ecaservice.web.push.TestHelperUtils.createSystemPushRequest;
@@ -24,7 +23,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Import(NotificationMapperImpl.class)
 class NotificationMapperTest {
 
-    @Inject
+    @Autowired
     private NotificationMapper notificationMapper;
 
     @Test
@@ -65,6 +64,7 @@ class NotificationMapperTest {
         assertThat(pushRequestDto.getMessageType()).isEqualTo(userPushNotificationRequest.getMessageType());
         assertThat(pushRequestDto.isShowMessage()).isTrue();
         assertThat(pushRequestDto.getRequestId()).isEqualTo(userPushNotificationRequest.getRequestId());
+        assertThat(pushRequestDto.getCorrelationId()).isEqualTo(userPushNotificationRequest.getCorrelationId());
         assertThat(pushRequestDto.getPushType()).isEqualTo(PushType.USER_NOTIFICATION);
         assertThat(pushRequestDto.getAdditionalProperties()).containsAllEntriesOf(
                 userPushNotificationRequest.getAdditionalProperties());
@@ -79,6 +79,7 @@ class NotificationMapperTest {
         assertThat(pushRequestDto.getMessageType()).isEqualTo(systemPushRequest.getMessageType());
         assertThat(pushRequestDto.isShowMessage()).isEqualTo(systemPushRequest.isShowMessage());
         assertThat(pushRequestDto.getRequestId()).isEqualTo(systemPushRequest.getRequestId());
+        assertThat(pushRequestDto.getCorrelationId()).isEqualTo(systemPushRequest.getCorrelationId());
         assertThat(pushRequestDto.getPushType()).isEqualTo(PushType.SYSTEM);
         assertThat(pushRequestDto.getAdditionalProperties()).containsAllEntriesOf(
                 systemPushRequest.getAdditionalProperties());

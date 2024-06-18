@@ -28,9 +28,10 @@ public class LogHelper {
         if (!StringUtils.isEmpty(key) && !StringUtils.isEmpty(value)) {
             MDC.put(key, value);
             BaggageField field = BaggageField.getByName(key);
-            if (field != null) {
-                field.updateValue(value);
+            if (field == null) {
+                field = BaggageField.create(key);
             }
+            field.updateValue(value);
         }
     }
 

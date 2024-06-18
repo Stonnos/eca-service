@@ -1,0 +1,6 @@
+id;_label;_value;filter_dictionary_id
+1;Действия пользователя в личном кабинете;USER_PROFILE_ACTIONS;1
+2;Действия с конфигурациями классификаторов;CLASSIFIERS_CONFIGURATIONS_ACTIONS;1
+3;Действия с обучающими выборками;DATA_STORAGE_ACTIONS;1
+4;Действия с заявками на построение моделей;EVALUATION_REQUESTS_ACTIONS;1
+5;Действия с историей результатов классификации;EVALUATION_RESULTS_HISTORY_ACTIONS;1

@@ -3,8 +3,8 @@ package com.ecaservice.ers.service;
 import com.ecaservice.ers.config.ErsConfig;
 import com.ecaservice.ers.dto.ClassifierOptionsRequest;
 import com.ecaservice.ers.dto.EvaluationMethodReport;
-import com.ecaservice.ers.dto.SortDirection;
 import com.ecaservice.ers.dto.EvaluationResultsStatisticsField;
+import com.ecaservice.ers.dto.SortDirection;
 import com.ecaservice.ers.exception.DataNotFoundException;
 import com.ecaservice.ers.filter.OptimalEvaluationResultsFilter;
 import com.ecaservice.ers.model.ClassifierOptionsInfo;
@@ -13,6 +13,7 @@ import com.ecaservice.ers.repository.EvaluationResultsInfoRepository;
 import com.ecaservice.ers.repository.InstancesInfoRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import io.micrometer.tracing.annotation.NewSpan;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -49,6 +50,7 @@ public class ClassifierOptionsService {
      * @param classifierOptionsRequest - classifier options request
      * @return optimal classifiers options list
      */
+    @NewSpan
     public List<ClassifierOptionsInfo> findBestClassifierOptions(ClassifierOptionsRequest classifierOptionsRequest) {
         String dataHash = classifierOptionsRequest.getDataHash();
         var instancesInfo = instancesInfoRepository.findByDataMd5Hash(dataHash);

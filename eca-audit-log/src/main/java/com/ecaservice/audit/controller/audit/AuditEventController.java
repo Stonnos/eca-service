@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.validation.Valid;
+import jakarta.validation.Valid;
 
 /**
  * Implements REST API for audit events.
@@ -68,7 +68,8 @@ public class AuditEventController {
     )
     @PostMapping(value = "/save")
     public void saveAuditEvent(@Valid @RequestBody AuditEventRequest auditEventRequest) {
-        log.debug("Request audit event: {}", auditEventRequest);
+        log.info("Request audit event [{}]: {}", auditEventRequest.getEventId(), auditEventRequest);
         auditLogService.save(auditEventRequest);
+        log.info("Audit event request [{}] has been processed", auditEventRequest.getEventId());
     }
 }

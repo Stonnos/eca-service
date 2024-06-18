@@ -2,10 +2,9 @@ package com.ecaservice.core.audit.mapping;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-
-import javax.inject.Inject;
 
 import static com.ecaservice.core.audit.TestHelperUtils.createAuditCodeEntity;
 import static com.ecaservice.core.audit.TestHelperUtils.createAuditEventTemplateEntity;
@@ -22,7 +21,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Import(AuditMapperImpl.class)
 class AuditMapperTest {
 
-    @Inject
+    @Autowired
     private AuditMapper auditMapper;
 
     @Test

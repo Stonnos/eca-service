@@ -23,11 +23,11 @@ import com.ecaservice.ers.model.EvaluationResultsInfo;
 import com.ecaservice.ers.repository.EvaluationResultsInfoRepository;
 import com.ecaservice.ers.repository.InstancesInfoRepository;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.context.annotation.Import;
 
-import javax.inject.Inject;
 import java.util.UUID;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
@@ -57,11 +57,11 @@ class EvaluationResultsServiceTest extends AbstractJpaTest {
     @MockBean
     private LockMeterService lockMeterService;
 
-    @Inject
+    @Autowired
     private EvaluationResultsService evaluationResultsService;
-    @Inject
+    @Autowired
     private EvaluationResultsInfoRepository evaluationResultsInfoRepository;
-    @Inject
+    @Autowired
     private InstancesInfoRepository instancesInfoRepository;
 
     @Override

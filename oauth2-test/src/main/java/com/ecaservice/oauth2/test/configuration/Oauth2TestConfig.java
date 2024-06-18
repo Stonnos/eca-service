@@ -13,32 +13,12 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 public class Oauth2TestConfig {
 
     /**
-     * User login
+     * Username
      */
-    private String username;
-
-    /**
-     * User password
-     */
-    private String password;
-
-    /**
-     * Client id
-     */
-    private String clientId;
-
-    /**
-     * Client secret
-     */
-    private String secret;
+    private String username = "admin";
 
     /**
      * Scope
      */
-    private String scope;
-
-    /**
-     * Available grant types
-     */
-    private String[] grantTypes;
+    private String scope = "web";
 }

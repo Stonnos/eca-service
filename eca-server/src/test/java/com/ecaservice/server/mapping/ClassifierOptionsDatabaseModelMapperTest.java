@@ -6,10 +6,10 @@ import com.ecaservice.server.report.model.ClassifierOptionsBean;
 import com.ecaservice.web.dto.model.ClassifierOptionsDto;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import javax.inject.Inject;
 import java.util.Arrays;
 import java.util.List;
 
@@ -26,7 +26,7 @@ class ClassifierOptionsDatabaseModelMapperTest {
 
     private static final long ID = 1L;
 
-    @Inject
+    @Autowired
     private ClassifierOptionsDatabaseModelMapper classifierOptionsDatabaseModelMapper;
 
     @Test

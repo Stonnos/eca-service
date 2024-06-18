@@ -35,14 +35,13 @@ import eca.trees.CART;
 import eca.trees.J48;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import weka.classifiers.AbstractClassifier;
 import weka.classifiers.bayes.BayesNet;
-
-import javax.inject.Inject;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -58,9 +57,9 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 @Import({ClassifiersOptionsAutoConfiguration.class, ClassifierOptionsAdapter.class})
 class ClassifierOptionsAdapterTest {
 
-    @Inject
+    @Autowired
     private ClassifierOptionsAdapter classifierOptionsAdapter;
-    @Inject
+    @Autowired
     private ClassifiersOptionsConfig classifiersOptionsConfig;
 
     @Test

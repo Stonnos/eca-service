@@ -6,16 +6,16 @@ import com.ecaservice.data.loader.entity.InstancesEntity;
 import com.ecaservice.data.loader.repository.InstancesRepository;
 import com.ecaservice.data.loader.service.InstancesService;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 
-import javax.inject.Inject;
 import java.time.LocalDateTime;
 
 import static com.ecaservice.data.loader.TestHelperUtils.createInstancesEntity;
+import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.any;
 
 /**
  * Unit tests for {@link  InstancesDataCleaner} class.
@@ -27,9 +27,9 @@ class InstancesDataCleanerTest extends AbstractJpaTest {
     @MockBean
     private InstancesService instancesService;
 
-    @Inject
+    @Autowired
     private InstancesRepository instancesRepository;
-    @Inject
+    @Autowired
     private InstancesDataCleaner instancesDataCleaner;
 
     @Override

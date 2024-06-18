@@ -6,15 +6,19 @@ import com.ecaservice.oauth.entity.TfaCodeEntity;
 import com.ecaservice.oauth.entity.UserEntity;
 import com.ecaservice.oauth.repository.TfaCodeRepository;
 import com.ecaservice.oauth.repository.UserEntityRepository;
-import com.ecaservice.oauth.service.SerializationHelper;
+import com.ecaservice.oauth.security.model.TfaCodeAuthenticationRequest;
+import com.ecaservice.oauth.service.AuthenticationJsonSerializer;
+import com.ecaservice.user.model.Role;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Import;
-import org.springframework.security.oauth2.common.exceptions.InvalidGrantException;
-import org.springframework.security.oauth2.provider.OAuth2Authentication;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 
-import javax.inject.Inject;
 import java.time.LocalDateTime;
 import java.util.Collections;
 
@@ -22,15 +26,13 @@ import static com.ecaservice.oauth.TestHelperUtils.createUserEntity;
 import static org.apache.commons.codec.digest.DigestUtils.md5Hex;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
 
 /**
  * Unit tests for {@link TfaCodeService} class.
  *
  * @author Roman Batygin
  */
-@Import({TfaCodeService.class, TfaConfig.class})
+@Import({TfaCodeService.class, TfaConfig.class, AuthenticationJsonSerializer.class})
 class TfaCodeServiceTest extends AbstractJpaTest {
 
     private static final String USER = "user";
@@ -39,30 +41,28 @@ class TfaCodeServiceTest extends AbstractJpaTest {
     private static final String INVALID_TOKEN = "1";
     private static final String INVALID_CODE = "2";
     private static final String AUTHENTICATION = "auth";
+    private static final String CLIENT_ID = "clientId";
+    private static final String PASSWORD = "pass";
 
-    @MockBean
-    private SerializationHelper serializationHelper;
-
-    @Inject
+    @Autowired
     private TfaConfig tfaConfig;
-    @Inject
+    @Autowired
     private TfaCodeService tfaCodeService;
-    @Inject
+    @Autowired
     private UserEntityRepository userEntityRepository;
-    @Inject
+    @Autowired
     private TfaCodeRepository tfaCodeRepository;
 
-    @Mock
-    private OAuth2Authentication oAuth2Authentication;
+    private Authentication authentication;
 
     private UserEntity userEntity;
 
     @Override
     public void init() {
         userEntity = createAndSaveUser();
-        when(oAuth2Authentication.getName()).thenReturn(USER);
-        when(serializationHelper.serialize(any())).thenReturn(AUTHENTICATION);
-        when(serializationHelper.deserialize(any())).thenReturn(oAuth2Authentication);
+        var authorities = Collections.singletonList(new SimpleGrantedAuthority(Role.ROLE_SUPER_ADMIN));
+        UserDetails userDetails = new User(USER, PASSWORD, authorities);
+        authentication = new UsernamePasswordAuthenticationToken(userDetails, null, authorities);
     }
 
     @Override
@@ -74,7 +74,8 @@ class TfaCodeServiceTest extends AbstractJpaTest {
     @Test
     void testCreateAuthorizationCode() {
         createAndSaveTfaCode(userEntity);
-        var tfaCodeModel = tfaCodeService.createAuthorizationCode(oAuth2Authentication);
+        var tfaCodeModel =
+                tfaCodeService.createAuthorizationCode(new TfaCodeAuthenticationRequest(CLIENT_ID, authentication));
         assertThat(tfaCodeModel).isNotNull();
         assertThat(tfaCodeModel.getCode()).hasSize(tfaConfig.getCodeLength());
         assertThat(tfaCodeRepository.count()).isOne();
@@ -89,14 +90,17 @@ class TfaCodeServiceTest extends AbstractJpaTest {
 
     @Test
     void testConsumeAuthorizationCode() {
-        var tfaCodeModel = tfaCodeService.createAuthorizationCode(oAuth2Authentication);
-        var authentication = tfaCodeService.consumeAuthorizationCode(tfaCodeModel.getToken(), tfaCodeModel.getCode());
-        assertThat(authentication).isNotNull();
+        var tfaCodeModel =
+                tfaCodeService.createAuthorizationCode(new TfaCodeAuthenticationRequest(CLIENT_ID, authentication));
+        var tfaCodeAuthenticationRequest =
+                tfaCodeService.consumeAuthorizationCode(tfaCodeModel.getToken(), tfaCodeModel.getCode());
+        assertThat(tfaCodeAuthenticationRequest).isNotNull();
+        assertThat(tfaCodeAuthenticationRequest.getClientId()).isEqualTo(CLIENT_ID);
     }
 
     @Test
     void testConsumeInvalidAuthorizationCode() {
-        assertThrows(InvalidGrantException.class,
+        assertThrows(OAuth2AuthenticationException.class,
                 () -> tfaCodeService.consumeAuthorizationCode(INVALID_TOKEN, INVALID_CODE));
     }
 
@@ -109,6 +113,7 @@ class TfaCodeServiceTest extends AbstractJpaTest {
     private void createAndSaveTfaCode(UserEntity userEntity) {
         var tfaCodeEntity = new TfaCodeEntity();
         tfaCodeEntity.setUserEntity(userEntity);
+        tfaCodeEntity.setRegisteredClientId(CLIENT_ID);
         tfaCodeEntity.setToken(md5Hex(TEST_TOKEN));
         tfaCodeEntity.setCode(md5Hex(TEST_CODE));
         tfaCodeEntity.setAuthentication(AUTHENTICATION);

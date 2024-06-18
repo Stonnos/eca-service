@@ -15,10 +15,10 @@ import com.ecaservice.server.service.experiment.ExperimentProgressService;
 import com.ecaservice.server.service.experiment.ExperimentStepService;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Import;
 import weka.core.Instances;
 
-import javax.inject.Inject;
 import java.util.concurrent.Executors;
 
 import static com.ecaservice.server.TestHelperUtils.createExperimentHistory;
@@ -44,13 +44,13 @@ class ExperimentModelProcessorStepHandlerTest extends AbstractStepHandlerTest {
     @Mock
     private ExperimentModelLocalStorage experimentModelLocalStorage;
 
-    @Inject
+    @Autowired
     private ExperimentConfig experimentConfig;
-    @Inject
+    @Autowired
     private ExperimentStepService experimentStepService;
-    @Inject
+    @Autowired
     private ExperimentProgressService experimentProgressService;
-    @Inject
+    @Autowired
     private ExperimentRepository experimentRepository;
 
     private ExperimentModelProcessorStepHandler experimentModelProcessorStepHandler;

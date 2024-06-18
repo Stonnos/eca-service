@@ -5,10 +5,9 @@ import eca.ensemble.AdaBoostClassifier;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-
-import javax.inject.Inject;
 
 /**
  * Unit tests for checking {@link AdaBoostMapperTest} functionality.
@@ -19,7 +18,7 @@ import javax.inject.Inject;
 @Import(AdaBoostMapperImpl.class)
 class AdaBoostMapperTest {
 
-    @Inject
+    @Autowired
     private AdaBoostMapper adaBoostMapper;
 
     @Test

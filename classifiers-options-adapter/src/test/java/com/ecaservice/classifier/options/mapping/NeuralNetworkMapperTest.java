@@ -8,10 +8,9 @@ import eca.neural.functions.LogisticFunction;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-
-import javax.inject.Inject;
 
 /**
  * Unit tests for checking {@link NeuralNetworkMapper} functionality.
@@ -24,7 +23,7 @@ class NeuralNetworkMapperTest {
 
     private static final double COEFFICIENT = 2d;
 
-    @Inject
+    @Autowired
     private NeuralNetworkMapper neuralNetworkMapper;
 
     @Test

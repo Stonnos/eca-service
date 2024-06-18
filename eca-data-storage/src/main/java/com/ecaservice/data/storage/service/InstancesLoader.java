@@ -2,15 +2,16 @@ package com.ecaservice.data.storage.service;
 
 import com.ecaservice.common.web.exception.FileProcessingException;
 import com.ecaservice.common.web.exception.InvalidFileException;
+import com.ecaservice.data.storage.config.EcaDsConfig;
 import com.ecaservice.data.storage.model.MultipartFileResource;
 import eca.data.file.FileDataLoader;
+import io.micrometer.tracing.annotation.NewSpan;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import weka.core.Instances;
 
-import static eca.data.FileUtils.ALL_EXTENSIONS;
-import static eca.data.FileUtils.isValidTrainDataFile;
+import static com.ecaservice.common.web.util.FileUtils.isValidExtension;
 
 /**
  * Service to load instances.
@@ -23,6 +24,7 @@ import static eca.data.FileUtils.isValidTrainDataFile;
 public class InstancesLoader {
 
     private final FileDataLoader fileDataLoader;
+    private final EcaDsConfig ecaDsConfig;
 
     /**
      * Loads instances from multipart resource.
@@ -30,11 +32,12 @@ public class InstancesLoader {
      * @param multipartFileResource - multipart resource
      * @return instances object
      */
+    @NewSpan
     public Instances load(MultipartFileResource multipartFileResource) {
-        if (!isValidTrainDataFile(multipartFileResource.getFile())) {
+        if (!isValidExtension(multipartFileResource.getFile(), ecaDsConfig.getSupportedDataFileExtensions())) {
             throw new InvalidFileException(
                     String.format("Invalid file [%s] extension. Expected one of %s", multipartFileResource.getFile(),
-                            ALL_EXTENSIONS));
+                            ecaDsConfig.getSupportedDataFileExtensions()));
         }
         log.info("Starting to load data from file {}", multipartFileResource.getFile());
         fileDataLoader.setSource(multipartFileResource);

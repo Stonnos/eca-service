@@ -13,6 +13,7 @@ import feign.RetryableException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.Cacheable;
+import io.micrometer.tracing.annotation.NewSpan;
 import org.springframework.stereotype.Service;
 
 import static com.ecaservice.server.config.cache.CacheNames.INSTANCES_META_DATA_CACHE;
@@ -37,6 +38,7 @@ public class InstancesMetaDataService {
      * @param uuid - data uuid
      * @return instances meta data
      */
+    @NewSpan
     @Cacheable(value = INSTANCES_META_DATA_CACHE)
     public InstancesMetaDataModel getInstancesMetaData(String uuid) {
         try {

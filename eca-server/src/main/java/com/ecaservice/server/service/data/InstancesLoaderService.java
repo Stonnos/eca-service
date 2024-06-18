@@ -6,6 +6,7 @@ import eca.data.file.converter.InstancesConverter;
 import eca.data.file.model.InstancesModel;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import io.micrometer.tracing.annotation.NewSpan;
 import org.springframework.stereotype.Service;
 import weka.core.Instances;
 
@@ -32,6 +33,7 @@ public class InstancesLoaderService {
      * @param uuid - instances uuid
      * @return instances
      */
+    @NewSpan
     public Instances loadInstances(String uuid) {
         log.info("Starting to load instances [{}] from data storage", uuid);
         var instancesMetaData = instancesMetaDataService.getInstancesMetaData(uuid);

@@ -2,6 +2,8 @@ package com.ecaservice.ers.controller.internal;
 
 import com.ecaservice.ers.dto.EvaluationResultsRequest;
 import com.google.common.collect.ImmutableList;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.Validator;
 import org.apache.commons.beanutils.PropertyUtilsBean;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.BeforeEach;
@@ -11,8 +13,6 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import javax.validation.ConstraintViolation;
-import javax.validation.Validator;
 import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.List;
@@ -21,7 +21,7 @@ import java.util.UUID;
 import java.util.function.Function;
 
 import static com.ecaservice.ers.TestHelperUtils.buildEvaluationResultsReport;
-import static javax.validation.Validation.buildDefaultValidatorFactory;
+import static jakarta.validation.Validation.buildDefaultValidatorFactory;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**

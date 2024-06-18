@@ -25,10 +25,10 @@ import com.ecaservice.web.dto.model.PageRequestDto;
 import com.ecaservice.web.dto.model.SortFieldRequestDto;
 import com.google.common.collect.ImmutableList;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 
-import javax.inject.Inject;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Collections;
@@ -60,12 +60,12 @@ class ExperimentsBaseReportDataFetcherTest extends AbstractJpaTest {
     @MockBean
     private ExperimentStepProcessor experimentStepProcessor;
 
-    @Inject
+    @Autowired
     private ExperimentRepository experimentRepository;
-    @Inject
+    @Autowired
     private InstancesInfoRepository instancesInfoRepository;
 
-    @Inject
+    @Autowired
     private ExperimentsBaseReportDataFetcher experimentsBaseReportDataFetcher;
 
     @Override

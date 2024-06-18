@@ -18,9 +18,9 @@ import org.springframework.validation.BindException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
-import javax.validation.ConstraintViolation;
-import javax.validation.ConstraintViolationException;
-import javax.validation.Path;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.ConstraintViolationException;
+import jakarta.validation.Path;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
@@ -70,13 +70,6 @@ class GlobalExceptionHandlerTest {
         var errorResponse =
                 exceptionHandler.handleValidationError(new ValidationErrorException(CommonErrorCode.INVALID_FORMAT_CODE, ERROR_MESSAGE));
         assertResponse(errorResponse, CommonErrorCode.INVALID_FORMAT_CODE.getCode(), null, ERROR_MESSAGE);
-    }
-
-    @Test
-    void testBadRequest() {
-        var responseEntity = exceptionHandler.handleBadRequest(new IllegalStateException());
-        assertThat(responseEntity).isNotNull();
-        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
     }
 
     @Test

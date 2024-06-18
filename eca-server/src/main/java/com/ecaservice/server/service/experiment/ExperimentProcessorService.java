@@ -10,10 +10,14 @@ import eca.dataminer.AbstractExperiment;
 import eca.dataminer.IterativeExperiment;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import io.micrometer.tracing.annotation.NewSpan;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
+
+import static com.ecaservice.common.web.util.LogHelper.TX_ID;
+import static com.ecaservice.common.web.util.LogHelper.putMdc;
 
 /**
  * Experiment processing service.
@@ -38,10 +42,12 @@ public class ExperimentProcessorService {
      * @param initializationParams - experiment initialization params {@link InitializationParams}
      * @return experiment history
      */
+    @NewSpan
     public AbstractExperiment<?> processExperimentHistory(Experiment experiment,
                                                           Cancelable cancelable,
                                                           InitializationParams initializationParams) {
         Assert.notNull(initializationParams, "Initialization params is not specified!");
+        putMdc(TX_ID, experiment.getRequestId());
         log.info("Starting to initialize experiment [{}]", experiment.getRequestId());
         AbstractExperiment<?> abstractExperiment =
                 experiment.getExperimentType().handle(experimentInitializer, initializationParams);

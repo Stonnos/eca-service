@@ -13,18 +13,9 @@
     <include file="db/changelog/v6-create-classifier-options-request-table.xml"/>
     <include file="db/changelog/v7-drop-ip-address-columns.xml"/>
     <include file="db/changelog/v8-create-email-request-table.xml"/>
-    <include file="db/changelog/v9-create-filter-templates.xml"/>
     <include file="db/changelog/v10-create-classifier-input-options-table.xml"/>
     <include file="db/changelog/v11-drop-input-options-table.xml"/>
-    <include file="db/changelog/v12-add-instances-info-filter-column.xml"/>
-    <include file="db/changelog/v13-create-global-filter-templates.xml"/>
-    <include file="db/changelog/v14-rename-filter-template-columns.xml"/>
-    <include file="db/changelog/v15-rename-filter-dictionaries-names.xml"/>
-    <include file="db/changelog/v16-remove-filter-dictionary-null-values.xml"/>
-    <include file="db/changelog/v17-add-filter-field-multiple-column.xml"/>
-    <include file="db/changelog/v18-change-experiment-types.xml"/>
     <include file="db/changelog/v19-add-experiment-token-column.xml"/>
-    <include file="db/changelog/v20-add-enum-fields-for-global-filter.xml"/>
     <include file="db/changelog/v21-create-classifier-info-table.xml"/>
     <include file="db/changelog/v22-create-experiment-results-table.xml"/>
     <include file="db/changelog/v23-drop-experiment-id-column.xml"/>
@@ -34,22 +25,18 @@
     <include file="db/changelog/v27-rename-evaluation-log-fields.xml"/>
     <include file="db/changelog/v28-rename-experiment-fields.xml"/>
     <include file="db/changelog/v29-create-classifiers-configuration-table.xml"/>
-    <include file="db/changelog/v30-add-classifiers-configuration-global-filter-fields.xml"/>
     <include file="db/changelog/v31-drop-email-request-table.xml"/>
-    <include file="db/changelog/v32-delete-ers-response-statuses.xml"/>
     <include file="db/changelog/v33-add-classifiers-configuration-created-by-column.xml"/>
-    <include file="db/changelog/v34-add-classifiers-configuration-created-by-global-filter.xml"/>
     <include file="db/changelog/v35-create-lock-table.xml"/>
     <include file="db/changelog/v36-create-app-instance-table.xml"/>
     <include file="db/changelog/v37-create-experiment-progress-table.xml"/>
     <include file="db/changelog/v38-add-experiment-class-index-column.xml"/>
-    <include file="db/changelog/v39-insert-in-progress-request-status.xml"/>
     <include file="db/changelog/v40-add-not-null-constraints.xml"/>
     <include file="db/changelog/v41-drop-lock-table.xml"/>
+    <include file="../redelivery-changelog.xml" relativeToChangelogFile="true"/>
     <include file="../audit-changelog.xml" relativeToChangelogFile="true"/>
     <include file="db/changelog/v42-insert-audit-codes-and-events.xml"/>
     <include file="../filter-template-changelog.xml" relativeToChangelogFile="true"/>
-    <include file="db/changelog/v43-add-classifiers-configuration-id-global-filter.xml"/>
     <include file="db/changelog/v44-drop-app-instance-table.xml"/>
     <include file="db/changelog/v45-add-channel-type-column.xml"/>
     <include file="../mail-client-changelog.xml" relativeToChangelogFile="true"/>
@@ -59,14 +46,10 @@
     <include file="db/changelog/v49-add-request-id-unique-idx.xml"/>
     <include file="../form-template-changelog.xml" relativeToChangelogFile="true"/>
     <include file="db/changelog/v51-add-classifier-options-column.xml"/>
-    <include file="db/changelog/v52-insert-classifiers-filter-dictionary.xml"/>
     <include file="db/changelog/v53-create-classifiers-configuration-history-table.xml"/>
-    <include file="db/changelog/v54-add-classifiers-configuration-history-global-filter-fields.xml"/>
-    <include file="db/changelog/v55-insert-classifiers-configuration-history-filter-template.xml"/>
     <include file="db/changelog/v56-create-message-template-table.xml"/>
     <include file="db/changelog/v57-insert-message-templates.xml"/>
     <include file="db/changelog/v58-add-experiment-download-url-column.xml"/>
-    <include file="db/changelog/v59-insert-experiment-relation-name-in-filter-templates.xml"/>
     <include file="db/changelog/v60-create-experiment-step-table.xml"/>
     <include file="db/changelog/v61-drop-experiment-first-name-column.xml"/>
     <include file="db/changelog/v62-drop-experiment-email-not-null-constraint.xml"/>
@@ -76,15 +59,10 @@
     <include file="db/changelog/v66-add-classifier-options-request-request-id-column.xml"/>
     <include file="db/changelog/v67-add-instances-info-created-date-column.xml"/>
     <include file="db/changelog/v68-add-experiment-max-pct-correct-column.xml"/>
-    <include file="db/changelog/v69-update-filter-templates.xml"/>
-    <include file="db/changelog/v70-insert-instances-info-filter-template.xml"/>
-    <include file="db/changelog/v71-insert-classifiers-configuration-filter-template.xml"/>
-    <include file="db/changelog/v72-insert-classifiers-options-filter-template.xml"/>
     <include file="db/changelog/v73-drop-experiment-class-index-column.xml"/>
     <include file="db/changelog/v74-add-evaluation-log-train-data-uuid-column.xml"/>
-    <include file="db/changelog/v75-insert-evaluation-log-created-by-in-filter-templates.xml"/>
     <include file="../insert-classifier-form-templates.xml" relativeToChangelogFile="true"/>
-    <include file="db/changelog/v76-delete-classifier-options-request-filter-templates.xml"/>
     <include file="../user-profile-options-cache-client-changelog.xml" relativeToChangelogFile="true"/>
-    <include file="db/changelog/v77-change-experiment-created-by-filter-field-type.xml"/>
+    <include file="db/changelog/v78-clear-filter-templates.xml"/>
+    <include file="db/changelog/v79-update-filter-templates.xml"/>
 </databaseChangeLog>
