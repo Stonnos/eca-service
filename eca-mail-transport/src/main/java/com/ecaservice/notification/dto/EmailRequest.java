@@ -41,6 +41,16 @@ public class EmailRequest {
     private String requestId;
 
     /**
+     * Correlation id
+     */
+    @NotBlank
+    @Pattern(regexp = UUID_PATTERN)
+    @Size(min = VALUE_1, max = UUID_MAX_SIZE)
+    @Schema(description = "Correlation id",
+            example = "98a57ab7-6494-4d9d-b793-c807fdf02692", requiredMode = Schema.RequiredMode.REQUIRED)
+    private String correlationId;
+
+    /**
      * Receiver email
      */
     @NotBlank

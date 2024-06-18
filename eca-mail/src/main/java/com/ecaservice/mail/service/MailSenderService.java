@@ -29,12 +29,12 @@ public class MailSenderService {
      * @param email - email object
      */
     public void sendEmail(Email email) throws MessagingException {
-        log.info("Starting to send email message [{}] from '{}' to '{}'.", email.getUuid(), email.getSender(),
-                email.getReceiver());
+        log.info("Starting to send email message [{}] with subject [{}] from '{}' to '{}'.", email.getUuid(),
+                email.getSubject(), email.getSender(), email.getReceiver());
         MimeMessage message = buildMimeMessage(email);
         mailSender.send(message);
-        log.info("Email message [{}] has been sent from '{}' to '{}'.", email.getUuid(), email.getSender(),
-                email.getReceiver());
+        log.info("Email message [{}] with subject [{}] has been sent from '{}' to '{}'.", email.getUuid(),
+                email.getSubject(), email.getSender(), email.getReceiver());
     }
 
     private MimeMessage buildMimeMessage(Email email) throws MessagingException {

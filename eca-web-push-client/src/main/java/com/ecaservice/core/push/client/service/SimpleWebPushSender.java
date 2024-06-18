@@ -3,6 +3,7 @@ package com.ecaservice.core.push.client.service;
 import com.ecaservice.core.redelivery.annotation.Retry;
 import com.ecaservice.core.redelivery.annotation.Retryable;
 import com.ecaservice.web.push.dto.AbstractPushRequest;
+import io.micrometer.tracing.annotation.NewSpan;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -25,6 +26,7 @@ public class SimpleWebPushSender implements WebPushSender {
     private final WebPushClient webPushClient;
 
     @Override
+    @NewSpan
     @Retry(value = "webPushRequest", exceptionStrategy = FEIGN_EXCEPTION_STRATEGY,
             requestIdKey = "#pushRequest.requestId")
     public void send(AbstractPushRequest pushRequest) {

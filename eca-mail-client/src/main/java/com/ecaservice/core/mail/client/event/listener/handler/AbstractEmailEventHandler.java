@@ -27,6 +27,16 @@ public abstract class AbstractEmailEventHandler<T extends AbstractEmailEvent> {
     private final Class<T> type;
 
     /**
+     * Gets correlation id.
+     *
+     * @param emailEvent - email event
+     * @return correlation id
+     */
+    protected String getCorrelationId(T emailEvent) {
+        return UUID.randomUUID().toString();
+    }
+
+    /**
      * Gets receiver.
      *
      * @param emailEvent - email event
@@ -60,6 +70,7 @@ public abstract class AbstractEmailEventHandler<T extends AbstractEmailEvent> {
     public EmailRequest handle(T event) {
         EmailRequest emailRequest = new EmailRequest();
         emailRequest.setRequestId(UUID.randomUUID().toString());
+        emailRequest.setCorrelationId(getCorrelationId(event));
         emailRequest.setTemplateCode(getTemplateCode(event));
         emailRequest.setReceiver(getReceiver(event));
         emailRequest.setVariables(createVariables(event));
