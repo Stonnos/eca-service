@@ -1,22 +1,18 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <parent>
-        <groupId>eca.service</groupId>
         <artifactId>eca-service</artifactId>
+        <groupId>eca.service</groupId>
         <version>7.0.0</version>
     </parent>
+    <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>user-profile-options-client</artifactId>
+    <artifactId>feign-metrics</artifactId>
     <packaging>jar</packaging>
 
     <properties>
         <sonar.coverage.exclusions>
             **/config/**/*,
-            **/model/**/*,
-            **/exception/**/*
         </sonar.coverage.exclusions>
     </properties>
 
@@ -34,25 +30,8 @@
             <artifactId>spring-cloud-starter-openfeign</artifactId>
         </dependency>
         <dependency>
-            <groupId>eca.service</groupId>
-            <artifactId>feign-metrics</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>eca.service</groupId>
-            <artifactId>common-web</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>eca.service</groupId>
-            <artifactId>user-profile-options-transport</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>eca.service</groupId>
-            <artifactId>core-test</artifactId>
-            <version>${project.version}</version>
-            <scope>test</scope>
+            <groupId>io.github.openfeign</groupId>
+            <artifactId>feign-micrometer</artifactId>
         </dependency>
     </dependencies>
 
@@ -69,5 +48,4 @@
             </plugin>
         </plugins>
     </build>
-
 </project>

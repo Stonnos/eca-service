@@ -28,7 +28,8 @@
         <module>user-profile-options-transport</module>
         <module>eca-web-transport</module>
         <module>eca-report-model</module>
-        <module>feign-oauth</module>
+        <module>feign-oauth2</module>
+        <module>feign-metrics</module>
         <module>core-redelivery</module>
         <module>core-audit</module>
         <module>core-filter</module>

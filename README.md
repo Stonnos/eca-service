@@ -34,7 +34,8 @@
 * eca-audit-transport - модуль содержит dto классы для сервиса журнала аудита
 * user-profile-options-transport - модуль содержит dto классы для настроек профиля пользователя
 * eca-report-model - модуль содержит модельные классы для отчетов
-* feign-oauth - обзщая библиотека для поддержки аутентификации feign client с помощью протокола oauth2
+* feign-oauth2 - общая библиотека для поддержки аутентификации feign client с помощью протокола oauth2
+* feign-metrics - общая библиотека для поддержки метрик feign client в формате prometheus
 * eca-web-transport - модуль содержит dto классы для REST API WEB
 * core-redelivery - общая библиотека для поддержки механизмов redelivery
 * core-audit - библиотека для отправки событий аудита
