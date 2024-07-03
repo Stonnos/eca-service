@@ -30,5 +30,15 @@ public enum FieldType {
     /**
      * Boolean type
      */
-    BOOLEAN
+    BOOLEAN,
+
+    /**
+     * One of object
+     */
+    ONE_OF_OBJECT,
+
+    /**
+     * List objects
+     */
+    LIST_OBJECTS
 }

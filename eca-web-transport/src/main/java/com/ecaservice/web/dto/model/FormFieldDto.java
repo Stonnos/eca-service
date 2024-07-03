@@ -88,13 +88,13 @@ public class FormFieldDto {
     /**
      * Field dictionary
      */
-    @Schema(description = "Field dictionary")
+    @Schema(description = "Field dictionary (used for REFERENCE field type)")
     private FieldDictionaryDto dictionary;
 
     /**
-     * Place holder message
+     * Placeholder message
      */
-    @Schema(description = "Place holder message", maxLength = MAX_LENGTH_255)
+    @Schema(description = "Placeholder message", maxLength = MAX_LENGTH_255)
     private String placeHolder;
 
     /**
@@ -108,4 +108,10 @@ public class FormFieldDto {
      */
     @Schema(description = "Read only?")
     private boolean readOnly;
+
+    /**
+     * Form template group id (used for {@link FieldType#ONE_OF_OBJECT} and  {@link FieldType#LIST_OBJECTS} field types)
+     */
+    @Schema(description = "Form template group (used for ONE_OF_OBJECT and LIST_OBJECTS field types)")
+    private FormTemplateGroupDto formTemplateGroup;
 }

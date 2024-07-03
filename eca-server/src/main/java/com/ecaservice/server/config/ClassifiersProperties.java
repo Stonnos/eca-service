@@ -3,10 +3,6 @@ package com.ecaservice.server.config;
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
-import java.util.List;
-
-import static com.google.common.collect.Lists.newArrayList;
-
 /**
  * Classifiers properties.
  *
@@ -30,9 +26,4 @@ public class ClassifiersProperties {
      * Max. requests per job
      */
     private Integer maxRequestsPerJob;
-
-    /**
-     * Not supported classifier templates for web app
-     */
-    private List<String> notSupportedClassifierTemplates = newArrayList();
 }

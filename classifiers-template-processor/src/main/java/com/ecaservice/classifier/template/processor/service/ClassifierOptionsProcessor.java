@@ -145,6 +145,7 @@ public class ClassifierOptionsProcessor {
     private List<InputOptionDto> processInputOptions(FormTemplateDto template, ClassifierOptions classifierOptions) {
         return template.getFields()
                 .stream()
+                .filter(formFieldDto -> !formFieldDto.getFieldType().equals(FieldType.LIST_OBJECTS) && !formFieldDto.getFieldType().equals(FieldType.ONE_OF_OBJECT))
                 .map(formFieldDto -> {
                     var optionValue = getValue(classifierOptions, formFieldDto);
                     if (optionValue == null) {

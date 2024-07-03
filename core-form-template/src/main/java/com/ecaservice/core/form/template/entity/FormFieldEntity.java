@@ -110,6 +110,13 @@ public class FormFieldEntity {
     private FieldDictionary dictionary;
 
     /**
+     * Form template group id (used for {@link FieldType#ONE_OF_OBJECT} and  {@link FieldType#LIST_OBJECTS} field types)
+     */
+    @ManyToOne
+    @JoinColumn(name = "form_template_group_id")
+    private FormTemplateGroupEntity formTemplateGroup;
+
+    /**
      * Default value
      */
     @Column(name = "default_value")

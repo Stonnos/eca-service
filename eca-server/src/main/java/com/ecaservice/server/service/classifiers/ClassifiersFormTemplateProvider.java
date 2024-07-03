@@ -3,7 +3,6 @@ package com.ecaservice.server.service.classifiers;
 import com.ecaservice.classifier.options.model.ClassifierOptions;
 import com.ecaservice.classifier.template.processor.service.ClassifiersTemplateProvider;
 import com.ecaservice.core.form.template.service.FormTemplateProvider;
-import com.ecaservice.server.config.ClassifiersProperties;
 import com.ecaservice.server.dto.ClassifierGroupTemplatesType;
 import com.ecaservice.web.dto.model.FormTemplateDto;
 import com.ecaservice.web.dto.model.FormTemplateGroupDto;
@@ -24,7 +23,6 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class ClassifiersFormTemplateProvider {
 
-    private final ClassifiersProperties classifiersProperties;
     private final ClassifiersTemplateProvider classifiersTemplateProvider;
     private final FormTemplateProvider formTemplateProvider;
 
@@ -39,11 +37,7 @@ public class ClassifiersFormTemplateProvider {
         log.info("Request classifiers group templates with type [{}]", classifierGroupTemplatesType);
         var groupTemplates = classifierGroupTemplatesType.getTemplateNames()
                 .stream()
-                .map(groupName -> {
-                    var formTemplateGroupDto = formTemplateProvider.getFormGroupDto(groupName);
-                    removeNotSupportedClassifierTemplates(formTemplateGroupDto);
-                    return formTemplateGroupDto;
-                })
+                .map(formTemplateProvider::getFormGroupDto)
                 .collect(Collectors.toList());
         log.info("[{}] classifiers group form templates has been fetched for type [{}]", groupTemplates.size(),
                 classifierGroupTemplatesType);
@@ -68,15 +62,5 @@ public class ClassifiersFormTemplateProvider {
      */
     public FormTemplateDto getTemplate(ClassifierOptions classifierOptions) {
         return classifiersTemplateProvider.getTemplate(classifierOptions);
-    }
-
-    private void removeNotSupportedClassifierTemplates(FormTemplateGroupDto formTemplateGroupDto) {
-        var templates = formTemplateGroupDto.getTemplates();
-        var supportedTemplates = templates
-                .stream()
-                .filter(formTemplateDto -> !classifiersProperties.getNotSupportedClassifierTemplates().contains(
-                        formTemplateDto.getTemplateName()))
-                .collect(Collectors.toList());
-        formTemplateGroupDto.setTemplates(supportedTemplates);
     }
 }
