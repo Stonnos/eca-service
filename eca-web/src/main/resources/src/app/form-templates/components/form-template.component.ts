@@ -23,7 +23,6 @@ export class FormTemplateComponent implements OnInit {
   @Input()
   public submitted: boolean = false;
 
-  public editObjectItemVisibility: boolean = false;
   public selectedTemplateToEdit: FormTemplateDto;
   public selectedFormFieldsToEdit: FormField[] = [];
 
@@ -37,8 +36,8 @@ export class FormTemplateComponent implements OnInit {
     return FormTemplateComponent.DEFAULT_PLACEHOLDER;
   }
 
-  public onEditObjectItemVisibilityChange(visible): void {
-    this.editObjectItemVisibility = visible;
+  public onEditObjectItemVisibilityChange(visible, formField: FormField): void {
+    formField.editObjectItemVisibility = visible;
   }
 
   public onAddObjectItem(event, formField: FormField) {
@@ -67,7 +66,7 @@ export class FormTemplateComponent implements OnInit {
     formField.selectedItemToEdit = event.value.value;
     this.selectedTemplateToEdit = event.value.value.template.template;
     this.selectedFormFieldsToEdit = this.copyFormFields(event.value.value.template.fields);
-    this.editObjectItemVisibility = true;
+    formField.editObjectItemVisibility = true;
   }
 
   public onFinishEditObjectListItem(formFields: FormField[], formField: FormField) {
@@ -80,7 +79,7 @@ export class FormTemplateComponent implements OnInit {
   public onStartEditObjectItem(event, formField: FormField) {
     this.selectedTemplateToEdit = formField.currentValue.value.template.template;
     this.selectedFormFieldsToEdit = this.copyFormFields(formField.currentValue.value.template.fields);
-    this.editObjectItemVisibility = true;
+    formField.editObjectItemVisibility = true;
   }
 
   public onFinishEditObjectItem(formFields: FormField[], formField: FormField) {

@@ -132,8 +132,8 @@
           <app-edit-template-item-dialog
             [template]="selectedTemplateToEdit"
             [item]="selectedFormFieldsToEdit"
-            [visible]="editObjectItemVisibility"
-            (visibilityChange)="onEditObjectItemVisibilityChange($event)"
+            [visible]="formField.editObjectItemVisibility"
+            (visibilityChange)="onEditObjectItemVisibilityChange($event, formField)"
             (itemEvent)="onFinishEditObjectListItem($event, formField)">
           </app-edit-template-item-dialog>
         </ng-container>
@@ -174,8 +174,8 @@
           <app-edit-template-item-dialog
             [template]="selectedTemplateToEdit"
             [item]="selectedFormFieldsToEdit"
-            [visible]="editObjectItemVisibility"
-            (visibilityChange)="onEditObjectItemVisibilityChange($event)"
+            [visible]="formField.editObjectItemVisibility"
+            (visibilityChange)="onEditObjectItemVisibilityChange($event, formField)"
             (itemEvent)="onFinishEditObjectItem($event, formField)">
           </app-edit-template-item-dialog>
         </ng-container>

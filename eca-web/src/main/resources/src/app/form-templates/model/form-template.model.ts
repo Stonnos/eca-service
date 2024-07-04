@@ -33,6 +33,7 @@ export class FormField {
   selectedItem: any;
   selectedItemToEdit: any;
   nextItemIndex: number = 0;
+  editObjectItemVisibility: boolean = false;
   values: SelectItem[] = [];
 
   public constructor(name: string, label: string, fieldType: FieldType) {
