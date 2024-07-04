@@ -6,6 +6,7 @@ import { FormTemplatesService } from "./services/form-templates.service";
 import { FormTemplateComponent } from "./components/form-template.component";
 import { SharedModule } from "../common/shared.module";
 import { FormTemplatesMapper } from "./services/form-templates.mapper";
+import { EditTemplateItemDialogComponent } from './edit-item-dialog/edit-template-item-dialog.component';
 
 @NgModule({
   imports: [
@@ -15,10 +16,12 @@ import { FormTemplatesMapper } from "./services/form-templates.mapper";
     SharedModule
   ],
   declarations: [
-    FormTemplateComponent
+    FormTemplateComponent,
+    EditTemplateItemDialogComponent
   ],
   exports: [
-    FormTemplateComponent
+    FormTemplateComponent,
+    EditTemplateItemDialogComponent
   ],
   providers: [
     FormTemplatesService,

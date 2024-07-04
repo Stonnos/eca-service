@@ -1,5 +1,5 @@
 <div class="ui-g ui-fluid">
-  <div class="ui-g-10 mx-auto mb-4">
+  <div class="ui-g-11 mx-auto mb-4">
     <div *ngFor="let formField of formFields" class="ui-g-12 ui-md-12 mb-2">
       <div [ngSwitch]="formField.fieldType">
         <ng-container *ngSwitchCase="'REFERENCE'">
@@ -79,6 +79,70 @@
                       [(ngModel)]="formField.currentValue">
           </p-checkbox>
         </ng-container>
+
+        <ng-container *ngSwitchCase="'LIST_OBJECTS'">
+          <p-fieldset legend="{{ formField.label }}" class="object-lists-fieldset">
+            <div *ngIf="isMaxObjectItems(formField)" class="d-flex mx-auto align-items-center justify-content-center text-red">
+              Добавлено максимальное число элементов (макс. {{ formField.maxLength }})
+            </div>
+            <div class="ui-g">
+              <div class="ui-g-6">
+                <div class="ui-g">
+                  <p-listbox [options]="formField.templates"
+                             (onChange)="onObjectTemplateChange($event, formField)"
+                             class="list"
+                             optionLabel="label">
+                  </p-listbox>
+                </div>
+                <div class="ui-g">
+                 <button pButton
+                         class="w-100 mt-2"
+                         (click)="onAddObjectItem($event, formField)"
+                         [disabled]="isMaxObjectItems(formField)"
+                         label="Добавить">
+                 </button>
+                </div>
+              </div>
+              <div class="ui-g-6">
+                <div class="ui-g">
+                  <p-listbox
+                    required
+                    name="{{ formField.name }}"
+                    #field="ngModel"
+                    [options]="formField.currentValue"
+                    (onChange)="onObjectItemChange($event, formField)"
+                    (onDblClick)="onStartEditObjectItem($event, formField)"
+                    class="list"
+                    [(ngModel)]="formField.selectedItemToEdit"
+                    optionLabel="label">
+                  </p-listbox>
+                </div>
+                <div class="ui-g">
+                  <button pButton
+                          class="w-100 mt-2"
+                          [disabled]="formField.currentValue.length == 0"
+                          (click)="onDeleteObjectItem($event, formField)"
+                          label="Удалить">
+                  </button>
+                </div>
+              </div>
+            </div>
+            <div class="text-danger error-message" *ngIf="field.invalid && (field.dirty || field.touched || submitted)">
+              <div *ngIf="field?.errors?.required">
+                Добавьте хотя бы один элемент
+              </div>
+            </div>
+          </p-fieldset>
+
+          <app-edit-template-item-dialog
+            [template]="selectedTemplateToEdit"
+            [item]="selectedFormFieldsToEdit"
+            [visible]="editObjectItemVisibility"
+            (visibilityChange)="onEditObjectItemVisibilityChange($event)"
+            (itemEvent)="onFinishEditObjectItem($event, formField)">
+          </app-edit-template-item-dialog>
+        </ng-container>
+
         <ng-container *ngSwitchDefault>
         </ng-container>
       </div>

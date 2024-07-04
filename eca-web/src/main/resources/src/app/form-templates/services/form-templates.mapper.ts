@@ -4,8 +4,8 @@ import {
   FormFieldDto, FormTemplateDto
 } from "../../../../../../../target/generated-sources/typescript/eca-web-dto";
 import { SelectItem } from "primeng/api";
-import { FilterFieldType } from "../../common/model/filter-field-type.enum";
-import { FormField } from "../model/form-template.model";
+import { FormField, FormTemplate } from "../model/form-template.model";
+import { FormFieldType } from '../../common/model/form-field-type.enum';
 
 @Injectable()
 export class FormTemplatesMapper {
@@ -22,10 +22,17 @@ export class FormTemplatesMapper {
       formField.invalidPatternMessage = formFieldDto.invalidPatternMessage;
       formField.placeholder = formFieldDto.placeHolder;
       formField.defaultValue = formFieldDto.defaultValue;
-      if (formFieldDto.fieldType == FilterFieldType.REFERENCE && formFieldDto.dictionary &&
+      if (formFieldDto.fieldType == FormFieldType.REFERENCE && formFieldDto.dictionary &&
         formFieldDto.dictionary.values && formFieldDto.dictionary.values.length > 0) {
         formField.values = formFieldDto.dictionary.values.map((filterValue: FilterDictionaryValueDto) => {
           return { label: filterValue.label, value: filterValue.value };
+        });
+      }
+      if (formFieldDto.fieldType == FormFieldType.ONE_OF_OBJECT || formFieldDto.fieldType == FormFieldType.LIST_OBJECTS) {
+        formField.currentValue = [];
+        formField.templates = formFieldDto.formTemplateGroup.templates.map((template: FormTemplateDto) => {
+          const fields = this.mapToFormFields(template.fields);
+          return new FormTemplate(template.templateTitle, template, fields);
         });
       }
       if (formFieldDto.defaultValue) {
@@ -83,6 +90,10 @@ export class FormTemplatesMapper {
   private getCurrentValue(formField: FormField): any {
     if (formField.fieldType == 'REFERENCE') {
       return formField.currentValue.value;
+    } else if (formField.fieldType == 'LIST_OBJECTS') {
+      return formField.currentValue.map(value => this.mapToClassifierOptionsObject(value.value.template.fields, value.value.template.template));
+    } else if (formField.fieldType == 'ONE_OF_OBJECT') {
+      return this.mapToClassifierOptionsObject(formField.currentValue.value.template.fields, formField.currentValue.value.template.template)
     } else {
       return formField.currentValue;
     }
