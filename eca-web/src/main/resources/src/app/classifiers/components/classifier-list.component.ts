@@ -49,6 +49,7 @@ import { CurrentUserFilterService } from "../../filter/services/current-user-fil
 import { UserInfoAutocompleteHandler } from "../../filter/autocomplete/handler/user-info-autocomplete-handler";
 import { UserInfoFilterValueTransformer } from "../../filter/autocomplete/transformer/user-info-filter-value-transformer";
 import { UsersService } from "../../users/services/users.service";
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-classifier-list',
@@ -229,7 +230,9 @@ export class ClassifierListComponent extends BaseListComponent<EvaluationLogDto>
   public onCreateClassifier(evaluationRequest: EvaluationRequest): void {
     const classifierOptions = this.formTemplatesMapper.mapToClassifierOptionsObject(evaluationRequest.classifierOptions,
       this.selectedClassifierTemplate);
-    console.log(JSON.stringify(classifierOptions));
+    if (environment.debug) {
+      console.log(`Create evaluation request classifier options: ${JSON.stringify(classifierOptions)}`);
+    }
     const createEvaluationRequest =
       new CreateEvaluationRequestDto(evaluationRequest.instancesUuid, classifierOptions, evaluationRequest.evaluationMethod.value);
     this.classifiersService.createEvaluationRequest(createEvaluationRequest)
