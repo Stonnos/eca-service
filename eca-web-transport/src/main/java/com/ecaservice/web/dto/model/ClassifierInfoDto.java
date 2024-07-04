@@ -37,20 +37,8 @@ public class ClassifierInfoDto {
     private String classifierOptionsJson;
 
     /**
-     * Is meta classifier (used for stacking algorithms)
-     */
-    @Schema(description = "Is meta classifier (used for stacking algorithms)")
-    private boolean metaClassifier;
-
-    /**
      * Classifier input options list
      */
     @ArraySchema(schema = @Schema(description = "Classifier input options list"))
     private List<InputOptionDto> inputOptions;
-
-    /**
-     * Individual classifiers
-     */
-    @ArraySchema(schema = @Schema(description = "Individual classifiers"))
-    private List<ClassifierInfoDto> individualClassifiers;
 }

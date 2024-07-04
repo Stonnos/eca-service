@@ -1,9 +1,11 @@
 {
   "groupName": "classifiers",
+  "groupTitle": "Индивидуальные алгоритмы",
   "templates": [
     {
       "templateName": "KNN",
       "templateTitle": "Алгоритм k - взвешенных ближайших соседей",
+      "templateTitleFieldRef": null,
       "objectClass": "KNearestNeighboursOptions",
       "objectType": "knn",
       "fields": [
@@ -12,9 +14,9 @@
           "description": "Число ближайших соседей",
           "fieldOrder": 0,
           "fieldType": "INTEGER",
-          "minValue": 1.00,
+          "minValue": 1,
           "minInclusive": true,
-          "maxValue": 2147483647.00,
+          "maxValue": 2147483647,
           "maxInclusive": true,
           "maxLength": 255,
           "pattern": null,
@@ -22,16 +24,17 @@
           "dictionary": null,
           "placeHolder": null,
           "defaultValue": "10",
-          "readOnly": false
+          "readOnly": false,
+          "formTemplateGroup": null
         },
         {
           "fieldName": "weight",
           "description": "Вес ближайшего соседа",
           "fieldOrder": 1,
           "fieldType": "DECIMAL",
-          "minValue": 0.50,
+          "minValue": 0.5,
           "minInclusive": true,
-          "maxValue": 1.00,
+          "maxValue": 1,
           "maxInclusive": true,
           "maxLength": 255,
           "pattern": null,
@@ -39,7 +42,8 @@
           "dictionary": null,
           "placeHolder": null,
           "defaultValue": "1",
-          "readOnly": false
+          "readOnly": false,
+          "formTemplateGroup": null
         },
         {
           "fieldName": "distanceType",
@@ -76,13 +80,15 @@
           },
           "placeHolder": null,
           "defaultValue": "EUCLID",
-          "readOnly": false
+          "readOnly": false,
+          "formTemplateGroup": null
         }
       ]
     },
     {
       "templateName": "LOGISTIC",
       "templateTitle": "Логистическая регрессия",
+      "templateTitleFieldRef": null,
       "objectClass": "LogisticOptions",
       "objectType": "logistic",
       "fields": [
@@ -91,9 +97,9 @@
           "description": "Максимальное число итераций",
           "fieldOrder": 0,
           "fieldType": "INTEGER",
-          "minValue": 1.00,
+          "minValue": 1,
           "minInclusive": true,
-          "maxValue": 2147483647.00,
+          "maxValue": 2147483647,
           "maxInclusive": true,
           "maxLength": 255,
           "pattern": null,
@@ -101,7 +107,8 @@
           "dictionary": null,
           "placeHolder": null,
           "defaultValue": "200",
-          "readOnly": false
+          "readOnly": false,
+          "formTemplateGroup": null
         },
         {
           "fieldName": "useConjugateGradientDescent",
@@ -118,13 +125,15 @@
           "dictionary": null,
           "placeHolder": null,
           "defaultValue": "false",
-          "readOnly": false
+          "readOnly": false,
+          "formTemplateGroup": null
         }
       ]
     },
     {
       "templateName": "J48",
       "templateTitle": "Алгоритм J48",
+      "templateTitleFieldRef": null,
       "objectClass": "J48Options",
       "objectType": "j48",
       "fields": [
@@ -133,9 +142,9 @@
           "description": "Минимальное число объектов в листе",
           "fieldOrder": 0,
           "fieldType": "INTEGER",
-          "minValue": 0.00,
+          "minValue": 0,
           "minInclusive": true,
-          "maxValue": 2147483647.00,
+          "maxValue": 2147483647,
           "maxInclusive": true,
           "maxLength": 255,
           "pattern": null,
@@ -143,7 +152,8 @@
           "dictionary": null,
           "placeHolder": null,
           "defaultValue": "2",
-          "readOnly": false
+          "readOnly": false,
+          "formTemplateGroup": null
         },
         {
           "fieldName": "binarySplits",
@@ -160,7 +170,8 @@
           "dictionary": null,
           "placeHolder": null,
           "defaultValue": "false",
-          "readOnly": false
+          "readOnly": false,
+          "formTemplateGroup": null
         },
         {
           "fieldName": "unpruned",
@@ -177,16 +188,17 @@
           "dictionary": null,
           "placeHolder": null,
           "defaultValue": "false",
-          "readOnly": false
+          "readOnly": false,
+          "formTemplateGroup": null
         },
         {
           "fieldName": "numFolds",
           "description": "Количество блоков",
           "fieldOrder": 3,
           "fieldType": "INTEGER",
-          "minValue": 2.00,
+          "minValue": 2,
           "minInclusive": true,
-          "maxValue": 100.00,
+          "maxValue": 100,
           "maxInclusive": true,
           "maxLength": 255,
           "pattern": null,
@@ -194,7 +206,8 @@
           "dictionary": null,
           "placeHolder": null,
           "defaultValue": "3",
-          "readOnly": false
+          "readOnly": false,
+          "formTemplateGroup": null
         }
       ]
     },
@@ -240,16 +253,17 @@
           },
           "placeHolder": null,
           "defaultValue": "CART",
-          "readOnly": false
+          "readOnly": false,
+          "formTemplateGroup": null
         },
         {
           "fieldName": "minObj",
           "description": "Минимальное число объектов в листе",
           "fieldOrder": 1,
           "fieldType": "INTEGER",
-          "minValue": 0.00,
+          "minValue": 0,
           "minInclusive": true,
-          "maxValue": 2147483647.00,
+          "maxValue": 2147483647,
           "maxInclusive": true,
           "maxLength": 255,
           "pattern": null,
@@ -257,16 +271,17 @@
           "dictionary": null,
           "placeHolder": null,
           "defaultValue": "2",
-          "readOnly": false
+          "readOnly": false,
+          "formTemplateGroup": null
         },
         {
           "fieldName": "maxDepth",
           "description": "Максимальная глубина дерева",
           "fieldOrder": 2,
           "fieldType": "INTEGER",
-          "minValue": 0.00,
+          "minValue": 0,
           "minInclusive": true,
-          "maxValue": 2147483647.00,
+          "maxValue": 2147483647,
           "maxInclusive": true,
           "maxLength": 255,
           "pattern": null,
@@ -274,7 +289,8 @@
           "dictionary": null,
           "placeHolder": null,
           "defaultValue": "0",
-          "readOnly": false
+          "readOnly": false,
+          "formTemplateGroup": null
         },
         {
           "fieldName": "useBinarySplits",
@@ -291,7 +307,8 @@
           "dictionary": null,
           "placeHolder": null,
           "defaultValue": "false",
-          "readOnly": false
+          "readOnly": false,
+          "formTemplateGroup": null
         },
         {
           "fieldName": "randomTree",
@@ -308,16 +325,17 @@
           "dictionary": null,
           "placeHolder": null,
           "defaultValue": "false",
-          "readOnly": false
+          "readOnly": false,
+          "formTemplateGroup": null
         },
         {
           "fieldName": "numRandomAttr",
           "description": "Число случайных атрибутов",
           "fieldOrder": 5,
           "fieldType": "INTEGER",
-          "minValue": 0.00,
+          "minValue": 0,
           "minInclusive": true,
-          "maxValue": 2147483647.00,
+          "maxValue": 2147483647,
           "maxInclusive": true,
           "maxLength": 255,
           "pattern": null,
@@ -325,7 +343,8 @@
           "dictionary": null,
           "placeHolder": null,
           "defaultValue": "0",
-          "readOnly": false
+          "readOnly": false,
+          "formTemplateGroup": null
         },
         {
           "fieldName": "useRandomSplits",
@@ -342,16 +361,17 @@
           "dictionary": null,
           "placeHolder": null,
           "defaultValue": "false",
-          "readOnly": false
+          "readOnly": false,
+          "formTemplateGroup": null
         },
         {
           "fieldName": "numRandomSplits",
           "description": "Число случайных расщеплений атрибута",
           "fieldOrder": 7,
           "fieldType": "INTEGER",
-          "minValue": 1.00,
+          "minValue": 1,
           "minInclusive": true,
-          "maxValue": 2147483647.00,
+          "maxValue": 2147483647,
           "maxInclusive": true,
           "maxLength": 255,
           "pattern": null,
@@ -359,16 +379,17 @@
           "dictionary": null,
           "placeHolder": null,
           "defaultValue": "1",
-          "readOnly": false
+          "readOnly": false,
+          "formTemplateGroup": null
         },
         {
           "fieldName": "seed",
           "description": "Начальное значение (seed)",
           "fieldOrder": 8,
           "fieldType": "INTEGER",
-          "minValue": 0.00,
+          "minValue": 0,
           "minInclusive": true,
-          "maxValue": 2147483647.00,
+          "maxValue": 2147483647,
           "maxInclusive": true,
           "maxLength": 255,
           "pattern": null,
@@ -376,13 +397,33 @@
           "dictionary": null,
           "placeHolder": null,
           "defaultValue": "1",
-          "readOnly": false
+          "readOnly": false,
+          "formTemplateGroup": null
+        },
+        {
+          "fieldName": "alpha",
+          "description": "Уровень значимости для теста хи - квадрат",
+          "fieldOrder": 9,
+          "fieldType": "DECIMAL",
+          "minValue": 0,
+          "minInclusive": true,
+          "maxValue": 1,
+          "maxInclusive": true,
+          "maxLength": 255,
+          "pattern": null,
+          "invalidPatternMessage": null,
+          "dictionary": null,
+          "placeHolder": null,
+          "defaultValue": "0.05",
+          "readOnly": true,
+          "formTemplateGroup": null
         }
       ]
     },
     {
       "templateName": "NEURAL_NETWORK",
       "templateTitle": "Нейронная сеть (Многослойный персептрон)",
+      "templateTitleFieldRef": null,
       "objectClass": "NeuralNetworkOptions",
       "objectType": "neural_network",
       "fields": [
@@ -391,9 +432,9 @@
           "description": "Количество нейронов во входном слое",
           "fieldOrder": 0,
           "fieldType": "INTEGER",
-          "minValue": 1.00,
+          "minValue": 1,
           "minInclusive": true,
-          "maxValue": 2147483647.00,
+          "maxValue": 2147483647,
           "maxInclusive": true,
           "maxLength": null,
           "pattern": null,
@@ -401,16 +442,17 @@
           "dictionary": null,
           "placeHolder": null,
           "defaultValue": null,
-          "readOnly": true
+          "readOnly": true,
+          "formTemplateGroup": null
         },
         {
           "fieldName": "numOutNeurons",
           "description": "Количество нейронов в выходном слое",
           "fieldOrder": 1,
           "fieldType": "INTEGER",
-          "minValue": 2.00,
+          "minValue": 2,
           "minInclusive": true,
-          "maxValue": 2147483647.00,
+          "maxValue": 2147483647,
           "maxInclusive": true,
           "maxLength": null,
           "pattern": null,
@@ -418,7 +460,8 @@
           "dictionary": null,
           "placeHolder": null,
           "defaultValue": null,
-          "readOnly": true
+          "readOnly": true,
+          "formTemplateGroup": null
         },
         {
           "fieldName": "hiddenLayer",
@@ -435,16 +478,17 @@
           "dictionary": null,
           "placeHolder": "Введите числа, разделенные запятой",
           "defaultValue": null,
-          "readOnly": false
+          "readOnly": false,
+          "formTemplateGroup": null
         },
         {
           "fieldName": "numIterations",
           "description": "Число итераций",
           "fieldOrder": 3,
           "fieldType": "INTEGER",
-          "minValue": 1.00,
+          "minValue": 1,
           "minInclusive": true,
-          "maxValue": 2147483647.00,
+          "maxValue": 2147483647,
           "maxInclusive": true,
           "maxLength": 255,
           "pattern": null,
@@ -452,16 +496,17 @@
           "dictionary": null,
           "placeHolder": null,
           "defaultValue": "1000000",
-          "readOnly": false
+          "readOnly": false,
+          "formTemplateGroup": null
         },
         {
           "fieldName": "minError",
           "description": "Допустимая ошибка",
           "fieldOrder": 4,
           "fieldType": "DECIMAL",
-          "minValue": 0.00,
+          "minValue": 0,
           "minInclusive": true,
-          "maxValue": 1.00,
+          "maxValue": 1,
           "maxInclusive": true,
           "maxLength": 255,
           "pattern": null,
@@ -469,7 +514,8 @@
           "dictionary": null,
           "placeHolder": null,
           "defaultValue": "0.00001",
-          "readOnly": false
+          "readOnly": false,
+          "formTemplateGroup": null
         },
         {
           "fieldName": "activationFunctionOptions.activationFunctionType",
@@ -514,16 +560,17 @@
           },
           "placeHolder": null,
           "defaultValue": "LOGISTIC",
-          "readOnly": false
+          "readOnly": false,
+          "formTemplateGroup": null
         },
         {
           "fieldName": "activationFunctionOptions.coefficient",
           "description": "Значение коэффициента",
           "fieldOrder": 6,
           "fieldType": "DECIMAL",
-          "minValue": 0.00,
+          "minValue": 0,
           "minInclusive": false,
-          "maxValue": 2147483647.00,
+          "maxValue": 2147483647,
           "maxInclusive": true,
           "maxLength": 255,
           "pattern": null,
@@ -531,16 +578,17 @@
           "dictionary": null,
           "placeHolder": null,
           "defaultValue": "1",
-          "readOnly": false
+          "readOnly": false,
+          "formTemplateGroup": null
         },
         {
           "fieldName": "backPropagationOptions.learningRate",
           "description": "Коэффициент скорости обучения",
           "fieldOrder": 7,
           "fieldType": "DECIMAL",
-          "minValue": 0.00,
+          "minValue": 0,
           "minInclusive": false,
-          "maxValue": 1.00,
+          "maxValue": 1,
           "maxInclusive": true,
           "maxLength": 255,
           "pattern": null,
@@ -548,16 +596,17 @@
           "dictionary": null,
           "placeHolder": null,
           "defaultValue": "0.1",
-          "readOnly": false
+          "readOnly": false,
+          "formTemplateGroup": null
         },
         {
           "fieldName": "backPropagationOptions.momentum",
           "description": "Коэффициент момента",
           "fieldOrder": 8,
           "fieldType": "DECIMAL",
-          "minValue": 0.00,
+          "minValue": 0,
           "minInclusive": true,
-          "maxValue": 1.00,
+          "maxValue": 1,
           "maxInclusive": false,
           "maxLength": 255,
           "pattern": null,
@@ -565,16 +614,17 @@
           "dictionary": null,
           "placeHolder": null,
           "defaultValue": "0.2",
-          "readOnly": false
+          "readOnly": false,
+          "formTemplateGroup": null
         },
         {
           "fieldName": "seed",
           "description": "Начальное значение (seed)",
           "fieldOrder": 9,
           "fieldType": "INTEGER",
-          "minValue": 0.00,
+          "minValue": 0,
           "minInclusive": true,
-          "maxValue": 2147483647.00,
+          "maxValue": 2147483647,
           "maxInclusive": true,
           "maxLength": 255,
           "pattern": null,
@@ -582,7 +632,8 @@
           "dictionary": null,
           "placeHolder": null,
           "defaultValue": "1",
-          "readOnly": false
+          "readOnly": false,
+          "formTemplateGroup": null
         }
       ]
     }

@@ -7,7 +7,6 @@
         "classifierName": "RandomForests",
         "classifierDescription": "Алгоритм Случайные леса",
         "classifierOptionsJson": "<<json config>>",
-        "metaClassifier": false,
         "inputOptions": [
           {
             "optionName": "Алгоритм построения дерева",
@@ -37,8 +36,7 @@
             "optionName": "Начальное значение (seed)",
             "optionValue": "1"
           }
-        ],
-        "individualClassifiers": null
+        ]
       },
       "resultsIndex": 0,
       "pctCorrect": 99

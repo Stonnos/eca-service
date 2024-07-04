@@ -90,6 +90,7 @@ class ClassifierOptionsInfoProcessorTest {
     private static final int ADA_BOOST_MIN_ERROR_IDX = 1;
     private static final int ADA_BOOST_MAX_ERROR_IDX = 2;
     private static final int ADA_BOOST_SEED_IDX = 3;
+    private static final int ADA_BOOST_CLASSIFIERS_OPTIONS_IDX = 4;
     private static final int HEC_NUM_ITS_IDX = 0;
     private static final int HEC_NUM_THREADS_IDX = 1;
     private static final int HEC_MIN_ERROR_IDX = 2;
@@ -99,9 +100,12 @@ class ClassifierOptionsInfoProcessorTest {
     private static final int HEC_SAMPLING_METHOD_IDX = 6;
     private static final int HEC_USE_RANDOM_SUBSPACES_IDX = 7;
     private static final int HEC_SEED_IDX = 8;
+    private static final int HEC_CLASSIFIERS_OPTIONS_IDX = 9;
     private static final int STACKING_USE_CV_IDX = 0;
     private static final int STACKING_NUM_FOLDS_IDX = 1;
     private static final int STACKING_SEED_IDX = 2;
+    private static final int STACKING_CLASSIFIERS_OPTIONS_IDX = 3;
+    private static final int STACKING_META_CLASSIFIER_OPTIONS_IDX = 4;
     private static final int RANDOM_FORESTS_TREE_TYPE_IDX = 0;
     private static final int RANDOM_FORESTS_NUM_ITS_IDX = 1;
     private static final int RANDOM_FORESTS_MIN_OBJ_IDX = 2;
@@ -318,8 +322,6 @@ class ClassifierOptionsInfoProcessorTest {
         assertThat(classifierInfoDto).isNotNull();
         assertThat(classifierInfoDto.getInputOptions()).isNotEmpty();
         var inputOptions = classifierInfoDto.getInputOptions();
-        assertThat(classifierInfoDto.getIndividualClassifiers()).hasSameSizeAs(
-                adaBoostOptions.getClassifierOptions());
         IntStream.range(0, classifierInfoDto.getInputOptions().size()).forEach(i -> {
             switch (i) {
                 case ADA_BOOST_NUM_ITS_IDX:
@@ -338,6 +340,10 @@ class ClassifierOptionsInfoProcessorTest {
                     assertThat(inputOptions.get(i).getOptionValue()).isEqualTo(
                             String.valueOf(adaBoostOptions.getSeed()));
                     break;
+                case ADA_BOOST_CLASSIFIERS_OPTIONS_IDX:
+                    assertThat(inputOptions.get(i).getIndividualClassifiers()).hasSameSizeAs(
+                            adaBoostOptions.getClassifierOptions());
+                    break;
                 default:
                     fail(String.format("Can't assert input options at index [%d] for classifier [%s]", i,
                             adaBoostOptions.getClass().getSimpleName()));
@@ -352,8 +358,6 @@ class ClassifierOptionsInfoProcessorTest {
         assertThat(classifierInfoDto).isNotNull();
         assertThat(classifierInfoDto.getInputOptions()).isNotEmpty();
         var inputOptions = classifierInfoDto.getInputOptions();
-        assertThat(classifierInfoDto.getIndividualClassifiers()).hasSameSizeAs(
-                heterogeneousClassifierOptions.getClassifierOptions());
         IntStream.range(0, classifierInfoDto.getInputOptions().size()).forEach(i -> {
             switch (i) {
                 case HEC_NUM_ITS_IDX:
@@ -392,6 +396,10 @@ class ClassifierOptionsInfoProcessorTest {
                     assertThat(inputOptions.get(i).getOptionValue()).isEqualTo(
                             String.valueOf(heterogeneousClassifierOptions.getSeed()));
                     break;
+                case HEC_CLASSIFIERS_OPTIONS_IDX:
+                    assertThat(inputOptions.get(i).getIndividualClassifiers()).hasSameSizeAs(
+                            heterogeneousClassifierOptions.getClassifierOptions());
+                    break;
                 default:
                     fail(String.format("Can't assert input options at index [%d] for classifier [%s]", i,
                             heterogeneousClassifierOptions.getClass().getSimpleName()));
@@ -406,8 +414,6 @@ class ClassifierOptionsInfoProcessorTest {
         assertThat(classifierInfoDto).isNotNull();
         assertThat(classifierInfoDto.getInputOptions()).isNotEmpty();
         var inputOptions = classifierInfoDto.getInputOptions();
-        assertThat(classifierInfoDto.getIndividualClassifiers()).hasSize(
-                stackingOptions.getClassifierOptions().size() + 1);
         IntStream.range(0, classifierInfoDto.getInputOptions().size()).forEach(i -> {
             switch (i) {
                 case STACKING_USE_CV_IDX:
@@ -421,6 +427,13 @@ class ClassifierOptionsInfoProcessorTest {
                 case STACKING_SEED_IDX:
                     assertThat(inputOptions.get(i).getOptionValue()).isEqualTo(
                             String.valueOf(stackingOptions.getSeed()));
+                    break;
+                case STACKING_CLASSIFIERS_OPTIONS_IDX:
+                    assertThat(inputOptions.get(i).getIndividualClassifiers()).hasSameSizeAs(
+                            stackingOptions.getClassifierOptions());
+                    break;
+                case STACKING_META_CLASSIFIER_OPTIONS_IDX:
+                    assertThat(inputOptions.get(i).getIndividualClassifiers()).hasSize(1);
                     break;
                 default:
                     fail(String.format("Can't assert input options at index [%d] for classifier [%s]", i,
