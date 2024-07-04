@@ -65,7 +65,7 @@ export class FormTemplateComponent implements OnInit {
     }
   }
 
-  public onStartEditObjectItem(event, formField: FormField) {
+  public onStartEditObjectListItem(event, formField: FormField) {
     formField.selectedItemToEdit = event.value.value;
     this.selectedTemplateToEdit = event.value.value.template.template;
     this.selectedFormFieldsToEdit = this.copyFormFields(event.value.value.template.fields);
@@ -73,13 +73,25 @@ export class FormTemplateComponent implements OnInit {
     console.log('onStartEditObjectItem: ' + event.value.value);
   }
 
-  public onFinishEditObjectItem(formFields: FormField[], formField: FormField) {
+  public onFinishEditObjectListItem(formFields: FormField[], formField: FormField) {
     console.log('onFinishEditObjectItem: ' + formFields);
     let indexToEdit = formField.selectedItemToEdit.index;
     console.log('EditIndex: ' + indexToEdit);
     formField.currentValue.filter((value: SelectItem) => value.value.index == indexToEdit).forEach((value: SelectItem) => {
       value.value.template.fields = this.copyFormFields(formFields);
     });
+  }
+
+  public onStartEditObjectItem(event, formField: FormField) {
+    this.selectedTemplateToEdit = formField.currentValue.value.template.template;
+    this.selectedFormFieldsToEdit = this.copyFormFields(formField.currentValue.value.template.fields);
+    this.editObjectItemVisibility = true;
+    console.log('onStartEditObjectItem: ');
+  }
+
+  public onFinishEditObjectItem(formFields: FormField[], formField: FormField) {
+    console.log('onFinishEditObjectItem: ' + formFields);
+    formField.currentValue.value.template.fields = this.copyFormFields(formFields);
   }
 
   public isValidAll(): boolean {

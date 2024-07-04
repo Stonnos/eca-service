@@ -81,7 +81,7 @@
         </ng-container>
 
         <ng-container *ngSwitchCase="'LIST_OBJECTS'">
-          <p-fieldset legend="{{ formField.label }}" class="object-lists-fieldset">
+          <p-fieldset legend="{{ formField.label }}" class="object-items-fieldset">
             <div *ngIf="isMaxObjectItems(formField)" class="d-flex mx-auto align-items-center justify-content-center text-red">
               Добавлено максимальное число элементов (макс. {{ formField.maxLength }})
             </div>
@@ -109,7 +109,7 @@
                   <p-listbox
                     [options]="formField.currentValue"
                     (onChange)="onObjectItemChange($event, formField)"
-                    (onDblClick)="onStartEditObjectItem($event, formField)"
+                    (onDblClick)="onStartEditObjectListItem($event, formField)"
                     class="list"
                     optionLabel="label">
                   </p-listbox>
@@ -126,6 +126,48 @@
             </div>
             <div class="text-danger error-message" *ngIf="submitted && !isValid(formField)">
                 Добавьте хотя бы один элемент
+            </div>
+          </p-fieldset>
+
+          <app-edit-template-item-dialog
+            [template]="selectedTemplateToEdit"
+            [item]="selectedFormFieldsToEdit"
+            [visible]="editObjectItemVisibility"
+            (visibilityChange)="onEditObjectItemVisibilityChange($event)"
+            (itemEvent)="onFinishEditObjectListItem($event, formField)">
+          </app-edit-template-item-dialog>
+        </ng-container>
+
+        <ng-container *ngSwitchCase="'ONE_OF_OBJECT'">
+          <p-fieldset legend="{{ formField.label }}" class="object-items-fieldset">
+            <div class="ui-g">
+              <div class="ui-g-8">
+                <p-dropdown
+                  required
+                  name="{{ formField.name }}"
+                  [options]="formField.values"
+                  placeholder="Выбрать"
+                  optionLabel="label"
+                  appendTo="body"
+                  [showClear]="true"
+                  [(ngModel)]="formField.currentValue"
+                  #field="ngModel"
+                  [style]="{'width':'100%'}">
+                </p-dropdown>
+              </div>
+              <div class="ui-g-4">
+                <button pButton
+                        class="w-100"
+                        [disabled]="!formField.currentValue"
+                        (click)="onStartEditObjectItem($event, formField)"
+                        label="Изменить">
+                </button>
+              </div>
+            </div>
+            <div class="text-danger error-message" *ngIf="submitted && field.invalid">
+              <div *ngFor="let error of getValidationErrors(field, formField)">
+                <span>{{ error }}</span>
+              </div>
             </div>
           </p-fieldset>
 

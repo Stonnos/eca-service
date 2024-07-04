@@ -4,7 +4,7 @@ import {
   FormFieldDto, FormTemplateDto
 } from "../../../../../../../target/generated-sources/typescript/eca-web-dto";
 import { SelectItem } from "primeng/api";
-import { FormField, FormTemplate } from "../model/form-template.model";
+import { FormField, FormTemplate, ObjectItem } from '../model/form-template.model';
 import { FormFieldType } from '../../common/model/form-field-type.enum';
 
 @Injectable()
@@ -28,12 +28,15 @@ export class FormTemplatesMapper {
           return { label: filterValue.label, value: filterValue.value };
         });
       }
-      if (formFieldDto.fieldType == FormFieldType.ONE_OF_OBJECT || formFieldDto.fieldType == FormFieldType.LIST_OBJECTS) {
+      if (formFieldDto.fieldType == FormFieldType.LIST_OBJECTS) {
         formField.currentValue = [];
         formField.templates = formFieldDto.formTemplateGroup.templates.map((template: FormTemplateDto) => {
           const fields = this.mapToFormFields(template.fields);
           return new FormTemplate(template.templateTitle, template, fields);
         });
+      }
+      if (formFieldDto.fieldType == FormFieldType.ONE_OF_OBJECT) {
+        this.mapTemplateValues(formField, formFieldDto);
       }
       if (formFieldDto.defaultValue) {
         this.setCurrentValue(formField, formFieldDto);
@@ -66,6 +69,18 @@ export class FormTemplatesMapper {
       }
     });
     return object;
+  }
+
+  private mapTemplateValues(formField: FormField, formFieldDto: FormFieldDto): void {
+    formField.values = formFieldDto.formTemplateGroup.templates.map((template: FormTemplateDto, index: number) => {
+      const fields = this.mapToFormFields(template.fields);
+      let formTemplate = new FormTemplate(template.templateTitle, template, fields);
+      let item: ObjectItem = new ObjectItem(index, formTemplate);
+      return {
+        label: template.templateTitle,
+        value: item
+      };
+    });
   }
 
   private setCurrentValue(formField: FormField, formFieldDto: FormFieldDto): void {
