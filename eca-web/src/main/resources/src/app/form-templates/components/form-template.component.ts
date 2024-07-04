@@ -3,6 +3,7 @@ import { FormField, ObjectItem } from '../model/form-template.model';
 import { FormTemplateDto } from "../../../../../../../target/generated-sources/typescript/eca-web-dto";
 import { ControlContainer, NgForm } from "@angular/forms";
 import { SelectItem } from 'primeng/api';
+import { FormFieldType } from '../../common/model/form-field-type.enum';
 
 @Component({
   selector: 'app-form-template',
@@ -43,7 +44,6 @@ export class FormTemplateComponent implements OnInit {
   public onAddObjectItem(event, formField: FormField) {
     formField.nextItemIndex = formField.nextItemIndex + 1;
     let item: ObjectItem = new ObjectItem(formField.nextItemIndex, formField.selectedTemplate);
-    formField.selectedItemToEdit = item;
     formField.currentValue = [...formField.currentValue, {
       label: formField.selectedTemplate.label,
       value: item
@@ -52,12 +52,16 @@ export class FormTemplateComponent implements OnInit {
   }
 
   public isMaxObjectItems(formField: FormField): boolean {
-    return formField.currentValue.length >= formField.maxLength;
+    return formField.currentValue && formField.currentValue.length >= formField.maxLength;
   }
 
   public onObjectItemChange(event, formField: FormField) {
-    formField.selectedItemToEdit = event.value.value;
-    console.log('onObjectItemChange: ' + event.value.value);
+    if (!event.value) {
+      formField.selectedItemToEdit = null;
+    } else {
+      formField.selectedItemToEdit = event.value.value;
+      console.log('onObjectItemChange: ' + event.value.value);
+    }
   }
 
   public onStartEditObjectItem(event, formField: FormField) {
@@ -75,6 +79,23 @@ export class FormTemplateComponent implements OnInit {
     formField.currentValue.filter((value: SelectItem) => value.value.index == indexToEdit).forEach((value: SelectItem) => {
       value.value.template.fields = this.copyFormFields(formFields);
     });
+  }
+
+  public isValidAll(): boolean {
+    for (let i = 0; i < this.formFields.length; i++) {
+      if (!this.isValid(this.formFields[i])) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  public isValid(formField: FormField): boolean {
+    if (formField.fieldType == FormFieldType.LIST_OBJECTS) {
+      return formField.currentValue && formField.currentValue.length > 0;
+    } else {
+      return formField.currentValue;
+    }
   }
 
   public onDeleteObjectItem(event, formField: FormField) {

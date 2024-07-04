@@ -107,31 +107,25 @@
               <div class="ui-g-6">
                 <div class="ui-g">
                   <p-listbox
-                    required
-                    name="{{ formField.name }}"
-                    #field="ngModel"
                     [options]="formField.currentValue"
                     (onChange)="onObjectItemChange($event, formField)"
                     (onDblClick)="onStartEditObjectItem($event, formField)"
                     class="list"
-                    [(ngModel)]="formField.selectedItemToEdit"
                     optionLabel="label">
                   </p-listbox>
                 </div>
                 <div class="ui-g">
                   <button pButton
                           class="w-100 mt-2"
-                          [disabled]="formField.currentValue.length == 0"
+                          [disabled]="!formField.selectedItemToEdit"
                           (click)="onDeleteObjectItem($event, formField)"
                           label="Удалить">
                   </button>
                 </div>
               </div>
             </div>
-            <div class="text-danger error-message" *ngIf="field.invalid && (field.dirty || field.touched || submitted)">
-              <div *ngIf="field?.errors?.required">
+            <div class="text-danger error-message" *ngIf="submitted && !isValid(formField)">
                 Добавьте хотя бы один элемент
-              </div>
             </div>
           </p-fieldset>
 
