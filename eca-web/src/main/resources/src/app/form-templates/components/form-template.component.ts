@@ -40,11 +40,6 @@ export class FormTemplateComponent implements OnInit {
     this.editObjectItemVisibility = visible;
   }
 
-  public onObjectTemplateChange(event, formField: FormField) {
-    formField.selectedTemplate = event.value;
-    console.log('onObjectTemplateChange: ' + event.value);
-  }
-
   public onAddObjectItem(event, formField: FormField) {
     formField.nextItemIndex = formField.nextItemIndex + 1;
     let item: ObjectItem = new ObjectItem(formField.nextItemIndex, formField.selectedTemplate);

@@ -90,7 +90,6 @@
                 <div class="ui-g">
                   <p-listbox name="{{ formField.name }}-templates"
                              [options]="formField.templates"
-                             (onChange)="onObjectTemplateChange($event, formField)"
                              [(ngModel)]="formField.selectedTemplate"
                              class="list"
                              optionLabel="label">
