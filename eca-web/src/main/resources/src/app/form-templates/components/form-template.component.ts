@@ -49,7 +49,6 @@ export class FormTemplateComponent implements OnInit {
       label: formField.selectedTemplate.label,
       value: item
     }];
-    console.log('onAddObjectItem: ' + formField.selectedTemplate);
   }
 
   public isMaxObjectItems(formField: FormField): boolean {
@@ -61,7 +60,6 @@ export class FormTemplateComponent implements OnInit {
       formField.selectedItemToEdit = null;
     } else {
       formField.selectedItemToEdit = event.value.value;
-      console.log('onObjectItemChange: ' + event.value.value);
     }
   }
 
@@ -70,13 +68,10 @@ export class FormTemplateComponent implements OnInit {
     this.selectedTemplateToEdit = event.value.value.template.template;
     this.selectedFormFieldsToEdit = this.copyFormFields(event.value.value.template.fields);
     this.editObjectItemVisibility = true;
-    console.log('onStartEditObjectItem: ' + event.value.value);
   }
 
   public onFinishEditObjectListItem(formFields: FormField[], formField: FormField) {
-    console.log('onFinishEditObjectItem: ' + formFields);
     let indexToEdit = formField.selectedItemToEdit.index;
-    console.log('EditIndex: ' + indexToEdit);
     formField.currentValue.filter((value: SelectItem) => value.value.index == indexToEdit).forEach((value: SelectItem) => {
       value.value.template.fields = this.copyFormFields(formFields);
     });
@@ -86,11 +81,9 @@ export class FormTemplateComponent implements OnInit {
     this.selectedTemplateToEdit = formField.currentValue.value.template.template;
     this.selectedFormFieldsToEdit = this.copyFormFields(formField.currentValue.value.template.fields);
     this.editObjectItemVisibility = true;
-    console.log('onStartEditObjectItem: ');
   }
 
   public onFinishEditObjectItem(formFields: FormField[], formField: FormField) {
-    console.log('onFinishEditObjectItem: ' + formFields);
     formField.currentValue.value.template.fields = this.copyFormFields(formFields);
   }
 
@@ -115,7 +108,6 @@ export class FormTemplateComponent implements OnInit {
     formField.currentValue = formField.currentValue.filter((val: any) => val.value.index != formField.selectedItemToEdit.index);
     this.selectedTemplateToEdit = null;
     this.selectedFormFieldsToEdit = [];
-    console.log('onDeleteObjectItem: ' + formField.selectedItemToEdit.index);
     formField.selectedItemToEdit = null;
   }
 
