@@ -30,10 +30,7 @@ export class FormTemplatesMapper {
       }
       if (formFieldDto.fieldType == FormFieldType.LIST_OBJECTS) {
         formField.currentValue = [];
-        formField.templates = formFieldDto.formTemplateGroup.templates.map((template: FormTemplateDto) => {
-          const fields = this.mapToFormFields(template.fields);
-          return new FormTemplate(template.templateTitle, template, fields);
-        });
+        this.mapTemplateValues(formField, formFieldDto);
       }
       if (formFieldDto.fieldType == FormFieldType.ONE_OF_OBJECT) {
         this.mapTemplateValues(formField, formFieldDto);

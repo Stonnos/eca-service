@@ -229,9 +229,10 @@ export class ClassifierListComponent extends BaseListComponent<EvaluationLogDto>
   public onCreateClassifier(evaluationRequest: EvaluationRequest): void {
     const classifierOptions = this.formTemplatesMapper.mapToClassifierOptionsObject(evaluationRequest.classifierOptions,
       this.selectedClassifierTemplate);
+    console.log(JSON.stringify(classifierOptions));
     const createEvaluationRequest =
       new CreateEvaluationRequestDto(evaluationRequest.instancesUuid, classifierOptions, evaluationRequest.evaluationMethod.value);
-    this.classifiersService.createEvaluationRequest(createEvaluationRequest)
+   /* this.classifiersService.createEvaluationRequest(createEvaluationRequest)
       .pipe(
         finalize(() => {
           this.loading = false;
@@ -244,7 +245,7 @@ export class ClassifierListComponent extends BaseListComponent<EvaluationLogDto>
         error: (error) => {
           this.handleCreateEvaluationRequestError(error);
         }
-      });
+      });*/
   }
 
   public onCreateOptimalClassifier(evaluationRequest: OptimalEvaluationRequest): void {

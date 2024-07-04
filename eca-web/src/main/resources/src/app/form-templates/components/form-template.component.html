@@ -89,8 +89,8 @@
               <div class="ui-g-6">
                 <div class="ui-g">
                   <p-listbox name="{{ formField.name }}-templates"
-                             [options]="formField.templates"
-                             [(ngModel)]="formField.selectedTemplate"
+                             [options]="formField.values"
+                             [(ngModel)]="formField.selectedItem"
                              class="list"
                              optionLabel="label">
                   </p-listbox>
@@ -99,7 +99,7 @@
                  <button pButton
                          class="w-100 mt-2"
                          (click)="onAddObjectItem($event, formField)"
-                         [disabled]="!formField.selectedTemplate || isMaxObjectItems(formField)"
+                         [disabled]="!formField.selectedItem || isMaxObjectItems(formField)"
                          label="Добавить">
                  </button>
                 </div>
@@ -124,7 +124,7 @@
                 </div>
               </div>
             </div>
-            <div class="text-danger error-message" *ngIf="submitted && !isValid(formField)">
+            <div class="text-danger error-message" *ngIf="submitted && !isValidAdditionalFields(formField)">
                 Добавьте хотя бы один элемент
             </div>
           </p-fieldset>

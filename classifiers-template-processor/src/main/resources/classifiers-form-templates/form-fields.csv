@@ -85,12 +85,12 @@ id;field_name;description;field_order;field_type;min_value;max_value;max_length;
 57;numRandomAttr;Число случайных атрибутов;4;INTEGER;0;2147483647;255;NULL;NULL;0;9;NULL;NULL;true;true;false;NULL
 58;numThreads;Число потоков;5;INTEGER;1;10;255;NULL;NULL;1;9;NULL;NULL;true;true;false;NULL
 59;numRandomSplits;Число случайных расщеплений атрибута;6;INTEGER;1;2147483647;255;NULL;NULL;1;9;NULL;NULL;true;true;false;NULL
-60;useBootstrapSamples;Использование бутстрэп - выборок;7;BOOLEAN;NULL;NULL;NULL;NULL;NULL;false;9;NULL;NULL;true;true;false;NULL
+60;useBootstrapSamples;Использование бутстрэп-выборок;7;BOOLEAN;NULL;NULL;NULL;NULL;NULL;false;9;NULL;NULL;true;true;false;NULL
 61;seed;Начальное значение (seed);8;INTEGER;0;2147483647;255;NULL;NULL;1;9;NULL;NULL;true;true;false;NULL
 
 # Stacking form fields template
 
-62;useCrossValidation;Использование V - блочной кросс - проверки для формирования мета - признаков;0;BOOLEAN;NULL;NULL;NULL;NULL;NULL;false;10;NULL;NULL;true;true;false;NULL
+62;useCrossValidation;V-блочная кросс-проверка для формирования мета-признаков;0;BOOLEAN;NULL;NULL;NULL;NULL;NULL;false;10;NULL;NULL;true;true;false;NULL
 63;numFolds;Количество блоков;1;INTEGER;2;100;255;NULL;NULL;10;10;NULL;NULL;true;true;false;NULL
 64;seed;Начальное значение (seed);2;INTEGER;0;2147483647;255;NULL;NULL;1;10;NULL;NULL;true;true;false;NULL
 65;classifierOptions;Базовые классификаторы;3;LIST_OBJECTS;NULL;NULL;25;NULL;NULL;NULL;10;NULL;NULL;true;true;false;1

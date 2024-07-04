@@ -40,7 +40,7 @@ export class CreateClassifierComponent extends BaseCreateDialogComponent<Evaluat
   }
 
   public isValid(): boolean {
-    return super.isValid() && this.formTemplateComponent.isValidAll();
+    return super.isValid() && this.formTemplateComponent.isValidAllAdditionalFields();
   }
 
   public selectInstances(instancesDto: InstancesDto): void {

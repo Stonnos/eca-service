@@ -30,11 +30,10 @@ export class FormField {
   currentValue: any;
   invalidPatternMessage: string;
   placeholder: string;
-  selectedTemplate: any;
+  selectedItem: any;
   selectedItemToEdit: any;
   nextItemIndex: number = 0;
   values: SelectItem[] = [];
-  templates: FormTemplate[] = [];
 
   public constructor(name: string, label: string, fieldType: FieldType) {
     this.name = name;

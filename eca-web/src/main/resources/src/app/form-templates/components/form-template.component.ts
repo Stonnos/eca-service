@@ -43,10 +43,10 @@ export class FormTemplateComponent implements OnInit {
 
   public onAddObjectItem(event, formField: FormField) {
     formField.nextItemIndex = formField.nextItemIndex + 1;
-    let templateCopy = new FormTemplate(formField.selectedTemplate.label, formField.selectedTemplate.template, this.copyFormFields(formField.selectedTemplate.fields));
+    let templateCopy = new FormTemplate(formField.selectedItem.label, formField.selectedItem.value.template.template, this.copyFormFields(formField.selectedItem.value.template.fields));
     let item: ObjectItem = new ObjectItem(formField.nextItemIndex, templateCopy);
     formField.currentValue = [...formField.currentValue, {
-      label: formField.selectedTemplate.label,
+      label: formField.selectedItem.label,
       value: item
     }];
   }
@@ -87,20 +87,20 @@ export class FormTemplateComponent implements OnInit {
     formField.currentValue.value.template.fields = this.copyFormFields(formFields);
   }
 
-  public isValidAll(): boolean {
+  public isValidAllAdditionalFields(): boolean {
     for (let i = 0; i < this.formFields.length; i++) {
-      if (!this.isValid(this.formFields[i])) {
+      if (!this.isValidAdditionalFields(this.formFields[i])) {
         return false;
       }
     }
     return true;
   }
 
-  public isValid(formField: FormField): boolean {
+  public isValidAdditionalFields(formField: FormField): boolean {
     if (formField.fieldType == FormFieldType.LIST_OBJECTS) {
       return formField.currentValue && formField.currentValue.length > 0;
     } else {
-      return formField.currentValue;
+      return true;
     }
   }
 
