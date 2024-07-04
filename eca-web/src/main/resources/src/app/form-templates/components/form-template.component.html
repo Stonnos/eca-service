@@ -88,8 +88,10 @@
             <div class="ui-g">
               <div class="ui-g-6">
                 <div class="ui-g">
-                  <p-listbox [options]="formField.templates"
+                  <p-listbox name="{{ formField.name }}-templates"
+                             [options]="formField.templates"
                              (onChange)="onObjectTemplateChange($event, formField)"
+                             [(ngModel)]="formField.selectedTemplate"
                              class="list"
                              optionLabel="label">
                   </p-listbox>
@@ -98,7 +100,7 @@
                  <button pButton
                          class="w-100 mt-2"
                          (click)="onAddObjectItem($event, formField)"
-                         [disabled]="isMaxObjectItems(formField)"
+                         [disabled]="!formField.selectedTemplate || isMaxObjectItems(formField)"
                          label="Добавить">
                  </button>
                 </div>
