@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { FormField, ObjectItem } from '../model/form-template.model';
+import { FormField, FormTemplate, ObjectItem } from '../model/form-template.model';
 import { FormTemplateDto } from "../../../../../../../target/generated-sources/typescript/eca-web-dto";
 import { ControlContainer, NgForm } from "@angular/forms";
 import { SelectItem } from 'primeng/api';
@@ -43,7 +43,8 @@ export class FormTemplateComponent implements OnInit {
 
   public onAddObjectItem(event, formField: FormField) {
     formField.nextItemIndex = formField.nextItemIndex + 1;
-    let item: ObjectItem = new ObjectItem(formField.nextItemIndex, formField.selectedTemplate);
+    let templateCopy = new FormTemplate(formField.selectedTemplate.label, formField.selectedTemplate.template, this.copyFormFields(formField.selectedTemplate.fields));
+    let item: ObjectItem = new ObjectItem(formField.nextItemIndex, templateCopy);
     formField.currentValue = [...formField.currentValue, {
       label: formField.selectedTemplate.label,
       value: item
