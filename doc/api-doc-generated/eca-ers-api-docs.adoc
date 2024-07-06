@@ -398,7 +398,6 @@ a|
       "classifierName" : "DecisionTreeOptions",
       "classifierDescription" : "Алгоритм CART",
       "classifierOptionsJson" : "{\"type\":\"decision_tree\",\"decisionTreeType\":\"CART\",\"minObj\":2,\"maxDepth\":0,\"randomTree\":false,\"numRandomAttr\":0,\"useBinarySplits\":true,\"useRandomSplits\":false,\"numRandomSplits\":1,\"seed\":1,\"alpha\":null}",
-      "metaClassifier" : false,
       "inputOptions" : [ {
         "optionName" : "Алгоритм построения дерева",
         "optionValue" : "Алгоритм CART"
@@ -426,8 +425,7 @@ a|
       }, {
         "optionName" : "Начальное значение (seed)",
         "optionValue" : "1"
-      } ],
-      "individualClassifiers" : null
+      } ]
     },
     "instancesInfo" : {
       "id" : 1,
@@ -2113,51 +2111,11 @@ __string__
 
 
 
-|*metaClassifier*
-|Is meta classifier (used for stacking algorithms)
-a|
-__boolean__
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 |*inputOptions*
 |-
 a|
 __array__
 <<<InputOptionDto>>
->
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-|*individualClassifiers*
-|-
-a|
-__array__
-<<<ClassifierInfoDto>>
 >
 
 
@@ -2728,6 +2686,27 @@ __string__
 
 
 *Max. length*: 255
+
+
+
+
+
+
+
+
+
+
+|*individualClassifiers*
+|-
+a|
+__array__
+<<<ClassifierInfoDto>>
+>
+
+
+
+
+
 
 
 

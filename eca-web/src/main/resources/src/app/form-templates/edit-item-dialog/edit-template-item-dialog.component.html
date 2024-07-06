@@ -1,0 +1,29 @@
+<p-dialog
+  [(visible)]="visible"
+  [header]="template?.templateTitle"
+  [style]="{ width: '650px' }"
+  [baseZIndex]="99999999999"
+  appendTo="body"
+  [modal]="true"
+  [blockScroll]="false"
+  [draggable]="false"
+  [resizable]="false"
+  (onHide)="hide()">
+  <div class="form-template-panel">
+    <form novalidate class="form d-flex flex-column justify-content-center m-auto" (keydown.enter)="submit()">
+      <app-form-template [template]="template"
+                         [formFields]="item"
+                         [submitted]="submitted">
+      </app-form-template>
+    </form>
+  </div>
+  <p-footer>
+    <button
+      pButton
+      label="Изменить"
+      type="button"
+      (click)="submit()"
+      class="ml-auto">
+    </button>
+  </p-footer>
+</p-dialog>

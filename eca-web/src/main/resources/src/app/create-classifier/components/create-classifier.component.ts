@@ -7,6 +7,7 @@ import {
 import { BaseCreateDialogComponent } from "../../common/dialog/base-create-dialog.component";
 import { InstancesAutocompleteComponent } from "../../common/instances-autocomplete/instances-autocomplete.component";
 import { FormField } from "../../form-templates/model/form-template.model";
+import { FormTemplateComponent } from '../../form-templates/components/form-template.component';
 
 @Component({
   selector: 'app-create-classifier',
@@ -17,6 +18,9 @@ export class CreateClassifierComponent extends BaseCreateDialogComponent<Evaluat
 
   @ViewChild(InstancesAutocompleteComponent, { static: true })
   private instancesAutocompleteComponent: InstancesAutocompleteComponent;
+
+  @ViewChild(FormTemplateComponent, { static: true })
+  private formTemplateComponent: FormTemplateComponent;
 
   @Input()
   public classifierTemplate: FormTemplateDto;
@@ -33,6 +37,10 @@ export class CreateClassifierComponent extends BaseCreateDialogComponent<Evaluat
   public clear(): void {
     this.instancesAutocompleteComponent.clear();
     super.clear();
+  }
+
+  public isValid(): boolean {
+    return super.isValid() && this.formTemplateComponent.isValidAllAdditionalFields();
   }
 
   public selectInstances(instancesDto: InstancesDto): void {

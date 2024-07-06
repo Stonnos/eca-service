@@ -1,8 +1,6 @@
 package com.ecaservice.classifier.template.processor.service;
 
-import com.ecaservice.classifier.options.model.AbstractHeterogeneousClassifierOptions;
 import com.ecaservice.classifier.options.model.ClassifierOptions;
-import com.ecaservice.classifier.options.model.StackingOptions;
 import com.ecaservice.classifier.template.processor.config.ClassifiersTemplateProperties;
 import com.ecaservice.common.web.expression.SpelExpressionHelper;
 import com.ecaservice.web.dto.model.ClassifierInfoDto;
@@ -13,14 +11,15 @@ import com.ecaservice.web.dto.model.FormFieldDto;
 import com.ecaservice.web.dto.model.FormTemplateDto;
 import com.ecaservice.web.dto.model.InputOptionDto;
 import eca.text.NumericFormatFactory;
+import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
-import jakarta.annotation.PostConstruct;
 import java.text.DecimalFormat;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -85,7 +84,6 @@ public class ClassifierOptionsProcessor {
         classifierInfoDto.setClassifierOptionsJson(toJsonString(classifierOptions));
         var inputOptions = processInputOptions(template, classifierOptions);
         classifierInfoDto.setInputOptions(inputOptions);
-        customizeClassifierInfo(classifierInfoDto, classifierOptions);
         log.debug("Classifier options class [{}] has been processed with result: {}",
                 classifierOptions.getClass().getSimpleName(), classifierInfoDto);
         return classifierInfoDto;
@@ -107,28 +105,10 @@ public class ClassifierOptionsProcessor {
                     .orElseThrow(() -> new IllegalStateException(
                             String.format("Can't find form template [%s] title field ref [%s]",
                                     formTemplateDto.getTemplateName(), formTemplateDto.getTemplateTitleFieldRef())));
-            return getValue(classifierOptions, formFieldDto);
+            Object title = getValue(classifierOptions, formFieldDto);
+            return String.valueOf(title);
         } else {
             return formTemplateDto.getTemplateTitle();
-        }
-    }
-
-    private void customizeClassifierInfo(ClassifierInfoDto classifierInfoDto, ClassifierOptions classifierOptions) {
-        if (isEnsembleClassifierOptions(classifierOptions)) {
-            if (classifierOptions instanceof AbstractHeterogeneousClassifierOptions) {
-                //Populates heterogeneous ensemble individual classifiers options
-                var heterogeneousClassifierOptions = (AbstractHeterogeneousClassifierOptions) classifierOptions;
-                var individualClassifiers = processClassifiers(heterogeneousClassifierOptions.getClassifierOptions());
-                classifierInfoDto.setIndividualClassifiers(individualClassifiers);
-            } else if (classifierOptions instanceof StackingOptions) {
-                //Populates stacking individual classifiers options
-                var stackingOptions = (StackingOptions) classifierOptions;
-                var individualClassifiers = processClassifiers(stackingOptions.getClassifierOptions());
-                classifierInfoDto.setIndividualClassifiers(individualClassifiers);
-                var metaClassifierInfo = processClassifierOptions(stackingOptions.getMetaClassifierOptions());
-                metaClassifierInfo.setMetaClassifier(true);
-                classifierInfoDto.getIndividualClassifiers().add(metaClassifierInfo);
-            }
         }
     }
 
@@ -145,18 +125,7 @@ public class ClassifierOptionsProcessor {
     private List<InputOptionDto> processInputOptions(FormTemplateDto template, ClassifierOptions classifierOptions) {
         return template.getFields()
                 .stream()
-                .map(formFieldDto -> {
-                    var optionValue = getValue(classifierOptions, formFieldDto);
-                    if (optionValue == null) {
-                        log.debug("Got null value for field [{}] of type [{}]. Skipped...", formFieldDto.getFieldName(),
-                                classifierOptions.getClass().getSimpleName());
-                        return null;
-                    }
-                    InputOptionDto inputOptionDto = new InputOptionDto();
-                    inputOptionDto.setOptionName(formFieldDto.getDescription());
-                    inputOptionDto.setOptionValue(optionValue);
-                    return inputOptionDto;
-                })
+                .map(formFieldDto -> processValue(classifierOptions, formFieldDto))
                 .filter(Objects::nonNull)
                 .collect(Collectors.toList());
     }
@@ -165,7 +134,31 @@ public class ClassifierOptionsProcessor {
         return StringUtils.replace(fieldName, ".", "?.");
     }
 
-    private String getValue(ClassifierOptions classifierOptions, FormFieldDto formFieldDto) {
+    @SuppressWarnings("unchecked")
+    private InputOptionDto processValue(ClassifierOptions classifierOptions, FormFieldDto formFieldDto) {
+        var optionValue = getValue(classifierOptions, formFieldDto);
+        if (optionValue == null) {
+            log.debug("Got null value for field [{}] of type [{}]. Skipped...", formFieldDto.getFieldName(),
+                    classifierOptions.getClass().getSimpleName());
+            return null;
+        }
+        InputOptionDto inputOptionDto = new InputOptionDto();
+        inputOptionDto.setOptionName(formFieldDto.getDescription());
+        if (FieldType.ONE_OF_OBJECT.equals(formFieldDto.getFieldType())) {
+            ClassifierOptions options = (ClassifierOptions) optionValue;
+            ClassifierInfoDto classifierInfoDto = processClassifierOptions(options);
+            inputOptionDto.setIndividualClassifiers(Collections.singletonList(classifierInfoDto));
+        } else if (FieldType.LIST_OBJECTS.equals(formFieldDto.getFieldType())) {
+            List<ClassifierOptions> optionsList = (List<ClassifierOptions>) optionValue;
+            List<ClassifierInfoDto> classifierInfoDtoList = processClassifiers(optionsList);
+            inputOptionDto.setIndividualClassifiers(classifierInfoDtoList);
+        } else {
+            inputOptionDto.setOptionValue(formatValueToString(optionValue));
+        }
+        return inputOptionDto;
+    }
+
+    private Object getValue(ClassifierOptions classifierOptions, FormFieldDto formFieldDto) {
         var expression = createNullSafeExpression(formFieldDto.getFieldName());
         var optionValue = spelExpressionHelper.parseExpression(classifierOptions, expression);
         if (optionValue == null) {
@@ -175,13 +168,14 @@ public class ClassifierOptionsProcessor {
             log.debug("Gets field [{}] value from dictionary for code [{}]", formFieldDto.getFieldName(), optionValue);
             return getLabelFromDictionary(formFieldDto.getDictionary(), String.valueOf(optionValue));
         }
-        return formatValue(optionValue);
+        if (FieldType.LIST_OBJECTS.equals(formFieldDto.getFieldType()) ||
+                FieldType.ONE_OF_OBJECT.equals(formFieldDto.getFieldType())) {
+            return optionValue;
+        }
+        return formatValueToString(optionValue);
     }
 
-    private String formatValue(Object value) {
-        if (Objects.isNull(value)) {
-            return null;
-        }
+    private String formatValueToString(Object value) {
         if (value instanceof Number) {
             var numberValue = (Number) value;
             double accuracy = Math.pow(TEN, -decimalFormat.getMaximumFractionDigits());
@@ -204,7 +198,8 @@ public class ClassifierOptionsProcessor {
                 .filter(fieldDictionaryValue -> fieldDictionaryValue.getValue().equals(code))
                 .map(FieldDictionaryValueDto::getLabel)
                 .findFirst()
-                .orElse(null);
+                .orElseThrow(() -> new IllegalStateException(
+                        String.format("Can't find dictionary [%s] value [%s]", fieldDictionary.getName(), code)));
     }
 
     private List<ClassifierInfoDto> processClassifiers(List<ClassifierOptions> classifierOptions) {

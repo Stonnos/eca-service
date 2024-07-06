@@ -2138,7 +2138,6 @@ a|
       "classifierName" : "RandomForests",
       "classifierDescription" : "Алгоритм Случайные леса",
       "classifierOptionsJson" : "<<json config>>",
-      "metaClassifier" : false,
       "inputOptions" : [ {
         "optionName" : "Алгоритм построения дерева",
         "optionValue" : "Алгоритм CART"
@@ -2160,8 +2159,7 @@ a|
       }, {
         "optionName" : "Начальное значение (seed)",
         "optionValue" : "1"
-      } ],
-      "individualClassifiers" : null
+      } ]
     },
     "pctCorrect" : 96,
     "instancesInfo" : {
@@ -3328,7 +3326,6 @@ a|
     "classifierName" : "RandomForests",
     "classifierDescription" : "Алгоритм Случайные леса",
     "classifierOptionsJson" : "<<json config>>",
-    "metaClassifier" : false,
     "inputOptions" : [ {
       "optionName" : "Алгоритм построения дерева",
       "optionValue" : "Алгоритм CART"
@@ -3350,8 +3347,7 @@ a|
     }, {
       "optionName" : "Начальное значение (seed)",
       "optionValue" : "1"
-    } ],
-    "individualClassifiers" : null
+    } ]
   },
   "resultsIndex" : 0,
   "pctCorrect" : 99,
@@ -3865,7 +3861,6 @@ a|
       "classifierName" : "RandomForests",
       "classifierDescription" : "Алгоритм Случайные леса",
       "classifierOptionsJson" : "<<json config>>",
-      "metaClassifier" : false,
       "inputOptions" : [ {
         "optionName" : "Алгоритм построения дерева",
         "optionValue" : "Алгоритм CART"
@@ -3887,8 +3882,7 @@ a|
       }, {
         "optionName" : "Начальное значение (seed)",
         "optionValue" : "1"
-      } ],
-      "individualClassifiers" : null
+      } ]
     },
     "resultsIndex" : 0,
     "pctCorrect" : 99
@@ -4622,7 +4616,6 @@ a|
     "classifierName" : "RandomForests",
     "classifierDescription" : "Алгоритм Случайные леса",
     "classifierOptionsJson" : "<<json config>>",
-    "metaClassifier" : false,
     "inputOptions" : [ {
       "optionName" : "Алгоритм построения дерева",
       "optionValue" : "Алгоритм CART"
@@ -4644,8 +4637,7 @@ a|
     }, {
       "optionName" : "Начальное значение (seed)",
       "optionValue" : "1"
-    } ],
-    "individualClassifiers" : null
+    } ]
   },
   "pctCorrect" : 96,
   "instancesInfo" : {
@@ -6990,6 +6982,91 @@ __array__
 
 
 |===
+=== ClassifierInfoDto
+:table-caption: Table
+.Classifier info model
+[width=100%]
+|===
+|*Name*|*Description*|*Schema*
+|*classifierName*
+|Classifier name
+a|
+__string__
+
+
+
+
+*Max. length*: 255
+
+
+
+
+
+
+
+
+
+
+|*classifierDescription*
+|Classifier description
+a|
+__string__
+
+
+
+
+*Max. length*: 255
+
+
+
+
+
+
+
+
+
+
+|*classifierOptionsJson**
+|Classifier options json config
+a|
+__string__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|*inputOptions*
+|-
+a|
+__array__
+<<<InputOptionDto>>
+>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|===
 === ClassifierOptionsDto
 :table-caption: Table
 .Classifier json input options model
@@ -7241,6 +7318,27 @@ __string__
 
 
 *Max. length*: 255
+
+
+
+
+
+
+
+
+
+
+|*individualClassifiers*
+|-
+a|
+__array__
+<<<ClassifierInfoDto>>
+>
+
+
+
+
+
 
 
 
@@ -9626,131 +9724,6 @@ __(int64)__
 *Minimum*: 0*
 
 *Maximum*: 9 223 372 036 854 775 807*
-
-
-
-
-
-
-
-
-|===
-=== ClassifierInfoDto
-:table-caption: Table
-.Classifier info model
-[width=100%]
-|===
-|*Name*|*Description*|*Schema*
-|*classifierName*
-|Classifier name
-a|
-__string__
-
-
-
-
-*Max. length*: 255
-
-
-
-
-
-
-
-
-
-
-|*classifierDescription*
-|Classifier description
-a|
-__string__
-
-
-
-
-*Max. length*: 255
-
-
-
-
-
-
-
-
-
-
-|*classifierOptionsJson**
-|Classifier options json config
-a|
-__string__
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-|*metaClassifier*
-|Is meta classifier (used for stacking algorithms)
-a|
-__boolean__
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-|*inputOptions*
-|-
-a|
-__array__
-<<<InputOptionDto>>
->
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-|*individualClassifiers*
-|-
-a|
-__array__
-<<<ClassifierInfoDto>>
->
-
-
-
-
-
-
-
 
 
 
@@ -12238,6 +12211,10 @@ __string__
 * DECIMAL
 
 * BOOLEAN
+
+* ONE_OF_OBJECT
+
+* LIST_OBJECTS
 |*minValue*
 |Minimum value
 a|
@@ -12398,7 +12375,7 @@ a|
 
 
 |*placeHolder*
-|Place holder message
+|Placeholder message
 a|
 __string__
 
@@ -12439,6 +12416,25 @@ __string__
 |Read only?
 a|
 __boolean__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|*formTemplateGroup*
+|-
+a|
+<<FormTemplateGroupDto>>
 
 
 

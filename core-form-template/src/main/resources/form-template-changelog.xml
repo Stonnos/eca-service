@@ -230,4 +230,20 @@
         <renameColumn tableName="form_field_dictionary_value" oldColumnName="label" newColumnName="_label"/>
     </changeSet>
 
+    <changeSet id="add_form_template_group_id_into_form_field" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="form_field"/>
+            <not>
+                <columnExists tableName="form_field" columnName="form_template_group_id"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="form_field">
+            <column name="form_template_group_id" type="bigint">
+                <constraints foreignKeyName="fk_form_field_form_template_group_id"
+                             referencedTableName="form_template_group" referencedColumnNames="id"
+                             nullable="true"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
 </databaseChangeLog>

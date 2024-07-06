@@ -17,3 +17,38 @@
   margin-top: 1px;
   font-size: 12px;
 }
+
+.object-items-fieldset::ng-deep {
+
+  .ui-fieldset {
+    margin: 1px 1px 1px 1px;
+    border: 0.5px solid darkgrey;
+  }
+
+  .ui-fieldset-legend {
+    font-weight: bold;
+    font-size: 16px;
+    border: 1px solid;
+  }
+}
+
+.object-items-list::ng-deep {
+
+  .ui-fieldset {
+    margin: 1px 1px 1px 1px;
+    border: 0.25px solid darkgrey;
+  }
+
+  .ui-fieldset-legend {
+    font-weight: bold;
+    font-size: 14px;
+    border: 1px solid;
+  }
+}
+
+.list {
+  width: 100%;
+  height: 225px;
+  max-height: 225px;
+  overflow-y: scroll;
+}

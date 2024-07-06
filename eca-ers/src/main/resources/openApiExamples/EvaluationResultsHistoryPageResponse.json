@@ -6,7 +6,6 @@
         "classifierName": "DecisionTreeOptions",
         "classifierDescription": "Алгоритм CART",
         "classifierOptionsJson": "{\"type\":\"decision_tree\",\"decisionTreeType\":\"CART\",\"minObj\":2,\"maxDepth\":0,\"randomTree\":false,\"numRandomAttr\":0,\"useBinarySplits\":true,\"useRandomSplits\":false,\"numRandomSplits\":1,\"seed\":1,\"alpha\":null}",
-        "metaClassifier": false,
         "inputOptions": [
           {
             "optionName": "Алгоритм построения дерева",
@@ -44,8 +43,7 @@
             "optionName": "Начальное значение (seed)",
             "optionValue": "1"
           }
-        ],
-        "individualClassifiers": null
+        ]
       },
       "instancesInfo": {
         "id": 1,
