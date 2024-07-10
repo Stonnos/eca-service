@@ -20,6 +20,7 @@ import eca.roc.ThresholdModel;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import weka.classifiers.AbstractClassifier;
+import weka.classifiers.evaluation.ThresholdCurve;
 import weka.core.Attribute;
 import weka.core.Instances;
 import weka.core.Utils;
@@ -148,9 +149,9 @@ public class EvaluationResultsService {
 
     private RocCurveReport populateRocCurveReport(RocCurve rocCurve, int classIndex) {
         RocCurveReport rocCurveReport = new RocCurveReport();
-        double aucValue = rocCurve.evaluation().areaUnderROC(classIndex);
-        rocCurveReport.setAucValue(!Utils.isMissingValue(aucValue) ? BigDecimal.valueOf(aucValue) : null);
         Instances rocCurveData = rocCurve.getROCCurve(classIndex);
+        double aucValue = ThresholdCurve.getROCArea(rocCurveData);
+        rocCurveReport.setAucValue(!Utils.isMissingValue(aucValue) ? BigDecimal.valueOf(aucValue) : null);
         ThresholdModel thresholdModel = rocCurve.findOptimalThreshold(rocCurveData);
         if (thresholdModel != null) {
             rocCurveReport.setSpecificity(BigDecimal.valueOf(1.0d - thresholdModel.getSpecificity()));
