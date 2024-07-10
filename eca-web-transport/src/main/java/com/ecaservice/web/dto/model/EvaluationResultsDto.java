@@ -31,4 +31,10 @@ public class EvaluationResultsDto {
      */
     @Schema(description = "Classification costs results")
     private List<ClassificationCostsDto> classificationCosts;
+
+    /**
+     * Confusion matrix
+     */
+    @Schema(description = "Confusion matrix")
+    private ConfusionMatrixDto confusionMatrix;
 }

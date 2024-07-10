@@ -1,0 +1,168 @@
+{
+  "classValues": [
+    "build wind float",
+    "containers",
+    "build wind non-float",
+    "headlamps",
+    "tableware",
+    "vehic wind float"
+  ],
+  "confusionMatrixCells": [
+    [
+      {
+        "numInstances": 64,
+        "state": "YELLOW"
+      },
+      {
+        "numInstances": 0,
+        "state": "WHITE"
+      },
+      {
+        "numInstances": 5,
+        "state": "YELLOW"
+      },
+      {
+        "numInstances": 0,
+        "state": "WHITE"
+      },
+      {
+        "numInstances": 0,
+        "state": "WHITE"
+      },
+      {
+        "numInstances": 1,
+        "state": "YELLOW"
+      }
+    ],
+    [
+      {
+        "numInstances": 0,
+        "state": "WHITE"
+      },
+      {
+        "numInstances": 10,
+        "state": "YELLOW"
+      },
+      {
+        "numInstances": 2,
+        "state": "YELLOW"
+      },
+      {
+        "numInstances": 1,
+        "state": "YELLOW"
+      },
+      {
+        "numInstances": 0,
+        "state": "WHITE"
+      },
+      {
+        "numInstances": 0,
+        "state": "WHITE"
+      }
+    ],
+    [
+      {
+        "numInstances": 8,
+        "state": "YELLOW"
+      },
+      {
+        "numInstances": 2,
+        "state": "YELLOW"
+      },
+      {
+        "numInstances": 63,
+        "state": "YELLOW"
+      },
+      {
+        "numInstances": 1,
+        "state": "YELLOW"
+      },
+      {
+        "numInstances": 1,
+        "state": "YELLOW"
+      },
+      {
+        "numInstances": 1,
+        "state": "YELLOW"
+      }
+    ],
+    [
+      {
+        "numInstances": 1,
+        "state": "YELLOW"
+      },
+      {
+        "numInstances": 1,
+        "state": "YELLOW"
+      },
+      {
+        "numInstances": 3,
+        "state": "YELLOW"
+      },
+      {
+        "numInstances": 24,
+        "state": "YELLOW"
+      },
+      {
+        "numInstances": 0,
+        "state": "WHITE"
+      },
+      {
+        "numInstances": 0,
+        "state": "WHITE"
+      }
+    ],
+    [
+      {
+        "numInstances": 0,
+        "state": "WHITE"
+      },
+      {
+        "numInstances": 0,
+        "state": "WHITE"
+      },
+      {
+        "numInstances": 1,
+        "state": "YELLOW"
+      },
+      {
+        "numInstances": 1,
+        "state": "YELLOW"
+      },
+      {
+        "numInstances": 7,
+        "state": "YELLOW"
+      },
+      {
+        "numInstances": 0,
+        "state": "WHITE"
+      }
+    ],
+    [
+      {
+        "numInstances": 9,
+        "state": "YELLOW"
+      },
+      {
+        "numInstances": 0,
+        "state": "WHITE"
+      },
+      {
+        "numInstances": 4,
+        "state": "YELLOW"
+      },
+      {
+        "numInstances": 0,
+        "state": "WHITE"
+      },
+      {
+        "numInstances": 0,
+        "state": "WHITE"
+      },
+      {
+        "numInstances": 4,
+        "state": "YELLOW"
+      }
+    ]
+  ]
+}

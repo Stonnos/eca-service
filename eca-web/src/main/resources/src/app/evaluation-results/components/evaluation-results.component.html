@@ -26,4 +26,7 @@
   <app-classification-costs-list
     [items]="evaluationResults?.classificationCosts || []">
   </app-classification-costs-list>
+  <app-confusion-matrix-list
+    [confusionMatrix]="evaluationResults?.confusionMatrix">
+  </app-confusion-matrix-list>
 </ng-container>

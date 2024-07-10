@@ -61,6 +61,7 @@ import com.ecaservice.server.model.experiment.InitializationParams;
 import com.ecaservice.web.dto.model.ClassifierOptionsDto;
 import com.ecaservice.web.dto.model.ClassifiersConfigurationDto;
 import com.ecaservice.web.dto.model.ClassifiersConfigurationHistoryDto;
+import com.ecaservice.web.dto.model.ConfusionMatrixDto;
 import com.ecaservice.web.dto.model.EnumDto;
 import com.ecaservice.web.dto.model.EvaluationResultsDto;
 import com.ecaservice.web.dto.model.EvaluationResultsStatus;
@@ -160,7 +161,6 @@ public class TestHelperUtils {
     private static final String CREATED_BY = "user";
     private static final String CONFIG = "config";
     private static final String OPTION_NAME = "option";
-    private static final String OPTION_VALUE = "value";
     private static final String CONFIGURATION_NAME = "configuration";
     private static final int ITERATIONS = 1;
     private static final int NUM_THREADS = 3;
@@ -171,6 +171,8 @@ public class TestHelperUtils {
     private static final String DATA_MD_5_HASH = "3032e188204cb537f69fc7364f638641";
     private static final String CLASSIFIER_MODEL = "classifier.model";
     private static final String INSTANCES_OBJECT_PATH = "instances.json";
+    private static final String EVALUATION_RESULTS_RESPONSE_JSON = "evaluation-results-response.json";
+    private static final String CONFUSION_MATRIX_JSON = "confusion-matrix.json";
 
     /**
      * Creates page request dto.
@@ -240,6 +242,26 @@ public class TestHelperUtils {
      */
     public static FormTemplateGroupDto loadEnsembleClassifiersTemplates() {
         return loadConfig(ENSEMBLE_CLASSIFIER_TEMPLATES_JSON, new TypeReference<>() {
+        });
+    }
+
+    /**
+     * Loads evaluation results response.
+     *
+     * @return evaluation results response
+     */
+    public static GetEvaluationResultsResponse loadEvaluationResultsResponse() {
+        return loadConfig(EVALUATION_RESULTS_RESPONSE_JSON, new TypeReference<>() {
+        });
+    }
+
+    /**
+     * Loads confusion matrix.
+     *
+     * @return confusion matrix
+     */
+    public static ConfusionMatrixDto loadConfusionMatrixDto() {
+        return loadConfig(CONFUSION_MATRIX_JSON, new TypeReference<>() {
         });
     }
 
