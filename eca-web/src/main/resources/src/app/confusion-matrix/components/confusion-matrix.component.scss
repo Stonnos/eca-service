@@ -2,9 +2,21 @@
 
   .ui-table {
     margin-top: 10px;
+    max-height: 500px;
+    overflow-y: scroll;
   }
 
   .ui-table-tbody > tr > td {
+    width: 125px;
+
+    &:first-child {
+      font-weight: bold;
+    }
+  }
+
+  .ui-table-thead > tr > th {
+    width: 125px;
+
     &:first-child {
       font-weight: bold;
     }
