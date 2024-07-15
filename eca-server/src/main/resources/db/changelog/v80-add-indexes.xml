@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+        logicalFilePath="db/changelog/v80-add-indexes.xml"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="create_idx_experiment_progress_experiment_id" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="experiment_progress"/>
+            <columnExists tableName="experiment_progress" columnName="experiment_id"/>
+            <not>
+                <indexExists indexName="idx_experiment_progress_experiment_id"
+                             tableName="experiment_progress"
+                             columnNames="experiment_id"/>
+            </not>
+        </preConditions>
+        <createIndex tableName="experiment_progress" indexName="idx_experiment_progress_experiment_id">
+            <column name="experiment_id"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="create_idx_experiment_step_experiment_id" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="experiment_step"/>
+            <columnExists tableName="experiment_step" columnName="experiment_id"/>
+            <not>
+                <indexExists indexName="idx_experiment_step_experiment_id"
+                             tableName="experiment_step"
+                             columnNames="experiment_id"/>
+            </not>
+        </preConditions>
+        <createIndex tableName="experiment_step" indexName="idx_experiment_step_experiment_id">
+            <column name="experiment_id"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="create_idx_experiment_results_experiment_id" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="experiment_results"/>
+            <columnExists tableName="experiment_results" columnName="experiment_id"/>
+            <not>
+                <indexExists indexName="idx_experiment_results_experiment_id"
+                             tableName="experiment_results"
+                             columnNames="experiment_id"/>
+            </not>
+        </preConditions>
+        <createIndex tableName="experiment_results" indexName="idx_experiment_results_experiment_id">
+            <column name="experiment_id"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="create_idx_classifiers_configuration_history_configuration_id" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="classifiers_configuration_history"/>
+            <columnExists tableName="classifiers_configuration_history" columnName="configuration_id"/>
+            <not>
+                <indexExists indexName="idx_classifiers_configuration_history_configuration_id"
+                             tableName="classifiers_configuration_history"
+                             columnNames="configuration_id"/>
+            </not>
+        </preConditions>
+        <createIndex tableName="classifiers_configuration_history"
+                     indexName="idx_classifiers_configuration_history_configuration_id">
+            <column name="configuration_id"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="create_idx_classifier_options_configuration_id" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="classifier_options"/>
+            <columnExists tableName="classifier_options" columnName="configuration_id"/>
+            <not>
+                <indexExists indexName="idx_classifier_options_configuration_id"
+                             tableName="classifier_options"
+                             columnNames="configuration_id"/>
+            </not>
+        </preConditions>
+        <createIndex tableName="classifier_options"
+                     indexName="idx_classifier_options_configuration_id">
+            <column name="configuration_id"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="drop_experiment_idx_uuid" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <indexExists indexName="idx_uuid"
+                         tableName="experiment"
+                         columnNames="request_id"/>
+        </preConditions>
+        <dropIndex tableName="experiment" indexName="idx_uuid"/>
+    </changeSet>
+
+    <changeSet id="drop_evaluation_log_idx_request_id" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <indexExists indexName="idx_request_id"
+                         tableName="evaluation_log"
+                         columnNames="request_id"/>
+        </preConditions>
+        <dropIndex tableName="evaluation_log" indexName="idx_request_id"/>
+    </changeSet>
+
+</databaseChangeLog>
