@@ -1,5 +1,6 @@
 package com.ecaservice.server.service.evaluation;
 
+import com.ecaservice.ers.dto.ClassificationCostsReport;
 import com.ecaservice.ers.dto.ConfusionMatrixReport;
 import com.ecaservice.ers.dto.GetEvaluationResultsResponse;
 import com.ecaservice.web.dto.model.ConfusionMatrixCellDto;
@@ -30,18 +31,21 @@ public class ConfusionMatrixService {
      */
     public ConfusionMatrixDto proceedConfusionMatrix(GetEvaluationResultsResponse evaluationResultsResponse) {
         ConfusionMatrixDto confusionMatrixDto = new ConfusionMatrixDto();
-        var classIndexMap = createClassIndexes(evaluationResultsResponse);
-        var confusionMatrixCells = createConfusionMatrixCells(classIndexMap.size());
+        List<String> classValues  = evaluationResultsResponse.getClassificationCosts()
+                .stream()
+                .map(ClassificationCostsReport::getClassValue)
+                .toList();
+        var confusionMatrixCells = createConfusionMatrixCells(classValues.size());
         // Populate confusion matrix cells
         evaluationResultsResponse.getConfusionMatrix().forEach(confusionMatrixReport -> {
-            int expectedClassIndex = classIndexMap.get(confusionMatrixReport.getPredictedClass());
-            int actualClassIndex = classIndexMap.get(confusionMatrixReport.getActualClass());
-            var confusionMatrixCellDto = confusionMatrixCells.get(actualClassIndex).get(expectedClassIndex);
+            int predictedClassIndex = confusionMatrixReport.getPredictedClassIndex();
+            int actualClassIndex = confusionMatrixReport.getActualClassIndex();
+            var confusionMatrixCellDto = confusionMatrixCells.get(actualClassIndex).get(predictedClassIndex);
             confusionMatrixCellDto.setNumInstances(confusionMatrixReport.getNumInstances().intValue());
         });
         // Populate confusion matrix cell states
         populateConfusionMatrixCellStates(confusionMatrixCells);
-        confusionMatrixDto.setClassValues(classIndexMap.keySet().stream().toList());
+        confusionMatrixDto.setClassValues(classValues);
         confusionMatrixDto.setConfusionMatrixCells(confusionMatrixCells);
         return confusionMatrixDto;
     }
@@ -60,18 +64,6 @@ public class ConfusionMatrixService {
                     ConfusionMatrixCellState.GREEN;
             confusionMatrixCells.get(i).get(i).setState(state);
         }
-    }
-
-    private Map<String, Integer> createClassIndexes(GetEvaluationResultsResponse evaluationResultsResponse) {
-        Map<String, Integer> classIndexMap = newLinkedHashMap();
-        int classIndex = 0;
-        for (ConfusionMatrixReport confusionMatrixReport : evaluationResultsResponse.getConfusionMatrix()) {
-            if (!classIndexMap.containsKey(confusionMatrixReport.getPredictedClass())) {
-                classIndexMap.put(confusionMatrixReport.getPredictedClass(), classIndex);
-                classIndex++;
-            }
-        }
-        return classIndexMap;
     }
 
     private List<List<ConfusionMatrixCellDto>> createConfusionMatrixCells(int numClasses) {
