@@ -29,6 +29,12 @@ public class ClassificationCostsInfo {
     private Long id;
 
     /**
+     * Class index
+     */
+    @Column(name = "class_index", nullable = false)
+    private Integer classIndex;
+
+    /**
      * Class value
      */
     @Column(name = "class_value", nullable = false)

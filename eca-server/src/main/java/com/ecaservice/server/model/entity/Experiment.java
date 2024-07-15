@@ -1,15 +1,14 @@
 package com.ecaservice.server.model.entity;
 
 import com.ecaservice.base.model.ExperimentType;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
-import jakarta.persistence.Index;
 import jakarta.persistence.Table;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+
 import java.math.BigDecimal;
 
 import static com.ecaservice.server.util.FieldConstraints.EXPERIMENT_DOWNLOAD_URL_MAX_LENGTH;
@@ -24,11 +23,7 @@ import static com.ecaservice.server.util.FieldConstraints.SCALE;
 @Data
 @EqualsAndHashCode(callSuper = true)
 @Entity
-@Table(name = "experiment",
-        indexes = {
-                @Index(name = "idx_uuid", columnList = "request_id"),
-                @Index(name = "idx_experiment_status", columnList = "request_status")
-        })
+@Table(name = "experiment")
 public class Experiment extends AbstractEvaluationEntity {
 
     /**

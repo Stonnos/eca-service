@@ -15,6 +15,7 @@ import com.ecaservice.server.repository.ExperimentRepository;
 import com.ecaservice.server.repository.ExperimentResultsEntityRepository;
 import com.ecaservice.server.repository.InstancesInfoRepository;
 import com.ecaservice.server.service.AbstractJpaTest;
+import com.ecaservice.server.service.evaluation.ConfusionMatrixService;
 import com.ecaservice.web.dto.model.EvaluationResultsDto;
 import com.ecaservice.web.dto.model.EvaluationResultsStatus;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -44,7 +45,8 @@ import static org.mockito.Mockito.when;
  *
  * @author Roman Batygin
  */
-@Import({StatisticsReportMapperImpl.class, ClassificationCostsMapperImpl.class, GetEvaluationResultsMapperImpl.class})
+@Import({StatisticsReportMapperImpl.class, ClassificationCostsMapperImpl.class, GetEvaluationResultsMapperImpl.class,
+        ConfusionMatrixService.class})
 class ErsServiceTest extends AbstractJpaTest {
 
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
@@ -53,6 +55,8 @@ class ErsServiceTest extends AbstractJpaTest {
     private ErsRequestService ersRequestService;
     @Autowired
     private GetEvaluationResultsMapper evaluationResultsMapper;
+    @Autowired
+    private ConfusionMatrixService confusionMatrixService;
     @Autowired
     private ExperimentResultsEntityRepository experimentResultsEntityRepository;
     @Autowired
@@ -64,7 +68,7 @@ class ErsServiceTest extends AbstractJpaTest {
 
     @Override
     public void init() {
-        ersService = new ErsService(ersRequestService, evaluationResultsMapper);
+        ersService = new ErsService(ersRequestService, evaluationResultsMapper, confusionMatrixService);
     }
 
     @Override

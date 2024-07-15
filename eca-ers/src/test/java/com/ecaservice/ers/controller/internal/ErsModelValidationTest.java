@@ -55,7 +55,7 @@ class ErsModelValidationTest {
             ImmutableList.of("classValue", "truePositiveRate", "falsePositiveRate", "trueNegativeRate",
                     "falseNegativeRate");
     private static final List<String> CONFUSION_MATRIX_FIELDS_NULL_TEST =
-            ImmutableList.of("actualClass", "predictedClass", "numInstances");
+            ImmutableList.of("actualClassIndex", "predictedClassIndex", "numInstances");
 
     /**
      * Not empty string fields for tests
@@ -66,8 +66,6 @@ class ErsModelValidationTest {
             ImmutableList.of("dataMd5Hash", "relationName", "className");
     private static final List<String> CLASSIFICATION_COSTS_FIELDS_EMPTY_TEST =
             ImmutableList.of("classValue");
-    private static final List<String> CONFUSION_MATRIX_FIELDS_EMPTY_TEST =
-            ImmutableList.of("actualClass", "predictedClass");
 
     /**
      * Not large string fields to tests
@@ -78,8 +76,6 @@ class ErsModelValidationTest {
             ImmutableList.of("relationName", "className");
     private static final List<String> CLASSIFICATION_COSTS_FIELDS_LARGE_TEST =
             ImmutableList.of("classValue");
-    private static final List<String> CONFUSION_MATRIX_FIELDS_LARGE_TEST =
-            ImmutableList.of("actualClass", "predictedClass");
 
     /**
      * Decimal fields to tests
@@ -243,21 +239,9 @@ class ErsModelValidationTest {
     }
 
     @Test
-    void testValidateEvaluationReportWithEmptyConfusionMatrixRecordFields() {
-        internalTestEmptyFields(CONFUSION_MATRIX_FIELDS_EMPTY_TEST,
-                (request) -> request.getConfusionMatrix().iterator().next());
-    }
-
-    @Test
     void testValidateEvaluationReportWithLargeClassificationCostsRecordFields() {
         internalTestLargeFields(CLASSIFICATION_COSTS_FIELDS_LARGE_TEST,
                 (request) -> request.getClassificationCosts().iterator().next());
-    }
-
-    @Test
-    void testValidateEvaluationReportWithLargeConfusionMatrixRecordFields() {
-        internalTestLargeFields(CONFUSION_MATRIX_FIELDS_LARGE_TEST,
-                (request) -> request.getConfusionMatrix().iterator().next());
     }
 
     @Test

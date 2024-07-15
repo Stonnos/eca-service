@@ -31,6 +31,7 @@ class ClassificationCostsReportMapperTest {
         ClassificationCostsReport costsReport = buildClassificationCostsReport();
         ClassificationCostsInfo classificationCostsInfo = costsReportMapper.map(costsReport);
         assertThat(classificationCostsInfo.getClassValue()).isEqualTo(costsReport.getClassValue());
+        assertThat(classificationCostsInfo.getClassIndex()).isEqualTo(costsReport.getClassIndex());
         RocCurveInfo rocCurveInfo = classificationCostsInfo.getRocCurveInfo();
         assertThat(rocCurveInfo.getAucValue()).isEqualTo(costsReport.getRocCurve().getAucValue());
         assertThat(rocCurveInfo.getSpecificity()).isEqualTo(costsReport.getRocCurve().getSpecificity());
@@ -52,6 +53,7 @@ class ClassificationCostsReportMapperTest {
         ClassificationCostsInfo classificationCostsInfo = buildClassificationCostsInfo();
         ClassificationCostsReport costsReport = costsReportMapper.map(classificationCostsInfo);
         assertThat(costsReport.getClassValue()).isEqualTo(classificationCostsInfo.getClassValue());
+        assertThat(costsReport.getClassIndex()).isEqualTo(classificationCostsInfo.getClassIndex());
         RocCurveReport rocCurveReport = costsReport.getRocCurve();
         assertThat(rocCurveReport.getAucValue()).isEqualTo(
                 classificationCostsInfo.getRocCurveInfo().getAucValue());

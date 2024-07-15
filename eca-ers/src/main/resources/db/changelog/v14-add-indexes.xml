@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+        logicalFilePath="db/changelog/v14-add-indexes.xml"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="create_idx_confusion_matrix_evaluation_results_info_id" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="confusion_matrix"/>
+            <columnExists tableName="confusion_matrix" columnName="evaluation_results_info_id"/>
+            <not>
+                <indexExists indexName="idx_confusion_matrix_evaluation_results_info_id"
+                             tableName="confusion_matrix"
+                             columnNames="evaluation_results_info_id"/>
+            </not>
+        </preConditions>
+        <createIndex tableName="confusion_matrix" indexName="idx_confusion_matrix_evaluation_results_info_id">
+            <column name="evaluation_results_info_id"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="create_idx_classification_costs_info_evaluation_results_info_id" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="classification_costs_info"/>
+            <columnExists tableName="classification_costs_info" columnName="evaluation_results_info_id"/>
+            <not>
+                <indexExists indexName="idx_classification_costs_info_evaluation_results_info_id"
+                             tableName="classification_costs_info"
+                             columnNames="evaluation_results_info_id"/>
+            </not>
+        </preConditions>
+        <createIndex tableName="classification_costs_info" indexName="idx_classification_costs_info_evaluation_results_info_id">
+            <column name="evaluation_results_info_id"/>
+        </createIndex>
+    </changeSet>
+
+</databaseChangeLog>

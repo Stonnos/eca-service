@@ -132,7 +132,6 @@ class EvaluationResultsServiceTest {
 
     private void verifyConfusionMatrixReport(Evaluation evaluation, EvaluationResultsRequest resultsRequest) {
         Instances instances = evaluationResults.getEvaluation().getData();
-        Attribute classAttribute = instances.classAttribute();
         //Confusion matrix report assertion
         List<ConfusionMatrixReport> confusionMatrixReports = resultsRequest.getConfusionMatrix();
         assertThat(confusionMatrixReports).isNotNull();
@@ -141,8 +140,8 @@ class EvaluationResultsServiceTest {
             for (int j = 0; j < confusionMatrix[i].length; j++) {
                 ConfusionMatrixReport confusionMatrixReport =
                         confusionMatrixReports.get(i * confusionMatrix[i].length + j);
-                assertThat(confusionMatrixReport.getPredictedClass()).isEqualTo(classAttribute.value(j));
-                assertThat(confusionMatrixReport.getActualClass()).isEqualTo(classAttribute.value(i));
+                assertThat(confusionMatrixReport.getPredictedClassIndex()).isEqualTo(j);
+                assertThat(confusionMatrixReport.getActualClassIndex()).isEqualTo(i);
                 assertThat(confusionMatrixReport.getNumInstances().doubleValue()).isEqualTo(
                         confusionMatrix[i][j]);
             }

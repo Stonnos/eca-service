@@ -1,17 +1,17 @@
 {
-  "requestId": "04b1373f-7838-4535-b65a-88c088830879",
+  "requestId": "94c0d852-6beb-424d-a887-a059c033932d",
   "instances": {
-    "dataMd5Hash": "3032e188204cb537f69fc7364f638641",
-    "relationName": "Glass",
+    "dataMd5Hash": "78204b730b0c46e05466defa9ae75125",
+    "relationName": "glass",
     "numInstances": 214,
     "numAttributes": 10,
     "numClasses": 6,
-    "className": "Type"
+    "className": "type"
   },
   "classifierReport": {
-    "classifierName": "ExtraTreesClassifier",
+    "classifierName": "Logistic",
     "classifierDescription": null,
-    "options": "{\"type\":\"extra_trees\",\"numIterations\":20,\"numThreads\":6,\"seed\":1,\"numRandomAttr\":5,\"minObj\":2,\"maxDepth\":0,\"decisionTreeType\":\"ID3\",\"numRandomSplits\":6,\"useBootstrapSamples\":false}"
+    "options": "{\"type\":\"logistic\",\"maxIts\":200,\"useConjugateGradientDescent\":false}"
   },
   "evaluationMethodReport": {
     "evaluationMethod": "CROSS_VALIDATION",
@@ -21,277 +21,283 @@
   },
   "statistics": {
     "numTestInstances": 214,
-    "numCorrect": 172,
-    "numIncorrect": 42,
-    "pctCorrect": 80.3738,
-    "pctIncorrect": 19.6262,
-    "meanAbsoluteError": 0.1189,
-    "rootMeanSquaredError": 0.2315,
-    "maxAucValue": 0.9984,
-    "varianceError": 0.0044,
-    "confidenceIntervalLowerBound": 0.149,
-    "confidenceIntervalUpperBound": 0.2435
+    "numCorrect": 137,
+    "numIncorrect": 77,
+    "pctCorrect": 64.01869158878505,
+    "pctIncorrect": 35.981308411214954,
+    "meanAbsoluteError": 0.14376091581568973,
+    "rootMeanSquaredError": 0.30208658843903385,
+    "maxAucValue": 0.9783783783783784,
+    "varianceError": 0.005618757831752862,
+    "confidenceIntervalLowerBound": 0.3061910946114487,
+    "confidenceIntervalUpperBound": 0.4134350736128503
   },
   "classificationCosts": [
     {
+      "classIndex": 0,
       "classValue": "build wind float",
-      "truePositiveRate": 0.9143,
-      "falsePositiveRate": 0.125,
-      "trueNegativeRate": 0.875,
-      "falseNegativeRate": 0.0857,
+      "truePositiveRate": 0.6428571428571429,
+      "falsePositiveRate": 0.19444444444444445,
+      "trueNegativeRate": 0.8055555555555556,
+      "falseNegativeRate": 0.35714285714285715,
       "rocCurve": {
-        "aucValue": 0.9314,
-        "specificity": 0.8611,
-        "sensitivity": 0.9429,
-        "thresholdValue": 0.4138
+        "aucValue": 0.8237103174603174,
+        "specificity": 0.5694444444444444,
+        "sensitivity": 0.9428571428571428,
+        "thresholdValue": 0.19192572443021555
       }
     },
     {
-      "classValue": "build wind non-float",
-      "truePositiveRate": 0.8289,
-      "falsePositiveRate": 0.1087,
-      "trueNegativeRate": 0.8913,
-      "falseNegativeRate": 0.1711,
-      "rocCurve": {
-        "aucValue": 0.9111,
-        "specificity": 0.9493,
-        "sensitivity": 0.75,
-        "thresholdValue": 0.4907
-      }
-    },
-    {
-      "classValue": "containers",
-      "truePositiveRate": 0.7692,
-      "falsePositiveRate": 0.0149,
-      "trueNegativeRate": 0.9851,
-      "falseNegativeRate": 0.2308,
-      "rocCurve": {
-        "aucValue": 0.9862,
-        "specificity": 0.9701,
-        "sensitivity": 0.9231,
-        "thresholdValue": 0.2746
-      }
-    },
-    {
-      "classValue": "headlamps",
-      "truePositiveRate": 0.8276,
-      "falsePositiveRate": 0.0162,
-      "trueNegativeRate": 0.9838,
-      "falseNegativeRate": 0.1724,
-      "rocCurve": {
-        "aucValue": 0.9607,
-        "specificity": 0.9459,
-        "sensitivity": 0.9655,
-        "thresholdValue": 0.1461
-      }
-    },
-    {
-      "classValue": "tableware",
-      "truePositiveRate": 0.7778,
-      "falsePositiveRate": 0.0049,
-      "trueNegativeRate": 0.9951,
-      "falseNegativeRate": 0.2222,
-      "rocCurve": {
-        "aucValue": 0.9984,
-        "specificity": 0.9951,
-        "sensitivity": 1,
-        "thresholdValue": 0.3342
-      }
-    },
-    {
+      "classIndex": 1,
       "classValue": "vehic wind float",
-      "truePositiveRate": 0.2353,
-      "falsePositiveRate": 0.0102,
-      "trueNegativeRate": 0.9898,
-      "falseNegativeRate": 0.7647,
+      "truePositiveRate": 0.11764705882352941,
+      "falsePositiveRate": 0.025380710659898477,
+      "trueNegativeRate": 0.9746192893401016,
+      "falseNegativeRate": 0.8823529411764706,
       "rocCurve": {
-        "aucValue": 0.9252,
-        "specificity": 0.7513,
-        "sensitivity": 1,
-        "thresholdValue": 0.084
+        "aucValue": 0.7954613317408181,
+        "specificity": 0.8121827411167513,
+        "sensitivity": 0.7647058823529411,
+        "thresholdValue": 0.08531212420240561
+      }
+    },
+    {
+      "classIndex": 2,
+      "classValue": "tableware",
+      "truePositiveRate": 0.6666666666666666,
+      "falsePositiveRate": 0.01951219512195122,
+      "trueNegativeRate": 0.9804878048780488,
+      "falseNegativeRate": 0.3333333333333333,
+      "rocCurve": {
+        "aucValue": 0.9550135501355014,
+        "specificity": 0.9804878048780488,
+        "sensitivity": 0.8888888888888888,
+        "thresholdValue": 5.508938596555931E-9
+      }
+    },
+    {
+      "classIndex": 3,
+      "classValue": "build wind non-float",
+      "truePositiveRate": 0.6578947368421053,
+      "falsePositiveRate": 0.21014492753623187,
+      "trueNegativeRate": 0.7898550724637681,
+      "falseNegativeRate": 0.34210526315789475,
+      "rocCurve": {
+        "aucValue": 0.7545766590389016,
+        "specificity": 0.7318840579710144,
+        "sensitivity": 0.7236842105263158,
+        "thresholdValue": 0.3752861685842112
+      }
+    },
+    {
+      "classIndex": 4,
+      "classValue": "headlamps",
+      "truePositiveRate": 0.8275862068965517,
+      "falsePositiveRate": 0.02702702702702703,
+      "trueNegativeRate": 0.972972972972973,
+      "falseNegativeRate": 0.1724137931034483,
+      "rocCurve": {
+        "aucValue": 0.9783783783783784,
+        "specificity": 0.9297297297297298,
+        "sensitivity": 0.9310344827586207,
+        "thresholdValue": 2.71767875053676E-29
+      }
+    },
+    {
+      "classIndex": 5,
+      "classValue": "containers",
+      "truePositiveRate": 0.7692307692307693,
+      "falsePositiveRate": 0.029850746268656716,
+      "trueNegativeRate": 0.9701492537313433,
+      "falseNegativeRate": 0.23076923076923078,
+      "rocCurve": {
+        "aucValue": 0.7975507079984692,
+        "specificity": 0.9701492537313433,
+        "sensitivity": 0.7692307692307693,
+        "thresholdValue": 0.4447975576277138
       }
     }
   ],
   "confusionMatrix": [
     {
-      "actualClass": "tableware",
-      "predictedClass": "build wind float",
-      "numInstances": 0
+      "actualClassIndex": 0,
+      "predictedClassIndex": 0,
+      "numInstances": 45
     },
     {
-      "actualClass": "build wind non-float",
-      "predictedClass": "build wind float",
-      "numInstances": 8
-    },
-    {
-      "actualClass": "vehic wind float",
-      "predictedClass": "containers",
-      "numInstances": 0
-    },
-    {
-      "actualClass": "vehic wind float",
-      "predictedClass": "build wind non-float",
-      "numInstances": 4
-    },
-    {
-      "actualClass": "build wind float",
-      "predictedClass": "build wind non-float",
+      "actualClassIndex": 0,
+      "predictedClassIndex": 1,
       "numInstances": 5
     },
     {
-      "actualClass": "build wind non-float",
-      "predictedClass": "build wind non-float",
-      "numInstances": 63
-    },
-    {
-      "actualClass": "build wind non-float",
-      "predictedClass": "containers",
-      "numInstances": 2
-    },
-    {
-      "actualClass": "build wind float",
-      "predictedClass": "headlamps",
+      "actualClassIndex": 0,
+      "predictedClassIndex": 2,
       "numInstances": 0
     },
     {
-      "actualClass": "headlamps",
-      "predictedClass": "build wind float",
+      "actualClassIndex": 0,
+      "predictedClassIndex": 3,
+      "numInstances": 19
+    },
+    {
+      "actualClassIndex": 0,
+      "predictedClassIndex": 4,
+      "numInstances": 0
+    },
+    {
+      "actualClassIndex": 0,
+      "predictedClassIndex": 5,
       "numInstances": 1
     },
     {
-      "actualClass": "headlamps",
-      "predictedClass": "tableware",
-      "numInstances": 0
-    },
-    {
-      "actualClass": "containers",
-      "predictedClass": "headlamps",
-      "numInstances": 1
-    },
-    {
-      "actualClass": "headlamps",
-      "predictedClass": "build wind non-float",
-      "numInstances": 3
-    },
-    {
-      "actualClass": "headlamps",
-      "predictedClass": "containers",
-      "numInstances": 1
-    },
-    {
-      "actualClass": "tableware",
-      "predictedClass": "build wind non-float",
-      "numInstances": 1
-    },
-    {
-      "actualClass": "containers",
-      "predictedClass": "build wind non-float",
-      "numInstances": 2
-    },
-    {
-      "actualClass": "headlamps",
-      "predictedClass": "headlamps",
-      "numInstances": 24
-    },
-    {
-      "actualClass": "containers",
-      "predictedClass": "build wind float",
-      "numInstances": 0
-    },
-    {
-      "actualClass": "vehic wind float",
-      "predictedClass": "tableware",
-      "numInstances": 0
-    },
-    {
-      "actualClass": "vehic wind float",
-      "predictedClass": "headlamps",
-      "numInstances": 0
-    },
-    {
-      "actualClass": "build wind float",
-      "predictedClass": "build wind float",
-      "numInstances": 64
-    },
-    {
-      "actualClass": "containers",
-      "predictedClass": "containers",
-      "numInstances": 10
-    },
-    {
-      "actualClass": "containers",
-      "predictedClass": "vehic wind float",
-      "numInstances": 0
-    },
-    {
-      "actualClass": "tableware",
-      "predictedClass": "containers",
-      "numInstances": 0
-    },
-    {
-      "actualClass": "build wind non-float",
-      "predictedClass": "tableware",
-      "numInstances": 1
-    },
-    {
-      "actualClass": "build wind float",
-      "predictedClass": "containers",
-      "numInstances": 0
-    },
-    {
-      "actualClass": "tableware",
-      "predictedClass": "vehic wind float",
-      "numInstances": 0
-    },
-    {
-      "actualClass": "build wind float",
-      "predictedClass": "tableware",
-      "numInstances": 0
-    },
-    {
-      "actualClass": "vehic wind float",
-      "predictedClass": "vehic wind float",
-      "numInstances": 4
-    },
-    {
-      "actualClass": "build wind float",
-      "predictedClass": "vehic wind float",
-      "numInstances": 1
-    },
-    {
-      "actualClass": "vehic wind float",
-      "predictedClass": "build wind float",
+      "actualClassIndex": 1,
+      "predictedClassIndex": 0,
       "numInstances": 9
     },
     {
-      "actualClass": "build wind non-float",
-      "predictedClass": "headlamps",
-      "numInstances": 1
+      "actualClassIndex": 1,
+      "predictedClassIndex": 1,
+      "numInstances": 2
     },
     {
-      "actualClass": "containers",
-      "predictedClass": "tableware",
+      "actualClassIndex": 1,
+      "predictedClassIndex": 2,
       "numInstances": 0
     },
     {
-      "actualClass": "build wind non-float",
-      "predictedClass": "vehic wind float",
-      "numInstances": 1
+      "actualClassIndex": 1,
+      "predictedClassIndex": 3,
+      "numInstances": 6
     },
     {
-      "actualClass": "tableware",
-      "predictedClass": "headlamps",
-      "numInstances": 1
-    },
-    {
-      "actualClass": "tableware",
-      "predictedClass": "tableware",
-      "numInstances": 7
-    },
-    {
-      "actualClass": "headlamps",
-      "predictedClass": "vehic wind float",
+      "actualClassIndex": 1,
+      "predictedClassIndex": 4,
       "numInstances": 0
+    },
+    {
+      "actualClassIndex": 1,
+      "predictedClassIndex": 5,
+      "numInstances": 0
+    },
+    {
+      "actualClassIndex": 2,
+      "predictedClassIndex": 0,
+      "numInstances": 0
+    },
+    {
+      "actualClassIndex": 2,
+      "predictedClassIndex": 1,
+      "numInstances": 0
+    },
+    {
+      "actualClassIndex": 2,
+      "predictedClassIndex": 2,
+      "numInstances": 6
+    },
+    {
+      "actualClassIndex": 2,
+      "predictedClassIndex": 3,
+      "numInstances": 1
+    },
+    {
+      "actualClassIndex": 2,
+      "predictedClassIndex": 4,
+      "numInstances": 2
+    },
+    {
+      "actualClassIndex": 2,
+      "predictedClassIndex": 5,
+      "numInstances": 0
+    },
+    {
+      "actualClassIndex": 3,
+      "predictedClassIndex": 0,
+      "numInstances": 18
+    },
+    {
+      "actualClassIndex": 3,
+      "predictedClassIndex": 1,
+      "numInstances": 0
+    },
+    {
+      "actualClassIndex": 3,
+      "predictedClassIndex": 2,
+      "numInstances": 3
+    },
+    {
+      "actualClassIndex": 3,
+      "predictedClassIndex": 3,
+      "numInstances": 50
+    },
+    {
+      "actualClassIndex": 3,
+      "predictedClassIndex": 4,
+      "numInstances": 2
+    },
+    {
+      "actualClassIndex": 3,
+      "predictedClassIndex": 5,
+      "numInstances": 3
+    },
+    {
+      "actualClassIndex": 4,
+      "predictedClassIndex": 0,
+      "numInstances": 1
+    },
+    {
+      "actualClassIndex": 4,
+      "predictedClassIndex": 1,
+      "numInstances": 0
+    },
+    {
+      "actualClassIndex": 4,
+      "predictedClassIndex": 2,
+      "numInstances": 1
+    },
+    {
+      "actualClassIndex": 4,
+      "predictedClassIndex": 3,
+      "numInstances": 1
+    },
+    {
+      "actualClassIndex": 4,
+      "predictedClassIndex": 4,
+      "numInstances": 24
+    },
+    {
+      "actualClassIndex": 4,
+      "predictedClassIndex": 5,
+      "numInstances": 2
+    },
+    {
+      "actualClassIndex": 5,
+      "predictedClassIndex": 0,
+      "numInstances": 0
+    },
+    {
+      "actualClassIndex": 5,
+      "predictedClassIndex": 1,
+      "numInstances": 0
+    },
+    {
+      "actualClassIndex": 5,
+      "predictedClassIndex": 2,
+      "numInstances": 0
+    },
+    {
+      "actualClassIndex": 5,
+      "predictedClassIndex": 3,
+      "numInstances": 2
+    },
+    {
+      "actualClassIndex": 5,
+      "predictedClassIndex": 4,
+      "numInstances": 1
+    },
+    {
+      "actualClassIndex": 5,
+      "predictedClassIndex": 5,
+      "numInstances": 10
     }
   ]
 }

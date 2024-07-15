@@ -1,0 +1,38 @@
+<p-table
+  class="confusion-matrix-table"
+  [columns]="columns"
+  [value]="confusionMatrix?.confusionMatrixCells">
+
+  <ng-template pTemplate="caption">
+    <span class="text-bold">{{ caption }}</span>
+  </ng-template>
+
+  <ng-template pTemplate="header">
+    <tr>
+      <ng-container *ngFor="let column of columns">
+        <th>{{ column.label }}</th>
+      </ng-container>
+    </tr>
+  </ng-template>
+  <ng-template pTemplate="body" let-item let-rowIndex="rowIndex">
+    <tr>
+      <td *ngFor="let column of columns; let i = index">
+        <div *ngIf="i == 0" class="text-bold">
+          {{ confusionMatrix?.classValues[rowIndex] }}
+        </div>
+        <div *ngIf="i > 0"
+             [class.green-cell]="item[i - 1].state == 'GREEN'"
+             [class.yellow-cell]="item[i - 1].state == 'YELLOW'">
+          {{ item[i - 1].numInstances }}
+        </div>
+      </td>
+    </tr>
+  </ng-template>
+  <ng-template pTemplate="emptymessage" *ngIf="confusionMatrix?.confusionMatrixCells?.length == 0">
+    <tr>
+      <td [attr.colspan]="columns.length" class="text-center">
+        Результатов не найдено
+      </td>
+    </tr>
+  </ng-template>
+</p-table>

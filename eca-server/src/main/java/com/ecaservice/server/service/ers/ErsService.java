@@ -5,6 +5,7 @@ import com.ecaservice.server.mapping.GetEvaluationResultsMapper;
 import com.ecaservice.server.model.ErsEvaluationRequestData;
 import com.ecaservice.server.model.entity.ExperimentResultsEntity;
 import com.ecaservice.server.model.entity.ExperimentResultsRequest;
+import com.ecaservice.server.service.evaluation.ConfusionMatrixService;
 import com.ecaservice.web.dto.model.EnumDto;
 import com.ecaservice.web.dto.model.EvaluationResultsDto;
 import com.ecaservice.web.dto.model.EvaluationResultsStatus;
@@ -32,6 +33,7 @@ public class ErsService {
 
     private final ErsRequestService ersRequestService;
     private final GetEvaluationResultsMapper evaluationResultsMapper;
+    private final ConfusionMatrixService confusionMatrixService;
 
     /**
      * Sent experiment results to ERS service.
@@ -64,6 +66,8 @@ public class ErsService {
         try {
             var evaluationResultsResponse = ersRequestService.getEvaluationResults(requestId);
             var evaluationResultsDto = evaluationResultsMapper.map(evaluationResultsResponse);
+            evaluationResultsDto.setConfusionMatrix(
+                    confusionMatrixService.proceedConfusionMatrix(evaluationResultsResponse));
             evaluationResultsStatus = EvaluationResultsStatus.RESULTS_RECEIVED;
             evaluationResultsDto.setEvaluationResultsStatus(new EnumDto(evaluationResultsStatus.name(),
                     evaluationResultsStatus.getDescription()));

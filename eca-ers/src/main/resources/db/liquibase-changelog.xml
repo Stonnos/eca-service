@@ -22,4 +22,6 @@
     <include file="../audit-changelog.xml" relativeToChangelogFile="true"/>
     <include file="db/changelog/v12-insert-audit-codes-and-events.xml"/>
     <include file="../redelivery-changelog.xml" relativeToChangelogFile="true"/>
+    <include file="db/changelog/v13-add-class-index-column.xml"/>
+    <include file="db/changelog/v14-add-indexes.xml"/>
 </databaseChangeLog>

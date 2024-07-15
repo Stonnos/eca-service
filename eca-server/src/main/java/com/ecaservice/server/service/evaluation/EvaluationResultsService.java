@@ -20,6 +20,7 @@ import eca.roc.ThresholdModel;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import weka.classifiers.AbstractClassifier;
+import weka.classifiers.evaluation.ThresholdCurve;
 import weka.core.Attribute;
 import weka.core.Instances;
 import weka.core.Utils;
@@ -115,13 +116,12 @@ public class EvaluationResultsService {
     private void populateConfusionMatrix(EvaluationResults evaluationResults,
                                          EvaluationResultsRequest evaluationResultsRequest) {
         double[][] confusionMatrix = evaluationResults.getEvaluation().confusionMatrix();
-        Attribute classAttribute = evaluationResults.getEvaluation().getData().classAttribute();
         evaluationResultsRequest.setConfusionMatrix(newArrayList());
         for (int i = 0; i < confusionMatrix.length; i++) {
             for (int j = 0; j < confusionMatrix[i].length; j++) {
                 ConfusionMatrixReport confusionMatrixReport = new ConfusionMatrixReport();
-                confusionMatrixReport.setPredictedClass(classAttribute.value(j));
-                confusionMatrixReport.setActualClass(classAttribute.value(i));
+                confusionMatrixReport.setPredictedClassIndex(j);
+                confusionMatrixReport.setActualClassIndex(i);
                 confusionMatrixReport.setNumInstances(BigInteger.valueOf((long) confusionMatrix[i][j]));
                 evaluationResultsRequest.getConfusionMatrix().add(confusionMatrixReport);
             }
@@ -136,6 +136,7 @@ public class EvaluationResultsService {
         evaluationResultsRequest.setClassificationCosts(newArrayList());
         for (int i = 0; i < classAttribute.numValues(); i++) {
             ClassificationCostsReport classificationCostsReport = new ClassificationCostsReport();
+            classificationCostsReport.setClassIndex(i);
             classificationCostsReport.setClassValue(classAttribute.value(i));
             classificationCostsReport.setFalseNegativeRate(BigDecimal.valueOf(evaluation.falseNegativeRate(i)));
             classificationCostsReport.setFalsePositiveRate(BigDecimal.valueOf(evaluation.falsePositiveRate(i)));
@@ -148,9 +149,9 @@ public class EvaluationResultsService {
 
     private RocCurveReport populateRocCurveReport(RocCurve rocCurve, int classIndex) {
         RocCurveReport rocCurveReport = new RocCurveReport();
-        double aucValue = rocCurve.evaluation().areaUnderROC(classIndex);
-        rocCurveReport.setAucValue(!Utils.isMissingValue(aucValue) ? BigDecimal.valueOf(aucValue) : null);
         Instances rocCurveData = rocCurve.getROCCurve(classIndex);
+        double aucValue = ThresholdCurve.getROCArea(rocCurveData);
+        rocCurveReport.setAucValue(!Utils.isMissingValue(aucValue) ? BigDecimal.valueOf(aucValue) : null);
         ThresholdModel thresholdModel = rocCurve.findOptimalThreshold(rocCurveData);
         if (thresholdModel != null) {
             rocCurveReport.setSpecificity(BigDecimal.valueOf(1.0d - thresholdModel.getSpecificity()));

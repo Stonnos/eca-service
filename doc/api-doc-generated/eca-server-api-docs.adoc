@@ -3321,43 +3321,60 @@ a|
 [source,json]
 ----
 {
-  "id" : 1,
+  "id" : 840,
   "classifierInfo" : {
-    "classifierName" : "RandomForests",
-    "classifierDescription" : "Алгоритм Случайные леса",
-    "classifierOptionsJson" : "<<json config>>",
+    "classifierName" : "RandomForestsOptions",
+    "classifierDescription" : "Случайные леса",
+    "classifierOptionsJson" : "{\"type\":\"random_forests\",\"numIterations\":18,\"numThreads\":10,\"seed\":1,\"numRandomAttr\":4,\"minObj\":3,\"maxDepth\":0,\"decisionTreeType\":\"C45\"}",
     "inputOptions" : [ {
       "optionName" : "Алгоритм построения дерева",
-      "optionValue" : "Алгоритм CART"
+      "optionValue" : "Алгоритм C4.5",
+      "individualClassifiers" : null
     }, {
       "optionName" : "Число деревьев",
-      "optionValue" : "10"
+      "optionValue" : "18",
+      "individualClassifiers" : null
     }, {
       "optionName" : "Минимальное число объектов в листе",
-      "optionValue" : "2"
+      "optionValue" : "3",
+      "individualClassifiers" : null
     }, {
       "optionName" : "Максимальная глубина дерева",
-      "optionValue" : "0"
+      "optionValue" : "0",
+      "individualClassifiers" : null
     }, {
       "optionName" : "Число случайных атрибутов",
-      "optionValue" : "3"
+      "optionValue" : "4",
+      "individualClassifiers" : null
     }, {
       "optionName" : "Число потоков",
-      "optionValue" : "1"
+      "optionValue" : "10",
+      "individualClassifiers" : null
     }, {
       "optionName" : "Начальное значение (seed)",
-      "optionValue" : "1"
+      "optionValue" : "1",
+      "individualClassifiers" : null
     } ]
   },
   "resultsIndex" : 0,
-  "pctCorrect" : 99,
-  "sent" : true,
+  "pctCorrect" : 78.5047,
   "experimentDto" : {
-    "id" : 1,
-    "requestId" : "1d2de514-3a87-4620-9b97-c260e24340de",
-    "creationDate" : "2021-07-01 14:00:00",
-    "startDate" : "2021-07-01 14:00:30",
-    "endDate" : "2021-07-01 14:02:13",
+    "id" : 834,
+    "requestId" : "249dede0-0071-43a1-813e-a45605553dfc",
+    "createdBy" : "admin",
+    "instancesInfo" : {
+      "id" : 24,
+      "relationName" : "glass",
+      "numInstances" : 214,
+      "numAttributes" : 10,
+      "numClasses" : 6,
+      "className" : "type",
+      "createdDate" : "2024-06-18 16:14:50"
+    },
+    "creationDate" : "2024-06-18 23:24:16",
+    "startDate" : "2024-06-18 23:24:23",
+    "endDate" : "2024-06-18 23:24:32",
+    "modelPath" : "experiment-249dede0-0071-43a1-813e-a45605553dfc.zip",
     "requestStatus" : {
       "value" : "FINISHED",
       "description" : "Завершена"
@@ -3369,51 +3386,187 @@ a|
     "numFolds" : 10,
     "numTests" : 1,
     "seed" : 1,
-    "evaluationTotalTime" : "00:00:1:43",
-    "createdBy" : "admin",
-    "modelPath" : "experiment-1d2de514-3a87-4620-9b97-c260e24340de.model",
-    "instancesInfo" : {
-      "id" : 1,
-      "relation" : "glass",
-      "numInstances" : 214,
-      "numAttributes" : 10,
-      "numClasses" : 6,
-      "className" : "class",
-      "createdDate" : "2021-07-01 14:00:00"
-    },
-    "deletedDate" : "2021-07-14 14:00:00",
+    "evaluationTotalTime" : "00:00:08:69",
+    "deletedDate" : null,
     "experimentType" : {
       "value" : "RANDOM_FORESTS",
       "description" : "Случайные леса"
     },
-    "maxPctCorrect" : 99.56
+    "maxPctCorrect" : 78.5047
   },
   "evaluationResultsDto" : {
     "evaluationResultsStatus" : {
-      "value" : "SUCCESS",
-      "description" : "Успешно"
+      "value" : "RESULTS_RECEIVED",
+      "description" : "Получены результаты классификации"
     },
     "evaluationStatisticsDto" : {
-      "numTestInstances" : 150,
-      "numCorrect" : 146,
-      "numIncorrect" : 4,
-      "pctCorrect" : 96,
-      "pctIncorrect" : 4,
-      "meanAbsoluteError" : 0.29,
-      "rootMeanSquaredError" : 0.01,
-      "maxAucValue" : 0.89,
-      "varianceError" : 0.0012,
-      "confidenceIntervalLowerBound" : 0.01,
-      "confidenceIntervalUpperBound" : 0.035
+      "numTestInstances" : 214,
+      "numCorrect" : 168,
+      "numIncorrect" : 46,
+      "pctCorrect" : 78.5047,
+      "pctIncorrect" : 21.4953,
+      "meanAbsoluteError" : 0.1319,
+      "rootMeanSquaredError" : 0.2464,
+      "maxAucValue" : 0.9935,
+      "varianceError" : 0.0049,
+      "confidenceIntervalLowerBound" : 0.1648,
+      "confidenceIntervalUpperBound" : 0.2651
     },
     "classificationCosts" : [ {
-      "classValue" : "Iris-setosa",
-      "truePositiveRate" : 0.75,
-      "falsePositiveRate" : 0.25,
-      "trueNegativeRate" : 0.5,
-      "falseNegativeRate" : 0.5,
-      "aucValue" : 0.9
-    } ]
+      "classValue" : "build wind float",
+      "truePositiveRate" : 0.8571,
+      "falsePositiveRate" : 0.1319,
+      "trueNegativeRate" : 0.8681,
+      "falseNegativeRate" : 0.1429,
+      "aucValue" : 0.9103
+    }, {
+      "classValue" : "build wind non-float",
+      "truePositiveRate" : 0.8026,
+      "falsePositiveRate" : 0.1232,
+      "trueNegativeRate" : 0.8768,
+      "falseNegativeRate" : 0.1974,
+      "aucValue" : 0.8869
+    }, {
+      "classValue" : "containers",
+      "truePositiveRate" : 0.7692,
+      "falsePositiveRate" : 0.0149,
+      "trueNegativeRate" : 0.9851,
+      "falseNegativeRate" : 0.2308,
+      "aucValue" : 0.9386
+    }, {
+      "classValue" : "headlamps",
+      "truePositiveRate" : 0.8966,
+      "falsePositiveRate" : 0.0216,
+      "trueNegativeRate" : 0.9784,
+      "falseNegativeRate" : 0.1034,
+      "aucValue" : 0.9453
+    }, {
+      "classValue" : "tableware",
+      "truePositiveRate" : 0.7778,
+      "falsePositiveRate" : 0.0049,
+      "trueNegativeRate" : 0.9951,
+      "falseNegativeRate" : 0.2222,
+      "aucValue" : 0.9935
+    }, {
+      "classValue" : "vehic wind float",
+      "truePositiveRate" : 0.2353,
+      "falsePositiveRate" : 0.0102,
+      "trueNegativeRate" : 0.9898,
+      "falseNegativeRate" : 0.7647,
+      "aucValue" : 0.8564
+    } ],
+    "confusionMatrix" : {
+      "classValues" : [ "containers", "build wind non-float", "tableware", "headlamps", "vehic wind float", "build wind float" ],
+      "confusionMatrixCells" : [ [ {
+        "numInstances" : 10,
+        "state" : "YELLOW"
+      }, {
+        "numInstances" : 1,
+        "state" : "YELLOW"
+      }, {
+        "numInstances" : 0,
+        "state" : "WHITE"
+      }, {
+        "numInstances" : 2,
+        "state" : "YELLOW"
+      }, {
+        "numInstances" : 0,
+        "state" : "WHITE"
+      }, {
+        "numInstances" : 0,
+        "state" : "WHITE"
+      } ], [ {
+        "numInstances" : 3,
+        "state" : "YELLOW"
+      }, {
+        "numInstances" : 61,
+        "state" : "YELLOW"
+      }, {
+        "numInstances" : 1,
+        "state" : "YELLOW"
+      }, {
+        "numInstances" : 1,
+        "state" : "YELLOW"
+      }, {
+        "numInstances" : 1,
+        "state" : "YELLOW"
+      }, {
+        "numInstances" : 9,
+        "state" : "YELLOW"
+      } ], [ {
+        "numInstances" : 0,
+        "state" : "WHITE"
+      }, {
+        "numInstances" : 2,
+        "state" : "YELLOW"
+      }, {
+        "numInstances" : 7,
+        "state" : "YELLOW"
+      }, {
+        "numInstances" : 0,
+        "state" : "WHITE"
+      }, {
+        "numInstances" : 0,
+        "state" : "WHITE"
+      }, {
+        "numInstances" : 0,
+        "state" : "WHITE"
+      } ], [ {
+        "numInstances" : 0,
+        "state" : "WHITE"
+      }, {
+        "numInstances" : 2,
+        "state" : "YELLOW"
+      }, {
+        "numInstances" : 0,
+        "state" : "WHITE"
+      }, {
+        "numInstances" : 26,
+        "state" : "YELLOW"
+      }, {
+        "numInstances" : 0,
+        "state" : "WHITE"
+      }, {
+        "numInstances" : 1,
+        "state" : "YELLOW"
+      } ], [ {
+        "numInstances" : 0,
+        "state" : "WHITE"
+      }, {
+        "numInstances" : 4,
+        "state" : "YELLOW"
+      }, {
+        "numInstances" : 0,
+        "state" : "WHITE"
+      }, {
+        "numInstances" : 0,
+        "state" : "WHITE"
+      }, {
+        "numInstances" : 4,
+        "state" : "YELLOW"
+      }, {
+        "numInstances" : 9,
+        "state" : "YELLOW"
+      } ], [ {
+        "numInstances" : 0,
+        "state" : "WHITE"
+      }, {
+        "numInstances" : 8,
+        "state" : "YELLOW"
+      }, {
+        "numInstances" : 0,
+        "state" : "WHITE"
+      }, {
+        "numInstances" : 1,
+        "state" : "YELLOW"
+      }, {
+        "numInstances" : 1,
+        "state" : "YELLOW"
+      }, {
+        "numInstances" : 60,
+        "state" : "YELLOW"
+      } ] ]
+    }
   }
 }
 ----
@@ -4593,12 +4746,22 @@ a|
 [source,json]
 ----
 {
-  "id" : 1,
-  "requestId" : "1d2de514-3a87-4620-9b97-c260e24340de",
-  "creationDate" : "2021-07-01 14:00:00",
-  "startDate" : "2021-07-01 14:00:01",
-  "endDate" : "2021-07-01 14:00:12",
-  "modelPath" : "classifier-1d2de514-3a87-4620-9b97-c260e24340de.model",
+  "id" : 914,
+  "requestId" : "de2e201b-5ea1-47f5-bb47-edfe64b46610",
+  "createdBy" : "admin",
+  "instancesInfo" : {
+    "id" : 24,
+    "relationName" : "glass",
+    "numInstances" : 214,
+    "numAttributes" : 10,
+    "numClasses" : 6,
+    "className" : "type",
+    "createdDate" : "2024-06-18 16:14:50"
+  },
+  "creationDate" : "2024-07-10 14:48:45",
+  "startDate" : "2024-07-10 14:48:46",
+  "endDate" : "2024-07-10 14:48:47",
+  "modelPath" : "classifier-de2e201b-5ea1-47f5-bb47-edfe64b46610.model",
   "requestStatus" : {
     "value" : "FINISHED",
     "description" : "Завершена"
@@ -4610,71 +4773,196 @@ a|
   "numFolds" : 10,
   "numTests" : 1,
   "seed" : 1,
-  "evaluationTotalTime" : "00:00:00:11",
+  "evaluationTotalTime" : "00:00:00:88",
   "deletedDate" : null,
   "classifierInfo" : {
-    "classifierName" : "RandomForests",
-    "classifierDescription" : "Алгоритм Случайные леса",
-    "classifierOptionsJson" : "<<json config>>",
+    "classifierName" : "LogisticOptions",
+    "classifierDescription" : "Логистическая регрессия",
+    "classifierOptionsJson" : "{\"type\":\"logistic\",\"maxIts\":200,\"useConjugateGradientDescent\":false}",
     "inputOptions" : [ {
-      "optionName" : "Алгоритм построения дерева",
-      "optionValue" : "Алгоритм CART"
+      "optionName" : "Максимальное число итераций",
+      "optionValue" : "200",
+      "individualClassifiers" : null
     }, {
-      "optionName" : "Число деревьев",
-      "optionValue" : "10"
-    }, {
-      "optionName" : "Минимальное число объектов в листе",
-      "optionValue" : "2"
-    }, {
-      "optionName" : "Максимальная глубина дерева",
-      "optionValue" : "0"
-    }, {
-      "optionName" : "Число случайных атрибутов",
-      "optionValue" : "3"
-    }, {
-      "optionName" : "Число потоков",
-      "optionValue" : "1"
-    }, {
-      "optionName" : "Начальное значение (seed)",
-      "optionValue" : "1"
+      "optionName" : "Использовать метод сопряженных градиентов",
+      "optionValue" : "false",
+      "individualClassifiers" : null
     } ]
   },
-  "pctCorrect" : 96,
-  "instancesInfo" : {
-    "id" : 1,
-    "relation" : "glass",
-    "numInstances" : 214,
-    "numAttributes" : 10,
-    "numClasses" : 6,
-    "className" : "class",
-    "createdDate" : "2021-07-01 14:00:00"
-  },
+  "pctCorrect" : 64.0187,
   "evaluationResultsDto" : {
     "evaluationResultsStatus" : {
       "value" : "RESULTS_RECEIVED",
       "description" : "Получены результаты классификации"
     },
     "evaluationStatisticsDto" : {
-      "numTestInstances" : 150,
-      "numCorrect" : 146,
-      "numIncorrect" : 4,
-      "pctCorrect" : 96,
-      "pctIncorrect" : 4,
-      "meanAbsoluteError" : 0.29,
-      "rootMeanSquaredError" : 0.01,
-      "maxAucValue" : 0.89,
-      "varianceError" : 0.0012,
-      "confidenceIntervalLowerBound" : 0.01,
-      "confidenceIntervalUpperBound" : 0.035
+      "numTestInstances" : 214,
+      "numCorrect" : 137,
+      "numIncorrect" : 77,
+      "pctCorrect" : 64.0187,
+      "pctIncorrect" : 35.9813,
+      "meanAbsoluteError" : 0.1438,
+      "rootMeanSquaredError" : 0.3021,
+      "maxAucValue" : 0.9784,
+      "varianceError" : 0.0056,
+      "confidenceIntervalLowerBound" : 0.3062,
+      "confidenceIntervalUpperBound" : 0.4134
     },
     "classificationCosts" : [ {
-      "classValue" : "Iris-setosa",
-      "truePositiveRate" : 0.75,
-      "falsePositiveRate" : 0.25,
-      "trueNegativeRate" : 0.5,
-      "falseNegativeRate" : 0.5,
-      "aucValue" : 0.9
-    } ]
+      "classValue" : "build wind float",
+      "truePositiveRate" : 0.6429,
+      "falsePositiveRate" : 0.1944,
+      "trueNegativeRate" : 0.8056,
+      "falseNegativeRate" : 0.3571,
+      "aucValue" : 0.8237
+    }, {
+      "classValue" : "build wind non-float",
+      "truePositiveRate" : 0.6579,
+      "falsePositiveRate" : 0.2101,
+      "trueNegativeRate" : 0.7899,
+      "falseNegativeRate" : 0.3421,
+      "aucValue" : 0.7546
+    }, {
+      "classValue" : "containers",
+      "truePositiveRate" : 0.7692,
+      "falsePositiveRate" : 0.0299,
+      "trueNegativeRate" : 0.9701,
+      "falseNegativeRate" : 0.2308,
+      "aucValue" : 0.7976
+    }, {
+      "classValue" : "headlamps",
+      "truePositiveRate" : 0.8276,
+      "falsePositiveRate" : 0.027,
+      "trueNegativeRate" : 0.973,
+      "falseNegativeRate" : 0.1724,
+      "aucValue" : 0.9784
+    }, {
+      "classValue" : "tableware",
+      "truePositiveRate" : 0.6667,
+      "falsePositiveRate" : 0.0195,
+      "trueNegativeRate" : 0.9805,
+      "falseNegativeRate" : 0.3333,
+      "aucValue" : 0.955
+    }, {
+      "classValue" : "vehic wind float",
+      "truePositiveRate" : 0.1176,
+      "falsePositiveRate" : 0.0254,
+      "trueNegativeRate" : 0.9746,
+      "falseNegativeRate" : 0.8824,
+      "aucValue" : 0.7955
+    } ],
+    "confusionMatrix" : {
+      "classValues" : [ "tableware", "build wind non-float", "headlamps", "build wind float", "containers", "vehic wind float" ],
+      "confusionMatrixCells" : [ [ {
+        "numInstances" : 6,
+        "state" : "YELLOW"
+      }, {
+        "numInstances" : 1,
+        "state" : "YELLOW"
+      }, {
+        "numInstances" : 2,
+        "state" : "YELLOW"
+      }, {
+        "numInstances" : 0,
+        "state" : "WHITE"
+      }, {
+        "numInstances" : 0,
+        "state" : "WHITE"
+      }, {
+        "numInstances" : 0,
+        "state" : "WHITE"
+      } ], [ {
+        "numInstances" : 3,
+        "state" : "YELLOW"
+      }, {
+        "numInstances" : 50,
+        "state" : "YELLOW"
+      }, {
+        "numInstances" : 2,
+        "state" : "YELLOW"
+      }, {
+        "numInstances" : 18,
+        "state" : "YELLOW"
+      }, {
+        "numInstances" : 3,
+        "state" : "YELLOW"
+      }, {
+        "numInstances" : 0,
+        "state" : "WHITE"
+      } ], [ {
+        "numInstances" : 1,
+        "state" : "YELLOW"
+      }, {
+        "numInstances" : 1,
+        "state" : "YELLOW"
+      }, {
+        "numInstances" : 24,
+        "state" : "YELLOW"
+      }, {
+        "numInstances" : 1,
+        "state" : "YELLOW"
+      }, {
+        "numInstances" : 2,
+        "state" : "YELLOW"
+      }, {
+        "numInstances" : 0,
+        "state" : "WHITE"
+      } ], [ {
+        "numInstances" : 0,
+        "state" : "WHITE"
+      }, {
+        "numInstances" : 19,
+        "state" : "YELLOW"
+      }, {
+        "numInstances" : 0,
+        "state" : "WHITE"
+      }, {
+        "numInstances" : 45,
+        "state" : "YELLOW"
+      }, {
+        "numInstances" : 1,
+        "state" : "YELLOW"
+      }, {
+        "numInstances" : 5,
+        "state" : "YELLOW"
+      } ], [ {
+        "numInstances" : 0,
+        "state" : "WHITE"
+      }, {
+        "numInstances" : 2,
+        "state" : "YELLOW"
+      }, {
+        "numInstances" : 1,
+        "state" : "YELLOW"
+      }, {
+        "numInstances" : 0,
+        "state" : "WHITE"
+      }, {
+        "numInstances" : 10,
+        "state" : "YELLOW"
+      }, {
+        "numInstances" : 0,
+        "state" : "WHITE"
+      } ], [ {
+        "numInstances" : 0,
+        "state" : "WHITE"
+      }, {
+        "numInstances" : 6,
+        "state" : "YELLOW"
+      }, {
+        "numInstances" : 0,
+        "state" : "WHITE"
+      }, {
+        "numInstances" : 9,
+        "state" : "YELLOW"
+      }, {
+        "numInstances" : 0,
+        "state" : "WHITE"
+      }, {
+        "numInstances" : 2,
+        "state" : "YELLOW"
+      } ] ]
+    }
   }
 }
 ----
@@ -10838,6 +11126,109 @@ __number__
 
 
 |===
+=== ConfusionMatrixCellDto
+:table-caption: Table
+.Confusion matrix cell model
+[width=100%]
+|===
+|*Name*|*Description*|*Schema*
+|*numInstances*
+|Instances number
+a|
+__integer__
+__(int32)__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|*state*
+|Cell state
+a|
+__string__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+*Values*:
+
+* GREEN
+
+* YELLOW
+
+* WHITE
+|===
+=== ConfusionMatrixDto
+:table-caption: Table
+.Confusion matrix model
+[width=100%]
+|===
+|*Name*|*Description*|*Schema*
+|*classValues*
+|Class values
+a|
+__array__
+<string
+>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|*confusionMatrixCells*
+|Confusion matrix cells
+a|
+__array__
+<array
+<<<ConfusionMatrixCellDto>>
+>>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|===
 === EvaluationResultsDto
 :table-caption: Table
 .Classifier evaluation results model
@@ -10888,6 +11279,25 @@ a|
 __array__
 <<<ClassificationCostsDto>>
 >
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|*confusionMatrix*
+|-
+a|
+<<ConfusionMatrixDto>>
 
 
 

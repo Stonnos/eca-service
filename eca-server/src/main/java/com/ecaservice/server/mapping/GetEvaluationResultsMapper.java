@@ -22,5 +22,6 @@ public interface GetEvaluationResultsMapper {
      * @return evaluation results dto model
      */
     @Mapping(source = "statistics", target = "evaluationStatisticsDto")
+    @Mapping(target = "confusionMatrix", ignore = true)
     EvaluationResultsDto map(GetEvaluationResultsResponse evaluationResultsResponse);
 }

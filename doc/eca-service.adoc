@@ -365,8 +365,8 @@ image::./images/eca-db-schema.png[alt=Схема базы данных eca-serve
 [cols="^20%,^14%,^8%,^8%,^8%,^30%",options="header"]
 |===
 |Название колонки|Тип|Unique|Not NULL|Индекс|Описание
-|id                           |bigint           |+|+|fk_evaluation_results_id                                 |Идентификатор записи (первичный ключ) и внешний ключ на ers_request
-|evaluation_log_id            |bigint           |+|+|fk_evaluation_log, evaluation_log_request_id_unique_idx  |Внешний ключ, ID evaluation_log
+|id                           |bigint           |+|+|fk_evaluation_results_id                                                    |Идентификатор записи (первичный ключ) и внешний ключ на ers_request
+|evaluation_log_id            |bigint           |+|+|fk_evaluation_log, evaluation_results_request_evaluation_log_id_unique_idx  |Внешний ключ, ID evaluation_log
 |===
 
 ==== Таблица 3.{counter:db-table-id} - 'experiment_results_request' - данные запросов в eca-ers для сохранения результатов экспериментов
@@ -628,7 +628,8 @@ image::./images/eca-ers-db-schema.png[alt=Схема базы данных eca-e
 |===
 |Название колонки|Тип|Unique|Not NULL|Индекс|Описание
 |id                               |bigint           |+|+|+                       |Идентификатор записи (первичный ключ)
-|class_value                      |varchar(255)     |-|+|-                       |Название атрибута класса
+|class_index                      |integer          |-|+|-                       |Индекс класса
+|class_value                      |varchar(255)     |-|+|-                       |Название класса
 |fn_rate                          |numeric(19,4)    |-|-|-                       |Доля положительных примеров, классифицированных как отрицательные
 |fp_rate                          |numeric(19,4)    |-|-|-                       |Доля отрицательных примеров, классифицированных как положительные
 |tn_rate                          |numeric(19,4)    |-|-|-                       |Доля верно классифицированных отрицательных примеров
@@ -645,8 +646,8 @@ image::./images/eca-ers-db-schema.png[alt=Схема базы данных eca-e
 |===
 |Название колонки|Тип|Unique|Not NULL|Индекс|Описание
 |id                               |bigint           |+|+|+                       |Идентификатор записи (первичный ключ)
-|actual_class                     |varchar(255)     |-|+|-                       |Реальное значение класса
-|predicted_class                  |varchar(255)     |-|+|-                       |Прогнозное значение класса
+|actual_class_index               |integer          |-|+|-                       |Реальный индекс класса
+|predicted_class_index            |integer          |-|+|-                       |Прогнозный индекс класса
 |num_instances                    |integer          |-|+|-                       |Число объектов
 |evaluation_results_info_id       |bigint           |-|+|+                       |Внешний ключ evaluation_results_info
 |===

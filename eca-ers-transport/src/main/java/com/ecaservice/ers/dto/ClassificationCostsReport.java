@@ -1,6 +1,8 @@
 package com.ecaservice.ers.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import lombok.Data;
 
 import jakarta.validation.Valid;
@@ -15,6 +17,7 @@ import static com.ecaservice.ers.dto.Constraints.DECIMAL_MAX_ONE;
 import static com.ecaservice.ers.dto.Constraints.DECIMAL_MIN_ZERO;
 import static com.ecaservice.ers.dto.Constraints.MAX_LENGTH_255;
 import static com.ecaservice.ers.dto.Constraints.MIN_1;
+import static com.ecaservice.ers.dto.Constraints.MIN_ZERO;
 
 /**
  * Classification costs report model.
@@ -24,6 +27,15 @@ import static com.ecaservice.ers.dto.Constraints.MIN_1;
 @Data
 @Schema(description = "Classification costs report model")
 public class ClassificationCostsReport {
+
+    /**
+     * Class index
+     */
+    @NotNull
+    @Min(MIN_ZERO)
+    @Max(Integer.MAX_VALUE)
+    @Schema(description = "Class index", example = "0", requiredMode = Schema.RequiredMode.REQUIRED)
+    private Integer classIndex;
 
     /**
      * Class value

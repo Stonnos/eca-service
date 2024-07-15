@@ -24,7 +24,6 @@ import java.math.BigInteger;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import static com.ecaservice.auto.test.util.Utils.getScaledValue;
@@ -204,41 +203,41 @@ public class EvaluationResultsMatcherService {
         IntStream.range(0, confusionMatrix.length)
                 .forEach(i -> IntStream.range(0, confusionMatrix[i].length)
                         .forEach(j -> {
-                            String actualClassValue = classAttribute.value(i);
-                            String predictedClassValue = classAttribute.value(j);
                             var reports = confusionMatrixReports
                                     .stream()
-                                    .filter(cmr -> actualClassValue.equals(cmr.getActualClass()) &&
-                                            predictedClassValue.equals(cmr.getPredictedClass()))
-                                    .collect(Collectors.toList());
+                                    .filter(cmr -> i == cmr.getActualClassIndex() && j == cmr.getPredictedClassIndex())
+                                    .toList();
                             Assert.state(reports.size() == 1,
                                     String.format(CONFUSION_MATRIX_ERROR_MESSAGE_FORMAT,
-                                            evaluationResultsResponse.getRequestId(), actualClassValue,
-                                            predictedClassValue));
-                            var confusionMatrixReport = reports.iterator().next();
+                                            evaluationResultsResponse.getRequestId(), classAttribute.value(i),
+                                            classAttribute.value(j)));
+                            var confusionMatrixReport = reports.getFirst();
                             var confusionMatrixDetailsMatch =
-                                    compareAndMatchConfusionMatrix(actualClassValue, predictedClassValue,
-                                            confusionMatrix[i][j], confusionMatrixReport, matcher);
+                                    compareAndMatchConfusionMatrix(classAttribute, i, j, confusionMatrix[i][j],
+                                            confusionMatrixReport, matcher);
                             confusionMatrixDetailsMatches.add(confusionMatrixDetailsMatch);
                         })
                 );
         evaluationResultsDetailsMatch.setConfusionMatrixDetails(confusionMatrixDetailsMatches);
     }
 
-    private ConfusionMatrixDetailsMatch compareAndMatchConfusionMatrix(String expectedActualClassValue,
-                                                                       String expectedPredictedClassValue,
+    private ConfusionMatrixDetailsMatch compareAndMatchConfusionMatrix(Attribute classAttribute,
+                                                                       Integer expectedActualClassIndex,
+                                                                       Integer expectedPredictedClassIndex,
                                                                        double numInstances,
                                                                        ConfusionMatrixReport confusionMatrixReport,
                                                                        TestResultsMatcher matcher) {
         var confusionMatrixDetailsMatch = new ConfusionMatrixDetailsMatch();
+        String expectedActualClassValue = classAttribute.value(expectedActualClassIndex);
+        String expectedPredictedClassValue = classAttribute.value(expectedPredictedClassIndex);
 
-        String actualClassValue = confusionMatrixReport.getActualClass();
-        confusionMatrixDetailsMatch.setExpectedActualClassValue(expectedActualClassValue);
+        String actualClassValue = classAttribute.value(confusionMatrixReport.getActualClassIndex());
+        confusionMatrixDetailsMatch.setExpectedActualClassValue(classAttribute.value(expectedActualClassIndex));
         confusionMatrixDetailsMatch.setActualClassValue(actualClassValue);
         MatchResult actualClassValueMatchResult = matcher.compareAndMatch(expectedActualClassValue, actualClassValue);
         confusionMatrixDetailsMatch.setActualClassValueMatchResult(actualClassValueMatchResult);
 
-        String actualPredictedClassValue = confusionMatrixReport.getPredictedClass();
+        String actualPredictedClassValue = classAttribute.value(confusionMatrixReport.getPredictedClassIndex());
         confusionMatrixDetailsMatch.setExpectedPredictedClassValue(expectedPredictedClassValue);
         confusionMatrixDetailsMatch.setActualPredictedClassValue(actualPredictedClassValue);
         MatchResult predictedClassValueMatchResult =
@@ -276,11 +275,11 @@ public class EvaluationResultsMatcherService {
             String classValue = classAttribute.value(i);
             var reports = classificationCostsReports.stream()
                     .filter(classificationCostsReport -> classValue.equals(classificationCostsReport.getClassValue()))
-                    .collect(Collectors.toList());
+                    .toList();
             Assert.state(reports.size() == 1,
                     String.format(CLASSIFICATION_COSTS_ERROR_MESSAGE_FORMAT, evaluationResultsResponse.getRequestId(),
                             classValue));
-            var classificationCostsReport = reports.iterator().next();
+            var classificationCostsReport = reports.getFirst();
             var classificationCostsDetailsMatch = compareAndMatchClassificationCosts(evaluation, classValue, i,
                     matcher, classificationCostsReport);
             classificationCostsDetailsMatches.add(classificationCostsDetailsMatch);

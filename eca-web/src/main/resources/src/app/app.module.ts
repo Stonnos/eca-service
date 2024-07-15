@@ -55,6 +55,7 @@ import { UserProfileTabsModule } from "./user-profile-tabs/user-profile-tabs.mod
 import { UserProfileNotificationOptionsModule } from "./user-profile-notification-options/user-profile-notification-options.module";
 import { InstancesDetailsTabsModule } from "./instances-details-tabs/instances-details-tabs.module";
 import { InstancesStatisticsModule } from "./instances-statistics/instances-statistics.module";
+import { ConfusionMatrixModule } from './confusion-matrix/confusion-matrix.module';
 
 export function eventSubscribe(eventHandler: EventHandler) {
   return () => eventHandler.eventSubscribe();
@@ -88,6 +89,7 @@ export function eventSubscribe(eventHandler: EventHandler) {
     EvaluationLogDetailsModule,
     ExperimentResultsDetailsModule,
     ClassificationCostsModule,
+    ConfusionMatrixModule,
     AuthModule,
     ExperimentStatisticsModule,
     CreateExperimentModule,
