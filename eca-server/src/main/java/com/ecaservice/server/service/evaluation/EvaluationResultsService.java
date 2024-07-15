@@ -136,6 +136,7 @@ public class EvaluationResultsService {
         evaluationResultsRequest.setClassificationCosts(newArrayList());
         for (int i = 0; i < classAttribute.numValues(); i++) {
             ClassificationCostsReport classificationCostsReport = new ClassificationCostsReport();
+            classificationCostsReport.setClassIndex(i);
             classificationCostsReport.setClassValue(classAttribute.value(i));
             classificationCostsReport.setFalseNegativeRate(BigDecimal.valueOf(evaluation.falseNegativeRate(i)));
             classificationCostsReport.setFalsePositiveRate(BigDecimal.valueOf(evaluation.falsePositiveRate(i)));

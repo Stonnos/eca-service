@@ -130,7 +130,7 @@ public class EvaluationResultsInfo {
      */
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "evaluation_results_info_id", nullable = false)
-    @OrderBy("classValue")
+    @OrderBy("classIndex")
     private Set<ClassificationCostsInfo> classificationCosts;
 
     /**
