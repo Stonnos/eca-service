@@ -116,13 +116,12 @@ public class EvaluationResultsService {
     private void populateConfusionMatrix(EvaluationResults evaluationResults,
                                          EvaluationResultsRequest evaluationResultsRequest) {
         double[][] confusionMatrix = evaluationResults.getEvaluation().confusionMatrix();
-        Attribute classAttribute = evaluationResults.getEvaluation().getData().classAttribute();
         evaluationResultsRequest.setConfusionMatrix(newArrayList());
         for (int i = 0; i < confusionMatrix.length; i++) {
             for (int j = 0; j < confusionMatrix[i].length; j++) {
                 ConfusionMatrixReport confusionMatrixReport = new ConfusionMatrixReport();
-                confusionMatrixReport.setPredictedClass(classAttribute.value(j));
-                confusionMatrixReport.setActualClass(classAttribute.value(i));
+                confusionMatrixReport.setPredictedClassIndex(j);
+                confusionMatrixReport.setActualClassIndex(i);
                 confusionMatrixReport.setNumInstances(BigInteger.valueOf((long) confusionMatrix[i][j]));
                 evaluationResultsRequest.getConfusionMatrix().add(confusionMatrixReport);
             }

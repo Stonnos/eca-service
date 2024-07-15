@@ -28,8 +28,8 @@ class ConfusionMatrixMapperTest {
     void testMapConfusionMatrixReport() {
         ConfusionMatrixReport report = buildConfusionMatrixReport();
         ConfusionMatrix confusionMatrix = confusionMatrixMapper.map(report);
-        assertThat(confusionMatrix.getActualClass()).isEqualTo(report.getActualClass());
-        assertThat(confusionMatrix.getPredictedClass()).isEqualTo(report.getPredictedClass());
+        assertThat(confusionMatrix.getActualClassIndex()).isEqualTo(report.getActualClassIndex());
+        assertThat(confusionMatrix.getPredictedClassIndex()).isEqualTo(report.getPredictedClassIndex());
         assertThat(confusionMatrix.getNumInstances().intValue()).isEqualTo(
                 report.getNumInstances().intValue());
     }
@@ -38,8 +38,8 @@ class ConfusionMatrixMapperTest {
     void testMapConfusionMatrix() {
         ConfusionMatrix confusionMatrix = buildConfusionMatrix();
         ConfusionMatrixReport confusionMatrixReport = confusionMatrixMapper.map(confusionMatrix);
-        assertThat(confusionMatrixReport.getActualClass()).isEqualTo(confusionMatrix.getActualClass());
-        assertThat(confusionMatrixReport.getPredictedClass()).isEqualTo(confusionMatrix.getPredictedClass());
+        assertThat(confusionMatrixReport.getActualClassIndex()).isEqualTo(confusionMatrix.getActualClassIndex());
+        assertThat(confusionMatrixReport.getPredictedClassIndex()).isEqualTo(confusionMatrix.getPredictedClassIndex());
         assertThat(confusionMatrixReport.getNumInstances().intValue()).isEqualTo(
                 confusionMatrix.getNumInstances().intValue());
     }

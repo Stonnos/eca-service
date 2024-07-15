@@ -55,8 +55,6 @@ public class TestHelperUtils {
     private static final int SEED = 1;
     private static final String RELATION_NAME = "relation";
     private static final String CLASS_NAME = "class";
-    private static final String ACTUAL_CLASS = "actual";
-    private static final String PREDICTED_CLASS = "predicted";
     private static final String CLASSIFIER_NAME = "Classifier";
     private static final String CLASSIFIER_DESCRIPTION = "description";
     private static final String OPTIONS = "options";
@@ -155,8 +153,8 @@ public class TestHelperUtils {
      */
     public static ConfusionMatrixReport buildConfusionMatrixReport() {
         ConfusionMatrixReport confusionMatrix = new ConfusionMatrixReport();
-        confusionMatrix.setActualClass(ACTUAL_CLASS);
-        confusionMatrix.setPredictedClass(PREDICTED_CLASS);
+        confusionMatrix.setActualClassIndex(0);
+        confusionMatrix.setPredictedClassIndex(0);
         confusionMatrix.setNumInstances(BigInteger.TEN);
         return confusionMatrix;
     }
@@ -168,8 +166,8 @@ public class TestHelperUtils {
      */
     public static ConfusionMatrix buildConfusionMatrix() {
         ConfusionMatrix confusionMatrix = new ConfusionMatrix();
-        confusionMatrix.setActualClass(ACTUAL_CLASS);
-        confusionMatrix.setPredictedClass(PREDICTED_CLASS);
+        confusionMatrix.setActualClassIndex(0);
+        confusionMatrix.setPredictedClassIndex(0);
         confusionMatrix.setNumInstances(BigInteger.TEN.intValue());
         return confusionMatrix;
     }
@@ -181,6 +179,7 @@ public class TestHelperUtils {
      */
     public static ClassificationCostsReport buildClassificationCostsReport() {
         ClassificationCostsReport classificationCostsReport = new ClassificationCostsReport();
+        classificationCostsReport.setClassIndex(0);
         classificationCostsReport.setClassValue(CLASS_NAME);
         classificationCostsReport.setFalseNegativeRate(BigDecimal.valueOf(Math.random()));
         classificationCostsReport.setTrueNegativeRate(BigDecimal.valueOf(Math.random()));
@@ -198,6 +197,7 @@ public class TestHelperUtils {
     public static ClassificationCostsInfo buildClassificationCostsInfo() {
         ClassificationCostsInfo classificationCostsInfo = new ClassificationCostsInfo();
         classificationCostsInfo.setClassValue(CLASS_NAME);
+        classificationCostsInfo.setClassIndex(0);
         classificationCostsInfo.setFalseNegativeRate(BigDecimal.valueOf(Math.random()));
         classificationCostsInfo.setTrueNegativeRate(BigDecimal.valueOf(Math.random()));
         classificationCostsInfo.setTruePositiveRate(BigDecimal.valueOf(Math.random()));

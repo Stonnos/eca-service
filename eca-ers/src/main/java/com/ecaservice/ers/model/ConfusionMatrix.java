@@ -25,16 +25,16 @@ public class ConfusionMatrix {
     private Long id;
 
     /**
-     * Actual class value
+     * Actual class index
      */
-    @Column(name = "actual_class", nullable = false)
-    private String actualClass;
+    @Column(name = "actual_class_index", nullable = false)
+    private Integer actualClassIndex;
 
     /**
-     * Expected class value
+     * Expected class index
      */
-    @Column(name = "predicted_class", nullable = false)
-    private String predictedClass;
+    @Column(name = "predicted_class_index", nullable = false)
+    private Integer predictedClassIndex;
 
     /**
      * Instances number
