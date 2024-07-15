@@ -1,7 +1,6 @@
 package com.ecaservice.server.service.evaluation;
 
 import com.ecaservice.ers.dto.ClassificationCostsReport;
-import com.ecaservice.ers.dto.ConfusionMatrixReport;
 import com.ecaservice.ers.dto.GetEvaluationResultsResponse;
 import com.ecaservice.web.dto.model.ConfusionMatrixCellDto;
 import com.ecaservice.web.dto.model.ConfusionMatrixCellState;
@@ -9,11 +8,8 @@ import com.ecaservice.web.dto.model.ConfusionMatrixDto;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
-import static com.google.common.collect.Maps.newLinkedHashMap;
 
 /**
  * Confusion matrix service.
