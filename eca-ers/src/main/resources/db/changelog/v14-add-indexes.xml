@@ -30,8 +30,25 @@
                              columnNames="evaluation_results_info_id"/>
             </not>
         </preConditions>
-        <createIndex tableName="classification_costs_info" indexName="idx_classification_costs_info_evaluation_results_info_id">
+        <createIndex tableName="classification_costs_info"
+                     indexName="idx_classification_costs_info_evaluation_results_info_id">
             <column name="evaluation_results_info_id"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="add_evaluation_results_info_instances_info_id_idx" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="evaluation_results_info"/>
+            <columnExists tableName="evaluation_results_info" columnName="instances_info_id"/>
+            <not>
+                <indexExists indexName="evaluation_results_info_instances_info_id_idx"
+                             tableName="evaluation_results_info"
+                             columnNames="instances_info_id"/>
+            </not>
+        </preConditions>
+        <createIndex tableName="evaluation_results_info"
+                     indexName="evaluation_results_info_instances_info_id_idx">
+            <column name="instances_info_id"/>
         </createIndex>
     </changeSet>
 

@@ -100,4 +100,36 @@
         <dropIndex tableName="evaluation_log" indexName="idx_request_id"/>
     </changeSet>
 
+    <changeSet id="add_evaluation_log_instances_info_id_idx" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="evaluation_log"/>
+            <columnExists tableName="evaluation_log" columnName="instances_info_id"/>
+            <not>
+                <indexExists indexName="evaluation_log_instances_info_id_idx"
+                             tableName="evaluation_log"
+                             columnNames="instances_info_id"/>
+            </not>
+        </preConditions>
+        <createIndex tableName="evaluation_log"
+                     indexName="evaluation_log_instances_info_id_idx">
+            <column name="instances_info_id"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="add_experiment_instances_info_id_idx" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="experiment"/>
+            <columnExists tableName="experiment" columnName="instances_info_id"/>
+            <not>
+                <indexExists indexName="experiment_instances_info_id_idx"
+                             tableName="experiment"
+                             columnNames="instances_info_id"/>
+            </not>
+        </preConditions>
+        <createIndex tableName="experiment"
+                     indexName="experiment_instances_info_id_idx">
+            <column name="instances_info_id"/>
+        </createIndex>
+    </changeSet>
+
 </databaseChangeLog>
