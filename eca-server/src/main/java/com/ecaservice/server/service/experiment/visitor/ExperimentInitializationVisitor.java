@@ -20,7 +20,9 @@ import eca.ensemble.ModifiedHeterogeneousClassifier;
 import eca.ensemble.StackingClassifier;
 import eca.metrics.KNearestNeighbours;
 import eca.neural.NeuralNetwork;
+import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 /**
@@ -28,6 +30,7 @@ import org.springframework.stereotype.Component;
  *
  * @author Roman Batygin
  */
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class ExperimentInitializationVisitor
@@ -36,6 +39,18 @@ public class ExperimentInitializationVisitor
     private final ExperimentConfig experimentConfig;
     private final CrossValidationConfig crossValidationConfig;
     private final ClassifiersSetSearcher classifiersSetSearcher;
+
+    /**
+     * Print experiment initialization options.
+     */
+    @PostConstruct
+    public void printExperimentInitializationOptions() {
+        if (experimentConfig.getEnsemble().getMultiThreadModeEnabled()) {
+            log.info(
+                    "Experiment ensemble multi thread mode is enabled. Available cpu cores [{}], Configured threads num: {}",
+                    Runtime.getRuntime().availableProcessors(), experimentConfig.getEnsemble().getNumThreads());
+        }
+    }
 
     @Override
     public AbstractExperiment caseNeuralNetwork(InitializationParams initializationParams) {
