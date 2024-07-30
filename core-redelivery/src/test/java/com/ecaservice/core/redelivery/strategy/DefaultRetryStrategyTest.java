@@ -17,6 +17,7 @@ class DefaultRetryStrategyTest {
     private static final int MAX_RETRIES = 100;
     private static final int MAX_RETRIES_IN_ROW = 10;
     private static final long MIN_RETRY_INTERVAL_MILLIS = 30000L;
+    private static final long MAX_RETRY_INTERVAL_MILLIS = 300000L;
 
     private DefaultRetryStrategy retryStrategy;
 
@@ -26,6 +27,7 @@ class DefaultRetryStrategyTest {
         retryStrategy.setMaxRetries(MAX_RETRIES);
         retryStrategy.setMaxRetriesInRow(MAX_RETRIES_IN_ROW);
         retryStrategy.setMinRetryIntervalMillis(MIN_RETRY_INTERVAL_MILLIS);
+        retryStrategy.setMaxRetryIntervalMillis(MAX_RETRY_INTERVAL_MILLIS);
         retryStrategy.setRetryFunction(new RetryDegreeFunction());
     }
 
@@ -36,7 +38,7 @@ class DefaultRetryStrategyTest {
             int iteration = i / MAX_RETRIES_IN_ROW;
             long expected =
                     MIN_RETRY_INTERVAL_MILLIS * retryStrategy.getRetryFunction().calculateShiftFactor(iteration);
-            assertThat(nextRetryIntervalMillis).isEqualTo(expected);
+            assertThat(nextRetryIntervalMillis).isEqualTo(Math.min(expected, MAX_RETRY_INTERVAL_MILLIS));
         }
     }
 

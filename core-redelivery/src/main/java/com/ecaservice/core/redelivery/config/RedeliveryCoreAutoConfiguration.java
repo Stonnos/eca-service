@@ -134,6 +134,7 @@ public class RedeliveryCoreAutoConfiguration {
         retryStrategy.setMaxRetries(redeliveryProperties.getRetryStrategy().getMaxRetries());
         retryStrategy.setMaxRetriesInRow(redeliveryProperties.getRetryStrategy().getMaxRetriesInRow());
         retryStrategy.setMinRetryIntervalMillis(redeliveryProperties.getRetryStrategy().getMinRetryIntervalMillis());
+        retryStrategy.setMaxRetryIntervalMillis(redeliveryProperties.getRetryStrategy().getMaxRetryIntervalMillis());
         retryStrategy.setRetryFunction(new RetryDegreeFunction());
         return retryStrategy;
     }

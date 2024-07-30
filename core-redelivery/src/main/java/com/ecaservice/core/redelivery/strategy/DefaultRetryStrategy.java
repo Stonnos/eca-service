@@ -22,6 +22,9 @@ public class DefaultRetryStrategy implements RetryStrategy {
     private long minRetryIntervalMillis;
     @Setter
     @Getter
+    private long maxRetryIntervalMillis;
+    @Setter
+    @Getter
     private RetryFunction retryFunction;
 
     @Override
@@ -32,7 +35,8 @@ public class DefaultRetryStrategy implements RetryStrategy {
                             getMaxRetries());
             throw new IllegalStateException(errorMessage);
         }
-        int nextRetriesRowIdx = iteration / maxRetriesInRow;
-        return minRetryIntervalMillis * retryFunction.calculateShiftFactor(nextRetriesRowIdx);
+        int nextRetriesRowIdx = iteration / getMaxRetriesInRow();
+        long nextRetryInternal = minRetryIntervalMillis * retryFunction.calculateShiftFactor(nextRetriesRowIdx);
+        return Long.min(nextRetryInternal, getMaxRetryIntervalMillis());
     }
 }

@@ -29,6 +29,13 @@ public interface RetryStrategy {
     long getMinRetryIntervalMillis();
 
     /**
+     * Gets max retry interval in millis.
+     *
+     * @return max retry interval in millis
+     */
+    long getMaxRetryIntervalMillis();
+
+    /**
      * Gets next retry interval millis.
      *
      * @param iteration - iteration (retry number)
