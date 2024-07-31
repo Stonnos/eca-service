@@ -1,6 +1,7 @@
 package com.ecaservice.core.redelivery.annotation;
 
 import com.ecaservice.core.redelivery.callback.RetryCallback;
+import com.ecaservice.core.redelivery.strategy.AbstractRetryStrategy;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
@@ -54,7 +55,7 @@ public @interface Retry {
     String exceptionStrategy() default DEFAULT_EXCEPTION_STRATEGY;
 
     /**
-     * The bean name of the custom {@link com.ecaservice.core.redelivery.strategy.RetryStrategy}.
+     * The bean name of the custom {@link AbstractRetryStrategy}.
      *
      * @return retry strategy bean name
      */

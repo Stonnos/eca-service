@@ -7,7 +7,7 @@ import com.ecaservice.core.redelivery.error.ExceptionStrategy;
 import com.ecaservice.core.redelivery.metrics.RetryMeterService;
 import com.ecaservice.core.redelivery.model.RetryRequestModel;
 import com.ecaservice.core.redelivery.service.RetryRequestCacheService;
-import com.ecaservice.core.redelivery.strategy.RetryStrategy;
+import com.ecaservice.core.redelivery.strategy.AbstractRetryStrategy;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -81,8 +81,8 @@ public class RetryAspect {
         }
     }
 
-    private RetryStrategy getRetryStrategy(Retry retry) {
-        return applicationContext.getBean(retry.retryStrategy(), RetryStrategy.class);
+    private AbstractRetryStrategy getRetryStrategy(Retry retry) {
+        return applicationContext.getBean(retry.retryStrategy(), AbstractRetryStrategy.class);
     }
 
     private void handleError(Retry retry, ProceedingJoinPoint joinPoint, Object request, Exception exception) {
