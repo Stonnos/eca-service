@@ -10,7 +10,7 @@ import com.ecaservice.core.redelivery.metrics.RetryMeterService;
 import com.ecaservice.core.redelivery.model.MethodInfo;
 import com.ecaservice.core.redelivery.model.RetryContext;
 import com.ecaservice.core.redelivery.repository.RetryRequestRepository;
-import com.ecaservice.core.redelivery.strategy.RetryStrategy;
+import com.ecaservice.core.redelivery.strategy.AbstractRetryStrategy;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.aop.framework.AopProxyUtils;
@@ -213,7 +213,7 @@ public class RetryService {
         return LocalDateTime.now().plus(nextRetryIntervalMillis, ChronoUnit.MILLIS);
     }
 
-    private RetryStrategy getRetryStrategy(Retry retry) {
-        return applicationContext.getBean(retry.retryStrategy(), RetryStrategy.class);
+    private AbstractRetryStrategy getRetryStrategy(Retry retry) {
+        return applicationContext.getBean(retry.retryStrategy(), AbstractRetryStrategy.class);
     }
 }

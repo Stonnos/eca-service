@@ -167,7 +167,7 @@ public class ChangeEmailController {
         log.info("Received change email request [{}] confirmation", token);
         var changeEmailRequest = changeEmailService.confirmChangeEmail(token, confirmationCode);
         applicationEventPublisher.publishEvent(
-                new EmailChangedEmailEvent(this, changeEmailRequest.getUserEntity()));
+                new EmailChangedEmailEvent(this, changeEmailRequest.getUserEntity(), changeEmailRequest));
         log.info("Change email request [{}] confirmation has been processed", token);
     }
 

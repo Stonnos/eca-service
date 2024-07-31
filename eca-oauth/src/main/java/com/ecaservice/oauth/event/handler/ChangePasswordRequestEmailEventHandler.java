@@ -40,6 +40,11 @@ public class ChangePasswordRequestEmailEventHandler
     }
 
     @Override
+    public String getCorrelationId(ChangePasswordRequestEmailEvent emailEvent) {
+        return emailEvent.getTokenModel().getToken();
+    }
+
+    @Override
     public Map<String, String> createVariables(ChangePasswordRequestEmailEvent event) {
         Map<String, String> templateVariables = newHashMap();
         templateVariables.put(CONFIRMATION_CODE_KEY, event.getTokenModel().getConfirmationCode());

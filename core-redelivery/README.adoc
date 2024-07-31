@@ -40,6 +40,8 @@ redelivery:
     maxRetries: 1000
     ## Мин. значение интервала между попытками повторной отправки данных
     minRetryIntervalMillis: 30000
+    ## Макс. значение интервала между попытками повторной отправки данных
+    maxRetryIntervalMillis: 300000
     ## Макс. число попыток повторной отправки данных с заданным временным интервалом
     maxRetriesInRow: 10
 ----
@@ -84,6 +86,8 @@ public class AppConfiguration {
         retryStrategy.setMaxRetriesInRow(10);
         // Задаем начальное мин. значение интервала между попытками повторной отправки данных
         retryStrategy.setMinRetryIntervalMillis(30000L);
+        // Задаем макс. значение интервала между попытками повторной отправки данных
+        retryStrategy.setMaxRetryIntervalMillis(300000L);
         // Задаем нелинейную функцию увеличения времени между попытками повторной отправки данных.
         // После каждых maxRetriesInRow - попыток значение временного интервала будет увеличиваться нелинейно.
         // Пример: maxRetriesInRow = 10, MinRetryIntervalMillis = 30000, Функция временного интервала y = 2^x, где x = currentRetries/maxRetriesInRow

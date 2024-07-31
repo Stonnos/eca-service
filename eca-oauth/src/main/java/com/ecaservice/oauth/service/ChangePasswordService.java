@@ -26,6 +26,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
+import static com.ecaservice.common.web.util.LogHelper.TX_ID;
+import static com.ecaservice.common.web.util.LogHelper.putMdc;
 import static com.ecaservice.oauth.config.audit.AuditCodes.CONFIRM_CHANGE_PASSWORD_REQUEST;
 import static com.ecaservice.oauth.config.audit.AuditCodes.CREATE_CHANGE_PASSWORD_REQUEST;
 import static org.apache.commons.codec.digest.DigestUtils.md5Hex;
@@ -56,6 +58,8 @@ public class ChangePasswordService {
      */
     @Audit(CREATE_CHANGE_PASSWORD_REQUEST)
     public TokenModel createChangePasswordRequest(String user, ChangePasswordRequest changePasswordRequest) {
+        String token = UUID.randomUUID().toString();
+        putMdc(TX_ID, token);
         log.info("Starting to create change password request for user [{}]", user);
         UserEntity userEntity = userEntityRepository.findByLogin(user)
                 .orElseThrow(() -> new EntityNotFoundException(UserEntity.class, user));
@@ -81,7 +85,7 @@ public class ChangePasswordService {
                 RandomStringUtils.random(appProperties.getChangePassword().getConfirmationCodeLength(), false, true);
         LocalDateTime expireDate = now.plusMinutes(appProperties.getChangePassword().getValidityMinutes());
         changePasswordRequestEntity =
-                saveChangePasswordRequest(changePasswordRequest, userEntity, confirmationCode, expireDate);
+                saveChangePasswordRequest(changePasswordRequest, userEntity, token, confirmationCode, expireDate);
         log.info("Change password request [{}] has been created for user [{}]", changePasswordRequestEntity.getToken(),
                 user);
         return TokenModel.builder()
@@ -102,6 +106,7 @@ public class ChangePasswordService {
     @Audit(value = CONFIRM_CHANGE_PASSWORD_REQUEST)
     @Transactional
     public ChangePasswordRequestEntity confirmChangePassword(String token, String confirmationCode) {
+        putMdc(TX_ID, token);
         log.info("Starting to change password for token [{}]", token);
         ChangePasswordRequestEntity changePasswordRequestEntity =
                 changePasswordRequestRepository.findByTokenAndExpireDateAfterAndConfirmationDateIsNull(token,
@@ -160,10 +165,11 @@ public class ChangePasswordService {
 
     private ChangePasswordRequestEntity saveChangePasswordRequest(ChangePasswordRequest changePasswordRequest,
                                                                   UserEntity userEntity,
+                                                                  String token,
                                                                   String confirmationCode,
                                                                   LocalDateTime expireDate) {
         var changePasswordRequestEntity = new ChangePasswordRequestEntity();
-        changePasswordRequestEntity.setToken(UUID.randomUUID().toString());
+        changePasswordRequestEntity.setToken(token);
         changePasswordRequestEntity.setConfirmationCode(md5Hex(confirmationCode));
         changePasswordRequestEntity.setExpireDate(expireDate);
         String encodedPassword = passwordEncoder.encode(changePasswordRequest.getNewPassword().trim());

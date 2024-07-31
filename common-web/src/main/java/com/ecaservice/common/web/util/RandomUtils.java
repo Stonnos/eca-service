@@ -1,9 +1,9 @@
 package com.ecaservice.common.web.util;
 
 import lombok.experimental.UtilityClass;
-import org.springframework.util.Base64Utils;
 
 import java.nio.charset.StandardCharsets;
+import java.util.Base64;
 import java.util.UUID;
 
 /**
@@ -27,6 +27,6 @@ public class RandomUtils {
         long currentTimestampMillis = System.currentTimeMillis();
         String uuid = UUID.randomUUID().toString();
         String stringToEncode = String.format(TOKEN_FORMAT, uuid, currentTimestampMillis);
-        return Base64Utils.encodeToString(stringToEncode.getBytes(StandardCharsets.UTF_8));
+        return Base64.getEncoder().encodeToString(stringToEncode.getBytes(StandardCharsets.UTF_8));
     }
 }

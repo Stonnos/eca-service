@@ -18,6 +18,7 @@ public class RedeliveryProperties {
     private static final int DEFAULT_MAX_REQUESTS = 50;
     private static final int DEFAULT_MAX_RETRIES_IN_ROW = 5;
     private static final long DEFAULT_MIN_RETRY_INTERVAL_MILLIS = 30000L;
+    private static final long DEFAULT_MAX_RETRY_INTERVAL_MILLIS = 300000L;
 
     /**
      * Is redelivery lib enabled?
@@ -69,5 +70,10 @@ public class RedeliveryProperties {
          * Min. interval millis between retries
          */
         private Long minRetryIntervalMillis = DEFAULT_MIN_RETRY_INTERVAL_MILLIS;
+
+        /**
+         * Max. interval millis between retries
+         */
+        private Long maxRetryIntervalMillis = DEFAULT_MAX_RETRY_INTERVAL_MILLIS;
     }
 }

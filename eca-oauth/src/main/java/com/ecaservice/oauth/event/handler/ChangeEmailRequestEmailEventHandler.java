@@ -43,6 +43,11 @@ public class ChangeEmailRequestEmailEventHandler
     }
 
     @Override
+    public String getCorrelationId(ChangeEmailRequestEmailEvent emailEvent) {
+        return emailEvent.getTokenModel().getToken();
+    }
+
+    @Override
     public Map<String, String> createVariables(ChangeEmailRequestEmailEvent event) {
         Long validityHours = appProperties.getChangeEmail().getValidityMinutes() / MINUTES_IN_HOUR;
         Map<String, String> templateVariables = newHashMap();

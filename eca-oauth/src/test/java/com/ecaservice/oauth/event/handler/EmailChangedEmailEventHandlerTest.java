@@ -1,5 +1,6 @@
 package com.ecaservice.oauth.event.handler;
 
+import com.ecaservice.oauth.entity.ChangeEmailRequestEntity;
 import com.ecaservice.oauth.event.model.EmailChangedEmailEvent;
 import com.ecaservice.oauth.service.mail.dictionary.Templates;
 import org.junit.jupiter.api.Test;
@@ -19,7 +20,7 @@ class EmailChangedEmailEventHandlerTest {
     @Test
     void testHandleEvent() {
         var userEntity = createUserEntity();
-        var emailRequest = handler.handle(new EmailChangedEmailEvent(this, userEntity));
+        var emailRequest = handler.handle(new EmailChangedEmailEvent(this, userEntity, new ChangeEmailRequestEntity()));
         assertThat(emailRequest).isNotNull();
         assertThat(emailRequest.getTemplateCode()).isEqualTo(Templates.EMAIL_CHANGED);
     }

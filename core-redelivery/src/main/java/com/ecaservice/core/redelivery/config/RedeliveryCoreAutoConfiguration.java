@@ -10,7 +10,7 @@ import com.ecaservice.core.redelivery.error.ExceptionStrategy;
 import com.ecaservice.core.redelivery.error.FeignExceptionStrategy;
 import com.ecaservice.core.redelivery.repository.RetryRequestRepository;
 import com.ecaservice.core.redelivery.strategy.DefaultRetryStrategy;
-import com.ecaservice.core.redelivery.strategy.RetryStrategy;
+import com.ecaservice.core.redelivery.strategy.AbstractRetryStrategy;
 import com.ecaservice.core.redelivery.strategy.function.RetryDegreeFunction;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
@@ -129,11 +129,12 @@ public class RedeliveryCoreAutoConfiguration {
      * @return retry strategy bean
      */
     @Bean(DEFAULT_RETRY_STRATEGY)
-    public RetryStrategy retryStrategy(RedeliveryProperties redeliveryProperties) {
+    public AbstractRetryStrategy retryStrategy(RedeliveryProperties redeliveryProperties) {
         var retryStrategy = new DefaultRetryStrategy();
         retryStrategy.setMaxRetries(redeliveryProperties.getRetryStrategy().getMaxRetries());
         retryStrategy.setMaxRetriesInRow(redeliveryProperties.getRetryStrategy().getMaxRetriesInRow());
         retryStrategy.setMinRetryIntervalMillis(redeliveryProperties.getRetryStrategy().getMinRetryIntervalMillis());
+        retryStrategy.setMaxRetryIntervalMillis(redeliveryProperties.getRetryStrategy().getMaxRetryIntervalMillis());
         retryStrategy.setRetryFunction(new RetryDegreeFunction());
         return retryStrategy;
     }

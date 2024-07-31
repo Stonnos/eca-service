@@ -1,28 +1,11 @@
 package com.ecaservice.core.redelivery.strategy;
 
-import com.ecaservice.core.redelivery.strategy.function.RetryFunction;
-import lombok.Getter;
-import lombok.Setter;
-
 /**
  * Default retry strategy.
  *
  * @author Roman Batygin
  */
-public class DefaultRetryStrategy implements RetryStrategy {
-
-    @Setter
-    @Getter
-    private int maxRetries;
-    @Setter
-    @Getter
-    private int maxRetriesInRow;
-    @Setter
-    @Getter
-    private long minRetryIntervalMillis;
-    @Setter
-    @Getter
-    private RetryFunction retryFunction;
+public class DefaultRetryStrategy extends AbstractRetryStrategy {
 
     @Override
     public long calculateNextRetryIntervalMillis(int iteration) {
@@ -32,7 +15,9 @@ public class DefaultRetryStrategy implements RetryStrategy {
                             getMaxRetries());
             throw new IllegalStateException(errorMessage);
         }
-        int nextRetriesRowIdx = iteration / maxRetriesInRow;
-        return minRetryIntervalMillis * retryFunction.calculateShiftFactor(nextRetriesRowIdx);
+        int nextRetriesRowIdx = iteration / getMaxRetriesInRow();
+        long nextRetryInternal =
+                getMinRetryIntervalMillis() * getRetryFunction().calculateShiftFactor(nextRetriesRowIdx);
+        return Long.min(nextRetryInternal, getMaxRetryIntervalMillis());
     }
 }
