@@ -26,4 +26,9 @@ public class EmailChangedEmailEventHandler
     public String getTemplateCode(EmailChangedEmailEvent emailEvent) {
         return Templates.EMAIL_CHANGED;
     }
+
+    @Override
+    public String getCorrelationId(EmailChangedEmailEvent emailEvent) {
+        return emailEvent.getChangeEmailRequestEntity().getToken();
+    }
 }

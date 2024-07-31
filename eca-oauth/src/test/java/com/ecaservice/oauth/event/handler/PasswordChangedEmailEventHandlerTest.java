@@ -1,5 +1,6 @@
 package com.ecaservice.oauth.event.handler;
 
+import com.ecaservice.oauth.entity.ChangePasswordRequestEntity;
 import com.ecaservice.oauth.event.model.PasswordChangedEmailEvent;
 import com.ecaservice.oauth.service.mail.dictionary.Templates;
 import org.junit.jupiter.api.Test;
@@ -19,7 +20,8 @@ class PasswordChangedEmailEventHandlerTest {
     @Test
     void testHandleEvent() {
         var userEntity = createUserEntity();
-        var emailRequest = handler.handle(new PasswordChangedEmailEvent(this, userEntity));
+        var emailRequest =
+                handler.handle(new PasswordChangedEmailEvent(this, userEntity, new ChangePasswordRequestEntity()));
         assertThat(emailRequest).isNotNull();
         assertThat(emailRequest.getTemplateCode()).isEqualTo(Templates.PASSWORD_CHANGED);
     }

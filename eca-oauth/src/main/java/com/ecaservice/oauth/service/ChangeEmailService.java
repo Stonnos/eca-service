@@ -25,6 +25,8 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 
+import static com.ecaservice.common.web.util.LogHelper.TX_ID;
+import static com.ecaservice.common.web.util.LogHelper.putMdc;
 import static com.ecaservice.common.web.util.MaskUtils.maskEmail;
 import static com.ecaservice.oauth.config.audit.AuditCodes.CONFIRM_CHANGE_EMAIL_REQUEST;
 import static com.ecaservice.oauth.config.audit.AuditCodes.CREATE_CHANGE_EMAIL_REQUEST;
@@ -47,12 +49,14 @@ public class ChangeEmailService {
     /**
      * Creates change email request.
      *
-     * @param user   - user id
+     * @param user     - user id
      * @param newEmail - new email
      * @return token model
      */
     @Audit(CREATE_CHANGE_EMAIL_REQUEST)
     public TokenModel createChangeEmailRequest(String user, String newEmail) {
+        String token = UUID.randomUUID().toString();
+        putMdc(TX_ID, token);
         log.info("Starting to create change email request for user [{}], new email [{}]", user, maskEmail(newEmail));
         UserEntity userEntity = userEntityRepository.findByLogin(user)
                 .orElseThrow(() -> new EntityNotFoundException(UserEntity.class, user));
@@ -70,7 +74,8 @@ public class ChangeEmailService {
         String confirmationCode =
                 RandomStringUtils.random(appProperties.getChangeEmail().getConfirmationCodeLength(), false, true);
         LocalDateTime expireDate = now.plusMinutes(appProperties.getChangeEmail().getValidityMinutes());
-        var changeEmailRequestEntity = saveChangeEmailRequest(newEmail, userEntity, confirmationCode, expireDate);
+        var changeEmailRequestEntity =
+                saveChangeEmailRequest(newEmail, userEntity, token, confirmationCode, expireDate);
         log.info("Change email request [{}] has been created for user [{}], new email [{}]",
                 changeEmailRequestEntity.getToken(), userEntity.getId(), maskEmail(newEmail));
         return TokenModel.builder()
@@ -119,6 +124,7 @@ public class ChangeEmailService {
     @Audit(value = CONFIRM_CHANGE_EMAIL_REQUEST)
     @Transactional
     public ChangeEmailRequestEntity confirmChangeEmail(String token, String confirmationCode) {
+        putMdc(TX_ID, token);
         log.info("Starting to confirm change email for token [{}]", token);
         var changeEmailRequestEntity =
                 changeEmailRequestRepository.findByTokenAndExpireDateAfterAndConfirmationDateIsNull(token,
@@ -146,10 +152,12 @@ public class ChangeEmailService {
 
     private ChangeEmailRequestEntity saveChangeEmailRequest(String newEmail,
                                                             UserEntity userEntity,
+                                                            String token,
                                                             String confirmationCode,
                                                             LocalDateTime expireDate) {
         var changeEmailRequestEntity = new ChangeEmailRequestEntity();
         changeEmailRequestEntity.setToken(UUID.randomUUID().toString());
+        changeEmailRequestEntity.setToken(token);
         changeEmailRequestEntity.setConfirmationCode(md5Hex(confirmationCode));
         changeEmailRequestEntity.setExpireDate(expireDate);
         changeEmailRequestEntity.setNewEmail(newEmail);

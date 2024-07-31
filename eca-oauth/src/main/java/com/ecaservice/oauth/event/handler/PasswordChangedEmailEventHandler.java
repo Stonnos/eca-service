@@ -26,4 +26,9 @@ public class PasswordChangedEmailEventHandler
     public String getTemplateCode(PasswordChangedEmailEvent emailEvent) {
         return Templates.PASSWORD_CHANGED;
     }
+
+    @Override
+    public String getCorrelationId(PasswordChangedEmailEvent emailEvent) {
+        return emailEvent.getChangePasswordRequest().getToken();
+    }
 }
