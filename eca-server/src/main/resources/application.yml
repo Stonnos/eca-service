@@ -71,7 +71,7 @@ eureka:
 app:
   threadPoolSize: 10
   schedulerPoolSize: 3
-  numberOfDaysForStorage: 14
+  numberOfDaysForStorage: 180
   ## Each day at midnight
   removeModelCron: 0 0 0 * * *
   pageSize: 10
