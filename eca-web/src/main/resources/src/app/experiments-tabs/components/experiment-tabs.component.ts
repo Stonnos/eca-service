@@ -22,7 +22,6 @@ export class ExperimentTabsComponent implements OnInit {
     const tabIndex = localStorage.getItem(ExperimentTabUtils.EXPERIMENT_ACTIVE_TAB_KEY);
     if (tabIndex) {
       this.activeTabIndex = parseInt(tabIndex);
-      localStorage.removeItem(ExperimentTabUtils.EXPERIMENT_ACTIVE_TAB_KEY);
     }
   }
 }

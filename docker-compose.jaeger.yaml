@@ -1,12 +1,26 @@
 version: "3.5"
 services:
 
+  elasticsearch:
+    image: elastic/elasticsearch:${ES_VERSION}
+    container_name: elasticsearch
+    environment:
+      - "TZ=${TIME_ZONE}"
+      - "discovery.type=single-node"
+    ports:
+      - "9200:9200"
+    volumes:
+      - elasticsearch-local-data:/usr/share/elasticsearch/data:rw
+
   jaeger:
     image: jaegertracing/all-in-one:${JAEGER_VERSION}
     container_name: jaeger
+    restart: always
     environment:
       TZ: ${TIME_ZONE}
       COLLECTOR_ZIPKIN_HOST_PORT: ":9411"
+      SPAN_STORAGE_TYPE: "elasticsearch"
+      ES_SERVER_URLS: ${ES_URL}
     ports:
       - "5778:5778"
       - "16686:16686"
@@ -20,3 +34,7 @@ networks:
   default:
     name: app-network
     driver: bridge
+
+volumes:
+  elasticsearch-local-data:
+    name: elasticsearch-local-data
