@@ -35,7 +35,7 @@ import java.util.stream.IntStream;
 @UtilityClass
 public class TestHelperUtils {
 
-    public static final String CREDIT_DATA_PATH = "german_credit.xls";
+    public static final String CREDIT_DATA_PATH = "german_credit.xlsx";
 
     public static final String IONOSPHERE_DATA_PATH = "ionosphere.xlsx";
 

@@ -38,7 +38,7 @@ import java.util.UUID;
 public class TestHelperUtils {
 
     private static final String TEST_REQUEST_JSON = "test-request.json";
-    private static final String DATA_PATH = "data/iris.xls";
+    private static final String DATA_PATH = "data/iris.xlsx";
 
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
     private static final String REPLY_TO = "reply-to";

@@ -12,7 +12,7 @@ ECA external API
 * Openjdk 21
 * maven => 3.9.2
 * Rabbit MQ => 3.8.14
-* eca-core 6.9.9
+* eca-core 7.0
 * Postgres Database для хранения информации 13.9
 * Docker, Docker compose
 

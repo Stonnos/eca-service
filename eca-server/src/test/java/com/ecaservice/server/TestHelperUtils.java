@@ -118,7 +118,7 @@ import static com.google.common.collect.Lists.newArrayList;
 @UtilityClass
 public class TestHelperUtils {
 
-    public static final String DATA_RESOURCE_PATH = "data/iris.xls";
+    public static final String DATA_RESOURCE_PATH = "data/iris.xlsx";
 
     public static final String JSON_DATA_RESOURCE_PATH = "data/iris.json";
 
