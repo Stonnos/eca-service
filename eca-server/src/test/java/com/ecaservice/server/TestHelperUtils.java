@@ -1144,6 +1144,8 @@ public class TestHelperUtils {
      */
     public static GetEvaluationResultsResponse createGetEvaluationResultsResponse(String requestId) {
         GetEvaluationResultsResponse evaluationResultsResponse = new GetEvaluationResultsResponse();
+        evaluationResultsResponse.setConfusionMatrix(newArrayList());
+        evaluationResultsResponse.setClassificationCosts(newArrayList());
         evaluationResultsResponse.setRequestId(requestId);
         return evaluationResultsResponse;
     }

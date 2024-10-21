@@ -17,19 +17,6 @@
         </addColumn>
     </changeSet>
 
-    <changeSet id="2" author="roman.batygin@mail.ru" context="schema">
-        <preConditions onFail="MARK_RAN">
-            <tableExists tableName="evaluation_log"/>
-            <not>
-                <indexExists indexName="idx_request_id" tableName="evaluation_log"
-                             columnNames="request_id"/>
-            </not>
-        </preConditions>
-        <createIndex tableName="evaluation_log" indexName="idx_request_id">
-            <column name="request_id"/>
-        </createIndex>
-    </changeSet>
-
     <changeSet id="3" author="roman.batygin@mail.ru" context="schema">
         <preConditions onFail="MARK_RAN">
             <tableExists tableName="evaluation_log"/>
@@ -40,18 +27,6 @@
         </preConditions>
         <createIndex tableName="evaluation_log" indexName="idx_evaluation_status">
             <column name="evaluation_status"/>
-        </createIndex>
-    </changeSet>
-
-    <changeSet id="4" author="roman.batygin@mail.ru" context="schema">
-        <preConditions onFail="MARK_RAN">
-            <tableExists tableName="experiment"/>
-            <not>
-                <indexExists indexName="idx_uuid" tableName="experiment" columnNames="uuid"/>
-            </not>
-        </preConditions>
-        <createIndex tableName="experiment" indexName="idx_uuid">
-            <column name="uuid"/>
         </createIndex>
     </changeSet>
 

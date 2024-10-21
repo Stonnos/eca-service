@@ -82,24 +82,6 @@
         </createIndex>
     </changeSet>
 
-    <changeSet id="drop_experiment_idx_uuid" author="roman.batygin@mail.ru" context="schema">
-        <preConditions onFail="MARK_RAN">
-            <indexExists indexName="idx_uuid"
-                         tableName="experiment"
-                         columnNames="request_id"/>
-        </preConditions>
-        <dropIndex tableName="experiment" indexName="idx_uuid"/>
-    </changeSet>
-
-    <changeSet id="drop_evaluation_log_idx_request_id" author="roman.batygin@mail.ru" context="schema">
-        <preConditions onFail="MARK_RAN">
-            <indexExists indexName="idx_request_id"
-                         tableName="evaluation_log"
-                         columnNames="request_id"/>
-        </preConditions>
-        <dropIndex tableName="evaluation_log" indexName="idx_request_id"/>
-    </changeSet>
-
     <changeSet id="add_evaluation_log_instances_info_id_idx" author="roman.batygin@mail.ru" context="schema">
         <preConditions onFail="MARK_RAN">
             <tableExists tableName="evaluation_log"/>
