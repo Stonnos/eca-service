@@ -1,10 +1,13 @@
 package com.ecaservice.server.service;
 
 import com.ecaservice.core.filter.service.FilterTemplateService;
+import com.ecaservice.data.loader.dto.AttributeInfo;
 import com.ecaservice.server.mapping.InstancesInfoMapperImpl;
 import com.ecaservice.server.model.data.InstancesMetaDataModel;
+import com.ecaservice.server.model.entity.AttributesInfoEntity;
 import com.ecaservice.server.model.entity.InstancesInfo;
 import com.ecaservice.server.model.entity.InstancesInfo_;
+import com.ecaservice.server.repository.AttributesInfoRepository;
 import com.ecaservice.server.repository.InstancesInfoRepository;
 import com.ecaservice.web.dto.model.PageRequestDto;
 import com.ecaservice.web.dto.model.SortFieldRequestDto;
@@ -40,12 +43,16 @@ class InstancesInfoServiceTest extends AbstractJpaTest {
     private InstancesInfoRepository instancesInfoRepository;
 
     @Autowired
+    private AttributesInfoRepository attributesInfoRepository;
+
+    @Autowired
     private InstancesInfoService instancesInfoService;
 
     private Instances data;
 
     @Override
     public void deleteAll() {
+        attributesInfoRepository.deleteAll();
         instancesInfoRepository.deleteAll();
     }
 
@@ -69,6 +76,9 @@ class InstancesInfoServiceTest extends AbstractJpaTest {
         assertThat(actual.getUuid()).isNotNull();
         assertThat(actual.getCreatedDate()).isNotNull();
         assertThat(actual.getDataMd5Hash()).isNotNull();
+        AttributesInfoEntity attributesInfoEntity = attributesInfoRepository.findAll().getFirst();
+        assertThat(attributesInfoEntity.getInstancesInfo().getId()).isEqualTo(actual.getId());
+        assertThat(attributesInfoEntity.getAttributes()).isNotEmpty();
     }
 
     @Test
@@ -91,8 +101,10 @@ class InstancesInfoServiceTest extends AbstractJpaTest {
     }
 
     private InstancesInfo saveInstancesInfo(Instances data) {
-        var instancesDataModel = new InstancesMetaDataModel(data.relationName(), data.numInstances(),
-                data.numAttributes(), data.numClasses(), data.classAttribute().name(), DATA_MD_5_HASH, "instances");
+        var instancesDataModel =
+                new InstancesMetaDataModel(data.relationName(), data.numInstances(), data.numAttributes(),
+                        data.numClasses(), data.classAttribute().name(), DATA_MD_5_HASH, "instances",
+                        Collections.singletonList(new AttributeInfo()));
         return instancesInfoService.getOrSaveInstancesInfo(instancesDataModel);
     }
 }

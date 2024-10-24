@@ -28,6 +28,7 @@ import com.ecaservice.server.model.data.InstancesMetaDataModel;
 import com.ecaservice.server.model.entity.ClassifierOptionsRequestEntity;
 import com.ecaservice.server.model.evaluation.ClassifierOptionsRequestSource;
 import com.ecaservice.server.model.evaluation.InstancesRequestDataModel;
+import com.ecaservice.server.repository.AttributesInfoRepository;
 import com.ecaservice.server.repository.ClassifierOptionsRequestModelRepository;
 import com.ecaservice.server.repository.ClassifierOptionsRequestRepository;
 import com.ecaservice.server.repository.ErsRequestRepository;
@@ -123,6 +124,8 @@ class OptimalClassifierOptionsFetcherIT extends AbstractJpaTest {
     @Autowired
     private InstancesInfoRepository instancesInfoRepository;
     @Autowired
+    private AttributesInfoRepository attributesInfoRepository;
+    @Autowired
     private ClassifierOptionsRequestRepository classifierOptionsRequestRepository;
     @Autowired
     private OptimalClassifierOptionsFetcher optimalClassifierOptionsFetcher;
@@ -156,8 +159,10 @@ class OptimalClassifierOptionsFetcherIT extends AbstractJpaTest {
     }
 
     private void mockLoadInstances() {
-        var instancesDataModel = new InstancesMetaDataModel(data.relationName(), data.numInstances(),
-                data.numAttributes(), data.numClasses(), data.classAttribute().name(), DATA_MD_5_HASH, "instances");
+        var instancesDataModel =
+                new InstancesMetaDataModel(data.relationName(), data.numInstances(), data.numAttributes(),
+                        data.numClasses(), data.classAttribute().name(), DATA_MD_5_HASH, "instances",
+                        Collections.emptyList());
         when(instancesMetaDataService.getInstancesMetaData(dataUuid)).thenReturn(instancesDataModel);
         when(instancesLoaderService.loadInstances(dataUuid)).thenReturn(data);
     }
@@ -167,6 +172,7 @@ class OptimalClassifierOptionsFetcherIT extends AbstractJpaTest {
         classifierOptionsRequestRepository.deleteAll();
         ersRequestRepository.deleteAll();
         evaluationLogRepository.deleteAll();
+        attributesInfoRepository.deleteAll();
         instancesInfoRepository.deleteAll();
     }
 

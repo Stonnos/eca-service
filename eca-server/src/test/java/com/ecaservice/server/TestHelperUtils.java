@@ -16,6 +16,7 @@ import com.ecaservice.classifier.options.model.LogisticOptions;
 import com.ecaservice.classifier.options.model.NeuralNetworkOptions;
 import com.ecaservice.classifier.options.model.RandomForestsOptions;
 import com.ecaservice.classifier.options.model.StackingOptions;
+import com.ecaservice.data.loader.dto.AttributeInfo;
 import com.ecaservice.data.loader.dto.InstancesMetaInfoDto;
 import com.ecaservice.ers.dto.ClassificationCostsReport;
 import com.ecaservice.ers.dto.ClassifierOptionsRequest;
@@ -1301,6 +1302,7 @@ public class TestHelperUtils {
                 .md5Hash(DATA_MD_5_HASH)
                 .uuid(UUID.randomUUID().toString())
                 .objectPath(INSTANCES_OBJECT_PATH)
+                .attributes(Collections.singletonList(new AttributeInfo()))
                 .build();
     }
 

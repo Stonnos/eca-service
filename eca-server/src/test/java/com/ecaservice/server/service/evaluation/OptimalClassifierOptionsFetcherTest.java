@@ -379,8 +379,10 @@ class OptimalClassifierOptionsFetcherTest extends AbstractJpaTest {
     }
 
     private void mockLoadInstances() {
-        var instancesDataModel = new InstancesMetaDataModel(data.relationName(), data.numInstances(),
-                data.numAttributes(), data.numClasses(), data.classAttribute().name(), DATA_MD_5_HASH, "instances");
+        var instancesDataModel =
+                new InstancesMetaDataModel(data.relationName(), data.numInstances(), data.numAttributes(),
+                        data.numClasses(), data.classAttribute().name(), DATA_MD_5_HASH, "instances",
+                        Collections.emptyList());
         when(instancesMetaDataService.getInstancesMetaData(dataUuid)).thenReturn(instancesDataModel);
         when(instancesLoaderService.loadInstances(dataUuid)).thenReturn(data);
     }

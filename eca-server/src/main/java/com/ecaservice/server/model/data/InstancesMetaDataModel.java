@@ -1,9 +1,17 @@
 package com.ecaservice.server.model.data;
 
+import com.ecaservice.data.loader.dto.AttributeInfo;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
+/**
+ * Instances metadata model.
+ *
+ * @author Roman Batygin
+ */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -43,4 +51,9 @@ public class InstancesMetaDataModel {
      * Instances object path in storage
      */
     private String objectPath;
+
+    /**
+     * Attributes list
+     */
+    private List<AttributeInfo> attributes;
 }

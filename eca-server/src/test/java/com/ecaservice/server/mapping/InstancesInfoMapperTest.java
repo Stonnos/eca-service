@@ -47,5 +47,6 @@ class InstancesInfoMapperTest {
         assertThat(instancesMetaDataModel.getNumClasses()).isEqualTo(instancesMetaInfoInfo.getNumClasses());
         assertThat(instancesMetaDataModel.getMd5Hash()).isEqualTo(instancesMetaInfoInfo.getMd5Hash());
         assertThat(instancesMetaDataModel.getObjectPath()).isEqualTo(instancesMetaInfoInfo.getObjectPath());
+        assertThat(instancesMetaDataModel.getAttributes()).hasSameSizeAs(instancesMetaInfoInfo.getAttributes());
     }
 }

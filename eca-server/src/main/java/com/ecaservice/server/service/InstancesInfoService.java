@@ -6,7 +6,9 @@ import com.ecaservice.core.lock.annotation.Locked;
 import com.ecaservice.server.filter.InstancesInfoFilter;
 import com.ecaservice.server.mapping.InstancesInfoMapper;
 import com.ecaservice.server.model.data.InstancesMetaDataModel;
+import com.ecaservice.server.model.entity.AttributesInfoEntity;
 import com.ecaservice.server.model.entity.InstancesInfo;
+import com.ecaservice.server.repository.AttributesInfoRepository;
 import com.ecaservice.server.repository.InstancesInfoRepository;
 import com.ecaservice.web.dto.model.InstancesInfoDto;
 import com.ecaservice.web.dto.model.PageDto;
@@ -39,6 +41,7 @@ public class InstancesInfoService {
     private final FilterTemplateService filterTemplateService;
     private final InstancesInfoMapper instancesInfoMapper;
     private final InstancesInfoRepository instancesInfoRepository;
+    private final AttributesInfoRepository attributesInfoRepository;
 
     /**
      * Gets or save new instances info.
@@ -53,7 +56,8 @@ public class InstancesInfoService {
         var instancesInfo = instancesInfoRepository.findByDataMd5Hash(instancesMetaDataModel.getMd5Hash());
         if (instancesInfo == null) {
             instancesInfo = createAndSaveNewInstancesInfo(instancesMetaDataModel);
-            log.info("New instances info [{}] has been saved with md5 hash [{}]", instancesMetaDataModel.getRelationName(),
+            log.info("New instances info [{}] has been saved with md5 hash [{}]",
+                    instancesMetaDataModel.getRelationName(),
                     instancesMetaDataModel.getMd5Hash());
         }
         log.info("Instances info [{}] with md5 hash [{}] has been fetched", instancesMetaDataModel.getRelationName(),
@@ -93,6 +97,17 @@ public class InstancesInfoService {
         instancesInfo.setDataMd5Hash(instancesMetaDataModel.getMd5Hash());
         instancesInfo.setUuid(UUID.randomUUID().toString());
         instancesInfo.setCreatedDate(LocalDateTime.now());
-        return instancesInfoRepository.save(instancesInfo);
+        instancesInfoRepository.save(instancesInfo);
+        createAndSaveAttributes(instancesMetaDataModel, instancesInfo);
+        return instancesInfo;
+    }
+
+    private AttributesInfoEntity createAndSaveAttributes(InstancesMetaDataModel instancesMetaDataModel,
+                                                         InstancesInfo instancesInfo) {
+        var attributesInfoEntity = new AttributesInfoEntity();
+        attributesInfoEntity.setAttributes(instancesMetaDataModel.getAttributes());
+        attributesInfoEntity.setInstancesInfo(instancesInfo);
+        attributesInfoRepository.save(attributesInfoEntity);
+        return attributesInfoEntity;
     }
 }

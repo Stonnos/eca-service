@@ -16,6 +16,7 @@ import com.ecaservice.server.model.entity.ExperimentStep;
 import com.ecaservice.server.model.entity.ExperimentStepEntity;
 import com.ecaservice.server.model.entity.ExperimentStepStatus;
 import com.ecaservice.server.model.entity.RequestStatus;
+import com.ecaservice.server.repository.AttributesInfoRepository;
 import com.ecaservice.server.repository.ExperimentProgressRepository;
 import com.ecaservice.server.repository.ExperimentRepository;
 import com.ecaservice.server.repository.ExperimentStepRepository;
@@ -30,6 +31,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import weka.core.Instances;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 import java.util.function.Function;
@@ -61,6 +63,8 @@ class ExperimentServiceTest extends AbstractJpaTest {
     @Autowired
     private InstancesInfoRepository instancesInfoRepository;
     @Autowired
+    private AttributesInfoRepository attributesInfoRepository;
+    @Autowired
     private ExperimentProgressRepository experimentProgressRepository;
     @MockBean
     private InstancesMetaDataService instancesMetaDataService;
@@ -84,6 +88,7 @@ class ExperimentServiceTest extends AbstractJpaTest {
         experimentProgressRepository.deleteAll();
         experimentStepRepository.deleteAll();
         experimentRepository.deleteAll();
+        attributesInfoRepository.deleteAll();
         instancesInfoRepository.deleteAll();
     }
 
@@ -152,8 +157,10 @@ class ExperimentServiceTest extends AbstractJpaTest {
 
     private void mockLoadInstances() {
         Instances data = loadInstances();
-        var instancesDataModel = new InstancesMetaDataModel(data.relationName(), data.numInstances(),
-                data.numAttributes(), data.numClasses(), data.classAttribute().name(), DATA_MD_5_HASH, "instances");
+        var instancesDataModel =
+                new InstancesMetaDataModel(data.relationName(), data.numInstances(), data.numAttributes(),
+                        data.numClasses(), data.classAttribute().name(), DATA_MD_5_HASH, "instances",
+                        Collections.emptyList());
         when(instancesMetaDataService.getInstancesMetaData(anyString())).thenReturn(instancesDataModel);
         when(instancesLoaderService.loadInstances(anyString())).thenReturn(data);
     }

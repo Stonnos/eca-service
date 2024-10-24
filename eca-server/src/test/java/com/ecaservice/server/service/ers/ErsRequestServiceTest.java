@@ -17,6 +17,7 @@ import com.ecaservice.server.model.entity.ErsRequest;
 import com.ecaservice.server.model.entity.ErsResponseStatus;
 import com.ecaservice.server.model.entity.EvaluationLog;
 import com.ecaservice.server.model.entity.EvaluationResultsRequestEntity;
+import com.ecaservice.server.repository.AttributesInfoRepository;
 import com.ecaservice.server.repository.ClassifierOptionsRequestModelRepository;
 import com.ecaservice.server.repository.ErsRequestRepository;
 import com.ecaservice.server.repository.EvaluationLogRepository;
@@ -74,6 +75,8 @@ class ErsRequestServiceTest extends AbstractJpaTest {
     private ErsRequestRepository ersRequestRepository;
     @Autowired
     private InstancesInfoRepository instancesInfoRepository;
+    @Autowired
+    private AttributesInfoRepository attributesInfoRepository;
 
     private ErsRequestService ersRequestService;
 
@@ -93,6 +96,7 @@ class ErsRequestServiceTest extends AbstractJpaTest {
     public void deleteAll() {
         ersRequestRepository.deleteAll();
         evaluationLogRepository.deleteAll();
+        attributesInfoRepository.deleteAll();
         instancesInfoRepository.deleteAll();
     }
 
