@@ -59,6 +59,7 @@ class InstancesServiceTest extends AbstractJpaTest {
         assertThat(instancesMetaInfo.getUuid()).isEqualTo(instancesEntity.getUuid());
         assertThat(instancesMetaInfo.getMd5Hash()).isEqualTo(instancesEntity.getMd5Hash());
         assertThat(instancesMetaInfo.getObjectPath()).isEqualTo(instancesEntity.getObjectPath());
+        assertThat(instancesMetaInfo.getAttributes()).hasSameSizeAs(instancesEntity.getAttributes());
     }
 
     @Test

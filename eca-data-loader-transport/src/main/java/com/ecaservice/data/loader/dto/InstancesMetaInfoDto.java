@@ -4,6 +4,8 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Data;
 
+import java.util.List;
+
 /**
  * Instances meta info dto.
  *
@@ -68,4 +70,10 @@ public class InstancesMetaInfoDto {
             example = "instances-f8cecbf7-405b-403b-9a94-f51e8fb73ed8.json",
             maxLength = FieldConstraints.MAX_LENGTH_255)
     private String objectPath;
+
+    /**
+     * Attributes list
+     */
+    @Schema(description = "Attributes list")
+    private List<AttributeInfo> attributes;
 }

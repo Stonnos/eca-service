@@ -1,5 +1,6 @@
 package com.ecaservice.data.loader;
 
+import com.ecaservice.data.loader.dto.AttributeInfo;
 import com.ecaservice.data.loader.entity.InstancesEntity;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import eca.data.file.model.InstancesModel;
@@ -11,6 +12,7 @@ import org.springframework.mock.web.MockMultipartFile;
 import java.io.IOException;
 import java.io.InputStream;
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.UUID;
 
 /**
@@ -96,6 +98,7 @@ public class TestHelperUtils {
         instancesEntity.setMd5Hash(MD_5_HASH);
         instancesEntity.setCreated(LocalDateTime.now());
         instancesEntity.setExpireAt(LocalDateTime.now().plusDays(1L));
+        instancesEntity.setAttributes(Collections.singletonList(new AttributeInfo()));
         return instancesEntity;
     }
 

@@ -1,5 +1,7 @@
 package com.ecaservice.data.loader.entity;
 
+import com.ecaservice.data.loader.dto.AttributeInfo;
+import io.hypersistence.utils.hibernate.type.json.JsonType;
 import lombok.Data;
 
 import jakarta.persistence.Column;
@@ -8,6 +10,10 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
+import org.hibernate.annotations.Type;
+
+import java.util.List;
+
 import java.time.LocalDateTime;
 
 /**
@@ -17,7 +23,7 @@ import java.time.LocalDateTime;
  */
 @Data
 @Entity
-@Table(name = "instances",uniqueConstraints = {
+@Table(name = "instances", uniqueConstraints = {
         @UniqueConstraint(columnNames = {"client_id", "md5_hash"},
                 name = "instances_client_id_md5_hash_unique_index")
 })
@@ -92,4 +98,11 @@ public class InstancesEntity {
      */
     @Column(name = "object_path", nullable = false)
     private String objectPath;
+
+    /**
+     * Attributes list.
+     */
+    @Type(JsonType.class)
+    @Column(name = "attributes", columnDefinition = "jsonb")
+    private List<AttributeInfo> attributes;
 }

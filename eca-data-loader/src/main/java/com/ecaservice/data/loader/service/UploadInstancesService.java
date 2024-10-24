@@ -6,6 +6,7 @@ import com.ecaservice.common.web.exception.InvalidFileException;
 import com.ecaservice.data.loader.config.AppProperties;
 import com.ecaservice.data.loader.dto.UploadInstancesResponseDto;
 import com.ecaservice.data.loader.entity.InstancesEntity;
+import com.ecaservice.data.loader.mapping.InstancesMapper;
 import com.ecaservice.data.loader.repository.InstancesRepository;
 import com.ecaservice.data.loader.validation.InstancesValidationService;
 import com.ecaservice.s3.client.minio.exception.ObjectStorageException;
@@ -45,6 +46,7 @@ public class UploadInstancesService {
     private final InstancesDeserializer instancesDeserializer;
     private final InstancesValidationService instancesValidationService;
     private final UserService userService;
+    private final InstancesMapper instancesMapper;
     private final InstancesRepository instancesRepository;
 
     /**
@@ -119,6 +121,7 @@ public class UploadInstancesService {
         instancesEntity.setObjectPath(objectPath);
         instancesEntity.setMd5Hash(md5Hash);
         instancesEntity.setClientId(clientId);
+        instancesEntity.setAttributes(instancesMapper.map(instancesModel.getAttributes()));
         instancesEntity.setExpireAt(LocalDateTime.now().plusDays(appProperties.getInstancesExpireDays()));
         instancesEntity.setCreated(LocalDateTime.now());
         return instancesRepository.save(instancesEntity);

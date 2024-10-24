@@ -4,13 +4,17 @@ import com.ecaservice.common.web.exception.InternalServiceUnavailableException;
 import com.ecaservice.common.web.exception.InvalidFileException;
 import com.ecaservice.data.loader.AbstractJpaTest;
 import com.ecaservice.data.loader.config.AppProperties;
+import com.ecaservice.data.loader.dto.AttributeInfo;
 import com.ecaservice.data.loader.entity.InstancesEntity;
+import com.ecaservice.data.loader.mapping.InstancesMapperImpl;
 import com.ecaservice.data.loader.repository.InstancesRepository;
 import com.ecaservice.data.loader.validation.InstancesValidator;
 import com.ecaservice.s3.client.minio.exception.ObjectStorageException;
 import com.ecaservice.s3.client.minio.model.UploadObject;
 import com.ecaservice.s3.client.minio.service.MinioStorageService;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import eca.data.file.model.AttributeModel;
+import eca.data.file.model.AttributeType;
 import eca.data.file.model.InstancesModel;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +24,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.mock.web.MockMultipartFile;
 
 import java.io.IOException;
+import java.util.stream.IntStream;
 
 import static com.ecaservice.data.loader.TestHelperUtils.createInstancesMockMultipartFile;
 import static com.ecaservice.data.loader.TestHelperUtils.loadInstances;
@@ -36,7 +41,7 @@ import static org.mockito.Mockito.when;
  */
 @ComponentScan(basePackageClasses = InstancesValidator.class)
 @Import({UploadInstancesService.class, ObjectMapper.class, AppProperties.class,
-        InstancesReader.class, InstancesDeserializer.class})
+        InstancesReader.class, InstancesDeserializer.class, InstancesMapperImpl.class})
 class UploadInstancesServiceTest extends AbstractJpaTest {
 
     private static final String USER = "user";
@@ -76,6 +81,7 @@ class UploadInstancesServiceTest extends AbstractJpaTest {
         assertThat(actual.getExpireAt()).isNotNull();
         assertThat(actual.getClientId()).isEqualTo(USER);
         assertNumClasses(instancesModel, actual);
+        assertAttributes(instancesModel, actual);
     }
 
     @Test
@@ -110,5 +116,18 @@ class UploadInstancesServiceTest extends AbstractJpaTest {
                         String.format("Class attribute [%s] not found in instances [%s] attributes set",
                                 instancesModel.getClassName(), instancesModel.getRelationName())));
         assertThat(actual.getNumClasses()).isEqualTo(classAttribute.getValues().size());
+    }
+
+    private void assertAttributes(InstancesModel instancesModel, InstancesEntity actual) {
+        assertThat(actual.getAttributes()).hasSameSizeAs(instancesModel.getAttributes());
+        IntStream.range(0, instancesModel.getAttributes().size()).forEach(i -> {
+            AttributeModel expectedAttribute = instancesModel.getAttributes().get(i);
+            AttributeInfo actualAttribute = actual.getAttributes().get(i);
+            assertThat(actualAttribute.getName()).isEqualTo(expectedAttribute.getName());
+            assertThat(actualAttribute.getType().name()).isEqualTo(expectedAttribute.getType().name());
+            if (AttributeType.NOMINAL.equals(expectedAttribute.getType())) {
+                assertThat(actualAttribute.getValues()).isEqualTo(expectedAttribute.getValues());
+            }
+        });
     }
 }
