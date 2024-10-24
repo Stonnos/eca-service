@@ -1,6 +1,5 @@
 package com.ecaservice.server.model.data;
 
-import com.ecaservice.data.loader.dto.AttributeInfo;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -55,5 +54,5 @@ public class InstancesMetaDataModel {
     /**
      * Attributes list
      */
-    private List<AttributeInfo> attributes;
+    private List<AttributeMetaInfo> attributes;
 }

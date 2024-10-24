@@ -1,6 +1,6 @@
 package com.ecaservice.server.model.entity;
 
-import com.ecaservice.data.loader.dto.AttributeInfo;
+import com.ecaservice.server.model.data.AttributeMetaInfo;
 import io.hypersistence.utils.hibernate.type.json.JsonType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -33,7 +33,7 @@ public class AttributesInfoEntity {
      */
     @Type(JsonType.class)
     @Column(name = "attributes", columnDefinition = "jsonb")
-    private List<AttributeInfo> attributes;
+    private List<AttributeMetaInfo> attributes;
 
     /**
      * Training data info

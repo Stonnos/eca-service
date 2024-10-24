@@ -1,8 +1,9 @@
 package com.ecaservice.server.service;
 
 import com.ecaservice.core.filter.service.FilterTemplateService;
-import com.ecaservice.data.loader.dto.AttributeInfo;
 import com.ecaservice.server.mapping.InstancesInfoMapperImpl;
+import com.ecaservice.server.model.data.AttributeMetaInfo;
+import com.ecaservice.server.model.data.AttributeType;
 import com.ecaservice.server.model.data.InstancesMetaDataModel;
 import com.ecaservice.server.model.entity.AttributesInfoEntity;
 import com.ecaservice.server.model.entity.InstancesInfo;
@@ -17,7 +18,10 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import weka.core.Instances;
 
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
+import java.util.stream.IntStream;
 
 import static com.ecaservice.server.PageRequestUtils.PAGE_NUMBER;
 import static com.ecaservice.server.PageRequestUtils.PAGE_SIZE;
@@ -35,6 +39,11 @@ import static org.mockito.Mockito.when;
 class InstancesInfoServiceTest extends AbstractJpaTest {
 
     private static final String DATA_MD_5_HASH = "3032e188204cb537f69fc7364f638641";
+
+    private static final List<AttributeMetaInfo> ATTRIBUTE_META_INFO_LIST = Arrays.asList(
+            new AttributeMetaInfo("a1", AttributeType.NUMERIC, null, null),
+            new AttributeMetaInfo("a2", AttributeType.NOMINAL, null, Arrays.asList("v1", "v2"))
+    );
 
     @MockBean
     private FilterTemplateService filterTemplateService;
@@ -79,6 +88,8 @@ class InstancesInfoServiceTest extends AbstractJpaTest {
         AttributesInfoEntity attributesInfoEntity = attributesInfoRepository.findAll().getFirst();
         assertThat(attributesInfoEntity.getInstancesInfo().getId()).isEqualTo(actual.getId());
         assertThat(attributesInfoEntity.getAttributes()).isNotEmpty();
+        assertAttributes(attributesInfoEntity);
+
     }
 
     @Test
@@ -104,7 +115,19 @@ class InstancesInfoServiceTest extends AbstractJpaTest {
         var instancesDataModel =
                 new InstancesMetaDataModel(data.relationName(), data.numInstances(), data.numAttributes(),
                         data.numClasses(), data.classAttribute().name(), DATA_MD_5_HASH, "instances",
-                        Collections.singletonList(new AttributeInfo()));
+                        ATTRIBUTE_META_INFO_LIST);
         return instancesInfoService.getOrSaveInstancesInfo(instancesDataModel);
+    }
+
+    private void assertAttributes(AttributesInfoEntity attributesInfoEntity) {
+        IntStream.range(0, attributesInfoEntity.getAttributes().size()).forEach(i -> {
+            AttributeMetaInfo expectedAttribute = ATTRIBUTE_META_INFO_LIST.get(i);
+            AttributeMetaInfo actualAttribute = attributesInfoEntity.getAttributes().get(i);
+            assertThat(actualAttribute.getName()).isEqualTo(expectedAttribute.getName());
+            assertThat(actualAttribute.getType().name()).isEqualTo(expectedAttribute.getType().name());
+            if (AttributeType.NOMINAL.equals(expectedAttribute.getType())) {
+                assertThat(actualAttribute.getValues()).isEqualTo(expectedAttribute.getValues());
+            }
+        });
     }
 }
