@@ -42,12 +42,6 @@ public class ExportInstancesObjectEntity {
     private String md5Hash;
 
     /**
-     * Object expiration date
-     */
-    @Column(name = "expire_at", nullable = false)
-    private LocalDateTime expireAt;
-
-    /**
      * Creation date
      */
     @Column(name = "creation_date", nullable = false)

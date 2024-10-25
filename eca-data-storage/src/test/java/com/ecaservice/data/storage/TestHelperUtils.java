@@ -202,15 +202,12 @@ public class TestHelperUtils {
      * Creates export instances entity object.
      *
      * @param instancesUuid - instances uuid
-     * @param expireAt      - expiration date
      * @return export instances entity
      */
-    public static ExportInstancesObjectEntity createExportInstancesObjectEntity(String instancesUuid,
-                                                                                LocalDateTime expireAt) {
+    public static ExportInstancesObjectEntity createExportInstancesObjectEntity(String instancesUuid) {
         ExportInstancesObjectEntity exportInstancesObjectEntity = new ExportInstancesObjectEntity();
         exportInstancesObjectEntity.setInstancesUuid(instancesUuid);
         exportInstancesObjectEntity.setExternalDataUuid(UUID.randomUUID().toString());
-        exportInstancesObjectEntity.setExpireAt(expireAt);
         exportInstancesObjectEntity.setMd5Hash(MD_5_HASH);
         exportInstancesObjectEntity.setCreated(LocalDateTime.now());
         return exportInstancesObjectEntity;

@@ -56,9 +56,8 @@ class UploadInstancesObjectServiceTest {
     @Test
     void testLoadInstances() throws IOException {
         var instancesModel = loadInstancesModel();
-        UploadInstancesResponseDto uploadInstancesResponseDto = UploadInstancesResponseDto.builder()
-                .uuid(UUID.randomUUID().toString())
-                .build();
+        UploadInstancesResponseDto uploadInstancesResponseDto = new UploadInstancesResponseDto();
+        uploadInstancesResponseDto.setUuid(UUID.randomUUID().toString());
         when(dataLoaderApiClient.uploadInstances(any(MultipartFile.class))).thenReturn(uploadInstancesResponseDto);
         var actualResponse =
                 uploadInstancesObjectService.uploadInstances(UUID.randomUUID().toString(), instancesModel);
