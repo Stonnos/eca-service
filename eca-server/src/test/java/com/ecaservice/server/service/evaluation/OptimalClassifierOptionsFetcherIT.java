@@ -36,6 +36,7 @@ import com.ecaservice.server.repository.EvaluationLogRepository;
 import com.ecaservice.server.repository.InstancesInfoRepository;
 import com.ecaservice.server.service.AbstractJpaTest;
 import com.ecaservice.server.service.InstancesInfoService;
+import com.ecaservice.server.service.InstancesSaver;
 import com.ecaservice.server.service.data.InstancesLoaderService;
 import com.ecaservice.server.service.data.InstancesMetaDataService;
 import com.ecaservice.server.service.ers.ErsClient;
@@ -88,7 +89,7 @@ import static org.mockito.Mockito.when;
         ErsConfig.class, EvaluationLogMapperImpl.class, LockExecutionAspect.class, ErsErrorHandler.class,
         EvaluationService.class, ErsResponseStatusMapperImpl.class, OptimalClassifierOptionsFetcherImpl.class,
         InstancesInfoMapperImpl.class, ErsRequestService.class, InstancesInfoService.class, EvaluationLogService.class,
-        ClassifierInfoMapperImpl.class, RedisAutoConfiguration.class,
+        ClassifierInfoMapperImpl.class, RedisAutoConfiguration.class, InstancesSaver.class,
         OptimalClassifierOptionsCacheService.class, DateTimeConverter.class, CoreLockAutoConfiguration.class})
 @TestPropertySource("classpath:application-it.properties")
 class OptimalClassifierOptionsFetcherIT extends AbstractJpaTest {

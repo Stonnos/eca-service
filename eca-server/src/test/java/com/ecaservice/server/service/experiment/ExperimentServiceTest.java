@@ -23,6 +23,7 @@ import com.ecaservice.server.repository.ExperimentStepRepository;
 import com.ecaservice.server.repository.InstancesInfoRepository;
 import com.ecaservice.server.service.AbstractJpaTest;
 import com.ecaservice.server.service.InstancesInfoService;
+import com.ecaservice.server.service.InstancesSaver;
 import com.ecaservice.server.service.data.InstancesLoaderService;
 import com.ecaservice.server.service.data.InstancesMetaDataService;
 import org.junit.jupiter.api.Test;
@@ -50,7 +51,7 @@ import static org.mockito.Mockito.when;
  * @author Roman Batygin
  */
 @Import({ExperimentMapperImpl.class, ExperimentConfig.class, AppProperties.class, CrossValidationConfig.class,
-        DateTimeConverter.class, InstancesInfoMapperImpl.class, ExperimentService.class,
+        DateTimeConverter.class, InstancesInfoMapperImpl.class, ExperimentService.class, InstancesSaver.class,
         ExperimentProgressService.class, InstancesInfoService.class})
 class ExperimentServiceTest extends AbstractJpaTest {
 

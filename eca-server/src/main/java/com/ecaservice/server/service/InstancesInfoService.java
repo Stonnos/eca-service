@@ -2,13 +2,10 @@ package com.ecaservice.server.service;
 
 import com.ecaservice.core.filter.service.FilterTemplateService;
 import com.ecaservice.core.filter.validation.annotations.ValidPageRequest;
-import com.ecaservice.core.lock.annotation.Locked;
 import com.ecaservice.server.filter.InstancesInfoFilter;
 import com.ecaservice.server.mapping.InstancesInfoMapper;
 import com.ecaservice.server.model.data.InstancesMetaDataModel;
-import com.ecaservice.server.model.entity.AttributesInfoEntity;
 import com.ecaservice.server.model.entity.InstancesInfo;
-import com.ecaservice.server.repository.AttributesInfoRepository;
 import com.ecaservice.server.repository.InstancesInfoRepository;
 import com.ecaservice.web.dto.model.InstancesInfoDto;
 import com.ecaservice.web.dto.model.PageDto;
@@ -19,8 +16,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
-
-import java.time.LocalDateTime;
 
 import static com.ecaservice.core.filter.util.FilterUtils.buildSort;
 import static com.ecaservice.server.model.entity.FilterTemplateType.INSTANCES_INFO;
@@ -39,8 +34,8 @@ public class InstancesInfoService {
 
     private final FilterTemplateService filterTemplateService;
     private final InstancesInfoMapper instancesInfoMapper;
+    private final InstancesSaver instancesSaver;
     private final InstancesInfoRepository instancesInfoRepository;
-    private final AttributesInfoRepository attributesInfoRepository;
 
     /**
      * Gets or save new instances info.
@@ -48,19 +43,12 @@ public class InstancesInfoService {
      * @param instancesMetaDataModel - instances meta data model
      * @return instances info
      */
-    @Locked(lockName = "getOrSaveInstancesInfo", key = "#instancesMetaDataModel.uuid")
     public InstancesInfo getOrSaveInstancesInfo(InstancesMetaDataModel instancesMetaDataModel) {
-        log.info("Gets instances info [{}] with uuid [{}]", instancesMetaDataModel.getRelationName(),
-                instancesMetaDataModel.getUuid());
         var instancesInfo = instancesInfoRepository.findByUuid(instancesMetaDataModel.getUuid());
+        // Gets or save instances via double check locking
         if (instancesInfo == null) {
-            instancesInfo = createAndSaveNewInstancesInfo(instancesMetaDataModel);
-            log.info("New instances info [{}] has been saved with uuid [{}]",
-                    instancesMetaDataModel.getRelationName(),
-                    instancesMetaDataModel.getUuid());
+            instancesInfo = instancesSaver.getOrSaveInstancesInfo(instancesMetaDataModel);
         }
-        log.info("Instances info [{}] with uuid [{}] has been fetched", instancesMetaDataModel.getRelationName(),
-                instancesMetaDataModel.getUuid());
         return instancesInfo;
     }
 
@@ -84,27 +72,5 @@ public class InstancesInfoService {
                 instancesInfoPage.getNumberOfElements(), pageRequestDto);
         var instancesInfoDtoList = instancesInfoMapper.map(instancesInfoPage.getContent());
         return PageDto.of(instancesInfoDtoList, pageRequestDto.getPage(), instancesInfoPage.getTotalElements());
-    }
-
-    private InstancesInfo createAndSaveNewInstancesInfo(InstancesMetaDataModel instancesMetaDataModel) {
-        var instancesInfo = new InstancesInfo();
-        instancesInfo.setRelationName(instancesMetaDataModel.getRelationName());
-        instancesInfo.setNumInstances(instancesMetaDataModel.getNumInstances());
-        instancesInfo.setNumAttributes(instancesMetaDataModel.getNumAttributes());
-        instancesInfo.setNumClasses(instancesMetaDataModel.getNumClasses());
-        instancesInfo.setClassName(instancesMetaDataModel.getClassName());
-        instancesInfo.setUuid(instancesMetaDataModel.getUuid());
-        instancesInfo.setCreatedDate(LocalDateTime.now());
-        instancesInfoRepository.save(instancesInfo);
-        createAndSaveAttributes(instancesMetaDataModel, instancesInfo);
-        return instancesInfo;
-    }
-
-    private void createAndSaveAttributes(InstancesMetaDataModel instancesMetaDataModel,
-                                         InstancesInfo instancesInfo) {
-        var attributesInfoEntity = new AttributesInfoEntity();
-        attributesInfoEntity.setAttributes(instancesMetaDataModel.getAttributes());
-        attributesInfoEntity.setInstancesInfo(instancesInfo);
-        attributesInfoRepository.save(attributesInfoEntity);
     }
 }

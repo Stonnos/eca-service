@@ -28,7 +28,7 @@ public class InstancesService {
      */
     public InstancesInfo getOrSaveInstancesInfo(EvaluationResultsRequest evaluationResultsRequest) {
         String dataUuid = evaluationResultsRequest.getInstances().getUuid();
-        // Gets instances via double check locking
+        // Gets instances or save via double check locking
         InstancesInfo instancesInfo = instancesInfoRepository.findByUuid(dataUuid);
         if (instancesInfo == null) {
             instancesInfo = instancesSaver.getOrSaveInstancesInfo(evaluationResultsRequest);

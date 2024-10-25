@@ -36,7 +36,7 @@ import static org.mockito.Mockito.when;
  *
  * @author Roman Batygin
  */
-@Import({InstancesInfoService.class, InstancesInfoMapperImpl.class})
+@Import({InstancesInfoService.class, InstancesInfoMapperImpl.class, InstancesSaver.class})
 class InstancesInfoServiceTest extends AbstractJpaTest {
 
     private static final String DATA_MD_5_HASH = "3032e188204cb537f69fc7364f638641";
