@@ -93,7 +93,6 @@ public class InstancesInfoService {
         instancesInfo.setNumAttributes(instancesMetaDataModel.getNumAttributes());
         instancesInfo.setNumClasses(instancesMetaDataModel.getNumClasses());
         instancesInfo.setClassName(instancesMetaDataModel.getClassName());
-        instancesInfo.setDataMd5Hash(instancesMetaDataModel.getMd5Hash());
         instancesInfo.setUuid(instancesMetaDataModel.getUuid());
         instancesInfo.setCreatedDate(LocalDateTime.now());
         instancesInfoRepository.save(instancesInfo);

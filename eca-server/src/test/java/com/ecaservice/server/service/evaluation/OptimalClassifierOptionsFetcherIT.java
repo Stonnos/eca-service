@@ -93,7 +93,6 @@ import static org.mockito.Mockito.when;
 @TestPropertySource("classpath:application-it.properties")
 class OptimalClassifierOptionsFetcherIT extends AbstractJpaTest {
 
-    private static final String DATA_MD_5_HASH = "3032e188204cb537f69fc7364f638641";
     private static final ObjectMapper objectMapper = new ObjectMapper();
     private static final int NUM_THREADS = 2;
 
@@ -160,9 +159,8 @@ class OptimalClassifierOptionsFetcherIT extends AbstractJpaTest {
 
     private void mockLoadInstances() {
         var instancesDataModel =
-                new InstancesMetaDataModel(dataUuid, data.relationName(), data.numInstances(),
-                        data.numAttributes(), data.numClasses(), data.classAttribute().name(), DATA_MD_5_HASH,
-                        "instances", Collections.emptyList());
+                new InstancesMetaDataModel(dataUuid, data.relationName(), data.numInstances(), data.numAttributes(),
+                        data.numClasses(), data.classAttribute().name(), "instances", Collections.emptyList());
         when(instancesMetaDataService.getInstancesMetaData(dataUuid)).thenReturn(instancesDataModel);
         when(instancesLoaderService.loadInstances(dataUuid)).thenReturn(data);
     }
@@ -187,7 +185,7 @@ class OptimalClassifierOptionsFetcherIT extends AbstractJpaTest {
             executorService.submit(() -> {
                 try {
                     var instancesRequestDataModel =
-                            new InstancesRequestDataModel(UUID.randomUUID().toString(), dataUuid, DATA_MD_5_HASH,
+                            new InstancesRequestDataModel(UUID.randomUUID().toString(), dataUuid,
                                     EvaluationMethod.CROSS_VALIDATION, NUM_FOLDS, NUM_TESTS, SEED);
                     optimalClassifierOptionsFetcher.getOptimalClassifierOptions(instancesRequestDataModel);
                 } catch (Exception ex) {

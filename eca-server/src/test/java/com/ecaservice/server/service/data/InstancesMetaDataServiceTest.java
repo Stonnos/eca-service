@@ -61,7 +61,6 @@ class InstancesMetaDataServiceTest {
         assertThat(instancesMetaDataModel.getNumInstances()).isEqualTo(instancesMetaInfoInfo.getNumInstances());
         assertThat(instancesMetaDataModel.getNumAttributes()).isEqualTo(instancesMetaInfoInfo.getNumAttributes());
         assertThat(instancesMetaDataModel.getNumClasses()).isEqualTo(instancesMetaInfoInfo.getNumClasses());
-        assertThat(instancesMetaDataModel.getMd5Hash()).isEqualTo(instancesMetaInfoInfo.getMd5Hash());
         assertThat(instancesMetaDataModel.getObjectPath()).isEqualTo(instancesMetaInfoInfo.getObjectPath());
     }
 

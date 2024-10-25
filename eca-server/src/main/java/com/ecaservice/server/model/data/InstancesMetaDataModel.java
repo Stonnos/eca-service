@@ -47,11 +47,6 @@ public class InstancesMetaDataModel {
     private String className;
 
     /**
-     * Instances file MD5 hash sum
-     */
-    private String md5Hash;
-
-    /**
      * Instances object path in storage
      */
     private String objectPath;

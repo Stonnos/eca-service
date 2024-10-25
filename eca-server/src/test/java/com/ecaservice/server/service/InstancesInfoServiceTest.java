@@ -87,7 +87,6 @@ class InstancesInfoServiceTest extends AbstractJpaTest {
         assertThat(actual.getNumClasses()).isEqualTo(data.classAttribute().numValues());
         assertThat(actual.getUuid()).isNotNull();
         assertThat(actual.getCreatedDate()).isNotNull();
-        assertThat(actual.getDataMd5Hash()).isNotNull();
         AttributesInfoEntity attributesInfoEntity = attributesInfoRepository.findAll().getFirst();
         assertThat(attributesInfoEntity.getInstancesInfo().getId()).isEqualTo(actual.getId());
         assertThat(attributesInfoEntity.getAttributes()).isNotEmpty();
@@ -116,9 +115,8 @@ class InstancesInfoServiceTest extends AbstractJpaTest {
 
     private InstancesInfo saveInstancesInfo(Instances data) {
         var instancesDataModel =
-                new InstancesMetaDataModel(dataUuid, data.relationName(), data.numInstances(),
-                        data.numAttributes(), data.numClasses(), data.classAttribute().name(), DATA_MD_5_HASH,
-                        "instances", ATTRIBUTE_META_INFO_LIST);
+                new InstancesMetaDataModel(dataUuid, data.relationName(), data.numInstances(), data.numAttributes(),
+                        data.numClasses(), data.classAttribute().name(), "instances", ATTRIBUTE_META_INFO_LIST);
         return instancesInfoService.getOrSaveInstancesInfo(instancesDataModel);
     }
 

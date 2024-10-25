@@ -84,17 +84,16 @@ public class OptimalClassifierOptionsCacheService implements OptimalClassifierOp
                 instancesRequestDataModel.getDataUuid(), instancesRequestDataModel.getRequestId());
         var instancesMetaDataModel =
                 instancesMetaDataService.getInstancesMetaData(instancesRequestDataModel.getDataUuid());
-        String dataMd5Hash = instancesMetaDataModel.getMd5Hash();
         log.info(
-                "Starting to get optimal classifiers options from cache for data uuid [{}], md5 hash {}, options req id [{}]",
-                instancesRequestDataModel.getDataUuid(), dataMd5Hash, instancesRequestDataModel.getRequestId());
+                "Starting to get optimal classifiers options from cache for data uuid [{}], options req id [{}]",
+                instancesRequestDataModel.getDataUuid(), instancesRequestDataModel.getRequestId());
         ClassifierOptionsRequestModel requestModel =
                 getLastClassifierOptionsRequestModel(instancesRequestDataModel.getDataUuid());
         ClassifierOptionsResponseModel responseModel = getFirstResponseModel(requestModel);
         if (responseModel != null) {
             log.info(
-                    "Optimal options [{}] has been taken from last response for data uuid [{}] md5 hash {}, options req id [{}]",
-                    responseModel.getOptions(), instancesRequestDataModel.getDataUuid(), dataMd5Hash,
+                    "Optimal options [{}] has been taken from last response for data uuid [{}], options req id [{}]",
+                    responseModel.getOptions(), instancesRequestDataModel.getDataUuid(),
                     instancesRequestDataModel.getRequestId());
             ClassifierOptionsRequestEntity requestEntity =
                     createClassifierOptionsRequestEntity(ClassifierOptionsRequestSource.CACHE);

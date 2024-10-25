@@ -252,7 +252,6 @@ image::./images/eca-db-schema.png[alt=Схема базы данных eca-serve
 |num_attributes          |integer          |-|+|-                                        |Число атрибутов обучающей выборки
 |num_classes             |integer          |-|+|-                                        |Число классов
 |class_name              |varchar(255)     |-|+|-                                        |Название атрибута класса
-|data_md5_hash           |varchar(255)     |-|+|instances_info_data_md5_hash_unique_idx  |MD5 хэш обучающей выборки
 |created_date            |timestamp        |-|+|-                                        |Дата создания
 |===
 

@@ -62,7 +62,6 @@ import static org.mockito.Mockito.when;
         InstancesInfoMapperImpl.class, ClassifierInfoMapperImpl.class, ClassifiersOptionsAutoConfiguration.class})
 class EvaluationRequestServiceTest extends AbstractJpaTest {
 
-    private static final String DATA_MD_5_HASH = "3032e188204cb537f69fc7364f638641";
     private static final String MODEL_DOWNLOAD_URL = "http//:localhost/model";
 
     @MockBean
@@ -169,9 +168,8 @@ class EvaluationRequestServiceTest extends AbstractJpaTest {
     private void mockLoadInstances() {
         Instances data = loadInstances();
         var instancesDataModel =
-                new InstancesMetaDataModel(dataUuid, data.relationName(), data.numInstances(),
-                        data.numAttributes(), data.numClasses(), data.classAttribute().name(), DATA_MD_5_HASH,
-                        "instances", Collections.emptyList());
+                new InstancesMetaDataModel(dataUuid, data.relationName(), data.numInstances(), data.numAttributes(),
+                        data.numClasses(), data.classAttribute().name(), "instances", Collections.emptyList());
         when(instancesMetaDataService.getInstancesMetaData(anyString())).thenReturn(instancesDataModel);
         when(instancesLoaderService.loadInstances(anyString())).thenReturn(data);
     }

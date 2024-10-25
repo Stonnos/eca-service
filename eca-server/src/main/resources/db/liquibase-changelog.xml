@@ -67,4 +67,5 @@
     <include file="db/changelog/v79-update-filter-templates.xml"/>
     <include file="db/changelog/v80-add-indexes.xml"/>
     <include file="db/changelog/v81-create-attributes-info-table.xml"/>
+    <include file="db/changelog/v82-drop-instances-data-md5-hash-column.xml"/>
 </databaseChangeLog>

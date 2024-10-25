@@ -60,12 +60,6 @@ public class InstancesInfo {
     private String className;
 
     /**
-     * Json instances MD5 hash
-     */
-    @Column(name = "data_md5_hash", nullable = false, unique = true)
-    private String dataMd5Hash;
-
-    /**
      * Created date
      */
     @Column(name = "created_date", nullable = false)

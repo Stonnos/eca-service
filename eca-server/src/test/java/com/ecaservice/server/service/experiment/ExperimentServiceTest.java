@@ -54,8 +54,6 @@ import static org.mockito.Mockito.when;
         ExperimentProgressService.class, InstancesInfoService.class})
 class ExperimentServiceTest extends AbstractJpaTest {
 
-    private static final String DATA_MD_5_HASH = "3032e188204cb537f69fc7364f638641";
-
     @Autowired
     private ExperimentRepository experimentRepository;
     @Autowired
@@ -159,8 +157,8 @@ class ExperimentServiceTest extends AbstractJpaTest {
         Instances data = loadInstances();
         var instancesDataModel =
                 new InstancesMetaDataModel(UUID.randomUUID().toString(), data.relationName(), data.numInstances(),
-                        data.numAttributes(), data.numClasses(), data.classAttribute().name(), DATA_MD_5_HASH,
-                        "instances", Collections.emptyList());
+                        data.numAttributes(), data.numClasses(), data.classAttribute().name(), "instances",
+                        Collections.emptyList());
         when(instancesMetaDataService.getInstancesMetaData(anyString())).thenReturn(instancesDataModel);
         when(instancesLoaderService.loadInstances(anyString())).thenReturn(data);
     }

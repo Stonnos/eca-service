@@ -26,11 +26,6 @@ public class InstancesRequestDataModel {
     private String dataUuid;
 
     /**
-     * Train data md5 hash
-     */
-    private String dataMd5Hash;
-
-    /**
      * Evaluation method
      */
     private EvaluationMethod evaluationMethod;

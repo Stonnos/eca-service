@@ -89,7 +89,6 @@ import static org.mockito.Mockito.when;
         OptimalClassifierOptionsCacheService.class, DateTimeConverter.class})
 class OptimalClassifierOptionsFetcherTest extends AbstractJpaTest {
 
-    private static final String DATA_MD_5_HASH = "3032e188204cb537f69fc7364f638641";
     private static final ObjectMapper objectMapper = new ObjectMapper();
     private static final String MODEL_DOWNLOAD_URL = "http//:localhost/model";
 
@@ -241,7 +240,6 @@ class OptimalClassifierOptionsFetcherTest extends AbstractJpaTest {
     @Test
     void testExceededClassifierOptionsCacheWithDataMd5HashDoesntExists() {
         var anotherInstancesInfo = createInstancesInfo();
-        anotherInstancesInfo.setDataMd5Hash("anotherHash");
         instancesInfoRepository.save(anotherInstancesInfo);
         var requestModel = TestHelperUtils.createClassifierOptionsRequestModel(anotherInstancesInfo,
                 LocalDateTime.now(),
@@ -355,7 +353,7 @@ class OptimalClassifierOptionsFetcherTest extends AbstractJpaTest {
 
     private void assertSuccessClassifierOptionsRequestModel(ClassifierOptionsRequestModel requestModel) {
         assertThat(requestModel.getInstancesInfo()).isNotNull();
-        assertThat(requestModel.getInstancesInfo().getDataMd5Hash()).isNotNull();
+        assertThat(requestModel.getInstancesInfo().getUuid()).isNotNull();
         assertThat(requestModel.getResponseStatus()).isEqualTo(ErsResponseStatus.SUCCESS);
         assertThat(requestModel.getRequestId()).isNotNull();
         assertThat(requestModel.getNumFolds()).isNotNull();
@@ -376,18 +374,16 @@ class OptimalClassifierOptionsFetcherTest extends AbstractJpaTest {
         dataUuid = UUID.randomUUID().toString();
         instancesInfo = createInstancesInfo();
         instancesInfo.setUuid(dataUuid);
-        instancesInfo.setDataMd5Hash(DATA_MD_5_HASH);
         instancesInfoRepository.save(instancesInfo);
         instancesRequestDataModel =
-                new InstancesRequestDataModel(UUID.randomUUID().toString(), dataUuid, DATA_MD_5_HASH,
-                        EvaluationMethod.CROSS_VALIDATION, NUM_FOLDS, NUM_TESTS, SEED);
+                new InstancesRequestDataModel(UUID.randomUUID().toString(), dataUuid, EvaluationMethod.CROSS_VALIDATION,
+                        NUM_FOLDS, NUM_TESTS, SEED);
     }
 
     private void mockLoadInstances() {
         var instancesDataModel =
-                new InstancesMetaDataModel(dataUuid, data.relationName(), data.numInstances(),
-                        data.numAttributes(), data.numClasses(), data.classAttribute().name(), DATA_MD_5_HASH,
-                        "instances", Collections.emptyList());
+                new InstancesMetaDataModel(dataUuid, data.relationName(), data.numInstances(), data.numAttributes(),
+                        data.numClasses(), data.classAttribute().name(), "instances", Collections.emptyList());
         when(instancesMetaDataService.getInstancesMetaData(dataUuid)).thenReturn(instancesDataModel);
         when(instancesLoaderService.loadInstances(dataUuid)).thenReturn(data);
     }
