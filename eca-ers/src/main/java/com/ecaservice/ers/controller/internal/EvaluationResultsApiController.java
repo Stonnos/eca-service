@@ -189,8 +189,8 @@ public class EvaluationResultsApiController {
     @PostMapping(value = "/optimal-classifier-options")
     public ClassifierOptionsResponse findClassifierOptions(
             @Valid @RequestBody ClassifierOptionsRequest classifierOptionsRequest) {
-        log.info("Received request [{}] to find optimal classifiers options for data with md5 hash [{}]",
-                classifierOptionsRequest.getRequestId(), classifierOptionsRequest.getDataHash());
+        log.info("Received request [{}] to find optimal classifiers options for data with uuid [{}]",
+                classifierOptionsRequest.getRequestId(), classifierOptionsRequest.getDataUuid());
         return classifierOptionsRequestService.findClassifierOptions(classifierOptionsRequest);
     }
 }

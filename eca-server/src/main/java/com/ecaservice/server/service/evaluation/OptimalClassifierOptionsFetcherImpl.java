@@ -42,7 +42,7 @@ public class OptimalClassifierOptionsFetcherImpl implements OptimalClassifierOpt
         var instancesMetaDataModel =
                 instancesMetaDataService.getInstancesMetaData(instancesRequestDataModel.getDataUuid());
         var classifierOptionsRequest = classifierOptionsRequestMapper.map(instancesRequestDataModel);
-        classifierOptionsRequest.setDataHash(instancesMetaDataModel.getMd5Hash());
+        classifierOptionsRequest.setDataUuid(instancesMetaDataModel.getUuid());
         ClassifierOptionsRequestEntity requestEntity =
                 createClassifierOptionsRequestEntity(ClassifierOptionsRequestSource.ERS);
         requestEntity.setRequestId(classifierOptionsRequest.getRequestId());

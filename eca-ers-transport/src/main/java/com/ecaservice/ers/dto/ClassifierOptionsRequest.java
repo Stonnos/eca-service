@@ -3,16 +3,15 @@ package com.ecaservice.ers.dto;
 
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.Data;
-
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
+import lombok.Data;
+
 import java.util.List;
 
-import static com.ecaservice.ers.dto.Constraints.MAX_LENGTH_255;
 import static com.ecaservice.ers.dto.Constraints.MIN_1;
 import static com.ecaservice.ers.dto.Constraints.SORT_FIELDS_MAX_ITEMS;
 import static com.ecaservice.ers.dto.Constraints.UUID_MAX_SIZE;
@@ -38,13 +37,13 @@ public class ClassifierOptionsRequest {
     private String requestId;
 
     /**
-     * Instances MD5 hash sum
+     * Instances uuid
      */
     @NotBlank
-    @Size(min = MIN_1, max = MAX_LENGTH_255)
-    @Schema(description = "Instances MD5 hash sum", example = "3032e188204cb537f69fc7364f638641",
-            requiredMode = Schema.RequiredMode.REQUIRED)
-    private String dataHash;
+    @Size(min = MIN_1, max = UUID_MAX_SIZE)
+    @Schema(description = "Instances uuid", example = "f8cecbf7-405b-403b-9a94-f51e8fb73ed8",
+            maxLength = UUID_MAX_SIZE, requiredMode = Schema.RequiredMode.REQUIRED)
+    private String dataUuid;
 
     /**
      * Evaluation method report

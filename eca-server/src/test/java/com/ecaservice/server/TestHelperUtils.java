@@ -950,8 +950,7 @@ public class TestHelperUtils {
         ClassifierOptionsRequest classifierOptionsRequest = new ClassifierOptionsRequest();
         classifierOptionsRequest.setEvaluationMethodReport(new EvaluationMethodReport());
         classifierOptionsRequest.setEvaluationMethodReport(createEvaluationMethodReport());
-        classifierOptionsRequest.setDataHash(
-                DigestUtils.md5DigestAsHex(RELATION_NAME.getBytes(StandardCharsets.UTF_8)));
+        classifierOptionsRequest.setDataUuid(UUID.randomUUID().toString());
         return classifierOptionsRequest;
     }
 

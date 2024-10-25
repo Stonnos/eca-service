@@ -12,14 +12,11 @@ import com.ecaservice.ers.model.InstancesInfo;
 import com.ecaservice.ers.repository.EvaluationResultsInfoRepository;
 import com.ecaservice.ers.repository.EvaluationResultsSortRepository;
 import com.ecaservice.ers.repository.InstancesInfoRepository;
-import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Import;
-import org.springframework.util.DigestUtils;
 
 import java.math.BigDecimal;
-import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.List;
 
@@ -111,10 +108,8 @@ class ClassifierOptionsServiceTest extends AbstractJpaTest {
     private void testClassifierOptionsSearching(ClassifierOptionsRequest request) {
         EvaluationMethod evaluationMethod = request.getEvaluationMethodReport().getEvaluationMethod();
         InstancesInfo instancesInfo = buildInstancesInfo();
-        instancesInfo.setDataMd5Hash(request.getDataHash());
+        instancesInfo.setUuid(request.getDataUuid());
         InstancesInfo anotherInstancesInfo = buildInstancesInfo();
-        anotherInstancesInfo.setDataMd5Hash(
-                DigestUtils.md5DigestAsHex(StringUtils.EMPTY.getBytes(StandardCharsets.UTF_8)));
         instancesInfoRepository.saveAll(Arrays.asList(instancesInfo, anotherInstancesInfo));
 
         ClassifierOptionsInfo classifierOptionsInfo1 = buildClassifierOptionsInfo();

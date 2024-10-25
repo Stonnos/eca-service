@@ -30,22 +30,22 @@ public class InstancesService {
      * @param evaluationResultsRequest - evaluation results request
      * @return instances info
      */
-    @Locked(lockName = "getOrSaveErsInstancesInfo", key = "#evaluationResultsRequest.instances.dataMd5Hash")
+    @Locked(lockName = "getOrSaveErsInstancesInfo", key = "#evaluationResultsRequest.instances.uuid")
     public InstancesInfo getOrSaveInstancesInfo(EvaluationResultsRequest evaluationResultsRequest) {
-        String dataMd5Hash = evaluationResultsRequest.getInstances().getDataMd5Hash();
-        log.info("Starting to get instances [{}] with md5 hash [{}]",
-                evaluationResultsRequest.getInstances().getRelationName(), dataMd5Hash);
+        String dataUuid = evaluationResultsRequest.getInstances().getUuid();
+        log.info("Starting to get instances [{}] with uuid [{}]",
+                evaluationResultsRequest.getInstances().getRelationName(), dataUuid);
         InstancesInfo instancesInfo;
-        instancesInfo = instancesInfoRepository.findByDataMd5Hash(dataMd5Hash);
+        instancesInfo = instancesInfoRepository.findByUuid(dataUuid);
         if (instancesInfo == null) {
             instancesInfo = instancesMapper.map(evaluationResultsRequest.getInstances());
             instancesInfo.setCreatedDate(LocalDateTime.now());
             instancesInfoRepository.save(instancesInfo);
-            log.info("New instances [{}] with md5 hash [{}] has been saved",
-                    evaluationResultsRequest.getInstances().getRelationName(), dataMd5Hash);
+            log.info("New instances [{}] with uuid [{}] has been saved",
+                    evaluationResultsRequest.getInstances().getRelationName(), dataUuid);
         }
-        log.info("Instances [{}] with md5 hash [{}] has been fetched",
-                evaluationResultsRequest.getInstances().getRelationName(), dataMd5Hash);
+        log.info("Instances [{}] with uuid [{}] has been fetched",
+                evaluationResultsRequest.getInstances().getRelationName(), dataUuid);
         return instancesInfo;
     }
 }

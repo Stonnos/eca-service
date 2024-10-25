@@ -246,7 +246,7 @@ image::./images/eca-db-schema.png[alt=Схема базы данных eca-serve
 |===
 |Название колонки|Тип|Unique|Not NULL|Индекс|Описание
 |id                      |bigint           |+|+|+                                        |Идентификатор записи (первичный ключ)
-|uuid                    |varchar(255)     |+|+|instances_info_uuid_unique_idx           |Уникальный UUID выборки
+|uuid                    |varchar(255)     |+|+|instances_info_uuid_unique_idx           |UUID обучающей выборки из единого хранилища обучающих выборок
 |relation_name           |varchar(255)     |-|+|-                                        |Название обучающей выборки
 |num_instances           |integer          |-|+|-                                        |Число объектов обучающей выборки
 |num_attributes          |integer          |-|+|-                                        |Число атрибутов обучающей выборки
@@ -587,7 +587,7 @@ image::./images/eca-ers-db-schema.png[alt=Схема базы данных eca-e
 |===
 |Название колонки|Тип|Unique|Not NULL|Индекс|Описание
 |id                      |bigint           |+|+|+                                           |Идентификатор записи (первичный ключ)
-|data_md5_hash           |varchar(255)     |-|+|instances_info_data_md5_hash_unique_idx     |MD5 хеш данных
+|uuid                    |varchar(255)     |-|+|instances_info_uuid_unique_idx              |UUID обучающей выборки из единого хранилища обучающих выборок
 |relation_name           |varchar(255)     |-|+|-                                           |Название обучающей выборки
 |num_instances           |integer          |-|+|-                                           |Число объектов обучающей выборки
 |num_attributes          |integer          |-|+|-                                           |Число атрибутов обучающей выборки

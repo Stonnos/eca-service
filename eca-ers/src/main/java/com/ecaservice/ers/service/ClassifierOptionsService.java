@@ -52,14 +52,14 @@ public class ClassifierOptionsService {
      */
     @NewSpan
     public List<ClassifierOptionsInfo> findBestClassifierOptions(ClassifierOptionsRequest classifierOptionsRequest) {
-        String dataHash = classifierOptionsRequest.getDataHash();
-        var instancesInfo = instancesInfoRepository.findByDataMd5Hash(dataHash);
+        String dataUuid = classifierOptionsRequest.getDataUuid();
+        var instancesInfo = instancesInfoRepository.findByUuid(dataUuid);
         if (instancesInfo == null) {
-            throw new DataNotFoundException(String.format("Instances with md5 hash [%s] doesn't exists!",
-                    classifierOptionsRequest.getDataHash()));
+            throw new DataNotFoundException(String.format("Instances with uuid [%s] doesn't exists!",
+                    classifierOptionsRequest.getDataUuid()));
         } else {
-            log.info("[{}] instances info has been found with data md5 hash [{}]", instancesInfo.getRelationName(),
-                    instancesInfo.getDataMd5Hash());
+            log.info("[{}] instances info has been found with uuid [{}]", instancesInfo.getRelationName(),
+                    instancesInfo.getUuid());
             EvaluationMethodReport evaluationMethodReport = classifierOptionsRequest.getEvaluationMethodReport();
             var filter = new OptimalEvaluationResultsFilter(instancesInfo, evaluationMethodReport);
             Sort sort = buildSort(classifierOptionsRequest);

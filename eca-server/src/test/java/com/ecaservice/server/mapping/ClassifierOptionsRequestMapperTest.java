@@ -56,5 +56,6 @@ class ClassifierOptionsRequestMapperTest {
                 instancesRequestDataModel.getNumTests());
         assertThat(request.getEvaluationMethodReport().getSeed().intValue()).isEqualTo(
                 instancesRequestDataModel.getSeed());
+        assertThat(request.getDataUuid()).isEqualTo(instancesRequestDataModel.getDataUuid());
     }
 }

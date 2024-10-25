@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+        logicalFilePath="db/changelog/v15-add-instances-info-uuid-column.xml"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="add_instances_info_uuid_column" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="instances_info"/>
+            <not>
+                <columnExists tableName="instances_info" columnName="uuid"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="instances_info">
+            <column name="uuid" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="add_instances_info_uuid_unique_idx" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="instances_info"/>
+            <columnExists tableName="instances_info" columnName="uuid"/>
+        </preConditions>
+        <addUniqueConstraint tableName="instances_info" columnNames="uuid"
+                             constraintName="instances_info_uuid_unique_idx"/>
+    </changeSet>
+
+    <changeSet id="drop_instances_info_md5_hash_column" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="instances_info"/>
+            <columnExists tableName="instances_info" columnName="data_md5_hash"/>
+        </preConditions>
+        <dropColumn tableName="instances_info" columnName="data_md5_hash"/>
+    </changeSet>
+</databaseChangeLog>

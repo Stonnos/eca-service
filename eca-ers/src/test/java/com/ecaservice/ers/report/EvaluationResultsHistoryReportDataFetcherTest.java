@@ -20,7 +20,6 @@ import com.ecaservice.web.dto.model.FilterRequestDto;
 import com.ecaservice.web.dto.model.MatchMode;
 import com.ecaservice.web.dto.model.PageRequestDto;
 import com.ecaservice.web.dto.model.SortFieldRequestDto;
-import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +28,7 @@ import org.springframework.context.annotation.Import;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.UUID;
 
 import static com.ecaservice.classifier.template.processor.util.Utils.toJsonString;
 import static com.ecaservice.ers.TestHelperUtils.createEvaluationResultsInfo;
@@ -107,11 +107,11 @@ class EvaluationResultsHistoryReportDataFetcherTest extends AbstractJpaTest {
         var evaluationResultsInfo1 = createEvaluationResultsInfo();
         evaluationResultsInfo1.getClassifierInfo().setClassifierName("CART");
         evaluationResultsInfo1.getClassifierInfo().setOptions(toJsonString(new LogisticOptions()));
-        evaluationResultsInfo1.getInstancesInfo().setDataMd5Hash(DigestUtils.md5Hex("val1"));
+        evaluationResultsInfo1.getInstancesInfo().setUuid(UUID.randomUUID().toString());
         var evaluationResultsInfo2 = createEvaluationResultsInfo();
         evaluationResultsInfo2.getClassifierInfo().setClassifierName("C45");
         evaluationResultsInfo2.getClassifierInfo().setOptions(toJsonString(new LogisticOptions()));
-        evaluationResultsInfo2.getInstancesInfo().setDataMd5Hash(DigestUtils.md5Hex("val2"));
+        evaluationResultsInfo2.getInstancesInfo().setUuid(UUID.randomUUID().toString());
         instancesInfoRepository.save(evaluationResultsInfo1.getInstancesInfo());
         instancesInfoRepository.save(evaluationResultsInfo2.getInstancesInfo());
         evaluationResultsInfoRepository.saveAll(Arrays.asList(evaluationResultsInfo1, evaluationResultsInfo2));

@@ -45,7 +45,7 @@ class ErsModelValidationTest {
     private static final List<String> CLASSIFIER_FIELDS_NULL_TEST =
             ImmutableList.of("classifierName", "options");
     private static final List<String> INSTANCES_FIELDS_NULL_TEST =
-            ImmutableList.of("dataMd5Hash", "relationName", "numInstances", "numAttributes", "numClasses",
+            ImmutableList.of("uuid", "relationName", "numInstances", "numAttributes", "numClasses",
                     "className");
     private static final List<String> EVALUATION_METHOD_REPORT_FIELDS_NULL_TEST =
             ImmutableList.of("evaluationMethod");
@@ -63,7 +63,7 @@ class ErsModelValidationTest {
     private static final List<String> CLASSIFIER_FIELDS_EMPTY_TEST =
             ImmutableList.of("classifierName", "options");
     private static final List<String> INSTANCES_FIELDS_EMPTY_TEST =
-            ImmutableList.of("dataMd5Hash", "relationName", "className");
+            ImmutableList.of("uuid", "relationName", "className");
     private static final List<String> CLASSIFICATION_COSTS_FIELDS_EMPTY_TEST =
             ImmutableList.of("classValue");
 

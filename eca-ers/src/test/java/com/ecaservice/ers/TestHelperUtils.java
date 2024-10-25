@@ -120,7 +120,7 @@ public class TestHelperUtils {
      */
     public static InstancesReport buildInstancesReport() {
         InstancesReport instancesReport = new InstancesReport();
-        instancesReport.setDataMd5Hash(DATA_HASH);
+        instancesReport.setUuid(UUID.randomUUID().toString());
         instancesReport.setRelationName(RELATION_NAME);
         instancesReport.setNumInstances(BigInteger.TEN);
         instancesReport.setNumAttributes(BigInteger.TEN);
@@ -136,7 +136,7 @@ public class TestHelperUtils {
      */
     public static InstancesInfo buildInstancesInfo() {
         InstancesInfo instancesInfo = new InstancesInfo();
-        instancesInfo.setDataMd5Hash(DATA_HASH);
+        instancesInfo.setUuid(UUID.randomUUID().toString());
         instancesInfo.setRelationName(RELATION_NAME);
         instancesInfo.setNumInstances(BigInteger.TEN.intValue());
         instancesInfo.setNumAttributes(BigInteger.TEN.intValue());
@@ -326,7 +326,7 @@ public class TestHelperUtils {
     public static ClassifierOptionsRequest createClassifierOptionsRequest(EvaluationMethod evaluationMethod) {
         ClassifierOptionsRequest request = new ClassifierOptionsRequest();
         request.setRequestId(UUID.randomUUID().toString());
-        request.setDataHash(DATA_HASH);
+        request.setDataUuid(UUID.randomUUID().toString());
         request.setEvaluationMethodReport(buildEvaluationMethodReport(evaluationMethod));
         request.setEvaluationResultsStatisticsSortFields(newArrayList());
         request.getEvaluationResultsStatisticsSortFields().add(

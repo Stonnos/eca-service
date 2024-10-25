@@ -7,7 +7,6 @@ import com.ecaservice.ers.model.InstancesInfo_;
 import com.ecaservice.ers.repository.InstancesInfoRepository;
 import com.ecaservice.web.dto.model.PageRequestDto;
 import com.ecaservice.web.dto.model.SortFieldRequestDto;
-import org.apache.commons.codec.digest.DigestUtils;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -15,6 +14,7 @@ import org.springframework.context.annotation.Import;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.UUID;
 
 import static com.ecaservice.ers.TestHelperUtils.buildInstancesInfo;
 import static com.ecaservice.ers.dictionary.FilterDictionaries.INSTANCES_INFO;
@@ -70,10 +70,10 @@ class InstancesInfoDataServiceTest extends AbstractJpaTest {
     public void saveInstancesInfoData() {
         var instancesInfo1 = buildInstancesInfo();
         instancesInfo1.setRelationName(RELATION_1);
-        instancesInfo1.setDataMd5Hash(DigestUtils.md5Hex(RELATION_1));
+        instancesInfo1.setUuid(UUID.randomUUID().toString());
         var instancesInfo2 = buildInstancesInfo();
         instancesInfo2.setRelationName(RELATION_2);
-        instancesInfo2.setDataMd5Hash(DigestUtils.md5Hex(RELATION_2));
+        instancesInfo2.setUuid(UUID.randomUUID().toString());
         instancesInfoRepository.saveAll(Arrays.asList(instancesInfo1, instancesInfo2));
     }
 }

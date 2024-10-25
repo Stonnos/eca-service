@@ -47,6 +47,6 @@ class InstancesMapperTest {
                 instancesInfo.getNumInstances().intValue());
         assertThat(instancesReport.getNumAttributes().intValue()).isEqualTo(
                 instancesInfo.getNumAttributes().intValue());
-        assertThat(instancesReport.getDataMd5Hash()).isEqualTo(instancesInfo.getDataMd5Hash());
+        assertThat(instancesReport.getUuid()).isEqualTo(instancesInfo.getUuid());
     }
 }
