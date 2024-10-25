@@ -64,8 +64,7 @@ curl -X POST "http://localhost:8080/api/external/upload-train-data" -H "accept: 
 ----
 {
   "uuid": "1d2de514-3a87-4620-9b97-c260e24340de",
-  "md5Hash": "3032e188204cb537f69fc7364f638641",
-  "expireAt": "2021-07-01 14:00:00"
+  "md5Hash": "3032e188204cb537f69fc7364f638641"
 }
 ----
 
@@ -82,11 +81,6 @@ curl -X POST "http://localhost:8080/api/external/upload-train-data" -H "accept: 
 |string
 |+
 |MD5 hash обучающей выборки
-|
-|expireAt
-|string
-|+
-|Дата истечения срока жизни обучающей выборки
 |
 |===
 
@@ -224,5 +218,9 @@ link:data/credit.json[credit.json]
 |400
 |MaxUploadSizeExceeded
 |Превышен максимальный допустимый размер файла
+|5
+|400
+|DataNotFound
+|Данные не найдены
 |===
 

@@ -2,10 +2,7 @@ package com.ecaservice.data.loader.repository;
 
 import com.ecaservice.data.loader.entity.InstancesEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
 
-import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
@@ -26,22 +23,12 @@ public interface InstancesRepository extends JpaRepository<InstancesEntity, Long
     Optional<InstancesEntity> findByUuid(String uuid);
 
     /**
-     * Finds instances by client id and md5 hash.
+     * Finds instances by md5 hash.
      *
-     * @param clientId - client id
      * @param md5Hash  - md5 hash
      * @return instances entity
      */
-    InstancesEntity findByClientIdAndMd5Hash(String clientId, String md5Hash);
-
-    /**
-     * Finds not deleted instances ids.
-     *
-     * @param dateTime - date time threshold value
-     * @return instances ids
-     */
-    @Query("select ins.id from InstancesEntity ins where ins.expireAt < :dateTime order by ins.created")
-    List<Long> findNotDeletedData(@Param("dateTime") LocalDateTime dateTime);
+    InstancesEntity findByMd5Hash(String md5Hash);
 
     /**
      * Finds instances page by ids.

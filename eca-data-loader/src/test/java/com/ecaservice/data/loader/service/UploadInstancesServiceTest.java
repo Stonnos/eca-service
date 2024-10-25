@@ -32,7 +32,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.when;
 
 /**
  * Unit tests for checking {@link UploadInstancesService} functionality.
@@ -44,12 +43,8 @@ import static org.mockito.Mockito.when;
         InstancesReader.class, InstancesDeserializer.class, InstancesMapperImpl.class})
 class UploadInstancesServiceTest extends AbstractJpaTest {
 
-    private static final String USER = "user";
-
     @MockBean
     private MinioStorageService minioStorageService;
-    @MockBean
-    private UserService userService;
 
     @Autowired
     private InstancesRepository instancesRepository;
@@ -64,7 +59,6 @@ class UploadInstancesServiceTest extends AbstractJpaTest {
 
     @Test
     void testUploadInstances() throws IOException {
-        when(userService.getCurrentUser()).thenReturn(USER);
         MockMultipartFile multipartFile = createInstancesMockMultipartFile();
         InstancesModel instancesModel = loadInstances();
         var uploadInstancesResponseDto = uploadInstancesService.uploadInstances(multipartFile);
@@ -78,15 +72,12 @@ class UploadInstancesServiceTest extends AbstractJpaTest {
         assertThat(actual.getNumAttributes()).isEqualTo(instancesModel.getAttributes().size());
         assertThat(actual.getObjectPath()).isNotNull();
         assertThat(actual.getMd5Hash()).isNotNull();
-        assertThat(actual.getExpireAt()).isNotNull();
-        assertThat(actual.getClientId()).isEqualTo(USER);
         assertNumClasses(instancesModel, actual);
         assertAttributes(instancesModel, actual);
     }
 
     @Test
     void testUploadExistingInstances() {
-        when(userService.getCurrentUser()).thenReturn(USER);
         MockMultipartFile multipartFile = createInstancesMockMultipartFile();
         uploadInstancesService.uploadInstances(multipartFile);
         uploadInstancesService.uploadInstances(multipartFile);

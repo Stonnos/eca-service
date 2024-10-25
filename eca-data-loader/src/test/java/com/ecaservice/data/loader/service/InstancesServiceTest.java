@@ -3,7 +3,6 @@ package com.ecaservice.data.loader.service;
 import com.ecaservice.common.web.exception.EntityNotFoundException;
 import com.ecaservice.data.loader.AbstractJpaTest;
 import com.ecaservice.data.loader.entity.InstancesEntity;
-import com.ecaservice.data.loader.exception.ExpiredDataException;
 import com.ecaservice.data.loader.mapping.InstancesMapperImpl;
 import com.ecaservice.data.loader.repository.InstancesRepository;
 import com.ecaservice.s3.client.minio.service.ObjectStorageService;
@@ -11,8 +10,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
-
-import java.time.LocalDateTime;
 
 import static com.ecaservice.data.loader.TestHelperUtils.createInstancesEntity;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -60,13 +57,6 @@ class InstancesServiceTest extends AbstractJpaTest {
         assertThat(instancesMetaInfo.getMd5Hash()).isEqualTo(instancesEntity.getMd5Hash());
         assertThat(instancesMetaInfo.getObjectPath()).isEqualTo(instancesEntity.getObjectPath());
         assertThat(instancesMetaInfo.getAttributes()).hasSameSizeAs(instancesEntity.getAttributes());
-    }
-
-    @Test
-    void testGetMetaInfShouldThrowExpiredDataException() {
-        instancesEntity.setExpireAt(LocalDateTime.now().minusDays(1L));
-        instancesRepository.save(instancesEntity);
-        assertThrows(ExpiredDataException.class, () -> instancesService.getMetaInfo(instancesEntity.getUuid()));
     }
 
     @Test

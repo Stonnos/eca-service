@@ -910,15 +910,11 @@ image::./images/data-loader-db-schema.png[alt=Схема базы данных e
 |num_attributes          |integer          |-|+|-                                           |Число атрибутов обучающей выборки
 |num_classes             |integer          |-|+|-                                           |Число классов
 |class_name              |varchar(255)     |-|+|-                                           |Название атрибута класса
-|expire_at               |timestamp        |-|+|-                                           |Дата истечения срока действия объекта обучающей выборки
 |created                 |timestamp        |-|+|-                                           |Дата создания
-|md5_hash                |varchar(255)     |-|+|-                                           |MD5 хеш данных
-|client_id               |varchar(255)     |-|-|-                                           |Имя технической учетной записи
+|md5_hash                |varchar(255)     |-|+|instances_md5_hash_unique_index             |MD5 хеш данных
 |object_path             |varchar(255)     |-|+|-                                           |Путь к объекту в S3
 |attributes              |jsonb            |-|+|-                                           |Данные об атрибутах обучающей выборки
 |===
-
-Таблица содержит уникальный индекс *instances_client_id_md5_hash_unique_index* на поля *client_id*, *md5_hash*.
 
 Таблицы *databasechangeloglock* и *databasechangeloglock* предназначены для управления миграциями базы данных.
 

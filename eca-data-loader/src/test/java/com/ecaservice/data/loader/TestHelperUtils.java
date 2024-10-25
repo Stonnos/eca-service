@@ -97,20 +97,7 @@ public class TestHelperUtils {
         instancesEntity.setObjectPath(OBJECT_PATH);
         instancesEntity.setMd5Hash(MD_5_HASH);
         instancesEntity.setCreated(LocalDateTime.now());
-        instancesEntity.setExpireAt(LocalDateTime.now().plusDays(1L));
         instancesEntity.setAttributes(Collections.singletonList(new AttributeInfo()));
-        return instancesEntity;
-    }
-
-    /**
-     * Creates instances entity.
-     *
-     * @param expireAt - expire at date
-     * @return instances entity
-     */
-    public static InstancesEntity createInstancesEntity(LocalDateTime expireAt) {
-        InstancesEntity instancesEntity = createInstancesEntity();
-        instancesEntity.setExpireAt(expireAt);
         return instancesEntity;
     }
 }
