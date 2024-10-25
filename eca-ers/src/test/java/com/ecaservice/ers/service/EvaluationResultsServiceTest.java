@@ -1,5 +1,6 @@
 package com.ecaservice.ers.service;
 
+import com.ecaservice.core.filter.service.FilterTemplateService;
 import com.ecaservice.core.lock.config.CoreLockAutoConfiguration;
 import com.ecaservice.core.lock.metrics.LockMeterService;
 import com.ecaservice.ers.AbstractJpaTest;
@@ -56,6 +57,8 @@ class EvaluationResultsServiceTest extends AbstractJpaTest {
 
     @MockBean
     private LockMeterService lockMeterService;
+    @MockBean
+    private FilterTemplateService filterTemplateService;
 
     @Autowired
     private EvaluationResultsService evaluationResultsService;

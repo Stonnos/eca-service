@@ -22,12 +22,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
 /**
- * Unit tests for {@link InstancesDataService} class.
+ * Unit tests for {@link InstancesService} class.
  *
  * @author Roman Batygin
  */
-@Import({InstancesDataService.class, InstancesMapperImpl.class})
-class InstancesInfoDataServiceTest extends AbstractJpaTest {
+@Import({InstancesService.class, InstancesMapperImpl.class, InstancesSaver.class})
+class InstancesServiceTest extends AbstractJpaTest {
 
     private static final int PAGE_NUMBER = 0;
     private static final int PAGE_SIZE = 10;
@@ -41,7 +41,7 @@ class InstancesInfoDataServiceTest extends AbstractJpaTest {
     private InstancesInfoRepository instancesInfoRepository;
 
     @Autowired
-    private InstancesDataService instancesDataService;
+    private InstancesService instancesService;
 
 
     @Override
@@ -61,7 +61,7 @@ class InstancesInfoDataServiceTest extends AbstractJpaTest {
         var pageRequestDto = new PageRequestDto(PAGE_NUMBER, PAGE_SIZE,
                 Collections.singletonList(new SortFieldRequestDto(InstancesInfo_.CREATED_DATE, false)), RELATION_1,
                 Collections.emptyList());
-        var instancesInfoPage = instancesDataService.getNextPage(pageRequestDto);
+        var instancesInfoPage = instancesService.getNextPage(pageRequestDto);
         assertThat(instancesInfoPage).isNotNull();
         assertThat(instancesInfoPage.getPage()).isZero();
         assertThat(instancesInfoPage.getTotalCount()).isOne();
