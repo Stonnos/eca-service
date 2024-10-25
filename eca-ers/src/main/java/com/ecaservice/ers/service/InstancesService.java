@@ -25,7 +25,7 @@ public class InstancesService {
     private final InstancesInfoRepository instancesInfoRepository;
 
     /**
-     * Gets or saves instances info in case if instances with md5 hash doesn't exists.
+     * Gets or saves instances info in case if instances with uuid doesn't exists.
      *
      * @param evaluationResultsRequest - evaluation results request
      * @return instances info
