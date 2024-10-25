@@ -93,6 +93,8 @@ public abstract class AbstractEvaluationProcessManagerTest<T extends AbstractEva
     @Getter
     private UserProfileOptionsProvider userProfileOptionsProvider;
 
+    private final String dataUuid = UUID.randomUUID().toString();
+
     @BeforeEach
     void init() {
         mockLoadInstances();
@@ -118,9 +120,9 @@ public abstract class AbstractEvaluationProcessManagerTest<T extends AbstractEva
     private void mockLoadInstances() {
         Instances data = loadInstances();
         var instancesDataModel =
-                new InstancesMetaDataModel(data.relationName(), data.numInstances(), data.numAttributes(),
-                        data.numClasses(), data.classAttribute().name(), DATA_MD_5_HASH, "instances.json",
-                        Collections.emptyList());
+                new InstancesMetaDataModel(dataUuid, data.relationName(), data.numInstances(),
+                        data.numAttributes(), data.numClasses(), data.classAttribute().name(), DATA_MD_5_HASH,
+                        "instances.json", Collections.emptyList());
         when(instancesMetaDataService.getInstancesMetaData(anyString())).thenReturn(instancesDataModel);
         when(instancesLoaderService.loadInstances(anyString())).thenReturn(data);
     }

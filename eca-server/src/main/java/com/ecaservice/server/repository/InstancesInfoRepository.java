@@ -18,12 +18,12 @@ public interface InstancesInfoRepository
         extends JpaRepository<InstancesInfo, Long>, JpaSpecificationExecutor<InstancesInfo> {
 
     /**
-     * Finds instances info by md5 hash.
+     * Finds instances info by uuid.
      *
-     * @param dataMd5Hash - data md5 hash
+     * @param uuid - instances uuid
      * @return instances info
      */
-    InstancesInfo findByDataMd5Hash(String dataMd5Hash);
+    InstancesInfo findByUuid(String uuid);
 
     /**
      * Gets instances info list by ids.

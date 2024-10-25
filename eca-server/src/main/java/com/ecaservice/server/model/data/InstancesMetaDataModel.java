@@ -17,6 +17,11 @@ import java.util.List;
 public class InstancesMetaDataModel {
 
     /**
+     * Instances uuid
+     */
+    private String uuid;
+
+    /**
      * Instances name
      */
     private String relationName;

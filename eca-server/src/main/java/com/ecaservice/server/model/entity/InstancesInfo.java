@@ -24,7 +24,7 @@ public class InstancesInfo {
     private Long id;
 
     /**
-     * Instances uuid
+     * Instances uuid (taken from eca-data-loader)
      */
     @Column(nullable = false, unique = true)
     private String uuid;

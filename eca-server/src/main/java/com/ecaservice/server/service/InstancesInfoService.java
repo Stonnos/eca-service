@@ -21,7 +21,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
 import java.time.LocalDateTime;
-import java.util.UUID;
 
 import static com.ecaservice.core.filter.util.FilterUtils.buildSort;
 import static com.ecaservice.server.model.entity.FilterTemplateType.INSTANCES_INFO;
@@ -49,19 +48,19 @@ public class InstancesInfoService {
      * @param instancesMetaDataModel - instances meta data model
      * @return instances info
      */
-    @Locked(lockName = "getOrSaveInstancesInfo", key = "#instancesMetaDataModel.md5Hash")
+    @Locked(lockName = "getOrSaveInstancesInfo", key = "#instancesMetaDataModel.uuid")
     public InstancesInfo getOrSaveInstancesInfo(InstancesMetaDataModel instancesMetaDataModel) {
-        log.info("Gets instances info [{}] with md5 hash [{}]", instancesMetaDataModel.getRelationName(),
-                instancesMetaDataModel.getMd5Hash());
-        var instancesInfo = instancesInfoRepository.findByDataMd5Hash(instancesMetaDataModel.getMd5Hash());
+        log.info("Gets instances info [{}] with uuid [{}]", instancesMetaDataModel.getRelationName(),
+                instancesMetaDataModel.getUuid());
+        var instancesInfo = instancesInfoRepository.findByUuid(instancesMetaDataModel.getUuid());
         if (instancesInfo == null) {
             instancesInfo = createAndSaveNewInstancesInfo(instancesMetaDataModel);
-            log.info("New instances info [{}] has been saved with md5 hash [{}]",
+            log.info("New instances info [{}] has been saved with uuid [{}]",
                     instancesMetaDataModel.getRelationName(),
-                    instancesMetaDataModel.getMd5Hash());
+                    instancesMetaDataModel.getUuid());
         }
-        log.info("Instances info [{}] with md5 hash [{}] has been fetched", instancesMetaDataModel.getRelationName(),
-                instancesMetaDataModel.getMd5Hash());
+        log.info("Instances info [{}] with uuid [{}] has been fetched", instancesMetaDataModel.getRelationName(),
+                instancesMetaDataModel.getUuid());
         return instancesInfo;
     }
 
@@ -95,19 +94,18 @@ public class InstancesInfoService {
         instancesInfo.setNumClasses(instancesMetaDataModel.getNumClasses());
         instancesInfo.setClassName(instancesMetaDataModel.getClassName());
         instancesInfo.setDataMd5Hash(instancesMetaDataModel.getMd5Hash());
-        instancesInfo.setUuid(UUID.randomUUID().toString());
+        instancesInfo.setUuid(instancesMetaDataModel.getUuid());
         instancesInfo.setCreatedDate(LocalDateTime.now());
         instancesInfoRepository.save(instancesInfo);
         createAndSaveAttributes(instancesMetaDataModel, instancesInfo);
         return instancesInfo;
     }
 
-    private AttributesInfoEntity createAndSaveAttributes(InstancesMetaDataModel instancesMetaDataModel,
-                                                         InstancesInfo instancesInfo) {
+    private void createAndSaveAttributes(InstancesMetaDataModel instancesMetaDataModel,
+                                         InstancesInfo instancesInfo) {
         var attributesInfoEntity = new AttributesInfoEntity();
         attributesInfoEntity.setAttributes(instancesMetaDataModel.getAttributes());
         attributesInfoEntity.setInstancesInfo(instancesInfo);
         attributesInfoRepository.save(attributesInfoEntity);
-        return attributesInfoEntity;
     }
 }

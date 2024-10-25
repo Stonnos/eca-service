@@ -33,6 +33,7 @@ import com.ecaservice.server.model.entity.ErsResponseStatus;
 import com.ecaservice.server.model.entity.InstancesInfo;
 import com.ecaservice.server.model.evaluation.ClassifierOptionsRequestSource;
 import com.ecaservice.server.model.evaluation.InstancesRequestDataModel;
+import com.ecaservice.server.repository.AttributesInfoRepository;
 import com.ecaservice.server.repository.ClassifierOptionsRequestModelRepository;
 import com.ecaservice.server.repository.ClassifierOptionsRequestRepository;
 import com.ecaservice.server.repository.ErsRequestRepository;
@@ -119,6 +120,8 @@ class OptimalClassifierOptionsFetcherTest extends AbstractJpaTest {
     @Autowired
     private InstancesInfoRepository instancesInfoRepository;
     @Autowired
+    private AttributesInfoRepository attributesInfoRepository;
+    @Autowired
     private ClassifierOptionsRequestRepository classifierOptionsRequestRepository;
     @Autowired
     private OptimalClassifierOptionsFetcher optimalClassifierOptionsFetcher;
@@ -150,6 +153,7 @@ class OptimalClassifierOptionsFetcherTest extends AbstractJpaTest {
         classifierOptionsRequestRepository.deleteAll();
         ersRequestRepository.deleteAll();
         evaluationLogRepository.deleteAll();
+        attributesInfoRepository.deleteAll();
         instancesInfoRepository.deleteAll();
     }
 
@@ -371,6 +375,7 @@ class OptimalClassifierOptionsFetcherTest extends AbstractJpaTest {
         data = TestHelperUtils.loadInstances();
         dataUuid = UUID.randomUUID().toString();
         instancesInfo = createInstancesInfo();
+        instancesInfo.setUuid(dataUuid);
         instancesInfo.setDataMd5Hash(DATA_MD_5_HASH);
         instancesInfoRepository.save(instancesInfo);
         instancesRequestDataModel =
@@ -380,9 +385,9 @@ class OptimalClassifierOptionsFetcherTest extends AbstractJpaTest {
 
     private void mockLoadInstances() {
         var instancesDataModel =
-                new InstancesMetaDataModel(data.relationName(), data.numInstances(), data.numAttributes(),
-                        data.numClasses(), data.classAttribute().name(), DATA_MD_5_HASH, "instances",
-                        Collections.emptyList());
+                new InstancesMetaDataModel(dataUuid, data.relationName(), data.numInstances(),
+                        data.numAttributes(), data.numClasses(), data.classAttribute().name(), DATA_MD_5_HASH,
+                        "instances", Collections.emptyList());
         when(instancesMetaDataService.getInstancesMetaData(dataUuid)).thenReturn(instancesDataModel);
         when(instancesLoaderService.loadInstances(dataUuid)).thenReturn(data);
     }

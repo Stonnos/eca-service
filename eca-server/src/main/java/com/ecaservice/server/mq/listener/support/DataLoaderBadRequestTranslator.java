@@ -31,8 +31,7 @@ public class DataLoaderBadRequestTranslator extends AbstractExceptionTranslator<
 
     @Override
     public EcaResponse translate(DataLoaderBadRequestException exception) {
-        if (DataLoaderApiErrorCode.DATA_NOT_FOUND.equals(exception.getApiErrorCode()) ||
-                DataLoaderApiErrorCode.EXPIRED_DATA.equals(exception.getApiErrorCode())) {
+        if (DataLoaderApiErrorCode.DATA_NOT_FOUND.equals(exception.getApiErrorCode())) {
             var messageError = error(ErrorCode.TRAINING_DATA_NOT_FOUND);
             return buildValidationError(Collections.singletonList(messageError));
         } else {

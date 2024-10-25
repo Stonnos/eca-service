@@ -19,6 +19,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import jakarta.annotation.PostConstruct;
+
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
@@ -48,7 +49,7 @@ public class OptimalClassifierOptionsCacheService implements OptimalClassifierOp
      *
      * @param ersConfig                          - ers config bean
      * @param optimalClassifierOptionsFetcher    - optimal classifier options fetcher
-     * @param instancesMetaDataService                  - data loader service
+     * @param instancesMetaDataService           - data loader service
      * @param classifierOptionsRequestRepository - classifier options request repository
      */
     public OptimalClassifierOptionsCacheService(ErsConfig ersConfig,
@@ -77,7 +78,7 @@ public class OptimalClassifierOptionsCacheService implements OptimalClassifierOp
      * @return classifier options result
      */
     @Override
-    @Locked(lockName = "getOptimalClassifierOptions", key = "#instancesRequestDataModel.dataMd5Hash")
+    @Locked(lockName = "getOptimalClassifierOptions", key = "#instancesRequestDataModel.dataUuid")
     public ClassifierOptionsResult getOptimalClassifierOptions(InstancesRequestDataModel instancesRequestDataModel) {
         log.info("Starting to get optimal classifiers options from cache for data uuid: {}, options req id [{}]",
                 instancesRequestDataModel.getDataUuid(), instancesRequestDataModel.getRequestId());
@@ -87,7 +88,8 @@ public class OptimalClassifierOptionsCacheService implements OptimalClassifierOp
         log.info(
                 "Starting to get optimal classifiers options from cache for data uuid [{}], md5 hash {}, options req id [{}]",
                 instancesRequestDataModel.getDataUuid(), dataMd5Hash, instancesRequestDataModel.getRequestId());
-        ClassifierOptionsRequestModel requestModel = getLastClassifierOptionsRequestModel(dataMd5Hash);
+        ClassifierOptionsRequestModel requestModel =
+                getLastClassifierOptionsRequestModel(instancesRequestDataModel.getDataUuid());
         ClassifierOptionsResponseModel responseModel = getFirstResponseModel(requestModel);
         if (responseModel != null) {
             log.info(
@@ -108,9 +110,9 @@ public class OptimalClassifierOptionsCacheService implements OptimalClassifierOp
         }
     }
 
-    private ClassifierOptionsRequestModel getLastClassifierOptionsRequestModel(String dataMd5Hash) {
+    private ClassifierOptionsRequestModel getLastClassifierOptionsRequestModel(String dataUuid) {
         List<ClassifierOptionsRequestEntity> requestModels =
-                classifierOptionsRequestRepository.findLastRequests(dataMd5Hash,
+                classifierOptionsRequestRepository.findLastRequests(dataUuid,
                         Collections.singletonList(ErsResponseStatus.SUCCESS),
                         LocalDateTime.now().minusDays(ersConfig.getClassifierOptionsCacheDurationInDays()),
                         PageRequest.of(0, 1));

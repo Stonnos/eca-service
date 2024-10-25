@@ -1294,6 +1294,7 @@ public class TestHelperUtils {
      */
     public static InstancesMetaInfoDto createInstancesMetaInfoInfo() {
         return InstancesMetaInfoDto.builder()
+                .uuid(UUID.randomUUID().toString())
                 .relationName(RELATION_NAME)
                 .className(CLASS_NAME)
                 .numInstances(NUM_INSTANCES)

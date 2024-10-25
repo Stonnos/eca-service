@@ -21,8 +21,10 @@ import com.ecaservice.server.model.entity.EvaluationLog;
 import com.ecaservice.server.model.entity.RequestStatus;
 import com.ecaservice.server.model.evaluation.EvaluationRequestData;
 import com.ecaservice.server.model.evaluation.EvaluationResultsDataModel;
+import com.ecaservice.server.repository.AttributesInfoRepository;
 import com.ecaservice.server.repository.ClassifierInfoRepository;
 import com.ecaservice.server.repository.EvaluationLogRepository;
+import com.ecaservice.server.repository.InstancesInfoRepository;
 import com.ecaservice.server.service.AbstractJpaTest;
 import com.ecaservice.server.service.InstancesInfoService;
 import com.ecaservice.server.service.data.InstancesLoaderService;
@@ -39,6 +41,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Collections;
 import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.ExecutorService;
 
 import static com.ecaservice.server.TestHelperUtils.loadInstances;
@@ -70,6 +73,10 @@ class EvaluationRequestServiceTest extends AbstractJpaTest {
     @Autowired
     private EvaluationLogRepository evaluationLogRepository;
     @Autowired
+    private InstancesInfoRepository instancesInfoRepository;
+    @Autowired
+    private AttributesInfoRepository attributesInfoRepository;
+    @Autowired
     private EvaluationLogMapper evaluationLogMapper;
     @Autowired
     private EvaluationService evaluationService;
@@ -99,6 +106,8 @@ class EvaluationRequestServiceTest extends AbstractJpaTest {
 
     private EvaluationRequestService evaluationRequestService;
 
+    private final String dataUuid = UUID.randomUUID().toString();
+
     @Override
     public void init() {
         evaluationRequestService =
@@ -111,6 +120,8 @@ class EvaluationRequestServiceTest extends AbstractJpaTest {
     @Override
     public void deleteAll() {
         evaluationLogRepository.deleteAll();
+        attributesInfoRepository.deleteAll();
+        instancesInfoRepository.deleteAll();
     }
 
     @Test
@@ -158,9 +169,9 @@ class EvaluationRequestServiceTest extends AbstractJpaTest {
     private void mockLoadInstances() {
         Instances data = loadInstances();
         var instancesDataModel =
-                new InstancesMetaDataModel(data.relationName(), data.numInstances(), data.numAttributes(),
-                        data.numClasses(), data.classAttribute().name(), DATA_MD_5_HASH, "instances",
-                        Collections.emptyList());
+                new InstancesMetaDataModel(dataUuid, data.relationName(), data.numInstances(),
+                        data.numAttributes(), data.numClasses(), data.classAttribute().name(), DATA_MD_5_HASH,
+                        "instances", Collections.emptyList());
         when(instancesMetaDataService.getInstancesMetaData(anyString())).thenReturn(instancesDataModel);
         when(instancesLoaderService.loadInstances(anyString())).thenReturn(data);
     }

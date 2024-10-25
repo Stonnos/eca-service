@@ -158,9 +158,9 @@ class ExperimentServiceTest extends AbstractJpaTest {
     private void mockLoadInstances() {
         Instances data = loadInstances();
         var instancesDataModel =
-                new InstancesMetaDataModel(data.relationName(), data.numInstances(), data.numAttributes(),
-                        data.numClasses(), data.classAttribute().name(), DATA_MD_5_HASH, "instances",
-                        Collections.emptyList());
+                new InstancesMetaDataModel(UUID.randomUUID().toString(), data.relationName(), data.numInstances(),
+                        data.numAttributes(), data.numClasses(), data.classAttribute().name(), DATA_MD_5_HASH,
+                        "instances", Collections.emptyList());
         when(instancesMetaDataService.getInstancesMetaData(anyString())).thenReturn(instancesDataModel);
         when(instancesLoaderService.loadInstances(anyString())).thenReturn(data);
     }

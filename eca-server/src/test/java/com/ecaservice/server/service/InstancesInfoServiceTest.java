@@ -21,6 +21,7 @@ import weka.core.Instances;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.IntStream;
 
 import static com.ecaservice.server.PageRequestUtils.PAGE_NUMBER;
@@ -58,6 +59,8 @@ class InstancesInfoServiceTest extends AbstractJpaTest {
     private InstancesInfoService instancesInfoService;
 
     private Instances data;
+
+    private final String dataUuid = UUID.randomUUID().toString();
 
     @Override
     public void deleteAll() {
@@ -113,9 +116,9 @@ class InstancesInfoServiceTest extends AbstractJpaTest {
 
     private InstancesInfo saveInstancesInfo(Instances data) {
         var instancesDataModel =
-                new InstancesMetaDataModel(data.relationName(), data.numInstances(), data.numAttributes(),
-                        data.numClasses(), data.classAttribute().name(), DATA_MD_5_HASH, "instances",
-                        ATTRIBUTE_META_INFO_LIST);
+                new InstancesMetaDataModel(dataUuid, data.relationName(), data.numInstances(),
+                        data.numAttributes(), data.numClasses(), data.classAttribute().name(), DATA_MD_5_HASH,
+                        "instances", ATTRIBUTE_META_INFO_LIST);
         return instancesInfoService.getOrSaveInstancesInfo(instancesDataModel);
     }
 
