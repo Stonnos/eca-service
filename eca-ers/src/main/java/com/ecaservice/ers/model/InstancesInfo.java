@@ -17,7 +17,7 @@ import java.time.LocalDateTime;
  */
 @Data
 @Entity
-@Table(name = "instances_info", indexes = @Index(columnList = "data_md5_hash", name = "data_md5_hash_index"))
+@Table(name = "instances_info")
 public class InstancesInfo {
 
     @Id
@@ -25,9 +25,9 @@ public class InstancesInfo {
     private Long id;
 
     /**
-     * Data MD5 hash
+     * Instances uuid from central data storage
      */
-    @Column(name = "data_md5_hash", nullable = false, unique = true)
+    @Column(nullable = false, unique = true)
     private String uuid;
 
     /**
