@@ -62,6 +62,7 @@ public class TestHelperUtils {
     private static final String EVALUATION_RESULTS_HISTORY_FILTER_FIELDS_JSON =
             "evaluation_results_history_filter_fields.json";
     private static final String FILTER_NAME = "filterName";
+    private static final String OBJECT_PATH = "instances.json";
 
     /**
      * Loads evaluation results filter fields.
@@ -121,6 +122,7 @@ public class TestHelperUtils {
     public static InstancesReport buildInstancesReport() {
         InstancesReport instancesReport = new InstancesReport();
         instancesReport.setUuid(UUID.randomUUID().toString());
+        instancesReport.setObjectPath(OBJECT_PATH);
         instancesReport.setRelationName(RELATION_NAME);
         instancesReport.setNumInstances(BigInteger.TEN);
         instancesReport.setNumAttributes(BigInteger.TEN);
@@ -137,6 +139,7 @@ public class TestHelperUtils {
     public static InstancesInfo buildInstancesInfo() {
         InstancesInfo instancesInfo = new InstancesInfo();
         instancesInfo.setUuid(UUID.randomUUID().toString());
+        instancesInfo.setObjectPath(OBJECT_PATH);
         instancesInfo.setRelationName(RELATION_NAME);
         instancesInfo.setNumInstances(BigInteger.TEN.intValue());
         instancesInfo.setNumAttributes(BigInteger.TEN.intValue());

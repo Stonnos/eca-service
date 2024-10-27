@@ -82,6 +82,7 @@ class EvaluationResultsServiceTest {
         assertThat(instancesReport.getNumInstances().intValue()).isEqualTo(instances.getNumInstances());
         assertThat(instancesReport.getNumAttributes().intValue()).isEqualTo(instances.getNumAttributes());
         assertThat(instancesReport.getNumClasses().intValue()).isEqualTo(instances.getNumClasses());
+        assertThat(instancesReport.getObjectPath()).isEqualTo(instances.getObjectPath());
     }
 
     private void verifyClassifiersReport(EvaluationResultsRequest resultsRequest) {

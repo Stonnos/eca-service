@@ -12,14 +12,14 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 
 /**
- * Instances saver service.
+ * Instances provider service.
  *
  * @author Roman Batygin
  */
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class InstancesSaver {
+public class InstancesProvider {
 
     private final InstancesMapper instancesMapper;
     private final InstancesInfoRepository instancesInfoRepository;

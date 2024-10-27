@@ -6,7 +6,8 @@
     "numInstances": 214,
     "numAttributes": 10,
     "numClasses": 6,
-    "className": "type"
+    "className": "type",
+    "objectPath": "instances-f8cecbf7-405b-403b-9a94-f51e8fb73ed8.json"
   },
   "classifierReport": {
     "classifierName": "Logistic",

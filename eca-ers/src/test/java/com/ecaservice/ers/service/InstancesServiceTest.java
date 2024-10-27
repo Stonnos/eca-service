@@ -26,7 +26,7 @@ import static org.mockito.Mockito.when;
  *
  * @author Roman Batygin
  */
-@Import({InstancesService.class, InstancesMapperImpl.class, InstancesSaver.class})
+@Import({InstancesService.class, InstancesMapperImpl.class, InstancesProvider.class})
 class InstancesServiceTest extends AbstractJpaTest {
 
     private static final int PAGE_NUMBER = 0;

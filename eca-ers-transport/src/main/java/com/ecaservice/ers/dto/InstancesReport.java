@@ -75,4 +75,14 @@ public class InstancesReport {
     @Size(min = MIN_1, max = MAX_LENGTH_255)
     @Schema(description = "Class name", example = "class", requiredMode = Schema.RequiredMode.REQUIRED)
     private String className;
+
+    /**
+     * Instances object path in storage
+     */
+    @NotBlank
+    @Size(min = MIN_1, max = MAX_LENGTH_255)
+    @Schema(description = "Instances object path in storage",
+            example = "instances-f8cecbf7-405b-403b-9a94-f51e8fb73ed8.json",
+            requiredMode = Schema.RequiredMode.REQUIRED)
+    private String objectPath;
 }

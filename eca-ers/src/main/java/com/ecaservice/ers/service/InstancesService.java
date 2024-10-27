@@ -31,7 +31,7 @@ import static com.ecaservice.ers.model.InstancesInfo_.CREATED_DATE;
 public class InstancesService {
 
     private final InstancesMapper instancesMapper;
-    private final InstancesSaver instancesSaver;
+    private final InstancesProvider instancesProvider;
     private final FilterTemplateService filterTemplateService;
     private final InstancesInfoRepository instancesInfoRepository;
 
@@ -46,7 +46,7 @@ public class InstancesService {
         // Gets instances or save via double check locking
         InstancesInfo instancesInfo = instancesInfoRepository.findByUuid(dataUuid);
         if (instancesInfo == null) {
-            instancesInfo = instancesSaver.getOrSaveInstancesInfo(evaluationResultsRequest);
+            instancesInfo = instancesProvider.getOrSaveInstancesInfo(evaluationResultsRequest);
         }
         return instancesInfo;
     }

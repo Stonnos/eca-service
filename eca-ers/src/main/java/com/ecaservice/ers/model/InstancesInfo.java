@@ -60,6 +60,11 @@ public class InstancesInfo {
     @Column(name = "class_name", nullable = false)
     private String className;
 
+    /**
+     * Instances object path
+     */
+    @Column(name = "object_path", nullable = false)
+    private String objectPath;
 
     /**
      * Created date

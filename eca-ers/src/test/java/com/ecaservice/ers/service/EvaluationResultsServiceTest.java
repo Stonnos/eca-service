@@ -48,7 +48,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 @EnableAspectJAutoProxy
 @Import({EvaluationResultsMapperImpl.class, ClassificationCostsReportMapperImpl.class,
         ConfusionMatrixMapperImpl.class, StatisticsReportMapperImpl.class, InstancesMapperImpl.class,
-        RocCurveReportMapperImpl.class, InstancesService.class, InstancesSaver.class,
+        RocCurveReportMapperImpl.class, InstancesService.class, InstancesProvider.class,
         EvaluationResultsService.class, ClassifierReportMapperImpl.class,
         ClassifierOptionsInfoMapperImpl.class, CoreLockAutoConfiguration.class})
 class EvaluationResultsServiceTest extends AbstractJpaTest {

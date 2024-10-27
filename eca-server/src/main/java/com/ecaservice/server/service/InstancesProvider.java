@@ -15,7 +15,7 @@ import org.springframework.validation.annotation.Validated;
 import java.time.LocalDateTime;
 
 /**
- * Instances saver service.
+ * Instances provider service.
  *
  * @author Roman Batygin
  */
