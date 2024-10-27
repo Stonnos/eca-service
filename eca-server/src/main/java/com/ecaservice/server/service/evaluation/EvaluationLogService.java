@@ -9,10 +9,9 @@ import com.ecaservice.server.model.entity.RequestStatus;
 import com.ecaservice.server.model.evaluation.EvaluationRequestData;
 import com.ecaservice.server.repository.EvaluationLogRepository;
 import com.ecaservice.server.service.InstancesInfoService;
-import com.ecaservice.server.service.data.InstancesMetaDataService;
+import io.micrometer.tracing.annotation.NewSpan;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import io.micrometer.tracing.annotation.NewSpan;
 import org.springframework.stereotype.Service;
 import weka.classifiers.AbstractClassifier;
 
@@ -39,7 +38,6 @@ public class EvaluationLogService {
     private final EvaluationLogMapper evaluationLogMapper;
     private final ClassifierOptionsAdapter classifierOptionsAdapter;
     private final InstancesInfoService instancesInfoService;
-    private final InstancesMetaDataService instancesMetaDataService;
 
     /**
      * Creates evaluation log.
@@ -49,9 +47,7 @@ public class EvaluationLogService {
      */
     @NewSpan
     public EvaluationLog createAndSaveEvaluationLog(EvaluationRequestData evaluationRequestData) {
-        var instancesMetaDataModel =
-                instancesMetaDataService.getInstancesMetaData(evaluationRequestData.getDataUuid());
-        var instancesInfo = instancesInfoService.getOrSaveInstancesInfo(instancesMetaDataModel);
+        var instancesInfo = instancesInfoService.getOrSaveInstancesInfo(evaluationRequestData.getDataUuid());
         EvaluationLog evaluationLog = evaluationLogMapper.map(evaluationRequestData, crossValidationConfig);
         evaluationLog.setInstancesInfo(instancesInfo);
         saveClassifierOptions(evaluationRequestData.getClassifier(), evaluationLog);

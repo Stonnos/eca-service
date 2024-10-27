@@ -10,15 +10,13 @@ import com.ecaservice.server.model.entity.ErsResponseStatus;
 import com.ecaservice.server.model.evaluation.ClassifierOptionsRequestSource;
 import com.ecaservice.server.model.evaluation.InstancesRequestDataModel;
 import com.ecaservice.server.repository.ClassifierOptionsRequestRepository;
-import com.ecaservice.server.service.data.InstancesMetaDataService;
+import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Primary;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
-
-import jakarta.annotation.PostConstruct;
 
 import java.time.LocalDateTime;
 import java.util.Collections;
@@ -41,7 +39,6 @@ public class OptimalClassifierOptionsCacheService implements OptimalClassifierOp
 
     private final ErsConfig ersConfig;
     private final OptimalClassifierOptionsFetcher optimalClassifierOptionsFetcher;
-    private final InstancesMetaDataService instancesMetaDataService;
     private final ClassifierOptionsRequestRepository classifierOptionsRequestRepository;
 
     /**
@@ -49,17 +46,14 @@ public class OptimalClassifierOptionsCacheService implements OptimalClassifierOp
      *
      * @param ersConfig                          - ers config bean
      * @param optimalClassifierOptionsFetcher    - optimal classifier options fetcher
-     * @param instancesMetaDataService           - data loader service
      * @param classifierOptionsRequestRepository - classifier options request repository
      */
     public OptimalClassifierOptionsCacheService(ErsConfig ersConfig,
                                                 @Qualifier("optimalClassifierOptionsFetcherImpl")
                                                 OptimalClassifierOptionsFetcher optimalClassifierOptionsFetcher,
-                                                InstancesMetaDataService instancesMetaDataService,
                                                 ClassifierOptionsRequestRepository classifierOptionsRequestRepository) {
         this.ersConfig = ersConfig;
         this.optimalClassifierOptionsFetcher = optimalClassifierOptionsFetcher;
-        this.instancesMetaDataService = instancesMetaDataService;
         this.classifierOptionsRequestRepository = classifierOptionsRequestRepository;
     }
 
@@ -82,8 +76,6 @@ public class OptimalClassifierOptionsCacheService implements OptimalClassifierOp
     public ClassifierOptionsResult getOptimalClassifierOptions(InstancesRequestDataModel instancesRequestDataModel) {
         log.info("Starting to get optimal classifiers options from cache for data uuid: {}, options req id [{}]",
                 instancesRequestDataModel.getDataUuid(), instancesRequestDataModel.getRequestId());
-        var instancesMetaDataModel =
-                instancesMetaDataService.getInstancesMetaData(instancesRequestDataModel.getDataUuid());
         log.info(
                 "Starting to get optimal classifiers options from cache for data uuid [{}], options req id [{}]",
                 instancesRequestDataModel.getDataUuid(), instancesRequestDataModel.getRequestId());

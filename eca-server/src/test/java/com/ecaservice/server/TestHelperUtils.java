@@ -712,6 +712,7 @@ public class TestHelperUtils {
         instancesInfo.setNumInstances(NUM_INSTANCES);
         instancesInfo.setNumAttributes(NUM_ATTRIBUTES);
         instancesInfo.setNumClasses(NUM_CLASSES);
+        instancesInfo.setObjectPath(INSTANCES_OBJECT_PATH);
         instancesInfo.setUuid(UUID.randomUUID().toString());
         instancesInfo.setCreatedDate(LocalDateTime.now());
         return instancesInfo;

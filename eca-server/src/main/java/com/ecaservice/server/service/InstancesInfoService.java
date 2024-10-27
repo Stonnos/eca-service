@@ -34,20 +34,20 @@ public class InstancesInfoService {
 
     private final FilterTemplateService filterTemplateService;
     private final InstancesInfoMapper instancesInfoMapper;
-    private final InstancesSaver instancesSaver;
+    private final InstancesProvider instancesProvider;
     private final InstancesInfoRepository instancesInfoRepository;
 
     /**
      * Gets or save new instances info.
      *
-     * @param instancesMetaDataModel - instances meta data model
+     * @param dataUuid - instances uuid
      * @return instances info
      */
-    public InstancesInfo getOrSaveInstancesInfo(InstancesMetaDataModel instancesMetaDataModel) {
-        var instancesInfo = instancesInfoRepository.findByUuid(instancesMetaDataModel.getUuid());
+    public InstancesInfo getOrSaveInstancesInfo(String dataUuid) {
+        var instancesInfo = instancesInfoRepository.findByUuid(dataUuid);
         // Gets or save instances via double check locking
         if (instancesInfo == null) {
-            instancesInfo = instancesSaver.getOrSaveInstancesInfo(instancesMetaDataModel);
+            instancesInfo = instancesProvider.getOrSaveInstancesInfo(dataUuid);
         }
         return instancesInfo;
     }

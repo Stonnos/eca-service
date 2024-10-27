@@ -27,7 +27,7 @@ import com.ecaservice.server.repository.EvaluationLogRepository;
 import com.ecaservice.server.repository.InstancesInfoRepository;
 import com.ecaservice.server.service.AbstractJpaTest;
 import com.ecaservice.server.service.InstancesInfoService;
-import com.ecaservice.server.service.InstancesSaver;
+import com.ecaservice.server.service.InstancesProvider;
 import com.ecaservice.server.service.data.InstancesLoaderService;
 import com.ecaservice.server.service.data.InstancesMetaDataService;
 import com.ecaservice.server.service.evaluation.initializers.ClassifierInitializerService;
@@ -58,7 +58,7 @@ import static org.mockito.Mockito.when;
  * @author Roman Batygin
  */
 @Import({ExecutorConfiguration.class, CrossValidationConfig.class, EvaluationLogService.class,
-        ClassifiersProperties.class, AppProperties.class, InstancesInfoService.class, InstancesSaver.class,
+        ClassifiersProperties.class, AppProperties.class, InstancesInfoService.class, InstancesProvider.class,
         EvaluationLogMapperImpl.class, EvaluationService.class, DateTimeConverter.class,
         InstancesInfoMapperImpl.class, ClassifierInfoMapperImpl.class, ClassifiersOptionsAutoConfiguration.class})
 class EvaluationRequestServiceTest extends AbstractJpaTest {

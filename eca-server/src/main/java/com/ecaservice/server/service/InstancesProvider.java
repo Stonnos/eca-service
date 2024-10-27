@@ -6,6 +6,7 @@ import com.ecaservice.server.model.entity.AttributesInfoEntity;
 import com.ecaservice.server.model.entity.InstancesInfo;
 import com.ecaservice.server.repository.AttributesInfoRepository;
 import com.ecaservice.server.repository.InstancesInfoRepository;
+import com.ecaservice.server.service.data.InstancesMetaDataService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -22,30 +23,29 @@ import java.time.LocalDateTime;
 @Validated
 @Service
 @RequiredArgsConstructor
-public class InstancesSaver {
+public class InstancesProvider {
 
+    private final InstancesMetaDataService instancesMetaDataService;
     private final InstancesInfoRepository instancesInfoRepository;
     private final AttributesInfoRepository attributesInfoRepository;
 
     /**
      * Gets or save new instances info.
      *
-     * @param instancesMetaDataModel - instances meta data model
+     * @param dataUuid - instances uuid
      * @return instances info
      */
-    @Locked(lockName = "getOrSaveInstancesInfo", key = "#instancesMetaDataModel.uuid")
-    public InstancesInfo getOrSaveInstancesInfo(InstancesMetaDataModel instancesMetaDataModel) {
-        log.info("Gets instances info [{}] with uuid [{}]", instancesMetaDataModel.getRelationName(),
-                instancesMetaDataModel.getUuid());
-        var instancesInfo = instancesInfoRepository.findByUuid(instancesMetaDataModel.getUuid());
+    @Locked(lockName = "getOrSaveInstancesInfo", key = "#dataUuid")
+    public InstancesInfo getOrSaveInstancesInfo(String dataUuid) {
+        log.info("Gets instances info with uuid [{}]", dataUuid);
+        var instancesInfo = instancesInfoRepository.findByUuid(dataUuid);
         if (instancesInfo == null) {
+            var instancesMetaDataModel = instancesMetaDataService.getInstancesMetaData(dataUuid);
             instancesInfo = createAndSaveNewInstancesInfo(instancesMetaDataModel);
-            log.info("New instances info [{}] has been saved with uuid [{}]",
-                    instancesMetaDataModel.getRelationName(),
+            log.info("New instances info [{}] has been saved with uuid [{}]", instancesMetaDataModel.getRelationName(),
                     instancesMetaDataModel.getUuid());
         }
-        log.info("Instances info [{}] with uuid [{}] has been fetched", instancesMetaDataModel.getRelationName(),
-                instancesMetaDataModel.getUuid());
+        log.info("Instances info with uuid [{}] has been fetched", dataUuid);
         return instancesInfo;
     }
 
@@ -56,6 +56,7 @@ public class InstancesSaver {
         instancesInfo.setNumAttributes(instancesMetaDataModel.getNumAttributes());
         instancesInfo.setNumClasses(instancesMetaDataModel.getNumClasses());
         instancesInfo.setClassName(instancesMetaDataModel.getClassName());
+        instancesInfo.setObjectPath(instancesMetaDataModel.getObjectPath());
         instancesInfo.setUuid(instancesMetaDataModel.getUuid());
         instancesInfo.setCreatedDate(LocalDateTime.now());
         instancesInfoRepository.save(instancesInfo);

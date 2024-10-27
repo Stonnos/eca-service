@@ -10,13 +10,10 @@ import com.ecaservice.server.mapping.InstancesInfoMapper;
 import com.ecaservice.server.model.data.InstancesMetaDataModel;
 import feign.FeignException;
 import feign.RetryableException;
+import io.micrometer.tracing.annotation.NewSpan;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.cache.annotation.Cacheable;
-import io.micrometer.tracing.annotation.NewSpan;
 import org.springframework.stereotype.Service;
-
-import static com.ecaservice.server.config.cache.CacheNames.INSTANCES_META_DATA_CACHE;
 
 /**
  * Instances meta data service.
@@ -39,7 +36,6 @@ public class InstancesMetaDataService {
      * @return instances meta data
      */
     @NewSpan
-    @Cacheable(value = INSTANCES_META_DATA_CACHE)
     public InstancesMetaDataModel getInstancesMetaData(String uuid) {
         try {
             log.info("Starting to get instances [{}] meta data", uuid);

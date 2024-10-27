@@ -13,10 +13,9 @@ import com.ecaservice.server.model.experiment.ExperimentRequestData;
 import com.ecaservice.server.repository.ExperimentRepository;
 import com.ecaservice.server.repository.ExperimentStepRepository;
 import com.ecaservice.server.service.InstancesInfoService;
-import com.ecaservice.server.service.data.InstancesMetaDataService;
+import io.micrometer.tracing.annotation.NewSpan;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import io.micrometer.tracing.annotation.NewSpan;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -44,7 +43,6 @@ public class ExperimentService {
     private final ExperimentStepProcessor experimentStepProcessor;
     private final CrossValidationConfig crossValidationConfig;
     private final ExperimentProgressService experimentProgressService;
-    private final InstancesMetaDataService instancesMetaDataService;
     private final InstancesInfoService instancesInfoService;
 
     /**
@@ -58,11 +56,9 @@ public class ExperimentService {
         log.info("Starting to create experiment [{}] request for data uuid [{}], evaluation method [{}], email [{}]",
                 experimentRequestData.getExperimentType(), experimentRequestData.getDataUuid(),
                 experimentRequestData.getEvaluationMethod(), experimentRequestData.getEmail());
-        var instancesMetaDataModel =
-                instancesMetaDataService.getInstancesMetaData(experimentRequestData.getDataUuid());
         try {
             Experiment experiment = experimentMapper.map(experimentRequestData, crossValidationConfig);
-            var instancesInfo = instancesInfoService.getOrSaveInstancesInfo(instancesMetaDataModel);
+            var instancesInfo = instancesInfoService.getOrSaveInstancesInfo(experimentRequestData.getDataUuid());
             experiment.setInstancesInfo(instancesInfo);
             setAdditionalProperties(experiment, experimentRequestData);
             experiment.setRequestStatus(RequestStatus.NEW);

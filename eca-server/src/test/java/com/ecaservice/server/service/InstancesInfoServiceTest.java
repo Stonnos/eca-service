@@ -10,6 +10,7 @@ import com.ecaservice.server.model.entity.InstancesInfo;
 import com.ecaservice.server.model.entity.InstancesInfo_;
 import com.ecaservice.server.repository.AttributesInfoRepository;
 import com.ecaservice.server.repository.InstancesInfoRepository;
+import com.ecaservice.server.service.data.InstancesMetaDataService;
 import com.ecaservice.web.dto.model.PageRequestDto;
 import com.ecaservice.web.dto.model.SortFieldRequestDto;
 import org.junit.jupiter.api.Test;
@@ -36,7 +37,7 @@ import static org.mockito.Mockito.when;
  *
  * @author Roman Batygin
  */
-@Import({InstancesInfoService.class, InstancesInfoMapperImpl.class, InstancesSaver.class})
+@Import({InstancesInfoService.class, InstancesInfoMapperImpl.class, InstancesProvider.class})
 class InstancesInfoServiceTest extends AbstractJpaTest {
 
     private static final String DATA_MD_5_HASH = "3032e188204cb537f69fc7364f638641";
@@ -48,6 +49,8 @@ class InstancesInfoServiceTest extends AbstractJpaTest {
 
     @MockBean
     private FilterTemplateService filterTemplateService;
+    @MockBean
+    private InstancesMetaDataService instancesMetaDataService;
 
     @Autowired
     private InstancesInfoRepository instancesInfoRepository;
@@ -73,6 +76,10 @@ class InstancesInfoServiceTest extends AbstractJpaTest {
         data = loadInstances();
         when(filterTemplateService.getGlobalFilterFields(INSTANCES_INFO)).thenReturn(
                 Collections.singletonList(InstancesInfo_.RELATION_NAME));
+        var instancesDataModel =
+                new InstancesMetaDataModel(dataUuid, data.relationName(), data.numInstances(), data.numAttributes(),
+                        data.numClasses(), data.classAttribute().name(), "instances", ATTRIBUTE_META_INFO_LIST);
+        when(instancesMetaDataService.getInstancesMetaData(dataUuid)).thenReturn(instancesDataModel);
     }
 
     @Test
@@ -85,6 +92,7 @@ class InstancesInfoServiceTest extends AbstractJpaTest {
         assertThat(actual.getNumAttributes()).isEqualTo(data.numAttributes());
         assertThat(actual.getClassName()).isEqualTo(data.classAttribute().name());
         assertThat(actual.getNumClasses()).isEqualTo(data.classAttribute().numValues());
+        assertThat(actual.getObjectPath()).isNotNull();
         assertThat(actual.getUuid()).isNotNull();
         assertThat(actual.getCreatedDate()).isNotNull();
         AttributesInfoEntity attributesInfoEntity = attributesInfoRepository.findAll().getFirst();
@@ -114,10 +122,7 @@ class InstancesInfoServiceTest extends AbstractJpaTest {
     }
 
     private InstancesInfo saveInstancesInfo(Instances data) {
-        var instancesDataModel =
-                new InstancesMetaDataModel(dataUuid, data.relationName(), data.numInstances(), data.numAttributes(),
-                        data.numClasses(), data.classAttribute().name(), "instances", ATTRIBUTE_META_INFO_LIST);
-        return instancesInfoService.getOrSaveInstancesInfo(instancesDataModel);
+        return instancesInfoService.getOrSaveInstancesInfo(dataUuid);
     }
 
     private void assertAttributes(AttributesInfoEntity attributesInfoEntity) {

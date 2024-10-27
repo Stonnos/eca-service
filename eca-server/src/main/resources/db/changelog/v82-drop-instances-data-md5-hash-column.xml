@@ -13,4 +13,18 @@
        <dropColumn tableName="instances_info" columnName="data_md5_hash"/>
     </changeSet>
 
+    <changeSet id="add_instances_info_object_path_column" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="instances_info"/>
+            <not>
+                <columnExists tableName="instances_info" columnName="object_path"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="instances_info">
+            <column name="object_path" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
 </databaseChangeLog>
