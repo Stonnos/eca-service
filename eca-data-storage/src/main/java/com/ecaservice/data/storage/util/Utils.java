@@ -11,6 +11,7 @@ import weka.core.Attribute;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -54,6 +55,23 @@ public class Utils {
         } else {
             throw new IllegalArgumentException(String.format("Unexpected attribute '%s' type!", attribute.name()));
         }
+    }
+
+    /**
+     * Creates nominal attributes values index map.
+     *
+     * @param attributeEntities - attribute entities
+     * @return index map
+     */
+    public static Map<String, Map<String, Integer>> createNominalAttributesIndexMap(
+            List<AttributeEntity> attributeEntities) {
+        return attributeEntities.stream()
+                .filter(attributeEntity -> AttributeType.NOMINAL.equals(attributeEntity.getType()))
+                .collect(Collectors.toMap(
+                        AttributeEntity::getAttributeName,
+                        attributeEntity -> attributeEntity.getValues().stream().collect(
+                                Collectors.toMap(AttributeValueEntity::getValue, AttributeValueEntity::getIndex))
+                ));
     }
 
     /**
