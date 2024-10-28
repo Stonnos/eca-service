@@ -119,7 +119,8 @@ public class EvaluationRequestService {
             evaluationLogService.finishEvaluation(evaluationLog, RequestStatus.TIMEOUT);
             return buildEvaluationResultsModel(evaluationLog.getRequestId(), RequestStatus.TIMEOUT);
         } catch (Exception ex) {
-            log.error("There was an error occurred for evaluation [{}]: {}", evaluationLog.getRequestId(), ex);
+            log.error("There was an error occurred for evaluation [{}]: {}", evaluationLog.getRequestId(),
+                    ex.getMessage());
             evaluationLogService.finishEvaluation(evaluationLog, RequestStatus.ERROR);
             return buildInternalErrorEvaluationResultsModel(evaluationLog.getRequestId());
         }
