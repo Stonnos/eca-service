@@ -40,8 +40,6 @@ import static org.mockito.Mockito.when;
 @Import({InstancesInfoService.class, InstancesInfoMapperImpl.class, InstancesProvider.class})
 class InstancesInfoServiceTest extends AbstractJpaTest {
 
-    private static final String DATA_MD_5_HASH = "3032e188204cb537f69fc7364f638641";
-
     private static final List<AttributeMetaInfo> ATTRIBUTE_META_INFO_LIST = Arrays.asList(
             new AttributeMetaInfo("a1", AttributeType.NUMERIC, null, null),
             new AttributeMetaInfo("a2", AttributeType.NOMINAL, null, Arrays.asList("v1", "v2"))
