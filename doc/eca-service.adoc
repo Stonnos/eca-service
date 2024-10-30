@@ -662,18 +662,6 @@ image::./images/eca-ers-db-schema.png[alt=Схема базы данных eca-e
 |evaluation_results_info_id       |bigint           |-|+|+                       |Внешний ключ evaluation_results_info
 |===
 
-==== Таблица 3.{counter:db-table-id} - 'evaluation_results_sort' - таблица конфигурации сортировки результатов классификации
-[cols="^20%,^14%,^8%,^8%,^8%,^30%",options="header"]
-|===
-|Название колонки|Тип|Unique|Not NULL|Индекс|Описание
-|id                               |bigint           |+|+|+                                       |Идентификатор записи (первичный ключ)
-|field_name                       |varchar(255)     |-|+|field_name_field_order_unique_index     |Название поля
-|is_ascending                     |boolean          |-|-|-                                       |Сортировка по возрастанию?
-|field_order                      |integer          |-|+|field_name_field_order_unique_index     |Порядок поля для сортировки
-|===
-
-Таблица содержит уникальный индекс на поля field_name, field_order.
-
 Таблицы *databasechangeloglock* и *databasechangeloglock* предназначены для управления миграциями базы данных.
 
 === 3.7 Схема БД eca-data-storage

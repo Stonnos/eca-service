@@ -25,4 +25,5 @@
     <include file="db/changelog/v13-add-class-index-column.xml"/>
     <include file="db/changelog/v14-add-indexes.xml"/>
     <include file="db/changelog/v15-add-instances-info-uuid-column.xml"/>
+    <include file="db/changelog/v16-drop-evaluation-results-sort-table.xml"/>
 </databaseChangeLog>

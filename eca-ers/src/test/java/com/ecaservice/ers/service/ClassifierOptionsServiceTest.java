@@ -7,10 +7,8 @@ import com.ecaservice.ers.dto.EvaluationMethod;
 import com.ecaservice.ers.exception.DataNotFoundException;
 import com.ecaservice.ers.model.ClassifierOptionsInfo;
 import com.ecaservice.ers.model.EvaluationResultsInfo;
-import com.ecaservice.ers.model.EvaluationResultsSortEntity;
 import com.ecaservice.ers.model.InstancesInfo;
 import com.ecaservice.ers.repository.EvaluationResultsInfoRepository;
-import com.ecaservice.ers.repository.EvaluationResultsSortRepository;
 import com.ecaservice.ers.repository.InstancesInfoRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,39 +38,14 @@ class ClassifierOptionsServiceTest extends AbstractJpaTest {
     @Autowired
     private EvaluationResultsInfoRepository evaluationResultsInfoRepository;
     @Autowired
-    private EvaluationResultsSortRepository evaluationResultsSortRepository;
-    @Autowired
     private ClassifierOptionsService classifierOptionsService;
     @Autowired
     private ErsConfig ersConfig;
 
     @Override
-    public void init() {
-        evaluationResultsSortRepository.save(
-                EvaluationResultsSortEntity.builder()
-                        .fieldName("statistics.pctCorrect")
-                        .ascending(false)
-                        .fieldOrder(0).build()
-        );
-        evaluationResultsSortRepository.save(
-                EvaluationResultsSortEntity.builder()
-                        .fieldName("statistics.maxAucValue")
-                        .ascending(false)
-                        .fieldOrder(1).build()
-        );
-        evaluationResultsSortRepository.save(
-                EvaluationResultsSortEntity.builder()
-                        .fieldName("statistics.varianceError")
-                        .ascending(true)
-                        .fieldOrder(2).build()
-        );
-    }
-
-    @Override
     public void deleteAll() {
         evaluationResultsInfoRepository.deleteAll();
         instancesInfoRepository.deleteAll();
-        evaluationResultsSortRepository.deleteAll();
     }
 
     @Test

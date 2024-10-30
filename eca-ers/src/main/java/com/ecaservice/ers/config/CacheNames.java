@@ -11,7 +11,7 @@ import lombok.experimental.UtilityClass;
 public class CacheNames {
 
     /**
-     * Evaluation results sort fields cache
+     * Instances cache
      */
-    public static final String EVALUATION_RESULTS_SORT_FIELDS = "evaluation-results-sort-fields";
+    public static final String INSTANCES = "instances";
 }

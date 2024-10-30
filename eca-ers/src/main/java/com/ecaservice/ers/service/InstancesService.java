@@ -12,11 +12,13 @@ import com.ecaservice.web.dto.model.PageDto;
 import com.ecaservice.web.dto.model.PageRequestDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import static com.ecaservice.core.filter.util.FilterUtils.buildSort;
+import static com.ecaservice.ers.config.CacheNames.INSTANCES;
 import static com.ecaservice.ers.dictionary.FilterDictionaries.INSTANCES_INFO;
 import static com.ecaservice.ers.model.InstancesInfo_.CREATED_DATE;
 
@@ -41,6 +43,7 @@ public class InstancesService {
      * @param evaluationResultsRequest - evaluation results request
      * @return instances info
      */
+    @Cacheable(value = INSTANCES, key = "#evaluationResultsRequest.instances.uuid")
     public InstancesInfo getOrSaveInstancesInfo(EvaluationResultsRequest evaluationResultsRequest) {
         String dataUuid = evaluationResultsRequest.getInstances().getUuid();
         // Gets instances or save via double check locking
