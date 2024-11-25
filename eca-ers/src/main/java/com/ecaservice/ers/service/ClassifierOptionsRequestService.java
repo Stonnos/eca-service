@@ -29,16 +29,16 @@ public class ClassifierOptionsRequestService {
      * @return classifier options response
      */
     public ClassifierOptionsResponse findClassifierOptions(ClassifierOptionsRequest classifierOptionsRequest) {
-        log.info("Starting to find optimal classifiers options with request id [{}] for data md5 hash [{}]",
-                classifierOptionsRequest.getRequestId(), classifierOptionsRequest.getDataHash());
+        log.info("Starting to find optimal classifiers options with request id [{}] for data uuid [{}]",
+                classifierOptionsRequest.getRequestId(), classifierOptionsRequest.getDataUuid());
         var classifierOptionsInfoList = classifierOptionsService.findBestClassifierOptions(classifierOptionsRequest);
         if (CollectionUtils.isEmpty(classifierOptionsInfoList)) {
             throw new ResultsNotFoundException(
-                    String.format("Best classifiers options not found for data md5 hash [%s], request id [%s]",
-                            classifierOptionsRequest.getDataHash(), classifierOptionsRequest.getRequestId()));
+                    String.format("Best classifiers options not found for data uuid [%s], request id [%s]",
+                            classifierOptionsRequest.getDataUuid(), classifierOptionsRequest.getRequestId()));
         } else {
-            log.info("[{}] best classifiers options has been found for data md5 hash [{}], request id [{}]",
-                    classifierOptionsInfoList.size(), classifierOptionsRequest.getDataHash(),
+            log.info("[{}] best classifiers options has been found for data uuid [{}], request id [{}]",
+                    classifierOptionsInfoList.size(), classifierOptionsRequest.getDataUuid(),
                     classifierOptionsRequest.getRequestId());
             var classifierOptionsReports = classifierOptionsInfoMapper.map(classifierOptionsInfoList);
             return ClassifierOptionsResponse.builder()

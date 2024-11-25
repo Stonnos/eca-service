@@ -29,6 +29,8 @@ class InstancesMapperTest {
         InstancesReport report = buildInstancesReport();
         InstancesInfo instancesInfo = instancesMapper.map(report);
         assertThat(instancesInfo.getRelationName()).isEqualTo(report.getRelationName());
+        assertThat(instancesInfo.getObjectPath()).isEqualTo(report.getObjectPath());
+        assertThat(instancesInfo.getUuid()).isEqualTo(report.getUuid());
         assertThat(instancesInfo.getNumClasses().intValue()).isEqualTo(report.getNumClasses().intValue());
         assertThat(instancesInfo.getNumInstances().intValue()).isEqualTo(
                 report.getNumInstances().intValue());
@@ -41,12 +43,14 @@ class InstancesMapperTest {
         InstancesInfo instancesInfo = buildInstancesInfo();
         InstancesReport instancesReport = instancesMapper.map(instancesInfo);
         assertThat(instancesReport.getRelationName()).isEqualTo(instancesInfo.getRelationName());
+        assertThat(instancesReport.getObjectPath()).isEqualTo(instancesInfo.getObjectPath());
+        assertThat(instancesReport.getUuid()).isEqualTo(instancesInfo.getUuid());
         assertThat(instancesReport.getNumClasses().intValue()).isEqualTo(
                 instancesInfo.getNumClasses().intValue());
         assertThat(instancesReport.getNumInstances().intValue()).isEqualTo(
                 instancesInfo.getNumInstances().intValue());
         assertThat(instancesReport.getNumAttributes().intValue()).isEqualTo(
                 instancesInfo.getNumAttributes().intValue());
-        assertThat(instancesReport.getDataMd5Hash()).isEqualTo(instancesInfo.getDataMd5Hash());
+        assertThat(instancesReport.getUuid()).isEqualTo(instancesInfo.getUuid());
     }
 }

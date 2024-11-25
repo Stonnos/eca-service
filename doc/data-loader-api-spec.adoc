@@ -64,8 +64,7 @@ curl -X POST "http://localhost:8080/api/external/upload-train-data" -H "accept: 
 ----
 {
   "uuid": "1d2de514-3a87-4620-9b97-c260e24340de",
-  "md5Hash": "3032e188204cb537f69fc7364f638641",
-  "expireAt": "2021-07-01 14:00:00"
+  "md5Hash": "3032e188204cb537f69fc7364f638641"
 }
 ----
 
@@ -82,11 +81,6 @@ curl -X POST "http://localhost:8080/api/external/upload-train-data" -H "accept: 
 |string
 |+
 |MD5 hash обучающей выборки
-|
-|expireAt
-|string
-|+
-|Дата истечения срока жизни обучающей выборки
 |
 |===
 
@@ -153,10 +147,10 @@ link:data/credit.json[credit.json]
 |===
 |Название поля/атрибута|Тип|Обязательное|Описание|Комментарий
 |values
-|array<string>
+|array<double>
 |+
 |Список значений объекта
-|
+|Для категориальных атрибутов задаются целочисленные индексы с [0, n - 1] в соответствии с порядком определения значений в attribute.values, где n - число значений атрибута. Для атрибутов типа даты задаются целочисленные timestamp
 |===
 
 ==== 3.6. Пример ответа c ошибкой на запрос о загрузке обучающей выборки на сервер
@@ -224,5 +218,9 @@ link:data/credit.json[credit.json]
 |400
 |MaxUploadSizeExceeded
 |Превышен максимальный допустимый размер файла
+|5
+|400
+|DataNotFound
+|Данные не найдены
 |===
 

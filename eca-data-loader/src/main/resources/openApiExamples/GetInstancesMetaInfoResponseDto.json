@@ -6,5 +6,32 @@
   "numClasses": 4,
   "className": "class",
   "md5Hash": "3032e188204cb537f69fc7364f638641",
-  "objectPath": "instances-1d2de514-3a87-4620-9b97-c260e24340de.json"
+  "objectPath": "instances-1d2de514-3a87-4620-9b97-c260e24340de.json",
+  "attributes": [
+    {
+      "name": "x1",
+      "type": "NUMERIC"
+    },
+    {
+      "name": "x2",
+      "type": "NUMERIC"
+    },
+    {
+      "name": "x3",
+      "type": "NUMERIC"
+    },
+    {
+      "name": "x4",
+      "type": "NUMERIC"
+    },
+    {
+      "name": "class",
+      "type": "NOMINAL",
+      "values": [
+        "Iris-setosa",
+        "Iris-versicolor",
+        "Iris-verginica"
+      ]
+    }
+  ]
 }

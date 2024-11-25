@@ -31,6 +31,7 @@ Evaluation results service
    * open-api.apiAuth.scopes - список scopes
 3) ers - основные настройки модуля
     * ers.resultSize - число наилучших конфигураций классификаторов
+    * ers.evaluationResultsSortFields - дефолтные параметры сортировки результатов классификации для нахождения оптимальных настроек классификаторов
 4) logging.mode - режим логирования
    * text - текстовый формат
    * json - логи в формате json

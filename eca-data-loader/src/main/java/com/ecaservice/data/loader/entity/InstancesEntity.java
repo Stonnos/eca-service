@@ -1,14 +1,17 @@
 package com.ecaservice.data.loader.entity;
 
-import lombok.Data;
-
+import com.ecaservice.data.loader.dto.AttributeInfo;
+import io.hypersistence.utils.hibernate.type.json.JsonType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import jakarta.persistence.UniqueConstraint;
+import lombok.Data;
+import org.hibernate.annotations.Type;
+
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * Instances persistence entity.
@@ -17,10 +20,7 @@ import java.time.LocalDateTime;
  */
 @Data
 @Entity
-@Table(name = "instances",uniqueConstraints = {
-        @UniqueConstraint(columnNames = {"client_id", "md5_hash"},
-                name = "instances_client_id_md5_hash_unique_index")
-})
+@Table(name = "instances")
 public class InstancesEntity {
 
     @Id
@@ -64,12 +64,6 @@ public class InstancesEntity {
     private String className;
 
     /**
-     * Object expiration date
-     */
-    @Column(nullable = false)
-    private LocalDateTime expireAt;
-
-    /**
      * Created date
      */
     @Column(nullable = false)
@@ -78,18 +72,19 @@ public class InstancesEntity {
     /**
      * Instances md5 hash
      */
-    @Column(name = "md5_hash", nullable = false)
+    @Column(name = "md5_hash", nullable = false, unique = true)
     private String md5Hash;
-
-    /**
-     * Username (client id)
-     */
-    @Column(name = "client_id")
-    private String clientId;
 
     /**
      * Instances object path
      */
     @Column(name = "object_path", nullable = false)
     private String objectPath;
+
+    /**
+     * Attributes list.
+     */
+    @Type(JsonType.class)
+    @Column(name = "attributes", columnDefinition = "jsonb")
+    private List<AttributeInfo> attributes;
 }

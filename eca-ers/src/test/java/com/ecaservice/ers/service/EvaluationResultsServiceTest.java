@@ -1,5 +1,6 @@
 package com.ecaservice.ers.service;
 
+import com.ecaservice.core.filter.service.FilterTemplateService;
 import com.ecaservice.core.lock.config.CoreLockAutoConfiguration;
 import com.ecaservice.core.lock.metrics.LockMeterService;
 import com.ecaservice.ers.AbstractJpaTest;
@@ -47,7 +48,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 @EnableAspectJAutoProxy
 @Import({EvaluationResultsMapperImpl.class, ClassificationCostsReportMapperImpl.class,
         ConfusionMatrixMapperImpl.class, StatisticsReportMapperImpl.class, InstancesMapperImpl.class,
-        RocCurveReportMapperImpl.class, InstancesService.class,
+        RocCurveReportMapperImpl.class, InstancesService.class, InstancesProvider.class,
         EvaluationResultsService.class, ClassifierReportMapperImpl.class,
         ClassifierOptionsInfoMapperImpl.class, CoreLockAutoConfiguration.class})
 class EvaluationResultsServiceTest extends AbstractJpaTest {
@@ -56,6 +57,8 @@ class EvaluationResultsServiceTest extends AbstractJpaTest {
 
     @MockBean
     private LockMeterService lockMeterService;
+    @MockBean
+    private FilterTemplateService filterTemplateService;
 
     @Autowired
     private EvaluationResultsService evaluationResultsService;

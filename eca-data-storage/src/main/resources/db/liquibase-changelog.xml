@@ -16,4 +16,5 @@
     <include file="db/changelog/v7-add-instances-updates-counter-column.xml"/>
     <include file="db/changelog/v8-create-export-instances-object-table.xml"/>
     <include file="../redelivery-changelog.xml" relativeToChangelogFile="true"/>
+    <include file="db/changelog/v9-drop-export-instances-object-expire-at-column.xml"/>
 </databaseChangeLog>

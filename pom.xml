@@ -6,7 +6,7 @@
 
     <groupId>eca.service</groupId>
     <artifactId>eca-service</artifactId>
-    <version>7.0.0</version>
+    <version>7.0.1</version>
     <modules>
         <module>core-test</module>
         <module>oauth2-test</module>
@@ -90,7 +90,7 @@
         <lombok.version>1.18.32</lombok.version>
         <logback.version>1.4.11</logback.version>
         <slf4j.version>2.0.13</slf4j.version>
-        <eca.version>6.9.9</eca.version>
+        <eca.version>7.0</eca.version>
         <h2.version>2.2.224</h2.version>
         <postresql.version>42.6.0</postresql.version>
         <liquibase.version>4.27.0</liquibase.version>
@@ -116,6 +116,7 @@
         <spring-cloud-starter-openfeign.version>4.1.1</spring-cloud-starter-openfeign.version>
         <spring-cloud-starter-netflix-eureka-client.version>4.1.1</spring-cloud-starter-netflix-eureka-client.version>
         <hibernate-validator.version>8.0.1.Final</hibernate-validator.version>
+        <hypersistence.version>3.8.3</hypersistence.version>
         <maven-surefire-plugin.version>3.2.2</maven-surefire-plugin.version>
         <maven-failsafe-plugin.version>3.2.2</maven-failsafe-plugin.version>
         <jdk17.options>--add-opens=java.base/java.lang=ALL-UNNAMED --add-opens=java.base/java.math=ALL-UNNAMED --add-opens=java.base/java.util=ALL-UNNAMED --add-opens=java.base/java.util.concurrent=ALL-UNNAMED --add-opens=java.base/java.net=ALL-UNNAMED --add-opens=java.base/java.text=ALL-UNNAMED --add-opens=java.sql/java.sql=ALL-UNNAMED</jdk17.options>
@@ -188,6 +189,12 @@
                 <groupId>org.hibernate.validator</groupId>
                 <artifactId>hibernate-validator</artifactId>
                 <version>${hibernate-validator.version}</version>
+            </dependency>
+            <!-- JSONB type support -->
+            <dependency>
+                <groupId>io.hypersistence</groupId>
+                <artifactId>hypersistence-utils-hibernate-63</artifactId>
+                <version>${hypersistence.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

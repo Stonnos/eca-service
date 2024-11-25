@@ -25,12 +25,13 @@ Evaluation results service представляет собой сервис, к�
 {
   "requestId": "94c0d852-6beb-424d-a887-a059c033932d",
   "instances": {
-    "dataMd5Hash": "78204b730b0c46e05466defa9ae75125",
+    "uuid": "f8cecbf7-405b-403b-9a94-f51e8fb73ed8",
     "relationName": "glass",
     "numInstances": 214,
     "numAttributes": 10,
     "numClasses": 6,
-    "className": "type"
+    "className": "type",
+    "objectPath": "instances-f8cecbf7-405b-403b-9a94-f51e8fb73ed8.json"
   },
   "classifierReport": {
     "classifierName": "Logistic",
@@ -384,12 +385,12 @@ Evaluation results service представляет собой сервис, к�
 |===
 |№|Название поля|Тип|Обязательное|Макс. длина|Мин. значение|Описание|Комментарий
 |1
-|dataMd5Hash
+|uuid
 |string
 |+
 |255
 |-
-|MD5 хеш - сумма обучающей выборки
+|UUID обучающей выборки
 |
 |2
 |relationName
@@ -430,6 +431,14 @@ Evaluation results service представляет собой сервис, к�
 |255
 |-
 |Имя атрибута класса
+|
+|7
+|objectPath
+|string
+|+
+|255
+|-
+|Путь к объекту обучающей выборки в S3
 |
 |===
 
@@ -760,7 +769,7 @@ Evaluation results service представляет собой сервис, к�
 ----
 {
   "requestId": "f8cecbf7-405b-403b-9a94-f51e8fb73ed8",
-  "dataHash": "2aeb5c41423c895995e8cb304fe30b2d",
+  "dataUuid": "f8cecbf7-405b-403b-9a94-f51e8fb73ed8",
   "evaluationMethodReport": {
     "evaluationMethod": "CROSS_VALIDATION",
     "numFolds": 10,
@@ -784,11 +793,11 @@ Evaluation results service представляет собой сервис, к�
 |Уникальный идентификатор запроса
 |
 |2
-|dataHash
+|dataUuid
 |string
 |+
 |255
-|MD5 хеш - сумма обучающей выборки для которой будет осуществлен поиск оптимальных параметров классификаторов
+|UUID обучающей выборки для которой будет осуществлен поиск оптимальных параметров классификаторов
 |
 |3
 |evaluationMethodReport
@@ -917,12 +926,13 @@ Evaluation results service представляет собой сервис, к�
 {
   "requestId": "94c0d852-6beb-424d-a887-a059c033932d",
   "instances": {
-    "dataMd5Hash": "78204b730b0c46e05466defa9ae75125",
+    "uuid": "f8cecbf7-405b-403b-9a94-f51e8fb73ed8",
     "relationName": "glass",
     "numInstances": 214,
     "numAttributes": 10,
     "numClasses": 6,
-    "className": "type"
+    "className": "type",
+    "objectPath": "instances-f8cecbf7-405b-403b-9a94-f51e8fb73ed8.json"
   },
   "classifierReport": {
     "classifierName": "Logistic",

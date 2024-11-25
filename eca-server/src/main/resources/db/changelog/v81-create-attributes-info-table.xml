@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+        logicalFilePath="db/changelog/v81-create-attributes-info-table.xml"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="create-attributes-info-table" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="instances_info"/>
+            <not>
+                <tableExists tableName="attributes_info"/>
+            </not>
+        </preConditions>
+        <createTable tableName="attributes_info">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="attributes" type="jsonb">
+                <constraints nullable="false"/>
+            </column>
+            <column name="instances_info_id" type="bigint">
+                <constraints foreignKeyName="fk_attributes_info_instances_info_id"
+                             unique="true"
+                             uniqueConstraintName="attributes_info_instances_info_id_unique_idx"
+                             referencedTableName="instances_info"
+                             referencedColumnNames="id" nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+</databaseChangeLog>

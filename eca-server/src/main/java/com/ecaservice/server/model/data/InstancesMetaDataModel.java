@@ -4,10 +4,22 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
+/**
+ * Instances metadata model.
+ *
+ * @author Roman Batygin
+ */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class InstancesMetaDataModel {
+
+    /**
+     * Instances uuid
+     */
+    private String uuid;
 
     /**
      * Instances name
@@ -35,12 +47,12 @@ public class InstancesMetaDataModel {
     private String className;
 
     /**
-     * Instances file MD5 hash sum
-     */
-    private String md5Hash;
-
-    /**
      * Instances object path in storage
      */
     private String objectPath;
+
+    /**
+     * Attributes list
+     */
+    private List<AttributeMetaInfo> attributes;
 }

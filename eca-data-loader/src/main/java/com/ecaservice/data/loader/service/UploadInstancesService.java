@@ -3,19 +3,19 @@ package com.ecaservice.data.loader.service;
 import com.ecaservice.common.web.exception.FileProcessingException;
 import com.ecaservice.common.web.exception.InternalServiceUnavailableException;
 import com.ecaservice.common.web.exception.InvalidFileException;
-import com.ecaservice.data.loader.config.AppProperties;
 import com.ecaservice.data.loader.dto.UploadInstancesResponseDto;
 import com.ecaservice.data.loader.entity.InstancesEntity;
+import com.ecaservice.data.loader.mapping.InstancesMapper;
 import com.ecaservice.data.loader.repository.InstancesRepository;
 import com.ecaservice.data.loader.validation.InstancesValidationService;
 import com.ecaservice.s3.client.minio.exception.ObjectStorageException;
 import com.ecaservice.s3.client.minio.model.UploadObject;
 import com.ecaservice.s3.client.minio.service.MinioStorageService;
 import eca.data.file.model.InstancesModel;
+import io.micrometer.tracing.annotation.NewSpan;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FilenameUtils;
-import io.micrometer.tracing.annotation.NewSpan;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.util.DigestUtils;
@@ -39,12 +39,11 @@ public class UploadInstancesService {
     private static final String INSTANCES_OBJECT_PATH_FORMAT = "instances-%s.json";
     private static final String JSON_EXTENSION = "json";
 
-    private final AppProperties appProperties;
     private final MinioStorageService minioStorageService;
     private final InstancesReader instancesReader;
     private final InstancesDeserializer instancesDeserializer;
     private final InstancesValidationService instancesValidationService;
-    private final UserService userService;
+    private final InstancesMapper instancesMapper;
     private final InstancesRepository instancesRepository;
 
     /**
@@ -61,14 +60,13 @@ public class UploadInstancesService {
                     instancesFile.getOriginalFilename()));
         }
         try {
-            String clientId = userService.getCurrentUser();
             byte[] jsonData = instancesReader.readData(instancesFile);
             String md5Hash = DigestUtils.md5DigestAsHex(jsonData);
-            var instancesEntity = instancesRepository.findByClientIdAndMd5Hash(clientId, md5Hash);
+            var instancesEntity = instancesRepository.findByMd5Hash(md5Hash);
             if (instancesEntity != null) {
                 log.info(
-                        "Instances file [{}] with md5 hash [{}] is already uploaded for client id [{}]. Instances uuid [{}]",
-                        instancesFile.getOriginalFilename(), md5Hash, clientId, instancesEntity.getUuid());
+                        "Instances file [{}] with md5 hash [{}] is already uploaded. Instances uuid [{}]",
+                        instancesFile.getOriginalFilename(), md5Hash, instancesEntity.getUuid());
             } else {
                 InstancesModel instancesModel = instancesDeserializer.deserialize(jsonData);
                 instancesValidationService.validate(instancesModel);
@@ -77,15 +75,11 @@ public class UploadInstancesService {
                 log.info("Starting to upload instances file [{}] with uuid [{}], md5 hash [{}] object path [{}]",
                         instancesFile.getOriginalFilename(), uuid, md5Hash, objectPath);
                 uploadInstancesToS3(objectPath, jsonData);
-                instancesEntity = createAndSaveInstancesEntity(uuid, objectPath, md5Hash, clientId, instancesModel);
+                instancesEntity = createAndSaveInstancesEntity(uuid, objectPath, md5Hash, instancesModel);
                 log.info("Instances file [{}] has been uploaded with uuid [{}], md5 hash [{}] object path [{}]",
                         instancesFile.getOriginalFilename(), uuid, md5Hash, objectPath);
             }
-            return UploadInstancesResponseDto.builder()
-                    .uuid(instancesEntity.getUuid())
-                    .md5Hash(md5Hash)
-                    .expireAt(instancesEntity.getExpireAt())
-                    .build();
+            return new UploadInstancesResponseDto(instancesEntity.getUuid(), md5Hash);
         } catch (IOException ex) {
             log.error("There was an error while load data from file {}: {}", instancesFile.getOriginalFilename(),
                     ex.getMessage());
@@ -100,7 +94,6 @@ public class UploadInstancesService {
     private InstancesEntity createAndSaveInstancesEntity(String uuid,
                                                          String objectPath,
                                                          String md5Hash,
-                                                         String clientId,
                                                          InstancesModel instancesModel) {
         var instancesEntity = new InstancesEntity();
         instancesEntity.setRelationName(instancesModel.getRelationName());
@@ -118,8 +111,7 @@ public class UploadInstancesService {
         instancesEntity.setUuid(uuid);
         instancesEntity.setObjectPath(objectPath);
         instancesEntity.setMd5Hash(md5Hash);
-        instancesEntity.setClientId(clientId);
-        instancesEntity.setExpireAt(LocalDateTime.now().plusDays(appProperties.getInstancesExpireDays()));
+        instancesEntity.setAttributes(instancesMapper.map(instancesModel.getAttributes()));
         instancesEntity.setCreated(LocalDateTime.now());
         return instancesRepository.save(instancesEntity);
     }

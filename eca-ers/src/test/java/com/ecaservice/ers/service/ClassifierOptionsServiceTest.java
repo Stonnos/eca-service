@@ -7,19 +7,14 @@ import com.ecaservice.ers.dto.EvaluationMethod;
 import com.ecaservice.ers.exception.DataNotFoundException;
 import com.ecaservice.ers.model.ClassifierOptionsInfo;
 import com.ecaservice.ers.model.EvaluationResultsInfo;
-import com.ecaservice.ers.model.EvaluationResultsSortEntity;
 import com.ecaservice.ers.model.InstancesInfo;
 import com.ecaservice.ers.repository.EvaluationResultsInfoRepository;
-import com.ecaservice.ers.repository.EvaluationResultsSortRepository;
 import com.ecaservice.ers.repository.InstancesInfoRepository;
-import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Import;
-import org.springframework.util.DigestUtils;
 
 import java.math.BigDecimal;
-import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.List;
 
@@ -43,39 +38,14 @@ class ClassifierOptionsServiceTest extends AbstractJpaTest {
     @Autowired
     private EvaluationResultsInfoRepository evaluationResultsInfoRepository;
     @Autowired
-    private EvaluationResultsSortRepository evaluationResultsSortRepository;
-    @Autowired
     private ClassifierOptionsService classifierOptionsService;
     @Autowired
     private ErsConfig ersConfig;
 
     @Override
-    public void init() {
-        evaluationResultsSortRepository.save(
-                EvaluationResultsSortEntity.builder()
-                        .fieldName("statistics.pctCorrect")
-                        .ascending(false)
-                        .fieldOrder(0).build()
-        );
-        evaluationResultsSortRepository.save(
-                EvaluationResultsSortEntity.builder()
-                        .fieldName("statistics.maxAucValue")
-                        .ascending(false)
-                        .fieldOrder(1).build()
-        );
-        evaluationResultsSortRepository.save(
-                EvaluationResultsSortEntity.builder()
-                        .fieldName("statistics.varianceError")
-                        .ascending(true)
-                        .fieldOrder(2).build()
-        );
-    }
-
-    @Override
     public void deleteAll() {
         evaluationResultsInfoRepository.deleteAll();
         instancesInfoRepository.deleteAll();
-        evaluationResultsSortRepository.deleteAll();
     }
 
     @Test
@@ -111,10 +81,8 @@ class ClassifierOptionsServiceTest extends AbstractJpaTest {
     private void testClassifierOptionsSearching(ClassifierOptionsRequest request) {
         EvaluationMethod evaluationMethod = request.getEvaluationMethodReport().getEvaluationMethod();
         InstancesInfo instancesInfo = buildInstancesInfo();
-        instancesInfo.setDataMd5Hash(request.getDataHash());
+        instancesInfo.setUuid(request.getDataUuid());
         InstancesInfo anotherInstancesInfo = buildInstancesInfo();
-        anotherInstancesInfo.setDataMd5Hash(
-                DigestUtils.md5DigestAsHex(StringUtils.EMPTY.getBytes(StandardCharsets.UTF_8)));
         instancesInfoRepository.saveAll(Arrays.asList(instancesInfo, anotherInstancesInfo));
 
         ClassifierOptionsInfo classifierOptionsInfo1 = buildClassifierOptionsInfo();

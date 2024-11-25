@@ -2,11 +2,12 @@ package com.ecaservice.server.service.data;
 
 import com.ecaservice.s3.client.minio.databind.JsonDeserializer;
 import com.ecaservice.s3.client.minio.service.ObjectStorageService;
+import com.ecaservice.server.service.InstancesInfoService;
 import eca.data.file.converter.InstancesConverter;
 import eca.data.file.model.InstancesModel;
+import io.micrometer.tracing.annotation.NewSpan;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import io.micrometer.tracing.annotation.NewSpan;
 import org.springframework.stereotype.Service;
 import weka.core.Instances;
 
@@ -23,7 +24,7 @@ import java.io.IOException;
 public class InstancesLoaderService {
 
     private final ObjectStorageService objectStorageService;
-    private final InstancesMetaDataService instancesMetaDataService;
+    private final InstancesInfoService instancesInfoService;
     private final InstancesConverter instancesConverter = new InstancesConverter();
     private final JsonDeserializer<InstancesModel> instancesModelJsonDeserializer = new JsonDeserializer<>();
 
@@ -36,8 +37,8 @@ public class InstancesLoaderService {
     @NewSpan
     public Instances loadInstances(String uuid) {
         log.info("Starting to load instances [{}] from data storage", uuid);
-        var instancesMetaData = instancesMetaDataService.getInstancesMetaData(uuid);
-        var instancesModel = getInstancesModel(instancesMetaData.getObjectPath());
+        var instancesInfo = instancesInfoService.getOrSaveInstancesInfo(uuid);
+        var instancesModel = getInstancesModel(instancesInfo.getObjectPath());
         var instances = instancesConverter.convert(instancesModel);
         log.info("Instances [{}] has been loaded from data storage", uuid);
         return instances;

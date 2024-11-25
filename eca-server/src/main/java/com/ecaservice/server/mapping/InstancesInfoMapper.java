@@ -1,7 +1,9 @@
 package com.ecaservice.server.mapping;
 
+import com.ecaservice.data.loader.dto.AttributeInfo;
 import com.ecaservice.data.loader.dto.InstancesMetaInfoDto;
 import com.ecaservice.ers.dto.InstancesReport;
+import com.ecaservice.server.model.data.AttributeMetaInfo;
 import com.ecaservice.server.model.data.InstancesMetaDataModel;
 import com.ecaservice.server.model.entity.InstancesInfo;
 import com.ecaservice.web.dto.model.InstancesInfoDto;
@@ -46,4 +48,12 @@ public interface InstancesInfoMapper {
      * @return instances  meta data model
      */
     InstancesMetaDataModel map(InstancesMetaInfoDto instancesMetaInfoDto);
+
+    /**
+     * Maps attribute info dto to internal attribute meta info.
+     *
+     * @param attributeInfo - attribute info dto
+     * @return attribute info
+     */
+    AttributeMetaInfo map(AttributeInfo attributeInfo);
 }

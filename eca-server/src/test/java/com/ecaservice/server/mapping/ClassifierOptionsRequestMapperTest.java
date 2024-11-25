@@ -38,7 +38,7 @@ class ClassifierOptionsRequestMapperTest {
     @BeforeEach
     void init() {
         instancesRequestDataModel =
-                new InstancesRequestDataModel(UUID.randomUUID().toString(), UUID.randomUUID().toString(), "md5Hash",
+                new InstancesRequestDataModel(UUID.randomUUID().toString(), UUID.randomUUID().toString(),
                         eca.core.evaluation.EvaluationMethod.CROSS_VALIDATION, crossValidationConfig.getNumFolds(),
                         crossValidationConfig.getNumTests(), crossValidationConfig.getSeed());
     }
@@ -56,5 +56,6 @@ class ClassifierOptionsRequestMapperTest {
                 instancesRequestDataModel.getNumTests());
         assertThat(request.getEvaluationMethodReport().getSeed().intValue()).isEqualTo(
                 instancesRequestDataModel.getSeed());
+        assertThat(request.getDataUuid()).isEqualTo(instancesRequestDataModel.getDataUuid());
     }
 }

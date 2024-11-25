@@ -22,16 +22,15 @@ public class InstancesTestDataProvider implements ArgumentsProvider {
                 Arguments.of("data/empty-dataset.json"),
                 Arguments.of("data/empty-class-name-dataset.json"),
                 Arguments.of("data/invalid-nominal-value.json"),
-                Arguments.of("data/invalid-numeric-value.json"),
                 Arguments.of("data/invalid-instance-row-size.json"),
                 Arguments.of("data/empty-attr-name-dataset.json"),
                 Arguments.of("data/empty-attr-type-dataset.json"),
                 Arguments.of("data/empty-nominal-attr-values-dataset.json"),
                 Arguments.of("data/invalid-date-attr-format-dataset.json"),
-                Arguments.of("data/invalid-date-value-format-dataset.json"),
                 Arguments.of("data/invalid-class-attribute-dataset.json"),
                 Arguments.of("data/low-class-values-dataset.json"),
-                Arguments.of("data/invalid-class-type-dataset.json")
+                Arguments.of("data/invalid-class-type-dataset.json"),
+                Arguments.of("data/invalid-nominal-value-as-double-code.json")
         );
     }
 }

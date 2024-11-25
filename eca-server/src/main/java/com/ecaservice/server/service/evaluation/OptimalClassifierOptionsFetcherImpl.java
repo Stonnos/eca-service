@@ -9,7 +9,6 @@ import com.ecaservice.server.model.evaluation.ClassifierOptionsRequestSource;
 import com.ecaservice.server.model.evaluation.InstancesRequestDataModel;
 import com.ecaservice.server.repository.ClassifierOptionsRequestRepository;
 import com.ecaservice.server.service.InstancesInfoService;
-import com.ecaservice.server.service.data.InstancesMetaDataService;
 import com.ecaservice.server.service.ers.ErsRequestService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,7 +22,6 @@ import static com.ecaservice.server.util.Utils.createClassifierOptionsRequestEnt
 public class OptimalClassifierOptionsFetcherImpl implements OptimalClassifierOptionsFetcher {
 
     private final ErsRequestService ersRequestService;
-    private final InstancesMetaDataService instancesMetaDataService;
     private final InstancesInfoService instancesInfoService;
     private final ClassifierOptionsRequestMapper classifierOptionsRequestMapper;
     private final ClassifierOptionsRequestModelMapper classifierOptionsRequestModelMapper;
@@ -39,15 +37,12 @@ public class OptimalClassifierOptionsFetcherImpl implements OptimalClassifierOpt
     public ClassifierOptionsResult getOptimalClassifierOptions(InstancesRequestDataModel instancesRequestDataModel) {
         log.info("Starting to get optimal classifiers options from ERS for data uuid: {}, options req id [{}]",
                 instancesRequestDataModel.getDataUuid(), instancesRequestDataModel.getRequestId());
-        var instancesMetaDataModel =
-                instancesMetaDataService.getInstancesMetaData(instancesRequestDataModel.getDataUuid());
         var classifierOptionsRequest = classifierOptionsRequestMapper.map(instancesRequestDataModel);
-        classifierOptionsRequest.setDataHash(instancesMetaDataModel.getMd5Hash());
         ClassifierOptionsRequestEntity requestEntity =
                 createClassifierOptionsRequestEntity(ClassifierOptionsRequestSource.ERS);
         requestEntity.setRequestId(classifierOptionsRequest.getRequestId());
         ClassifierOptionsRequestModel requestModel = classifierOptionsRequestModelMapper.map(classifierOptionsRequest);
-        var instancesInfo = instancesInfoService.getOrSaveInstancesInfo(instancesMetaDataModel);
+        var instancesInfo = instancesInfoService.getOrSaveInstancesInfo(instancesRequestDataModel.getDataUuid());
         requestModel.setInstancesInfo(instancesInfo);
         ClassifierOptionsResult classifierOptionsResult =
                 ersRequestService.getOptimalClassifierOptions(classifierOptionsRequest, requestModel);

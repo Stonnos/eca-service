@@ -31,6 +31,7 @@ import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.jdbc.Sql;
 import weka.core.Instances;
 
+import java.util.Collections;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -51,7 +52,6 @@ import static org.mockito.Mockito.when;
 public abstract class AbstractEvaluationProcessManagerTest<T extends AbstractEvaluationEntity> {
 
     private static final String MODEL_DOWNLOAD_URL = "http://localhost:8099/object-storage";
-    private static final String DATA_MD_5_HASH = "3032e188204cb537f69fc7364f638641";
     private static final String CREATED_BY = "user";
     private static final String TEST_MAIL_RU = "test@mail.ru";
 
@@ -92,6 +92,8 @@ public abstract class AbstractEvaluationProcessManagerTest<T extends AbstractEva
     @Getter
     private UserProfileOptionsProvider userProfileOptionsProvider;
 
+    private final String dataUuid = UUID.randomUUID().toString();
+
     @BeforeEach
     void init() {
         mockLoadInstances();
@@ -116,9 +118,9 @@ public abstract class AbstractEvaluationProcessManagerTest<T extends AbstractEva
 
     private void mockLoadInstances() {
         Instances data = loadInstances();
-        var instancesDataModel = new InstancesMetaDataModel(data.relationName(), data.numInstances(),
-                data.numAttributes(), data.numClasses(), data.classAttribute().name(), DATA_MD_5_HASH,
-                "instances.json");
+        var instancesDataModel =
+                new InstancesMetaDataModel(dataUuid, data.relationName(), data.numInstances(), data.numAttributes(),
+                        data.numClasses(), data.classAttribute().name(), "instances.json", Collections.emptyList());
         when(instancesMetaDataService.getInstancesMetaData(anyString())).thenReturn(instancesDataModel);
         when(instancesLoaderService.loadInstances(anyString())).thenReturn(data);
     }

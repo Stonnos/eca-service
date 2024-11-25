@@ -1,18 +1,19 @@
 package com.ecaservice.ers.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.Data;
-
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import lombok.Data;
+
 import java.math.BigInteger;
 
 import static com.ecaservice.ers.dto.Constraints.MAX_LENGTH_255;
 import static com.ecaservice.ers.dto.Constraints.MIN_1;
 import static com.ecaservice.ers.dto.Constraints.MIN_2;
+import static com.ecaservice.ers.dto.Constraints.UUID_MAX_SIZE;
 
 /**
  * Training data report model.
@@ -24,13 +25,13 @@ import static com.ecaservice.ers.dto.Constraints.MIN_2;
 public class InstancesReport {
 
     /**
-     * Instances MD5 hash sum
+     * Instances uuid from central data storage
      */
     @NotBlank
-    @Size(min = MIN_1, max = MAX_LENGTH_255)
-    @Schema(description = "Instances MD5 hash sum", example = "3032e188204cb537f69fc7364f638641",
-            requiredMode = Schema.RequiredMode.REQUIRED)
-    private String dataMd5Hash;
+    @Size(min = MIN_1, max = UUID_MAX_SIZE)
+    @Schema(description = "Instances uuid from central data storage", example = "f8cecbf7-405b-403b-9a94-f51e8fb73ed8",
+            maxLength = UUID_MAX_SIZE, requiredMode = Schema.RequiredMode.REQUIRED)
+    private String uuid;
 
     /**
      * Relation name
@@ -74,4 +75,14 @@ public class InstancesReport {
     @Size(min = MIN_1, max = MAX_LENGTH_255)
     @Schema(description = "Class name", example = "class", requiredMode = Schema.RequiredMode.REQUIRED)
     private String className;
+
+    /**
+     * Instances object path in storage
+     */
+    @NotBlank
+    @Size(min = MIN_1, max = MAX_LENGTH_255)
+    @Schema(description = "Instances object path in storage",
+            example = "instances-f8cecbf7-405b-403b-9a94-f51e8fb73ed8.json",
+            requiredMode = Schema.RequiredMode.REQUIRED)
+    private String objectPath;
 }

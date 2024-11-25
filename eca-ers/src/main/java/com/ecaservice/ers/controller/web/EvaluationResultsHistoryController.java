@@ -5,7 +5,7 @@ import com.ecaservice.core.audit.annotation.Audit;
 import com.ecaservice.core.filter.service.FilterTemplateService;
 import com.ecaservice.ers.report.EvaluationResultsHistoryReportDataFetcher;
 import com.ecaservice.ers.service.EvaluationResultsHistoryService;
-import com.ecaservice.ers.service.InstancesDataService;
+import com.ecaservice.ers.service.InstancesService;
 import com.ecaservice.web.dto.model.EvaluationResultsHistoryDto;
 import com.ecaservice.web.dto.model.EvaluationResultsHistoryPageDto;
 import com.ecaservice.web.dto.model.FilterFieldDto;
@@ -63,7 +63,7 @@ public class EvaluationResultsHistoryController {
 
     private final FilterTemplateService filterTemplateService;
     private final EvaluationResultsHistoryService evaluationResultsHistoryService;
-    private final InstancesDataService instancesDataService;
+    private final InstancesService instancesService;
     private final EvaluationResultsHistoryReportDataFetcher evaluationResultsHistoryReportDataFetcher;
 
     /**
@@ -242,7 +242,7 @@ public class EvaluationResultsHistoryController {
     @PostMapping(value = "/instances/list")
     public PageDto<InstancesInfoDto> getInstancesInfoPage(@Valid @RequestBody PageRequestDto pageRequestDto) {
         log.info("Received instances info history page request: {}", pageRequestDto);
-        return instancesDataService.getNextPage(pageRequestDto);
+        return instancesService.getNextPage(pageRequestDto);
     }
 
     /**

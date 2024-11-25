@@ -136,20 +136,7 @@ public class AssertionUtils {
             var actual = instancesModel.getInstances().get(i);
             IntStream.range(0, instances.numAttributes()).forEach(j -> {
                 if (!expected.isMissing(j)) {
-                    Attribute attribute = expected.attribute(j);
-                    switch (attribute.type()) {
-                        case Attribute.DATE:
-                        case Attribute.NOMINAL:
-                            assertThat(actual.getValues().get(j)).isEqualTo(expected.stringValue(j));
-                            break;
-                        case Attribute.NUMERIC:
-                            assertThat(actual.getValues().get(j)).isEqualTo(String.valueOf(expected.value(j)));
-                            break;
-                        default:
-                            throw new IllegalStateException(
-                                    String.format("Unexpected attribute [%s] type: %d!", attribute.name(),
-                                            attribute.type()));
-                    }
+                    assertThat(actual.getValues().get(j)).isEqualTo(expected.value(j));
                 } else {
                     assertThat(actual.getValues().get(j)).isNull();
                 }

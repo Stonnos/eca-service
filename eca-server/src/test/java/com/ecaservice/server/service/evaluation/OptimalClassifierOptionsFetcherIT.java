@@ -28,6 +28,7 @@ import com.ecaservice.server.model.data.InstancesMetaDataModel;
 import com.ecaservice.server.model.entity.ClassifierOptionsRequestEntity;
 import com.ecaservice.server.model.evaluation.ClassifierOptionsRequestSource;
 import com.ecaservice.server.model.evaluation.InstancesRequestDataModel;
+import com.ecaservice.server.repository.AttributesInfoRepository;
 import com.ecaservice.server.repository.ClassifierOptionsRequestModelRepository;
 import com.ecaservice.server.repository.ClassifierOptionsRequestRepository;
 import com.ecaservice.server.repository.ErsRequestRepository;
@@ -35,6 +36,7 @@ import com.ecaservice.server.repository.EvaluationLogRepository;
 import com.ecaservice.server.repository.InstancesInfoRepository;
 import com.ecaservice.server.service.AbstractJpaTest;
 import com.ecaservice.server.service.InstancesInfoService;
+import com.ecaservice.server.service.InstancesProvider;
 import com.ecaservice.server.service.data.InstancesLoaderService;
 import com.ecaservice.server.service.data.InstancesMetaDataService;
 import com.ecaservice.server.service.ers.ErsClient;
@@ -87,12 +89,11 @@ import static org.mockito.Mockito.when;
         ErsConfig.class, EvaluationLogMapperImpl.class, LockExecutionAspect.class, ErsErrorHandler.class,
         EvaluationService.class, ErsResponseStatusMapperImpl.class, OptimalClassifierOptionsFetcherImpl.class,
         InstancesInfoMapperImpl.class, ErsRequestService.class, InstancesInfoService.class, EvaluationLogService.class,
-        ClassifierInfoMapperImpl.class, RedisAutoConfiguration.class,
+        ClassifierInfoMapperImpl.class, RedisAutoConfiguration.class, InstancesProvider.class,
         OptimalClassifierOptionsCacheService.class, DateTimeConverter.class, CoreLockAutoConfiguration.class})
 @TestPropertySource("classpath:application-it.properties")
 class OptimalClassifierOptionsFetcherIT extends AbstractJpaTest {
 
-    private static final String DATA_MD_5_HASH = "3032e188204cb537f69fc7364f638641";
     private static final ObjectMapper objectMapper = new ObjectMapper();
     private static final int NUM_THREADS = 2;
 
@@ -122,6 +123,8 @@ class OptimalClassifierOptionsFetcherIT extends AbstractJpaTest {
     private EvaluationLogRepository evaluationLogRepository;
     @Autowired
     private InstancesInfoRepository instancesInfoRepository;
+    @Autowired
+    private AttributesInfoRepository attributesInfoRepository;
     @Autowired
     private ClassifierOptionsRequestRepository classifierOptionsRequestRepository;
     @Autowired
@@ -156,8 +159,9 @@ class OptimalClassifierOptionsFetcherIT extends AbstractJpaTest {
     }
 
     private void mockLoadInstances() {
-        var instancesDataModel = new InstancesMetaDataModel(data.relationName(), data.numInstances(),
-                data.numAttributes(), data.numClasses(), data.classAttribute().name(), DATA_MD_5_HASH, "instances");
+        var instancesDataModel =
+                new InstancesMetaDataModel(dataUuid, data.relationName(), data.numInstances(), data.numAttributes(),
+                        data.numClasses(), data.classAttribute().name(), "instances", Collections.emptyList());
         when(instancesMetaDataService.getInstancesMetaData(dataUuid)).thenReturn(instancesDataModel);
         when(instancesLoaderService.loadInstances(dataUuid)).thenReturn(data);
     }
@@ -167,6 +171,7 @@ class OptimalClassifierOptionsFetcherIT extends AbstractJpaTest {
         classifierOptionsRequestRepository.deleteAll();
         ersRequestRepository.deleteAll();
         evaluationLogRepository.deleteAll();
+        attributesInfoRepository.deleteAll();
         instancesInfoRepository.deleteAll();
     }
 
@@ -181,7 +186,7 @@ class OptimalClassifierOptionsFetcherIT extends AbstractJpaTest {
             executorService.submit(() -> {
                 try {
                     var instancesRequestDataModel =
-                            new InstancesRequestDataModel(UUID.randomUUID().toString(), dataUuid, DATA_MD_5_HASH,
+                            new InstancesRequestDataModel(UUID.randomUUID().toString(), dataUuid,
                                     EvaluationMethod.CROSS_VALIDATION, NUM_FOLDS, NUM_TESTS, SEED);
                     optimalClassifierOptionsFetcher.getOptimalClassifierOptions(instancesRequestDataModel);
                 } catch (Exception ex) {

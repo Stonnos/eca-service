@@ -17,7 +17,6 @@ import com.ecaservice.server.service.experiment.ExperimentProcessorService;
 import com.ecaservice.server.service.experiment.ExperimentProgressService;
 import com.ecaservice.server.service.experiment.ExperimentStepService;
 import eca.dataminer.AbstractExperiment;
-import eca.filter.ConstantAttributesFilter;
 import io.micrometer.tracing.annotation.NewSpan;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -89,9 +88,7 @@ public class ExperimentModelProcessorStepHandler extends AbstractExperimentStepH
         try {
             experimentStepService.start(experimentStepEntity);
             Instances data = getInstances(experimentContext);
-            ConstantAttributesFilter filter = new ConstantAttributesFilter();
-            Instances filteredInstances = filter.filterInstances(data);
-            processExperiment(filteredInstances, experimentContext);
+            processExperiment(data, experimentContext);
             saveModelToLocalStorage(experimentStepEntity, experimentContext.getExperimentHistory());
             saveMaxPctCorrectValue(experimentContext);
             experimentProgressService.finish(experimentStepEntity.getExperiment());

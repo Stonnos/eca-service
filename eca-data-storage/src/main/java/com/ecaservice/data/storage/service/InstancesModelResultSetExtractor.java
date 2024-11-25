@@ -16,12 +16,16 @@ import org.springframework.jdbc.core.ResultSetExtractor;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import static com.ecaservice.data.storage.util.Utils.createNominalAttributesIndexMap;
 import static com.google.common.collect.Lists.newArrayList;
 
 /**
@@ -46,17 +50,20 @@ public class InstancesModelResultSetExtractor implements ResultSetExtractor<Inst
         instancesModel.setInstances(newArrayList());
         instancesModel.setRelationName(instancesEntity.getRelationName());
         instancesModel.setAttributes(attributes);
-        var valueExtractor = new AttributeValueExtractor(resultSet, DateTimeFormatter.ofPattern(dateFormat));
+        var dateTimeFormatter = DateTimeFormatter.ofPattern(dateFormat);
+        var valueExtractor = new AttributeValueExtractor(resultSet, dateTimeFormatter);
+        Map<String, Map<String, Integer>> nominalAttributeIndexMap = createNominalAttributesIndexMap(attributeEntities);
         while (resultSet.next()) {
             InstanceModel instance = new InstanceModel();
-            List<String> values = newArrayList();
+            List<Double> values = newArrayList();
             for (int i = 1; i <= attributeEntities.size(); i++) {
                 AttributeEntity attributeEntity = attributeEntities.get(i - 1);
                 if (resultSet.getObject(i) == null) {
                     values.add(null);
                 } else {
                     valueExtractor.setColumnIndex(i);
-                    String value = attributeEntity.getType().handle(valueExtractor);
+                    Double value =
+                            getValue(attributeEntity, valueExtractor, dateTimeFormatter, nominalAttributeIndexMap);
                     values.add(value);
                 }
             }
@@ -67,6 +74,43 @@ public class InstancesModelResultSetExtractor implements ResultSetExtractor<Inst
             instancesModel.setClassName(instancesEntity.getClassAttribute().getAttributeName());
         }
         return instancesModel;
+    }
+
+    private Double getValue(AttributeEntity attributeEntity,
+                            AttributeValueExtractor valueExtractor,
+                            DateTimeFormatter dateTimeFormatter,
+                            Map<String, Map<String, Integer>> nominalAttributeIndexMap) {
+        String value = attributeEntity.getType().handle(valueExtractor);
+        return attributeEntity.getType().handle(new AttributeTypeVisitor<>() {
+            @Override
+            public Double caseNumeric() {
+                return Double.valueOf(value);
+            }
+
+            @Override
+            public Double caseNominal() {
+                var valuesMap = nominalAttributeIndexMap.get(attributeEntity.getAttributeName());
+                if (valuesMap == null) {
+                    throw new IllegalStateException(String.format("Can't find attribute [%s] values index map",
+                            attributeEntity.getAttributeName()));
+                }
+                int index = valuesMap.entrySet()
+                        .stream()
+                        .filter(entry -> entry.getKey().equals(value))
+                        .map(Map.Entry::getValue)
+                        .findFirst()
+                        .orElseThrow(() -> new IllegalStateException(
+                                String.format("Can't find attribute [%s] index for value [%s]",
+                                        attributeEntity.getAttributeName(), value)));
+                return (double) index;
+            }
+
+            @Override
+            public Double caseDate() {
+                LocalDateTime dateTime = LocalDateTime.parse(value, dateTimeFormatter);
+                return (double) Timestamp.valueOf(dateTime).getTime();
+            }
+        });
     }
 
     private ArrayList<AttributeModel> createAttributes() {

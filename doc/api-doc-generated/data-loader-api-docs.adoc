@@ -139,8 +139,7 @@ a|
 ----
 {
   "uuid" : "1d2de514-3a87-4620-9b97-c260e24340de",
-  "md5Hash" : "3032e188204cb537f69fc7364f638641",
-  "expireAt" : "2021-07-01 14:00:00"
+  "md5Hash" : "3032e188204cb537f69fc7364f638641"
 }
 ----
 |401
@@ -254,7 +253,24 @@ a|
   "numClasses" : 4,
   "className" : "class",
   "md5Hash" : "3032e188204cb537f69fc7364f638641",
-  "objectPath" : "instances-1d2de514-3a87-4620-9b97-c260e24340de.json"
+  "objectPath" : "instances-1d2de514-3a87-4620-9b97-c260e24340de.json",
+  "attributes" : [ {
+    "name" : "x1",
+    "type" : "NUMERIC"
+  }, {
+    "name" : "x2",
+    "type" : "NUMERIC"
+  }, {
+    "name" : "x3",
+    "type" : "NUMERIC"
+  }, {
+    "name" : "x4",
+    "type" : "NUMERIC"
+  }, {
+    "name" : "class",
+    "type" : "NOMINAL",
+    "values" : [ "Iris-setosa", "Iris-versicolor", "Iris-verginica" ]
+  } ]
 }
 ----
 |400
@@ -284,8 +300,8 @@ a|
 ----
 [ {
   "fieldName" : null,
-  "code" : "ExpiredData",
-  "errorMessage" : "Instances [f8cecbf7-405b-403b-9a94-f51e8fb73ed8] object has been expired"
+  "code" : "DataNotFound",
+  "errorMessage" : "Entity [InstancesEntity] with search key [f8cecbf7-405b-403b-9a94-f51e8fb73ed8] not found"
 } ]
 ----
 |===
@@ -326,25 +342,6 @@ __string__
 
 
 *Max. length*: 255
-
-
-
-
-
-
-
-
-
-
-|*expireAt*
-|Object expiration date
-a|
-__string__
-
-
-
-
-*Max. length*: 19
 
 
 
@@ -409,6 +406,98 @@ __string__
 
 
 *Max. length*: 1 000
+
+
+
+
+
+
+
+
+
+
+|===
+=== AttributeInfo
+:table-caption: Table
+.Attributes list
+[width=100%]
+|===
+|*Name*|*Description*|*Schema*
+|*name*
+|-
+a|
+__string__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|*type*
+|-
+a|
+__string__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+*Values*:
+
+* NUMERIC
+
+* NOMINAL
+
+* DATE
+|*dateFormat*
+|-
+a|
+__string__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|*values*
+|-
+a|
+__array__
+<string
+>
+
+
+
+
+
 
 
 
@@ -577,6 +666,27 @@ __string__
 
 
 *Max. length*: 255
+
+
+
+
+
+
+
+
+
+
+|*attributes*
+|Attributes list
+a|
+__array__
+<<<AttributeInfo>>
+>
+
+
+
+
+
 
 
 

@@ -207,7 +207,6 @@ class EvaluationLogDataServiceTest extends AbstractJpaTest {
         EvaluationLog evaluationLog1 =
                 TestHelperUtils.createEvaluationLog(UUID.randomUUID().toString(), RequestStatus.FINISHED);
         evaluationLog1.setInstancesInfo(TestHelperUtils.createInstancesInfo());
-        evaluationLog1.getInstancesInfo().setDataMd5Hash("md5Hash");
         instancesInfoRepository.save(evaluationLog1.getInstancesInfo());
         evaluationLogRepository.save(evaluationLog1);
         PageRequestDto pageRequestDto = new PageRequestDto(PAGE_NUMBER, PAGE_SIZE,

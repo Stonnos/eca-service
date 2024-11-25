@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+        logicalFilePath="db/changelog/v3-drop-client-id-column.xml"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="drop_instances_client_id_md5_hash_unique_index" author="roman.batygin@mail.ru" context="schema">
+        <dropUniqueConstraint tableName="instances" constraintName="instances_client_id_md5_hash_unique_index"/>
+    </changeSet>
+
+    <changeSet id="drop_instances_client_id_column" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="instances"/>
+            <columnExists tableName="instances" columnName="client_id"/>
+        </preConditions>
+        <dropColumn tableName="instances" columnName="client_id"/>
+    </changeSet>
+
+    <changeSet id="add_instances_md5_hash_unique_index" author="roman.batygin@mail.ru" context="schema">
+        <addUniqueConstraint tableName="instances" columnNames="md5_hash"
+                             constraintName="instances_md5_hash_unique_index"/>
+    </changeSet>
+
+    <changeSet id="drop_instances_expire_at_column" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="instances"/>
+            <columnExists tableName="instances" columnName="expire_at"/>
+        </preConditions>
+        <dropColumn tableName="instances" columnName="expire_at"/>
+    </changeSet>
+
+</databaseChangeLog>

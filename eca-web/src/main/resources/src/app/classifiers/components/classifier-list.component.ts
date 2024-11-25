@@ -235,6 +235,7 @@ export class ClassifierListComponent extends BaseListComponent<EvaluationLogDto>
     }
     const createEvaluationRequest =
       new CreateEvaluationRequestDto(evaluationRequest.instancesUuid, classifierOptions, evaluationRequest.evaluationMethod.value);
+    this.loading = true;
     this.classifiersService.createEvaluationRequest(createEvaluationRequest)
       .pipe(
         finalize(() => {
@@ -254,6 +255,7 @@ export class ClassifierListComponent extends BaseListComponent<EvaluationLogDto>
   public onCreateOptimalClassifier(evaluationRequest: OptimalEvaluationRequest): void {
     const createEvaluationRequest =
       new CreateOptimalEvaluationRequestDto(evaluationRequest.instancesUuid, evaluationRequest.evaluationMethod.value);
+    this.loading = true;
     this.classifiersService.createOptimalEvaluationRequest(createEvaluationRequest)
       .pipe(
         finalize(() => {

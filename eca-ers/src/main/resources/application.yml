@@ -19,7 +19,7 @@ spring:
           lob:
             non_contextual_creation: true
   cache:
-    cache-names: evaluation-results-sort-fields, global-filters, filter-templates, filter-dictionaries, sort-fields
+    cache-names: instances, global-filters, filter-templates, filter-dictionaries, sort-fields
     caffeine:
       spec: maximumSize=100, expireAfterWrite=36000s
   liquibase:
@@ -56,6 +56,13 @@ springdoc:
 
 ers:
   resultSize: 5
+  evaluationResultsSortFields:
+    - field: PCT_CORRECT
+      direction: DESC
+    - field: MAX_AUC_VALUE
+      direction: DESC
+    - field: VARIANCE_ERROR
+      direction: ASC
 
 resource:
   server:

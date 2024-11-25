@@ -171,9 +171,6 @@ cache:
     message-templates:
       expireAfterWriteSeconds: 18000
       maxSize: 100
-    instances-meta-data:
-      expireAfterWriteSeconds: 18000
-      maxSize: 100
 
 auth-server:
   baseUrl: http://localhost:8085/eca-oauth

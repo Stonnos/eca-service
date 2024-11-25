@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+        logicalFilePath="db/changelog/v82-drop-instances-data-md5-hash-column.xml"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="drop_instances_info_data_md5_hash_column" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="instances_info"/>
+            <columnExists tableName="instances_info" columnName="data_md5_hash"/>
+        </preConditions>
+       <dropColumn tableName="instances_info" columnName="data_md5_hash"/>
+    </changeSet>
+
+    <changeSet id="add_instances_info_object_path_column" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="instances_info"/>
+            <not>
+                <columnExists tableName="instances_info" columnName="object_path"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="instances_info">
+            <column name="object_path" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+</databaseChangeLog>

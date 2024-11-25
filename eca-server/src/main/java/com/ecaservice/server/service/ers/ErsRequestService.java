@@ -21,10 +21,10 @@ import com.ecaservice.server.repository.ErsRequestRepository;
 import com.ecaservice.server.service.evaluation.EvaluationResultsService;
 import feign.FeignException;
 import feign.RetryableException;
+import io.micrometer.tracing.annotation.NewSpan;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.Cacheable;
-import io.micrometer.tracing.annotation.NewSpan;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -130,11 +130,11 @@ public class ErsRequestService {
         requestModel.setRequestDate(LocalDateTime.now());
         ClassifierOptionsResult classifierOptionsResult = new ClassifierOptionsResult();
         try {
-            log.info("Sending request [{}] to find classifier optimal options for data md5 hash '{}'.",
-                    classifierOptionsRequest.getRequestId(), classifierOptionsRequest.getDataHash());
+            log.info("Sending request [{}] to find classifier optimal options for data uuid '{}'.",
+                    classifierOptionsRequest.getRequestId(), classifierOptionsRequest.getDataUuid());
             ClassifierOptionsResponse response = ersClient.getClassifierOptions(classifierOptionsRequest);
-            log.info("Received response for request id [{}], data md5 hash [{}]", response.getRequestId(),
-                    classifierOptionsRequest.getDataHash());
+            log.info("Received response for request id [{}], data uuid [{}]", response.getRequestId(),
+                    classifierOptionsRequest.getDataUuid());
             handleClassifierOptionsResponse(classifierOptionsRequest, response, requestModel, classifierOptionsResult);
         } catch (FeignException.ServiceUnavailable | RetryableException ex) {
             log.error("Service unavailable error while sending classifier options request [{}]: {}.",
@@ -151,8 +151,8 @@ public class ErsRequestService {
             ersErrorHandler.handleErrorRequest(requestModel, ErsResponseStatus.ERROR, ex.getMessage());
             setClassifierOptionsResultError(classifierOptionsResult, ErrorCode.INTERNAL_SERVER_ERROR);
         }
-        log.info("Got optimal classifier options result [{}] for data md5 hash [{}], options req id [{}]",
-                classifierOptionsResult, classifierOptionsRequest.getDataHash(),
+        log.info("Got optimal classifier options result [{}] for data uuid [{}], options req id [{}]",
+                classifierOptionsResult, classifierOptionsRequest.getDataUuid(),
                 classifierOptionsRequest.getRequestId());
         return classifierOptionsResult;
     }
@@ -170,8 +170,8 @@ public class ErsRequestService {
             ClassifierOptions classifierOptions = parseOptions(classifierReport.getOptions());
             classifierOptionsResult.setClassifierOptions(classifierOptions);
             classifierOptionsResult.setFound(true);
-            log.info("Optimal classifier options [{}] has been found for data md5 hash '{}', options req id [{}].",
-                    classifierReport.getOptions(), classifierOptionsRequest.getDataHash(),
+            log.info("Optimal classifier options [{}] has been found for data uuid '{}', options req id [{}].",
+                    classifierReport.getOptions(), classifierOptionsRequest.getDataUuid(),
                     classifierOptionsRequest.getRequestId());
             requestModel.setClassifierOptionsResponseModels(
                     Collections.singletonList(classifierReportMapper.map(classifierReport)));

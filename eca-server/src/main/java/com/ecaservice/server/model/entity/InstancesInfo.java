@@ -24,7 +24,7 @@ public class InstancesInfo {
     private Long id;
 
     /**
-     * Instances uuid
+     * Instances uuid from central data storage
      */
     @Column(nullable = false, unique = true)
     private String uuid;
@@ -60,10 +60,10 @@ public class InstancesInfo {
     private String className;
 
     /**
-     * Json instances MD5 hash
+     * Instances object path
      */
-    @Column(name = "data_md5_hash", nullable = false, unique = true)
-    private String dataMd5Hash;
+    @Column(name = "object_path", nullable = false)
+    private String objectPath;
 
     /**
      * Created date

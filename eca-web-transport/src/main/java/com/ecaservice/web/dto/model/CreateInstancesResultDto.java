@@ -38,7 +38,7 @@ public class CreateInstancesResultDto {
     /**
      * Source file name
      */
-    @Schema(description = "Source file name", requiredMode = Schema.RequiredMode.REQUIRED, example = "iris.xls",
+    @Schema(description = "Source file name", requiredMode = Schema.RequiredMode.REQUIRED, example = "iris.xlsx",
             maxLength = MAX_LENGTH_255)
     private String sourceFileName;
 

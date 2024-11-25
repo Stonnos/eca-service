@@ -7,7 +7,6 @@ import com.ecaservice.ers.model.InstancesInfo_;
 import com.ecaservice.ers.repository.InstancesInfoRepository;
 import com.ecaservice.web.dto.model.PageRequestDto;
 import com.ecaservice.web.dto.model.SortFieldRequestDto;
-import org.apache.commons.codec.digest.DigestUtils;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -15,6 +14,7 @@ import org.springframework.context.annotation.Import;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.UUID;
 
 import static com.ecaservice.ers.TestHelperUtils.buildInstancesInfo;
 import static com.ecaservice.ers.dictionary.FilterDictionaries.INSTANCES_INFO;
@@ -22,12 +22,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
 /**
- * Unit tests for {@link InstancesDataService} class.
+ * Unit tests for {@link InstancesService} class.
  *
  * @author Roman Batygin
  */
-@Import({InstancesDataService.class, InstancesMapperImpl.class})
-class InstancesInfoDataServiceTest extends AbstractJpaTest {
+@Import({InstancesService.class, InstancesMapperImpl.class, InstancesProvider.class})
+class InstancesServiceTest extends AbstractJpaTest {
 
     private static final int PAGE_NUMBER = 0;
     private static final int PAGE_SIZE = 10;
@@ -41,7 +41,7 @@ class InstancesInfoDataServiceTest extends AbstractJpaTest {
     private InstancesInfoRepository instancesInfoRepository;
 
     @Autowired
-    private InstancesDataService instancesDataService;
+    private InstancesService instancesService;
 
 
     @Override
@@ -61,7 +61,7 @@ class InstancesInfoDataServiceTest extends AbstractJpaTest {
         var pageRequestDto = new PageRequestDto(PAGE_NUMBER, PAGE_SIZE,
                 Collections.singletonList(new SortFieldRequestDto(InstancesInfo_.CREATED_DATE, false)), RELATION_1,
                 Collections.emptyList());
-        var instancesInfoPage = instancesDataService.getNextPage(pageRequestDto);
+        var instancesInfoPage = instancesService.getNextPage(pageRequestDto);
         assertThat(instancesInfoPage).isNotNull();
         assertThat(instancesInfoPage.getPage()).isZero();
         assertThat(instancesInfoPage.getTotalCount()).isOne();
@@ -70,10 +70,10 @@ class InstancesInfoDataServiceTest extends AbstractJpaTest {
     public void saveInstancesInfoData() {
         var instancesInfo1 = buildInstancesInfo();
         instancesInfo1.setRelationName(RELATION_1);
-        instancesInfo1.setDataMd5Hash(DigestUtils.md5Hex(RELATION_1));
+        instancesInfo1.setUuid(UUID.randomUUID().toString());
         var instancesInfo2 = buildInstancesInfo();
         instancesInfo2.setRelationName(RELATION_2);
-        instancesInfo2.setDataMd5Hash(DigestUtils.md5Hex(RELATION_2));
+        instancesInfo2.setUuid(UUID.randomUUID().toString());
         instancesInfoRepository.saveAll(Arrays.asList(instancesInfo1, instancesInfo2));
     }
 }

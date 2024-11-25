@@ -33,6 +33,7 @@ import com.ecaservice.server.model.entity.ErsResponseStatus;
 import com.ecaservice.server.model.entity.InstancesInfo;
 import com.ecaservice.server.model.evaluation.ClassifierOptionsRequestSource;
 import com.ecaservice.server.model.evaluation.InstancesRequestDataModel;
+import com.ecaservice.server.repository.AttributesInfoRepository;
 import com.ecaservice.server.repository.ClassifierOptionsRequestModelRepository;
 import com.ecaservice.server.repository.ClassifierOptionsRequestRepository;
 import com.ecaservice.server.repository.ErsRequestRepository;
@@ -40,6 +41,7 @@ import com.ecaservice.server.repository.EvaluationLogRepository;
 import com.ecaservice.server.repository.InstancesInfoRepository;
 import com.ecaservice.server.service.AbstractJpaTest;
 import com.ecaservice.server.service.InstancesInfoService;
+import com.ecaservice.server.service.InstancesProvider;
 import com.ecaservice.server.service.data.InstancesLoaderService;
 import com.ecaservice.server.service.data.InstancesMetaDataService;
 import com.ecaservice.server.service.ers.ErsClient;
@@ -83,12 +85,11 @@ import static org.mockito.Mockito.when;
         EvaluationRequestMapperImpl.class, ClassifierOptionsRequestMapperImpl.class, EvaluationLogService.class,
         ErsConfig.class, EvaluationLogMapperImpl.class, ClassifiersProperties.class,
         EvaluationService.class, ErsResponseStatusMapperImpl.class, OptimalClassifierOptionsFetcherImpl.class,
-        InstancesInfoMapperImpl.class, ErsRequestService.class, InstancesInfoService.class,
+        InstancesInfoMapperImpl.class, ErsRequestService.class, InstancesInfoService.class, InstancesProvider.class,
         ClassifierInfoMapperImpl.class, ErsErrorHandler.class,
         OptimalClassifierOptionsCacheService.class, DateTimeConverter.class})
 class OptimalClassifierOptionsFetcherTest extends AbstractJpaTest {
 
-    private static final String DATA_MD_5_HASH = "3032e188204cb537f69fc7364f638641";
     private static final ObjectMapper objectMapper = new ObjectMapper();
     private static final String MODEL_DOWNLOAD_URL = "http//:localhost/model";
 
@@ -118,6 +119,8 @@ class OptimalClassifierOptionsFetcherTest extends AbstractJpaTest {
     private EvaluationLogRepository evaluationLogRepository;
     @Autowired
     private InstancesInfoRepository instancesInfoRepository;
+    @Autowired
+    private AttributesInfoRepository attributesInfoRepository;
     @Autowired
     private ClassifierOptionsRequestRepository classifierOptionsRequestRepository;
     @Autowired
@@ -150,6 +153,7 @@ class OptimalClassifierOptionsFetcherTest extends AbstractJpaTest {
         classifierOptionsRequestRepository.deleteAll();
         ersRequestRepository.deleteAll();
         evaluationLogRepository.deleteAll();
+        attributesInfoRepository.deleteAll();
         instancesInfoRepository.deleteAll();
     }
 
@@ -237,7 +241,6 @@ class OptimalClassifierOptionsFetcherTest extends AbstractJpaTest {
     @Test
     void testExceededClassifierOptionsCacheWithDataMd5HashDoesntExists() {
         var anotherInstancesInfo = createInstancesInfo();
-        anotherInstancesInfo.setDataMd5Hash("anotherHash");
         instancesInfoRepository.save(anotherInstancesInfo);
         var requestModel = TestHelperUtils.createClassifierOptionsRequestModel(anotherInstancesInfo,
                 LocalDateTime.now(),
@@ -351,7 +354,7 @@ class OptimalClassifierOptionsFetcherTest extends AbstractJpaTest {
 
     private void assertSuccessClassifierOptionsRequestModel(ClassifierOptionsRequestModel requestModel) {
         assertThat(requestModel.getInstancesInfo()).isNotNull();
-        assertThat(requestModel.getInstancesInfo().getDataMd5Hash()).isNotNull();
+        assertThat(requestModel.getInstancesInfo().getUuid()).isNotNull();
         assertThat(requestModel.getResponseStatus()).isEqualTo(ErsResponseStatus.SUCCESS);
         assertThat(requestModel.getRequestId()).isNotNull();
         assertThat(requestModel.getNumFolds()).isNotNull();
@@ -371,16 +374,17 @@ class OptimalClassifierOptionsFetcherTest extends AbstractJpaTest {
         data = TestHelperUtils.loadInstances();
         dataUuid = UUID.randomUUID().toString();
         instancesInfo = createInstancesInfo();
-        instancesInfo.setDataMd5Hash(DATA_MD_5_HASH);
+        instancesInfo.setUuid(dataUuid);
         instancesInfoRepository.save(instancesInfo);
         instancesRequestDataModel =
-                new InstancesRequestDataModel(UUID.randomUUID().toString(), dataUuid, DATA_MD_5_HASH,
-                        EvaluationMethod.CROSS_VALIDATION, NUM_FOLDS, NUM_TESTS, SEED);
+                new InstancesRequestDataModel(UUID.randomUUID().toString(), dataUuid, EvaluationMethod.CROSS_VALIDATION,
+                        NUM_FOLDS, NUM_TESTS, SEED);
     }
 
     private void mockLoadInstances() {
-        var instancesDataModel = new InstancesMetaDataModel(data.relationName(), data.numInstances(),
-                data.numAttributes(), data.numClasses(), data.classAttribute().name(), DATA_MD_5_HASH, "instances");
+        var instancesDataModel =
+                new InstancesMetaDataModel(dataUuid, data.relationName(), data.numInstances(), data.numAttributes(),
+                        data.numClasses(), data.classAttribute().name(), "instances", Collections.emptyList());
         when(instancesMetaDataService.getInstancesMetaData(dataUuid)).thenReturn(instancesDataModel);
         when(instancesLoaderService.loadInstances(dataUuid)).thenReturn(data);
     }

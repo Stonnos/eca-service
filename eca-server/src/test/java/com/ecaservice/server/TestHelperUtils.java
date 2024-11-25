@@ -16,6 +16,7 @@ import com.ecaservice.classifier.options.model.LogisticOptions;
 import com.ecaservice.classifier.options.model.NeuralNetworkOptions;
 import com.ecaservice.classifier.options.model.RandomForestsOptions;
 import com.ecaservice.classifier.options.model.StackingOptions;
+import com.ecaservice.data.loader.dto.AttributeInfo;
 import com.ecaservice.data.loader.dto.InstancesMetaInfoDto;
 import com.ecaservice.ers.dto.ClassificationCostsReport;
 import com.ecaservice.ers.dto.ClassifierOptionsRequest;
@@ -118,7 +119,7 @@ import static com.google.common.collect.Lists.newArrayList;
 @UtilityClass
 public class TestHelperUtils {
 
-    public static final String DATA_RESOURCE_PATH = "data/iris.xls";
+    public static final String DATA_RESOURCE_PATH = "data/iris.xlsx";
 
     public static final String JSON_DATA_RESOURCE_PATH = "data/iris.json";
 
@@ -711,7 +712,7 @@ public class TestHelperUtils {
         instancesInfo.setNumInstances(NUM_INSTANCES);
         instancesInfo.setNumAttributes(NUM_ATTRIBUTES);
         instancesInfo.setNumClasses(NUM_CLASSES);
-        instancesInfo.setDataMd5Hash(DATA_MD_5_HASH);
+        instancesInfo.setObjectPath(INSTANCES_OBJECT_PATH);
         instancesInfo.setUuid(UUID.randomUUID().toString());
         instancesInfo.setCreatedDate(LocalDateTime.now());
         return instancesInfo;
@@ -949,8 +950,7 @@ public class TestHelperUtils {
         ClassifierOptionsRequest classifierOptionsRequest = new ClassifierOptionsRequest();
         classifierOptionsRequest.setEvaluationMethodReport(new EvaluationMethodReport());
         classifierOptionsRequest.setEvaluationMethodReport(createEvaluationMethodReport());
-        classifierOptionsRequest.setDataHash(
-                DigestUtils.md5DigestAsHex(RELATION_NAME.getBytes(StandardCharsets.UTF_8)));
+        classifierOptionsRequest.setDataUuid(UUID.randomUUID().toString());
         return classifierOptionsRequest;
     }
 
@@ -1144,6 +1144,8 @@ public class TestHelperUtils {
      */
     public static GetEvaluationResultsResponse createGetEvaluationResultsResponse(String requestId) {
         GetEvaluationResultsResponse evaluationResultsResponse = new GetEvaluationResultsResponse();
+        evaluationResultsResponse.setConfusionMatrix(newArrayList());
+        evaluationResultsResponse.setClassificationCosts(newArrayList());
         evaluationResultsResponse.setRequestId(requestId);
         return evaluationResultsResponse;
     }
@@ -1291,6 +1293,7 @@ public class TestHelperUtils {
      */
     public static InstancesMetaInfoDto createInstancesMetaInfoInfo() {
         return InstancesMetaInfoDto.builder()
+                .uuid(UUID.randomUUID().toString())
                 .relationName(RELATION_NAME)
                 .className(CLASS_NAME)
                 .numInstances(NUM_INSTANCES)
@@ -1299,6 +1302,7 @@ public class TestHelperUtils {
                 .md5Hash(DATA_MD_5_HASH)
                 .uuid(UUID.randomUUID().toString())
                 .objectPath(INSTANCES_OBJECT_PATH)
+                .attributes(Collections.singletonList(new AttributeInfo()))
                 .build();
     }
 
