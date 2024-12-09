@@ -24,6 +24,10 @@
    * app.resetPassword.url - url для формирования ссылки для восстановления пароля
    * app.changePassword.validityMinutes - время действия токена для изменения пароля в мин.
    * app.changeEmail.validityMinutes - время действия токена для изменения email в мин.
+   * app.security.whitelistUrls - список endpoint-ов не требующих авторизацию
+   * app.security.writeTokenInCookie - получать access/refresh токен в куках
+   * app.security.refreshTokenCookiePath - refresh токен куки path
+   * app.security.tokenInCookieAvailableGrantTypes - список доступных схем (grant_type) для получения access/refresh токен в куках. По умолчанию: password, tfa_code, refresh_token
 3) open-api - настройки Swagger
    * open-api.tokenBaseUrl - базовый url - сервера авторизации
    * open-api.projectVersion - версия API

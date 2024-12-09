@@ -1,7 +1,9 @@
 package com.ecaservice.oauth.config;
 
+import com.ecaservice.oauth.util.Oauth2Utils;
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.security.oauth2.core.AuthorizationGrantType;
 import org.springframework.validation.annotation.Validated;
 
 import jakarta.validation.constraints.NotEmpty;
@@ -19,6 +21,13 @@ import static com.google.common.collect.Lists.newArrayList;
 @Validated
 @ConfigurationProperties("app")
 public class AppProperties {
+
+    private static final List<String> TOKEN_IN_COOKIES_GRANT_TYPES = List.of(
+            AuthorizationGrantType.PASSWORD.getValue(),
+            AuthorizationGrantType.REFRESH_TOKEN.getValue(),
+            Oauth2Utils.TFA_CODE.getValue()
+    );
+    private static final String REFRESH_TOKEN_COOKIE_PATH = "/eca-oauth/oauth2/token";
 
     /**
      * Web application external base url
@@ -90,5 +99,20 @@ public class AppProperties {
          * Whitelist urls
          */
         private List<String> whitelistUrls = newArrayList();
+
+        /**
+         * Writes token in cookie?
+         */
+        private boolean writeTokenInCookie;
+
+        /**
+         * Refresh token cookie path
+         */
+        private String refreshTokenCookiePath = REFRESH_TOKEN_COOKIE_PATH;
+
+        /**
+         * Token in cookie available grant types
+         */
+        private List<String> tokenInCookieAvailableGrantTypes = TOKEN_IN_COOKIES_GRANT_TYPES;
     }
 }

@@ -1,6 +1,7 @@
 package com.ecaservice.oauth.config.security;
 
 import com.ecaservice.common.web.resource.JsonResourceLoader;
+import com.ecaservice.oauth.config.AppProperties;
 import com.ecaservice.oauth.config.Oauth2RegisteredClient;
 import com.ecaservice.oauth.config.TfaConfig;
 import com.ecaservice.oauth.repository.UserEntityRepository;
@@ -10,6 +11,8 @@ import com.ecaservice.oauth.security.OAuth2TokenCustomizerImpl;
 import com.ecaservice.oauth.security.Oauth2AccessTokenService;
 import com.ecaservice.oauth.security.authentication.Oauth2PasswordGrantAuthenticationProvider;
 import com.ecaservice.oauth.security.authentication.Oauth2TfaCodeGrantAuthenticationProvider;
+import com.ecaservice.oauth.security.authentication.Oauth2TokenAuthenticationSuccessHandler;
+import com.ecaservice.oauth.security.authentication.Oauth2TokenRevocationSuccessHandler;
 import com.ecaservice.oauth.security.converter.Oauth2PasswordGrantAuthenticationConverter;
 import com.ecaservice.oauth.security.converter.Oauth2TfaCodeGrantAuthenticationConverter;
 import com.ecaservice.oauth.service.tfa.TfaCodeService;
@@ -68,6 +71,7 @@ public class AuthorizationServerSecurityConfiguration {
 
     private static final String OAUTH2_REGISTERED_CLIENTS_JSON = "oauth2-registered-clients.json";
 
+    private final AppProperties appProperties;
     private final JsonResourceLoader jsonResourceLoader = new JsonResourceLoader();
 
     /**
@@ -123,8 +127,11 @@ public class AuthorizationServerSecurityConfiguration {
                                 .accessTokenRequestConverter(new Oauth2TfaCodeGrantAuthenticationConverter())
                                 .authenticationProvider(passwordGrantAuthenticationProvider)
                                 .authenticationProvider(tfaCodeGrantAuthenticationProvider)
+                                .accessTokenResponseHandler(new Oauth2TokenAuthenticationSuccessHandler(appProperties))
                                 .errorResponseHandler(oAuth2AuthenticationFailureErrorHandler)
-                );
+                )
+                .tokenRevocationEndpoint(endpoint ->
+                        endpoint.revocationResponseHandler(new Oauth2TokenRevocationSuccessHandler(appProperties)));
         RequestMatcher endpointsMatcher = authorizationServerConfigurer.getEndpointsMatcher();
         http
                 .cors(AbstractHttpConfigurer::disable)
