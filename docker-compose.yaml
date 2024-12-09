@@ -83,7 +83,7 @@ services:
     environment:
       TZ: ${TIME_ZONE}
       SPRING_PROFILES_ACTIVE: "docker"
-      JAVA_OPTS: "-Xmx256m"
+      JAVA_OPTS: "-Xmx192m"
       MANAGEMENT_ZIPKIN_TRACING_ENABLED: ${ZIPKIN_ENABLED}
       MANAGEMENT_ZIPKIN_TRACING_ENDPOINT: ${ZIPKIN_URL}
     networks:
@@ -202,7 +202,7 @@ services:
     environment:
       TZ: ${TIME_ZONE}
       SPRING_PROFILES_ACTIVE: "docker"
-      JAVA_OPTS: "-Xmx384m"
+      JAVA_OPTS: "-Xmx192m"
       MANAGEMENT_ZIPKIN_TRACING_ENABLED: ${ZIPKIN_ENABLED}
       MANAGEMENT_ZIPKIN_TRACING_ENDPOINT: ${ZIPKIN_URL}
     networks:
@@ -216,7 +216,7 @@ services:
     environment:
       TZ: ${TIME_ZONE}
       SPRING_PROFILES_ACTIVE: "docker"
-      JAVA_OPTS: "-Xmx512m"
+      JAVA_OPTS: "-Xmx256m"
       MANAGEMENT_ZIPKIN_TRACING_ENABLED: ${ZIPKIN_ENABLED}
       MANAGEMENT_ZIPKIN_TRACING_ENDPOINT: ${ZIPKIN_URL}
     ports:
