@@ -25,6 +25,11 @@ spring:
     change-log: classpath:db/liquibase-changelog.xml
 
 eureka:
+  instance:
+    metadata-map:
+      metrics.path: /actuator/prometheus
+      health.path: /actuator/health
+      management.context-path: /actuator
   client:
     registerWithEureka: false
     fetchRegistry: false

@@ -47,6 +47,11 @@ spring:
             token-uri: http://localhost:8085/oauth2/token
 
 eureka:
+  instance:
+    metadata-map:
+      metrics.path: /actuator/prometheus
+      health.path: /actuator/health
+      management.context-path: /actuator
   client:
     registerWithEureka: false
     fetchRegistry: false
