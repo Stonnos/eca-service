@@ -5,6 +5,9 @@ server:
   port: 8761
 
 eureka:
+  server:
+    ## See https://www.baeldung.com/eureka-self-preservation-renewal
+    enable-self-preservation: false
   instance:
     hostname: localhost
   client:
