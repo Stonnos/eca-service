@@ -10,11 +10,11 @@
 
 |===
 |*Endpoint*|*Тип запроса*|*Описание*|*Формат запроса*|*Формат ответа*
-|http://eca-service:8761/api/prometheus/sd-configs
+|http://eca-service:8761/eureka/apps
 |GET
 |Возвращает ответ для prometheus со списком сервисов для мониторинга
 |-
-|application/json
+|application/xml
 |===
 
 == 2. Получение списка сервисов для мониторинга с помощью prometheus
@@ -25,161 +25,62 @@
 
 [source,bash]
 ----
-curl -X GET "http://eca-service:8761/api/prometheus/sd-configs"
+curl -X GET "http://eca-service:8761/eureka/apps"
 ----
 
 Пример ответа:
 
-[source,json]
+[source,xml]
 ----
-[
-    {
-        "targets": [
-            "859eb9bc8f89:8080"
-        ],
-        "labels": {
-            "__meta_discovery_app_name": "eca-web",
-            "__meta_discovery_app_instance_name": "eca-web-1",
-            "__meta_discovery_app_instance_metrics_path": "/actuator/prometheus",
-            "__meta_discovery_app_instance_status": "UP",
-            "__meta_discovery_app_instance_last_updated_date": "2022-12-16 13:16:44"
-        }
-    },
-    {
-        "targets": [
-            "375a17fa4e70:8080"
-        ],
-        "labels": {
-            "__meta_discovery_app_name": "eca-ers",
-            "__meta_discovery_app_instance_name": "eca-ers-1",
-            "__meta_discovery_app_instance_metrics_path": "/actuator/prometheus",
-            "__meta_discovery_app_instance_status": "UP",
-            "__meta_discovery_app_instance_last_updated_date": "2022-12-16 13:16:53"
-        }
-    },
-    {
-        "targets": [
-            "329a34741260:8099"
-        ],
-        "labels": {
-            "__meta_discovery_app_name": "eca-web-push",
-            "__meta_discovery_app_instance_name": "eca-web-push-1",
-            "__meta_discovery_app_instance_metrics_path": "/actuator/prometheus",
-            "__meta_discovery_app_instance_status": "UP",
-            "__meta_discovery_app_instance_last_updated_date": "2022-12-16 13:16:54"
-        }
-    },
-    {
-        "targets": [
-            "5760a5ab801b:8030"
-        ],
-        "labels": {
-            "__meta_discovery_app_name": "api-gateway",
-            "__meta_discovery_app_instance_name": "api-gateway-1",
-            "__meta_discovery_app_instance_metrics_path": "/actuator/prometheus",
-            "__meta_discovery_app_instance_status": "UP",
-            "__meta_discovery_app_instance_last_updated_date": "2022-12-16 13:17:02"
-        }
-    },
-    {
-        "targets": [
-            "7f343a34022f:8080"
-        ],
-        "labels": {
-            "__meta_discovery_app_name": "eca-mail",
-            "__meta_discovery_app_instance_name": "eca-mail-1",
-            "__meta_discovery_app_instance_metrics_path": "/actuator/prometheus",
-            "__meta_discovery_app_instance_status": "UP",
-            "__meta_discovery_app_instance_last_updated_date": "2022-12-16 13:17:02"
-        }
-    },
-    {
-        "targets": [
-            "5fc8351f29c4:8080"
-        ],
-        "labels": {
-            "__meta_discovery_app_name": "eca-audit-log",
-            "__meta_discovery_app_instance_name": "eca-audit-log-1",
-            "__meta_discovery_app_instance_metrics_path": "/actuator/prometheus",
-            "__meta_discovery_app_instance_status": "UP",
-            "__meta_discovery_app_instance_last_updated_date": "2022-12-16 13:17:04"
-        }
-    },
-    {
-        "targets": [
-            "1e91c94aa786:8080"
-        ],
-        "labels": {
-            "__meta_discovery_app_name": "eca-data-storage",
-            "__meta_discovery_app_instance_name": "eca-data-storage-1",
-            "__meta_discovery_app_instance_metrics_path": "/actuator/prometheus",
-            "__meta_discovery_app_instance_status": "UP",
-            "__meta_discovery_app_instance_last_updated_date": "2022-12-16 13:17:07"
-        }
-    },
-    {
-        "targets": [
-            "132eb1c5dd15:8080"
-        ],
-        "labels": {
-            "__meta_discovery_app_name": "eca-oauth",
-            "__meta_discovery_app_instance_name": "eca-oauth-1",
-            "__meta_discovery_app_instance_metrics_path": "/actuator/prometheus",
-            "__meta_discovery_app_instance_status": "UP",
-            "__meta_discovery_app_instance_last_updated_date": "2022-12-16 13:17:09"
-        }
-    },
-    {
-        "targets": [
-            "26213c37a099:8080"
-        ],
-        "labels": {
-            "__meta_discovery_app_name": "eca-server",
-            "__meta_discovery_app_instance_name": "eca-server-1",
-            "__meta_discovery_app_instance_metrics_path": "/actuator/prometheus",
-            "__meta_discovery_app_instance_status": "UP",
-            "__meta_discovery_app_instance_last_updated_date": "2022-12-16 13:17:12"
-        }
-    },
-    {
-        "targets": [
-            "2708d3ca6b79:8080"
-        ],
-        "labels": {
-            "__meta_discovery_app_name": "eca-server",
-            "__meta_discovery_app_instance_name": "eca-server-2",
-            "__meta_discovery_app_instance_metrics_path": "/actuator/prometheus",
-            "__meta_discovery_app_instance_status": "UP",
-            "__meta_discovery_app_instance_last_updated_date": "2022-12-16 13:16:46"
-        }
-    }
-]
+<applications>
+    <versions__delta>1</versions__delta>
+    <apps__hashcode>UP_2_</apps__hashcode>
+    <application>
+        <name>API-GATEWAY</name>
+        <instance>
+            <instanceId>api-gateway-7774669447-jfh2l:api-gateway</instanceId>
+            <hostName>10.1.4.55</hostName>
+            <app>API-GATEWAY</app>
+            <ipAddr>10.1.4.55</ipAddr>
+            <status>UP</status>
+            <overriddenstatus>UNKNOWN</overriddenstatus>
+            <port enabled="true">8080</port>
+            <securePort enabled="false">443</securePort>
+            <countryId>1</countryId>
+            <dataCenterInfo class="com.netflix.appinfo.InstanceInfo$DefaultDataCenterInfo">
+                <name>MyOwn</name>
+            </dataCenterInfo>
+            <leaseInfo>
+                <renewalIntervalInSecs>30</renewalIntervalInSecs>
+                <durationInSecs>90</durationInSecs>
+                <registrationTimestamp>1733726717298</registrationTimestamp>
+                <lastRenewalTimestamp>1733727557464</lastRenewalTimestamp>
+                <evictionTimestamp>0</evictionTimestamp>
+                <serviceUpTimestamp>1733726716786</serviceUpTimestamp>
+            </leaseInfo>
+            <metadata>
+                <health.path>/actuator/health</health.path>
+                <management.port>8030</management.port>
+                <metrics.path>/actuator/prometheus</metrics.path>
+                <management.context-path>/actuator</management.context-path>
+            </metadata>
+            <homePageUrl>http://10.1.4.55:8080/</homePageUrl>
+            <statusPageUrl>http://10.1.4.55:8030/actuator/info</statusPageUrl>
+            <healthCheckUrl>http://10.1.4.55:8030/actuator/health</healthCheckUrl>
+            <vipAddress>api-gateway</vipAddress>
+            <secureVipAddress>api-gateway</secureVipAddress>
+            <isCoordinatingDiscoveryServer>false</isCoordinatingDiscoveryServer>
+            <lastUpdatedTimestamp>1733726717298</lastUpdatedTimestamp>
+            <lastDirtyTimestamp>1733726716739</lastDirtyTimestamp>
+            <actionType>ADDED</actionType>
+        </instance>
+    </application>
+</applications>
 ----
 
-Подробное описание формата ответа для prometheus приведено в https://prometheus.io/docs/prometheus/latest/configuration/configuration/#http_sd_config.
+Подробное описание формата ответа для prometheus приведено в https://prometheus.io/docs/prometheus/latest/configuration/configuration/#eureka_sd_config.
 
-=== 2.2. Описание меток для <relabel_config>
-
-|===
-|*Название метки*|*Описание*|*Пример значения*
-|__meta_discovery_app_name
-|Название сервиса
-|eca-server
-|__meta_discovery_app_instance_name
-|Название инстанса для конкретного сервиса
-|eca-server-1
-|__meta_discovery_app_instance_metrics_path
-|Endpoint сервиса для получения метрик в формате prometheus
-|/actuator/prometheus
-|__meta_discovery_app_instance_status
-|Статус инстанса (UP или DOWN)
-|UP
-|__meta_discovery_app_instance_last_updated_date
-|Дата последнего обновления данных инстанса в формате *yyyy-MM-dd HH:mm:ss*
-|2022-12-16 15:00:00
-|===
-
-=== 2.3. Пример настройки <http_sd_configs>
+=== 2.2. Пример настройки <eureka_sd_configs>
 
 Ниже приведен пример *prometheus.yml* с настройками *http_sd_configs* для получения списка сервисов для мониторинга
 
@@ -191,15 +92,19 @@ global:
 
 scrape_configs:
   - job_name: 'service-discovery'
-    http_sd_configs:
-      - url: 'http://discovery-server:8761/api/prometheus/sd-configs'
+    eureka_sd_configs:
+      - server: 'http://discovery-server:8761/eureka'
         refresh_interval: 30s
     relabel_configs:
-      - source_labels: [__meta_discovery_app_name]
+      - source_labels: [__meta_eureka_app_name]
         target_label: application
-      - source_labels: [__meta_discovery_app_instance_name]
-        target_label: instance
-      - source_labels: [__meta_discovery_app_instance_metrics_path]
+      - source_labels: [__meta_eureka_app_instance_metadata_metrics_path]
         target_label: __metrics_path__
+      - source_labels: [__meta_eureka_app_instance_instance_id]
+        target_label: instance
+      - source_labels: [__meta_eureka_app_instance_ip_addr, __meta_eureka_app_instance_metadata_management_port]
+        action: replace
+        separator: ':'
+        target_label: __address__
 ----
 

@@ -3,6 +3,11 @@ spring:
     name: eca-web
 
 eureka:
+  instance:
+    metadata-map:
+      metrics.path: /actuator/prometheus
+      health.path: /actuator/health
+      management.context-path: /actuator
   client:
     registerWithEureka: false
     fetchRegistry: false

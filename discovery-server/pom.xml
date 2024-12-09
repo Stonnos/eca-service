@@ -15,9 +15,6 @@
     <properties>
         <spring-cloud-starter-netflix-eureka-server.version>4.1.1</spring-cloud-starter-netflix-eureka-server.version>
         <sonar.coverage.exclusions>
-            **/config/**/*,
-            **/model/**/*,
-            **/dto/**/*,
             **/DiscoveryServerApplication.java
         </sonar.coverage.exclusions>
     </properties>
@@ -63,12 +60,6 @@
         <dependency>
             <groupId>eca.service</groupId>
             <artifactId>core-tracing</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>eca.service</groupId>
-            <artifactId>swagger-core</artifactId>
             <version>${project.version}</version>
         </dependency>
 

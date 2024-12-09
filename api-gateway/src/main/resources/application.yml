@@ -68,6 +68,11 @@ spring:
             - Path=/**
 
 eureka:
+  instance:
+    metadata-map:
+      metrics.path: /actuator/prometheus
+      health.path: /actuator/health
+      management.context-path: /actuator
   client:
     serviceUrl:
       defaultZone: http://discovery-server:8761/eureka
