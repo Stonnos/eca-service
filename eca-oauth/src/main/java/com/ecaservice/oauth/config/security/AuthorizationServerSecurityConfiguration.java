@@ -13,6 +13,8 @@ import com.ecaservice.oauth.security.authentication.Oauth2PasswordGrantAuthentic
 import com.ecaservice.oauth.security.authentication.Oauth2TfaCodeGrantAuthenticationProvider;
 import com.ecaservice.oauth.security.authentication.Oauth2TokenAuthenticationSuccessHandler;
 import com.ecaservice.oauth.security.authentication.Oauth2TokenRevocationSuccessHandler;
+import com.ecaservice.oauth.security.converter.OAuth2RefreshTokenCookieAuthenticationConverter;
+import com.ecaservice.oauth.security.converter.OAuth2TokenCookieRevocationAuthenticationConverter;
 import com.ecaservice.oauth.security.converter.Oauth2PasswordGrantAuthenticationConverter;
 import com.ecaservice.oauth.security.converter.Oauth2TfaCodeGrantAuthenticationConverter;
 import com.ecaservice.oauth.service.tfa.TfaCodeService;
@@ -48,12 +50,16 @@ import org.springframework.security.oauth2.server.authorization.token.OAuth2Acce
 import org.springframework.security.oauth2.server.authorization.token.OAuth2RefreshTokenGenerator;
 import org.springframework.security.oauth2.server.authorization.token.OAuth2TokenClaimsContext;
 import org.springframework.security.oauth2.server.authorization.token.OAuth2TokenCustomizer;
+import org.springframework.security.oauth2.server.authorization.web.authentication.OAuth2RefreshTokenAuthenticationConverter;
+import org.springframework.security.oauth2.server.authorization.web.authentication.OAuth2TokenRevocationAuthenticationConverter;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.AuthenticationConverter;
 import org.springframework.security.web.util.matcher.RequestMatcher;
 
 import java.io.IOException;
 import java.time.Duration;
 import java.util.List;
+import java.util.function.Consumer;
 
 /**
  * Authorization server security configuration.
@@ -129,9 +135,12 @@ public class AuthorizationServerSecurityConfiguration {
                                 .authenticationProvider(tfaCodeGrantAuthenticationProvider)
                                 .accessTokenResponseHandler(new Oauth2TokenAuthenticationSuccessHandler(appProperties))
                                 .errorResponseHandler(oAuth2AuthenticationFailureErrorHandler)
+                                .accessTokenRequestConverters(authenticationConverterCustomizer())
                 )
                 .tokenRevocationEndpoint(endpoint ->
-                        endpoint.revocationResponseHandler(new Oauth2TokenRevocationSuccessHandler(appProperties)));
+                        endpoint.revocationResponseHandler(new Oauth2TokenRevocationSuccessHandler(appProperties))
+                                .revocationRequestConverters(revocationConverterCustomizer())
+                );
         RequestMatcher endpointsMatcher = authorizationServerConfigurer.getEndpointsMatcher();
         http
                 .cors(AbstractHttpConfigurer::disable)
@@ -230,6 +239,32 @@ public class AuthorizationServerSecurityConfiguration {
         daoAuthenticationProvider.setPasswordEncoder(passwordEncoder);
         daoAuthenticationProvider.setUserDetailsService(userDetailsService);
         return daoAuthenticationProvider;
+    }
+
+    private Consumer<List<AuthenticationConverter>> authenticationConverterCustomizer() {
+        return converters -> {
+            if (appProperties.getSecurity().isWriteTokenInCookie()) {
+                converters.add(new OAuth2RefreshTokenCookieAuthenticationConverter());
+                // Removes default refresh token converter
+                converters.removeIf(
+                        authenticationConverter -> OAuth2RefreshTokenAuthenticationConverter.class.isAssignableFrom(
+                                authenticationConverter.getClass())
+                );
+            }
+        };
+    }
+
+    private Consumer<List<AuthenticationConverter>> revocationConverterCustomizer() {
+        return converters -> {
+            if (appProperties.getSecurity().isWriteTokenInCookie()) {
+                converters.add(new OAuth2TokenCookieRevocationAuthenticationConverter());
+                // Removes default token revocation converter
+                converters.removeIf(
+                        authenticationConverter -> OAuth2TokenRevocationAuthenticationConverter.class.isAssignableFrom(
+                                authenticationConverter.getClass())
+                );
+            }
+        };
     }
 
     private OAuth2AuthenticationFailureErrorHandler createOAuth2AuthenticationFailureErrorHandler() {

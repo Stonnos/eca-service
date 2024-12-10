@@ -1,18 +1,14 @@
 package com.ecaservice.oauth.util;
 
-import jakarta.servlet.http.Cookie;
 import lombok.experimental.UtilityClass;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.oauth2.core.AbstractOAuth2Token;
 import org.springframework.security.oauth2.core.AuthorizationGrantType;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.OAuth2ErrorCodes;
 import org.springframework.security.oauth2.server.authorization.authentication.OAuth2ClientAuthenticationToken;
 
-import java.time.temporal.ChronoUnit;
 import java.util.Collection;
 import java.util.Map;
 import java.util.function.Function;
@@ -29,25 +25,6 @@ public class Oauth2Utils {
      * Tfa code grant type
      */
     public static final AuthorizationGrantType TFA_CODE = new AuthorizationGrantType("tfa_code");
-
-    /**
-     * Access token cookie
-     */
-    public static final String ACCESS_TOKEN_COOKIE = "AccessToken";
-
-    /**
-     * Refresh token cookie
-     */
-    public static final String REFRESH_TOKEN_COOKIE = "RefreshToken";
-
-
-    /**
-     * All path
-     */
-    public static final String ALL_PATH = "/";
-
-    private static final String SAME_SITE_ATTRIBUTE = "SameSite";
-    private static final String STRICT = "Strict";
 
     /**
      * Populates authorities from claims property.
@@ -86,39 +63,5 @@ public class Oauth2Utils {
             return clientPrincipal;
         }
         throw new OAuth2AuthenticationException(OAuth2ErrorCodes.INVALID_CLIENT);
-    }
-
-    /**
-     * Creates token cookie with attributes: httpOnly=true, SameSite=Strict.
-     *
-     * @param cookieName - token cookie name
-     * @param token      - token
-     * @param path       - cookie path
-     * @return token cookie
-     */
-    public static Cookie tokenCookie(String cookieName, AbstractOAuth2Token token, String path) {
-        Cookie tokenCookie = new Cookie(cookieName, token.getTokenValue());
-        tokenCookie.setHttpOnly(true);
-        tokenCookie.setAttribute(SAME_SITE_ATTRIBUTE, STRICT);
-        int maxAge = (int) ChronoUnit.SECONDS.between(token.getIssuedAt(), token.getExpiresAt());
-        tokenCookie.setMaxAge(maxAge);
-        tokenCookie.setPath(path);
-        return tokenCookie;
-    }
-
-    /**
-     * Erases token cookie.
-     *
-     * @param cookieName - token cookie name
-     * @param path       - cookie path
-     * @return erased token cookie
-     */
-    public static Cookie eraseCookie(String cookieName, String path) {
-        Cookie tokenCookie = new Cookie(cookieName, StringUtils.EMPTY);
-        tokenCookie.setHttpOnly(true);
-        tokenCookie.setAttribute(SAME_SITE_ATTRIBUTE, STRICT);
-        tokenCookie.setMaxAge(0);
-        tokenCookie.setPath(path);
-        return tokenCookie;
     }
 }

@@ -5,6 +5,7 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.server.ServletServerHttpResponse;
@@ -22,16 +23,17 @@ import java.io.IOException;
 import java.time.temporal.ChronoUnit;
 import java.util.Map;
 
-import static com.ecaservice.oauth.util.Oauth2Utils.ACCESS_TOKEN_COOKIE;
-import static com.ecaservice.oauth.util.Oauth2Utils.ALL_PATH;
-import static com.ecaservice.oauth.util.Oauth2Utils.REFRESH_TOKEN_COOKIE;
-import static com.ecaservice.oauth.util.Oauth2Utils.tokenCookie;
+import static com.ecaservice.oauth.util.CookiesUtils.ACCESS_TOKEN_COOKIE;
+import static com.ecaservice.oauth.util.CookiesUtils.ALL_PATH;
+import static com.ecaservice.oauth.util.CookiesUtils.REFRESH_TOKEN_COOKIE;
+import static com.ecaservice.oauth.util.CookiesUtils.tokenCookie;
 
 /**
  * Oauth2 token authentication success handler.
  *
  * @author Roman Batygin
  */
+@Slf4j
 @RequiredArgsConstructor
 public class Oauth2TokenAuthenticationSuccessHandler implements AuthenticationSuccessHandler {
 
@@ -63,6 +65,7 @@ public class Oauth2TokenAuthenticationSuccessHandler implements AuthenticationSu
         response.addCookie(accessTokenCookie);
         response.addCookie(refreshTokenCookie);
         response.setStatus(HttpStatus.OK.value());
+        log.info("Access/refresh token cookies has been write in response");
     }
 
     private void sendAccessTokenResponse(HttpServletResponse response,
