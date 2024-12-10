@@ -63,8 +63,6 @@ public class ResourceServerConfiguration {
     @Primary
     public BearerTokenResolver bearerTokenResolver() {
         DefaultBearerTokenResolver defaultBearerTokenResolver = new DefaultBearerTokenResolver();
-        defaultBearerTokenResolver.setAllowUriQueryParameter(
-                resourceServerProperties.getSecurity().isAllowUBearerTokenUriQueryParameter());
         return new SimpleBearerTokenResolver(defaultBearerTokenResolver);
     }
 
