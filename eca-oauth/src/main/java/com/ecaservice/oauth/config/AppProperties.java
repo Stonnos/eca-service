@@ -27,6 +27,7 @@ public class AppProperties {
             AuthorizationGrantType.REFRESH_TOKEN.getValue(),
             Oauth2Utils.TFA_CODE.getValue()
     );
+
     private static final String REFRESH_TOKEN_COOKIE_PATH = "/eca-oauth/oauth2/token";
 
     /**

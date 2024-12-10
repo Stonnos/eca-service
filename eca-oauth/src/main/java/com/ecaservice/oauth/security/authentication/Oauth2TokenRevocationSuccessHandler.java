@@ -1,6 +1,7 @@
 package com.ecaservice.oauth.security.authentication;
 
 import com.ecaservice.oauth.config.AppProperties;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -30,9 +31,11 @@ public class Oauth2TokenRevocationSuccessHandler implements AuthenticationSucces
                                         HttpServletResponse response,
                                         Authentication authentication) {
         if (appProperties.getSecurity().isWriteTokenInCookie()) {
-            response.addCookie(expiredCookie(ACCESS_TOKEN_COOKIE, ALL_PATH));
-            response.addCookie(
-                    expiredCookie(REFRESH_TOKEN_COOKIE, appProperties.getSecurity().getRefreshTokenCookiePath()));
+            Cookie accessTokenCookie = expiredCookie(ACCESS_TOKEN_COOKIE, ALL_PATH);
+            Cookie refreshTokenCookie =
+                    expiredCookie(REFRESH_TOKEN_COOKIE, appProperties.getSecurity().getRefreshTokenCookiePath());
+            response.addCookie(accessTokenCookie);
+            response.addCookie(refreshTokenCookie);
             log.info("Access/refresh token cookies has been expired after revocation");
         }
         response.setStatus(HttpStatus.OK.value());
