@@ -67,5 +67,5 @@
     
 2. Запустить проект с помощью команды:
 
-    java -jar /target/eca-oauth.war
+    java -jar /target/eca-oauth.jar
 
