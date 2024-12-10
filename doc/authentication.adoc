@@ -25,10 +25,11 @@ curl eca_web:web_secret@localhost:8080/eca-oauth/oauth2/token -d grant_type=pass
 
 Заголовки ответа:
 
-Set-Cookie:
-AccessToken=56UjSjQvXLH08BxW1wLxxCMeVRQFJkzvDsYJgsunXkYL0iqppY2jOaJ7hBjCdLKaQl3lDTFrnmumjUmYQtVbn6jQnwrV1g3PmPh3jLDq1Jhkt7IqyU0YiThiF-Epmjsz; Max-Age=1800; Expires=Tue, 10 Dec 2024 16:59:24 GMT; Path=/; HttpOnly; SameSite=Strict
-Set-Cookie:
-RefreshToken=UtBs7IiqkKqBq8cjlSFoj29_2gwQkcifCQZ6VCHP3Y6XTMy0PPG-EF-Tw1zQ93sNpXmv8q2Li32dwaVd64sUa7sLLxu9Drd205uVulO9BiNfb8lP0cPX8qSTcHneJOJO; Max-Age=2592000; Expires=Thu, 09 Jan 2025 16:29:24 GMT; Path=/eca-oauth/oauth2/token; HttpOnly; SameSite=Strict
+*Set-Cookie:*
+*AccessToken*=56UjSjQvXLH08BxW1wLxxCMeVRQFJkzvDsYJgsunXkYL0iqppY2jOaJ7hBjCdLKaQl3lDTFrnmumjUmYQtVbn6jQnwrV1g3PmPh3jLDq1Jhkt7IqyU0YiThiF-Epmjsz; Max-Age=1800; Expires=Tue, 10 Dec 2024 16:59:24 GMT; Path=/; HttpOnly; SameSite=Strict
+
+*Set-Cookie:*
+*RefreshToken*=UtBs7IiqkKqBq8cjlSFoj29_2gwQkcifCQZ6VCHP3Y6XTMy0PPG-EF-Tw1zQ93sNpXmv8q2Li32dwaVd64sUa7sLLxu9Drd205uVulO9BiNfb8lP0cPX8qSTcHneJOJO; Max-Age=2592000; Expires=Thu, 09 Jan 2025 16:29:24 GMT; Path=/eca-oauth/oauth2/token; HttpOnly; SameSite=Strict
 
 В случае, если у пользователя установлен временный пароль, то запрос возвращает 403 ошибку с телом ответа:
 
@@ -61,7 +62,7 @@ RefreshToken=UtBs7IiqkKqBq8cjlSFoj29_2gwQkcifCQZ6VCHP3Y6XTMy0PPG-EF-Tw1zQ93sNpXm
 curl eca_web:web_secret@localhost:8080/eca-oauth/oauth2/token -d grant_type=refresh_token -b "RefreshToken=UtBs7IiqkKqBq8cjlSFoj29_2gwQkcifCQZ6VCHP3Y6XTMy0PPG-EF-Tw1zQ93sNpXmv8q2Li32dwaVd64sUa7sLLxu9Drd205uVulO9BiNfb8lP0cPX8qSTcHneJOJO"
 ----
 
-где RefreshToken - cookie с refresh токеном
+где *RefreshToken* - cookie с refresh токеном
 
 == 3. Пример запроса на получение токена с использованием двухфакторной аутентификации
 
@@ -70,7 +71,7 @@ curl eca_web:web_secret@localhost:8080/eca-oauth/oauth2/token -d grant_type=refr
 curl eca_web:web_secret@localhost:8080/eca-oauth/oauth2/token -d grant_type=tfa_code -d token=ff47d750-0b50-40f0-9dc8-454819685eea -d tfa_code=849674
 ----
 
-где *tfa_code* - одноразовый пароль для двухфакторной аутентификации, который должен прийти по почте.
+где *tfa_code* - одноразовый пароль для двухфакторной аутентификации, который должен прийти по почте, *token* - временный токен
 
 == 4. Пример запроса на проверку валидности access token
 
@@ -121,4 +122,4 @@ curl eca_web:web_secret@localhost:8080/eca-oauth/oauth2/introspect -d token=5LG5
 curl eca_web:web_secret@localhost:8080/eca-oauth/oauth2/revoke -b "AccessToken=56UjSjQvXLH08BxW1wLxxCMeVRQFJkzvDsYJgsunXkYL0iqppY2jOaJ7hBjCdLKaQl3lDTFrnmumjUmYQtVbn6jQnwrV1g3PmPh3jLDq1Jhkt7IqyU0YiThiF-Epmjsz"
 ----
 
-где AccessToken - cookie с access токеном
+где *AccessToken* - cookie с access токеном
