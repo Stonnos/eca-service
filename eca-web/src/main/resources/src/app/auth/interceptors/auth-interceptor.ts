@@ -37,6 +37,11 @@ export class AuthInterceptor implements HttpInterceptor {
       if (error instanceof HttpErrorResponse) {
         // Try to refresh access token
         if (error.status === 401) {
+          if (request.url.includes(AuthInterceptor.TOKEN_URL)) {
+            Logger.debug(`401 Unauthorized for ${AuthInterceptor.TOKEN_URL} url`);
+            this.logoutService.logout();
+            return EMPTY;
+          }
           if (this.refreshTokenInProgress) {
             return this.refreshTokenSubject.pipe(
               filter(result => result),
