@@ -133,7 +133,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   private handleLogoutError(error): void {
     if (error instanceof HttpErrorResponse) {
-      if (error.status === 401 || error.status === 400) {
+      if (error.status === 401) {
         this.logoutService.logout();
       } else {
         this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
