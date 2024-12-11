@@ -246,4 +246,28 @@
         </addColumn>
     </changeSet>
 
+    <changeSet id="add_form_field_invalid_required_message_column" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="form_field"/>
+            <not>
+                <columnExists tableName="form_field" columnName="invalid_required_message"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="form_field">
+            <column name="invalid_required_message" type="varchar(255)"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="add_form_field_invalid_max_length_message_column" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="form_field"/>
+            <not>
+                <columnExists tableName="form_field" columnName="invalid_max_length_message"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="form_field">
+            <column name="invalid_max_length_message" type="varchar(255)"/>
+        </addColumn>
+    </changeSet>
+
 </databaseChangeLog>
