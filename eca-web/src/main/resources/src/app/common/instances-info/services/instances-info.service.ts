@@ -6,7 +6,6 @@ import {
 } from "../../../../../../../../target/generated-sources/typescript/eca-web-dto";
 import { environment } from "../../../../environments/environment";
 import { Observable } from "rxjs/internal/Observable";
-import { Utils } from "../../util/utils";
 import { InstancesInfoPageService } from "../../services/instances-info-page.service";
 
 @Injectable()
@@ -19,8 +18,7 @@ export class InstancesInfoService implements InstancesInfoPageService {
 
   public getInstancesInfoPage(pageRequest: PageRequestDto): Observable<PageDto<InstancesInfoDto>> {
     const headers = new HttpHeaders({
-      'Content-type': 'application/json; charset=utf-8',
-      'Authorization': Utils.getBearerTokenHeader()
+      'Content-type': 'application/json; charset=utf-8'
     });
     return this.http.post<PageDto<InstancesInfoDto>>(this.serviceUrl + '/list', pageRequest, { headers: headers });
   }

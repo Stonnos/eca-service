@@ -9,7 +9,6 @@ import {
 } from "../../../../../../../target/generated-sources/typescript/eca-web-dto";
 import { Observable } from "rxjs/internal/Observable";
 import { environment } from "../../../environments/environment";
-import { Utils } from "../../common/util/utils";
 import { catchError, finalize, switchMap } from "rxjs/internal/operators";
 import { EMPTY } from "rxjs/internal/observable/empty";
 import { saveAs } from 'file-saver/dist/FileSaver';
@@ -28,48 +27,42 @@ export class ClassifiersService {
 
   public createEvaluationRequest(evaluationRequestDto: CreateEvaluationRequestDto): Observable<CreateEvaluationResponseDto> {
     const headers = new HttpHeaders({
-      'Content-type': 'application/json; charset=utf-8',
-      'Authorization': Utils.getBearerTokenHeader()
+      'Content-type': 'application/json; charset=utf-8'
     });
     return this.http.post<CreateEvaluationResponseDto>(this.serviceUrl + '/create', evaluationRequestDto, { headers: headers });
   }
 
   public createOptimalEvaluationRequest(evaluationRequestDto: CreateOptimalEvaluationRequestDto): Observable<CreateEvaluationResponseDto> {
     const headers = new HttpHeaders({
-      'Content-type': 'application/json; charset=utf-8',
-      'Authorization': Utils.getBearerTokenHeader()
+      'Content-type': 'application/json; charset=utf-8'
     });
     return this.http.post<CreateEvaluationResponseDto>(this.serviceUrl + '/create-optimal', evaluationRequestDto, { headers: headers });
   }
 
   public getEvaluations(pageRequest: PageRequestDto): Observable<PageDto<EvaluationLogDto>> {
     const headers = new HttpHeaders({
-      'Content-type': 'application/json; charset=utf-8',
-      'Authorization': Utils.getBearerTokenHeader()
+      'Content-type': 'application/json; charset=utf-8'
     });
     return this.http.post<PageDto<EvaluationLogDto>>(this.serviceUrl + '/list', pageRequest, { headers: headers });
   }
 
   public getRequestStatusesStatistics(): Observable<RequestStatusStatisticsDto> {
     const headers = new HttpHeaders({
-      'Content-type': 'application/json; charset=utf-8',
-      'Authorization': Utils.getBearerTokenHeader()
+      'Content-type': 'application/json; charset=utf-8'
     });
     return this.http.get<RequestStatusStatisticsDto>(this.serviceUrl + '/request-statuses-statistics', { headers: headers });
   }
 
   public getEvaluationLogDetails(id: number): Observable<EvaluationLogDetailsDto> {
     const headers = new HttpHeaders({
-      'Content-type': 'application/json; charset=utf-8',
-      'Authorization': Utils.getBearerTokenHeader()
+      'Content-type': 'application/json; charset=utf-8'
     });
     return this.http.get<EvaluationLogDetailsDto>(this.serviceUrl + '/details/' + id, { headers: headers });
   }
 
   public getClassifiersStatistics(createdDateFrom: string, createdDateTo: string): Observable<ChartDto> {
     const headers = new HttpHeaders({
-      'Content-type': 'application/x-www-form-urlencoded; charset=utf-8',
-      'Authorization': Utils.getBearerTokenHeader()
+      'Content-type': 'application/x-www-form-urlencoded; charset=utf-8'
     });
     let params = new HttpParams().set('createdDateFrom', createdDateFrom).set('createdDateTo', createdDateTo);
     const options = { headers: headers, params: params };
@@ -78,8 +71,7 @@ export class ClassifiersService {
 
   public getModelContentUrl(id: number): Observable<S3ContentResponseDto> {
     const headers = new HttpHeaders({
-      'Content-type': 'application/json; charset=utf-8',
-      'Authorization': Utils.getBearerTokenHeader()
+      'Content-type': 'application/json; charset=utf-8'
     });
     return this.http.get<S3ContentResponseDto>(this.serviceUrl + '/model/' + id, { headers: headers });
   }

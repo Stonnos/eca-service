@@ -77,6 +77,10 @@ eureka:
     serviceUrl:
       defaultZone: http://discovery-server:8761/eureka
 
+app:
+  authHeaderFilterBlacklistUrls:
+    - /eca-oauth/oauth2/**
+
 management:
   tracing:
     sampling:

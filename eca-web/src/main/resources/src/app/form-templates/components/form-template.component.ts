@@ -121,6 +121,8 @@ export class FormTemplateComponent implements OnInit {
       copy.pattern = field.pattern;
       copy.defaultValue = field.defaultValue;
       copy.invalidPatternMessage = field.invalidPatternMessage;
+      copy.invalidRequiredMessage = field.invalidRequiredMessage;
+      copy.invalidMaxLengthMessage = field.invalidMaxLengthMessage;
       copy.placeholder = field.placeholder;
       copy.values = field.values.map((value: SelectItem) => {
         return { label: value.label, value: value.value };
@@ -136,7 +138,11 @@ export class FormTemplateComponent implements OnInit {
       for (let errorName in state.errors) {
         switch (errorName) {
           case 'required':
-            messages.push(`Заполните поле`);
+            if (formField.invalidRequiredMessage) {
+              messages.push(formField.invalidRequiredMessage);
+            } else {
+              messages.push(`Заполните поле`);
+            }
             break;
           case 'pattern':
             if (formField.invalidPatternMessage) {

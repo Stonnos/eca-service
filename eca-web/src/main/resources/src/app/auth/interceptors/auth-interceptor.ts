@@ -13,7 +13,6 @@ import { throwError } from "rxjs/internal/observable/throwError";
 import { LogoutService } from "../services/logout.service";
 import { BehaviorSubject } from "rxjs/internal/BehaviorSubject";
 import { AuthService } from "../services/auth.service";
-import { Utils } from "../../common/util/utils";
 import { Router } from "@angular/router";
 import { EventService } from "../../common/event/event.service";
 import { EventType } from "../../common/event/event.type";
@@ -36,9 +35,10 @@ export class AuthInterceptor implements HttpInterceptor {
   public intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     return next.handle(request).pipe(catchError(error => {
       if (error instanceof HttpErrorResponse) {
+        // Try to refresh access token
         if (error.status === 401) {
           if (request.url.includes(AuthInterceptor.TOKEN_URL)) {
-            Logger.debug('Refresh token expired');
+            Logger.debug(`401 Unauthorized for ${AuthInterceptor.TOKEN_URL} url`);
             this.logoutService.logout();
             return EMPTY;
           }
@@ -46,7 +46,7 @@ export class AuthInterceptor implements HttpInterceptor {
             return this.refreshTokenSubject.pipe(
               filter(result => result),
               take(1),
-              switchMap(() => next.handle(this.addAuthenticationToken(request)))
+              switchMap(() => next.handle(request))
             );
           } else {
             Logger.debug('Starting to refresh token');
@@ -56,13 +56,14 @@ export class AuthInterceptor implements HttpInterceptor {
             return this.injector.get(AuthService)
               .refreshToken().pipe(
                 switchMap(token => {
-                  this.injector.get(AuthService).saveToken(token);
+                  this.injector.get(AuthService).saveLoggedInData();
                   this.refreshTokenSubject.next(token);
                   Logger.debug('Token has been refreshed');
                   this.eventService.publishEvent(EventType.TOKEN_REFRESHED);
-                  return next.handle(this.addAuthenticationToken(request));
+                  return next.handle(request);
                 }),
                 catchError(error => {
+                  Logger.debug(`Refresh token expired. Handle refresh token error response with http status code ${error.status}`);
                   this.logoutService.logout();
                   return EMPTY;
                 }),
@@ -78,13 +79,5 @@ export class AuthInterceptor implements HttpInterceptor {
       }
       return throwError(error);
     }));
-  }
-
-  private addAuthenticationToken(request) {
-    return request.clone({
-      setHeaders: {
-        Authorization: Utils.getBearerTokenHeader()
-      }
-    });
   }
 }

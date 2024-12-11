@@ -5,7 +5,6 @@ import {
 } from "../../../../../../../target/generated-sources/typescript/eca-web-dto";
 import { Observable } from "rxjs/internal/Observable";
 import { environment } from "../../../environments/environment";
-import { Utils } from "../../common/util/utils";
 import { ClassifierGroupTemplatesType } from "../model/classifier-group-templates.type";
 
 @Injectable()
@@ -18,8 +17,7 @@ export class FormTemplatesService {
 
   public getClassifiersFormTemplates(classifierGroupTemplatesType: ClassifierGroupTemplatesType): Observable<FormTemplateGroupDto[]> {
     const headers = new HttpHeaders({
-      'Content-type': 'application/json; charset=utf-8',
-      'Authorization': Utils.getBearerTokenHeader()
+      'Content-type': 'application/json; charset=utf-8'
     });
     const params: HttpParams = new HttpParams()
       .set('classifierGroupTemplatesType', classifierGroupTemplatesType);
