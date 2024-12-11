@@ -35,12 +35,14 @@ export class AuthInterceptor implements HttpInterceptor {
   public intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     return next.handle(request).pipe(catchError(error => {
       if (error instanceof HttpErrorResponse) {
+        // Handle error for refresh token request
+        if (request.url.includes(AuthInterceptor.TOKEN_URL) && (error.status === 401 || error.status === 400)) {
+          Logger.debug('Refresh token expired');
+          this.logoutService.logout();
+          return EMPTY;
+        }
+        // Try to refresh access token
         if (error.status === 401) {
-          if (request.url.includes(AuthInterceptor.TOKEN_URL)) {
-            Logger.debug('Refresh token expired');
-            this.logoutService.logout();
-            return EMPTY;
-          }
           if (this.refreshTokenInProgress) {
             return this.refreshTokenSubject.pipe(
               filter(result => result),
