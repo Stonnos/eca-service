@@ -35,11 +35,6 @@ export class AuthInterceptor implements HttpInterceptor {
   public intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     return next.handle(request).pipe(catchError(error => {
       if (error instanceof HttpErrorResponse) {
-        // Handle error for refresh token request
-        if (request.url.includes(AuthInterceptor.TOKEN_URL) && (error.status === 401 || error.status === 400) && this.refreshTokenInProgress) {
-          Logger.debug('Refresh token expired');
-          return throwError(error);
-        }
         // Try to refresh access token
         if (error.status === 401) {
           if (this.refreshTokenInProgress) {
@@ -63,7 +58,7 @@ export class AuthInterceptor implements HttpInterceptor {
                   return next.handle(request);
                 }),
                 catchError(error => {
-                  Logger.debug(`Handle refresh token error response with http status code ${error.status}`);
+                  Logger.debug(`Refresh token expired. Handle refresh token error response with http status code ${error.status}`);
                   this.logoutService.logout();
                   return EMPTY;
                 }),
