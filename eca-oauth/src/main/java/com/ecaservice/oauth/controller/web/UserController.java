@@ -2,6 +2,7 @@ package com.ecaservice.oauth.controller.web;
 
 import com.ecaservice.common.error.model.ValidationErrorDto;
 import com.ecaservice.common.web.exception.EntityNotFoundException;
+import com.ecaservice.oauth.config.AppProperties;
 import com.ecaservice.oauth.dto.CreateUserDto;
 import com.ecaservice.oauth.dto.UpdateUserInfoDto;
 import com.ecaservice.oauth.entity.UserEntity;
@@ -11,6 +12,7 @@ import com.ecaservice.oauth.event.model.UserLockedEmailEvent;
 import com.ecaservice.oauth.event.model.UserUnLockedEmailEvent;
 import com.ecaservice.oauth.mapping.UserMapper;
 import com.ecaservice.oauth.repository.UserPhotoRepository;
+import com.ecaservice.oauth.service.Oauth2RevokeTokenService;
 import com.ecaservice.oauth.service.PasswordService;
 import com.ecaservice.oauth.service.UserService;
 import com.ecaservice.web.dto.model.PageDto;
@@ -28,6 +30,8 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
@@ -54,6 +58,10 @@ import java.security.Principal;
 
 import static com.ecaservice.config.swagger.OpenApi30Configuration.ECA_AUTHENTICATION_SECURITY_SCHEME;
 import static com.ecaservice.config.swagger.OpenApi30Configuration.SCOPE_WEB;
+import static com.ecaservice.oauth.util.CookiesUtils.ACCESS_TOKEN_COOKIE;
+import static com.ecaservice.oauth.util.CookiesUtils.ALL_PATH;
+import static com.ecaservice.oauth.util.CookiesUtils.REFRESH_TOKEN_COOKIE;
+import static com.ecaservice.oauth.util.CookiesUtils.expiredCookie;
 import static com.ecaservice.oauth.util.Utils.buildAttachmentResponse;
 import static com.ecaservice.web.dto.util.FieldConstraints.VALUE_1;
 
@@ -70,11 +78,55 @@ import static com.ecaservice.web.dto.util.FieldConstraints.VALUE_1;
 @RequiredArgsConstructor
 public class UserController {
 
+    private final AppProperties appProperties;
     private final UserService userService;
     private final PasswordService passwordService;
     private final UserMapper userMapper;
     private final ApplicationEventPublisher applicationEventPublisher;
+    private final Oauth2RevokeTokenService oauth2RevokeTokenService;
     private final UserPhotoRepository userPhotoRepository;
+
+    /**
+     * Logout current user and revokes access/refresh token pair.
+     *
+     * @param authentication - oauth2 authentication
+     * @param response       - http servlet response
+     */
+    @PreAuthorize("hasAuthority('SCOPE_web')")
+    @Operation(
+            description = "Logout current user and revokes access/refresh token pair",
+            summary = "Logout current user and revokes access/refresh token pair",
+            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME, scopes = SCOPE_WEB),
+            responses = {
+                    @ApiResponse(description = "OK", responseCode = "200"),
+                    @ApiResponse(description = "Not authorized", responseCode = "401",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    examples = {
+                                            @ExampleObject(
+                                                    name = "NotAuthorizedResponse",
+                                                    ref = "#/components/examples/NotAuthorizedResponse"
+                                            ),
+                                    }
+                            )
+                    )
+            }
+    )
+    @PostMapping(value = "/logout")
+    public void logout(Principal authentication, HttpServletResponse response) {
+        log.info("Request to logout user: [{}]", authentication.getName());
+        var userEntity = userService.getByLogin(authentication.getName());
+        oauth2RevokeTokenService.revokeTokens(userEntity);
+        if (appProperties.getSecurity().isWriteTokenInCookie()) {
+            Cookie accessTokenCookie = expiredCookie(ACCESS_TOKEN_COOKIE, ALL_PATH);
+            Cookie refreshTokenCookie =
+                    expiredCookie(REFRESH_TOKEN_COOKIE, appProperties.getSecurity().getRefreshTokenCookiePath());
+            response.addCookie(accessTokenCookie);
+            response.addCookie(refreshTokenCookie);
+            log.info("Access/refresh token cookies has been expired after revocation");
+        }
+        log.info("User [{}] has been logout", authentication.getName());
+    }
 
     /**
      * Gets current authenticated user info.

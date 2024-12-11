@@ -42,12 +42,7 @@ export class AuthService {
   }
 
   public logoutRequest(): Observable<any> {
-    const headers = new HttpHeaders({
-      'Content-type': 'application/x-www-form-urlencoded; charset=utf-8',
-      'Authorization': this.getHttpBasicAuthorizationHeader()
-    });
-    const options = { headers: headers };
-    return this.http.post(this.serviceUrl + '/oauth2/revoke', null, options);
+    return this.http.post(this.serviceUrl + '/users/logout', null);
   }
 
   private performTokenRequest(params: URLSearchParams): Observable<any> {
