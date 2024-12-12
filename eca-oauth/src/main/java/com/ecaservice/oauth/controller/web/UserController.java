@@ -42,6 +42,7 @@ import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.oauth2.server.resource.authentication.BearerTokenAuthentication;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -115,8 +116,8 @@ public class UserController {
     @PostMapping(value = "/logout")
     public void logout(Principal authentication, HttpServletResponse response) {
         log.info("Request to logout user: [{}]", authentication.getName());
-        var userEntity = userService.getByLogin(authentication.getName());
-        oauth2RevokeTokenService.revokeTokens(userEntity);
+        BearerTokenAuthentication bearerTokenAuthentication = (BearerTokenAuthentication) authentication;
+        oauth2RevokeTokenService.revokeToken(bearerTokenAuthentication);
         if (appProperties.getSecurity().isWriteTokenInCookie()) {
             Cookie accessTokenCookie = expiredCookie(ACCESS_TOKEN_COOKIE, ALL_PATH);
             Cookie refreshTokenCookie =
