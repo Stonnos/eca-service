@@ -2,6 +2,7 @@ package com.ecaservice.oauth.controller.web;
 
 import com.ecaservice.common.error.model.ValidationErrorDto;
 import com.ecaservice.common.web.exception.EntityNotFoundException;
+import com.ecaservice.core.audit.annotation.Audit;
 import com.ecaservice.oauth.config.AppProperties;
 import com.ecaservice.oauth.dto.CreateUserDto;
 import com.ecaservice.oauth.dto.UpdateUserInfoDto;
@@ -59,6 +60,7 @@ import java.security.Principal;
 
 import static com.ecaservice.config.swagger.OpenApi30Configuration.ECA_AUTHENTICATION_SECURITY_SCHEME;
 import static com.ecaservice.config.swagger.OpenApi30Configuration.SCOPE_WEB;
+import static com.ecaservice.oauth.config.audit.AuditCodes.LOGOUT;
 import static com.ecaservice.oauth.util.CookiesUtils.ACCESS_TOKEN_COOKIE;
 import static com.ecaservice.oauth.util.CookiesUtils.ALL_PATH;
 import static com.ecaservice.oauth.util.CookiesUtils.REFRESH_TOKEN_COOKIE;
@@ -93,6 +95,7 @@ public class UserController {
      * @param authentication - oauth2 authentication
      * @param response       - http servlet response
      */
+    @Audit(value = LOGOUT)
     @PreAuthorize("hasAuthority('SCOPE_web')")
     @Operation(
             description = "Logout current user and revokes access/refresh token pair",
