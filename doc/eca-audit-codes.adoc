@@ -73,6 +73,12 @@
 |CONFIRM_CHANGE_EMAIL_REQUEST
 |Подтверждение запроса на изменение Email
 |USER_PROFILE_ACTIONS
+|LOGIN
+|Вход в систему
+|USER_PROFILE_ACTIONS
+|LOGOUT
+|Выход из системы
+|USER_PROFILE_ACTIONS
 |SAVE_INSTANCES
 |Сохранение файла с обучающей выборкой в базу данных
 |DATA_STORAGE_ACTIONS

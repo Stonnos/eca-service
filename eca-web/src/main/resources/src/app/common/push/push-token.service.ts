@@ -5,7 +5,6 @@ import {
 } from "../../../../../../../target/generated-sources/typescript/eca-web-dto";
 import { Observable } from "rxjs/internal/Observable";
 import { environment } from "../../../environments/environment";
-import { Utils } from "../util/utils";
 
 @Injectable()
 export class PushTokenService {
@@ -17,8 +16,7 @@ export class PushTokenService {
 
   public obtainPushToken(): Observable<PushTokenDto> {
     const headers = new HttpHeaders({
-      'Content-type': 'application/json; charset=utf-8',
-      'Authorization': Utils.getBearerTokenHeader()
+      'Content-type': 'application/json; charset=utf-8'
     });
     return this.http.post<PushTokenDto>(this.serviceUrl, null,{ headers: headers });
   }

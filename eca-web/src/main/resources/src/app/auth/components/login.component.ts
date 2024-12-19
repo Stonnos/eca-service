@@ -55,7 +55,7 @@ export class LoginComponent implements BaseForm, OnInit, OnDestroy {
   }
 
   public ngOnInit() {
-    if (localStorage.getItem(AuthenticationKeys.ACCESS_TOKEN)) {
+    if (localStorage.getItem(AuthenticationKeys.LOGGED_IN)) {
       this.enter();
     }
   }
@@ -115,8 +115,8 @@ export class LoginComponent implements BaseForm, OnInit, OnDestroy {
         })
       )
       .subscribe({
-        next: (token) => {
-          this.authService.saveToken(token);
+        next: () => {
+          this.authService.saveLoggedInData();
           this.enter();
         },
         error: (error) => {
@@ -134,8 +134,8 @@ export class LoginComponent implements BaseForm, OnInit, OnDestroy {
         })
       )
       .subscribe({
-        next: (token) => {
-          this.authService.saveToken(token);
+        next: () => {
+          this.authService.saveLoggedInData();
           this.enter();
         },
         error: (error) => {

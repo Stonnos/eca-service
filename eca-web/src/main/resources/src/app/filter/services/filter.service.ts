@@ -10,7 +10,6 @@ import { Filter } from "../model/filter.model";
 import { SelectItem } from "primeng/api";
 import { FilterFieldType } from "../../common/model/filter-field-type.enum";
 import { environment } from "../../../environments/environment";
-import { Utils } from "../../common/util/utils";
 
 @Injectable()
 export class FilterService {
@@ -24,64 +23,56 @@ export class FilterService {
 
   public getExperimentFilterFields(): Observable<FilterFieldDto[]> {
     const headers = new HttpHeaders({
-      'Content-type': 'application/json; charset=utf-8',
-      'Authorization': Utils.getBearerTokenHeader()
+      'Content-type': 'application/json; charset=utf-8'
     });
     return this.http.get<FilterFieldDto[]>(this.ecaServerUrl + '/experiment', { headers: headers });
   }
 
   public getEvaluationLogFilterFields(): Observable<FilterFieldDto[]> {
     const headers = new HttpHeaders({
-      'Content-type': 'application/json; charset=utf-8',
-      'Authorization': Utils.getBearerTokenHeader()
+      'Content-type': 'application/json; charset=utf-8'
     });
     return this.http.get<FilterFieldDto[]>(this.ecaServerUrl + '/evaluation', { headers: headers });
   }
 
   public getClassifierOptionsRequestFilterFields(): Observable<FilterFieldDto[]> {
     const headers = new HttpHeaders({
-      'Content-type': 'application/json; charset=utf-8',
-      'Authorization': Utils.getBearerTokenHeader()
+      'Content-type': 'application/json; charset=utf-8'
     });
     return this.http.get<FilterFieldDto[]>(this.ecaServerUrl + '/classifier-options-request', { headers: headers });
   }
 
   public getExperimentTypeDictionary(): Observable<FilterDictionaryDto> {
     const headers = new HttpHeaders({
-      'Content-type': 'application/json; charset=utf-8',
-      'Authorization': Utils.getBearerTokenHeader()
+      'Content-type': 'application/json; charset=utf-8'
     });
     return this.http.get<FilterDictionaryDto>(this.ecaServerUrl + '/experiment-types', { headers: headers });
   }
 
   public getEvaluationMethodDictionary(): Observable<FilterDictionaryDto> {
     const headers = new HttpHeaders({
-      'Content-type': 'application/json; charset=utf-8',
-      'Authorization': Utils.getBearerTokenHeader()
+      'Content-type': 'application/json; charset=utf-8'
     });
     return this.http.get<FilterDictionaryDto>(this.ecaServerUrl + '/evaluation-methods', { headers: headers });
   }
 
   public getAuditLogFilterFields(): Observable<FilterFieldDto[]> {
     const headers = new HttpHeaders({
-      'Content-type': 'application/json; charset=utf-8',
-      'Authorization': Utils.getBearerTokenHeader()
+      'Content-type': 'application/json; charset=utf-8'
     });
     return this.http.get<FilterFieldDto[]>(this.auditLogsUrl + '/fields', { headers: headers });
   }
 
   public getEvaluationResultsHistoryFilterFields(): Observable<FilterFieldDto[]> {
     const headers = new HttpHeaders({
-      'Content-type': 'application/json; charset=utf-8',
-      'Authorization': Utils.getBearerTokenHeader()
+      'Content-type': 'application/json; charset=utf-8'
     });
     return this.http.get<FilterFieldDto[]>(this.ersUrl + '/fields', { headers: headers });
   }
 
   public getClassifiersConfigurationHistoryFilterFields(): Observable<FilterFieldDto[]> {
     const headers = new HttpHeaders({
-      'Content-type': 'application/json; charset=utf-8',
-      'Authorization': Utils.getBearerTokenHeader()
+      'Content-type': 'application/json; charset=utf-8'
     });
     return this.http.get<FilterFieldDto[]>(this.ecaServerUrl + '/classifiers-configuration-history', { headers: headers });
   }

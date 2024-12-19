@@ -12765,6 +12765,44 @@ __string__
 
 
 
+|*invalidRequiredMessage*
+|Invalid required field message
+a|
+__string__
+
+
+
+
+*Max. length*: 255
+
+
+
+
+
+
+
+
+
+
+|*invalidMaxLengthMessage*
+|Invalid max. length message
+a|
+__string__
+
+
+
+
+*Max. length*: 255
+
+
+
+
+
+
+
+
+
+
 |*dictionary*
 |-
 a|

@@ -10,7 +10,6 @@ import com.ecaservice.server.model.entity.ClassifiersConfiguration;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.util.DigestUtils;
 
 import java.io.IOException;
@@ -27,7 +26,7 @@ import java.time.LocalDateTime;
 @UtilityClass
 public class ClassifierOptionsHelper {
 
-    private static ObjectMapper objectMapper = new ObjectMapper();
+    private static final ObjectMapper objectMapper = new ObjectMapper();
 
     /**
      * Creates classifier options database model.
@@ -91,25 +90,6 @@ public class ClassifierOptionsHelper {
         } catch (IOException ex) {
             log.error("Error while parse classifier options from input stream: {}", ex.getMessage());
             throw new InvalidClassifierOptionsFormatException();
-        }
-    }
-
-    /**
-     * Checks classifier options json string deserialization.
-     *
-     * @param options - classifier options json string
-     * @return {@code true} if classifier options json string can be deserialize
-     */
-    public static boolean isParsableOptions(String options) {
-        if (StringUtils.isEmpty(options)) {
-            return false;
-        } else {
-            try {
-                parseOptions(options);
-                return true;
-            } catch (Exception ex) {
-                return false;
-            }
         }
     }
 

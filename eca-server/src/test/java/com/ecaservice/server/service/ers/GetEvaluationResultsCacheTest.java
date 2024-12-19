@@ -6,7 +6,6 @@ import com.ecaservice.ers.dto.GetEvaluationResultsResponse;
 import com.ecaservice.server.TestHelperUtils;
 import com.ecaservice.server.config.CrossValidationConfig;
 import com.ecaservice.server.config.cache.CacheNames;
-import com.ecaservice.server.config.ers.ErsConfig;
 import com.ecaservice.server.configuation.CacheConfiguration;
 import com.ecaservice.server.mapping.ClassifierReportMapperImpl;
 import com.ecaservice.server.mapping.ErsResponseStatusMapperImpl;
@@ -32,7 +31,7 @@ import static org.mockito.Mockito.when;
  *
  * @author Roman Batygin
  */
-@Import({ErsConfig.class, ClassifierReportMapperImpl.class, ErsErrorHandler.class,
+@Import({ClassifierReportMapperImpl.class, ErsErrorHandler.class,
         EvaluationResultsService.class, ErsResponseStatusMapperImpl.class,
         CacheConfiguration.class, CrossValidationConfig.class, ErsRequestService.class,
         ClassifiersOptionsAutoConfiguration.class, InstancesInfoMapperImpl.class})

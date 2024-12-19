@@ -86,6 +86,18 @@ public class FormFieldDto {
     private String invalidPatternMessage;
 
     /**
+     * Invalid required field message
+     */
+    @Schema(description = "Invalid required field message", maxLength = MAX_LENGTH_255)
+    private String invalidRequiredMessage;
+
+    /**
+     * Invalid max. length message
+     */
+    @Schema(description = "Invalid max. length message", maxLength = MAX_LENGTH_255)
+    private String invalidMaxLengthMessage;
+
+    /**
      * Field dictionary
      */
     @Schema(description = "Field dictionary (used for REFERENCE field type)")

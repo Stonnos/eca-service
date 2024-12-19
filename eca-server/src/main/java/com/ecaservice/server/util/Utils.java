@@ -6,11 +6,7 @@ import com.ecaservice.base.model.MessageError;
 import com.ecaservice.base.model.TechnicalStatus;
 import com.ecaservice.ers.dto.ClassifierOptionsResponse;
 import com.ecaservice.ers.dto.ClassifierReport;
-import com.ecaservice.server.model.entity.ClassifierOptionsRequestEntity;
-import com.ecaservice.server.model.entity.ClassifierOptionsRequestModel;
-import com.ecaservice.server.model.entity.ClassifierOptionsResponseModel;
 import com.ecaservice.server.model.entity.RequestStatus;
-import com.ecaservice.server.model.evaluation.ClassifierOptionsRequestSource;
 import com.ecaservice.server.model.evaluation.EvaluationResultsDataModel;
 import com.ecaservice.web.dto.model.EnumDto;
 import com.ecaservice.web.dto.model.EvaluationResultsDto;
@@ -28,10 +24,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
-
-import static com.ecaservice.server.util.ClassifierOptionsHelper.isParsableOptions;
 
 /**
  * Utility class.
@@ -126,25 +119,6 @@ public class Utils {
     }
 
     /**
-     * Finds first response model with valid classifier options.
-     *
-     * @param requestModel - classifier options request model
-     * @return classifier options response model
-     */
-    public static ClassifierOptionsResponseModel getFirstResponseModel(ClassifierOptionsRequestModel requestModel) {
-        if (Optional.ofNullable(requestModel).map(
-                ClassifierOptionsRequestModel::getClassifierOptionsResponseModels).isEmpty()) {
-            return null;
-        } else {
-            return requestModel.getClassifierOptionsResponseModels()
-                    .stream()
-                    .filter(responseModel -> isParsableOptions(responseModel.getOptions()))
-                    .findFirst()
-                    .orElse(null);
-        }
-    }
-
-    /**
      * Checks classifier report for empty options.
      *
      * @param classifierReport - classifier report
@@ -219,20 +193,6 @@ public class Utils {
                     String.format(CV_EXTENDED_FORMAT, numFolds, numTests);
         }
         return evaluationMethod.getDescription();
-    }
-
-    /**
-     * Creates classifier options request entity.
-     *
-     * @param source - classifier options request source
-     * @return classifier options request entity
-     */
-    public static ClassifierOptionsRequestEntity createClassifierOptionsRequestEntity(
-            ClassifierOptionsRequestSource source) {
-        ClassifierOptionsRequestEntity requestEntity = new ClassifierOptionsRequestEntity();
-        requestEntity.setCreationDate(LocalDateTime.now());
-        requestEntity.setSource(source);
-        return requestEntity;
     }
 
     /**

@@ -16,7 +16,7 @@
                 file="audit/groups.csv"/>
     </changeSet>
 
-    <changeSet author="roman.batygin@mail.ru" id="insert_audit_codes_6" context="data">
+    <changeSet author="roman.batygin@mail.ru" id="insert_audit_codes_8" context="data">
         <preConditions onFail="MARK_RAN">
             <tableExists tableName="audit_code"/>
         </preConditions>
@@ -27,7 +27,7 @@
                 file="audit/codes.csv"/>
     </changeSet>
 
-    <changeSet author="roman.batygin@mail.ru" id="insert_audit_event_templates_8" context="data">
+    <changeSet author="roman.batygin@mail.ru" id="insert_audit_event_templates_10" context="data">
         <preConditions onFail="MARK_RAN">
             <tableExists tableName="audit_event_template"/>
         </preConditions>

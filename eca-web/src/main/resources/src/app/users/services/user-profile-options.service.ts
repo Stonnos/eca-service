@@ -5,7 +5,6 @@ import {
 } from "../../../../../../../target/generated-sources/typescript/eca-web-dto";
 import { Observable } from "rxjs/internal/Observable";
 import { environment } from "../../../environments/environment";
-import { Utils } from "../../common/util/utils";
 import { UpdateUserProfileNotificationOptionsRequest } from "../model/update-user-profile-notification-options-request.model";
 
 @Injectable()
@@ -18,16 +17,14 @@ export class UserProfileOptionsService {
 
   public getUserNotificationOptions(): Observable<UserProfileNotificationOptionsDto> {
     const headers = new HttpHeaders({
-      'Content-type': 'application/json; charset=utf-8',
-      'Authorization': Utils.getBearerTokenHeader()
+      'Content-type': 'application/json; charset=utf-8'
     });
     return this.http.get<UserProfileNotificationOptionsDto>(this.serviceUrl + '/notifications', { headers: headers });
   }
 
   public updateUserProfileNotificationOptions(updateUserProfileNotificationOptionsRequest: UpdateUserProfileNotificationOptionsRequest) {
     const headers = new HttpHeaders({
-      'Content-type': 'application/json; charset=utf-8',
-      'Authorization': Utils.getBearerTokenHeader()
+      'Content-type': 'application/json; charset=utf-8'
     });
     return this.http.put(this.serviceUrl + '/update-notifications', updateUserProfileNotificationOptionsRequest, { headers: headers })
   }

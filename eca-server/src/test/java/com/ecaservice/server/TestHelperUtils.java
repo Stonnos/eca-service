@@ -19,10 +19,8 @@ import com.ecaservice.classifier.options.model.StackingOptions;
 import com.ecaservice.data.loader.dto.AttributeInfo;
 import com.ecaservice.data.loader.dto.InstancesMetaInfoDto;
 import com.ecaservice.ers.dto.ClassificationCostsReport;
-import com.ecaservice.ers.dto.ClassifierOptionsRequest;
 import com.ecaservice.ers.dto.ClassifierOptionsResponse;
 import com.ecaservice.ers.dto.ClassifierReport;
-import com.ecaservice.ers.dto.EvaluationMethodReport;
 import com.ecaservice.ers.dto.GetEvaluationResultsResponse;
 import com.ecaservice.ers.dto.RocCurveReport;
 import com.ecaservice.ers.dto.StatisticsReport;
@@ -37,9 +35,6 @@ import com.ecaservice.server.model.ClassifierOptionsResult;
 import com.ecaservice.server.model.entity.Channel;
 import com.ecaservice.server.model.entity.ClassifierInfo;
 import com.ecaservice.server.model.entity.ClassifierOptionsDatabaseModel;
-import com.ecaservice.server.model.entity.ClassifierOptionsRequestEntity;
-import com.ecaservice.server.model.entity.ClassifierOptionsRequestModel;
-import com.ecaservice.server.model.entity.ClassifierOptionsResponseModel;
 import com.ecaservice.server.model.entity.ClassifiersConfiguration;
 import com.ecaservice.server.model.entity.ClassifiersConfigurationActionType;
 import com.ecaservice.server.model.entity.ClassifiersConfigurationHistoryEntity;
@@ -53,7 +48,6 @@ import com.ecaservice.server.model.entity.ExperimentStepEntity;
 import com.ecaservice.server.model.entity.ExperimentStepStatus;
 import com.ecaservice.server.model.entity.InstancesInfo;
 import com.ecaservice.server.model.entity.RequestStatus;
-import com.ecaservice.server.model.evaluation.ClassifierOptionsRequestSource;
 import com.ecaservice.server.model.evaluation.EvaluationInputDataModel;
 import com.ecaservice.server.model.evaluation.EvaluationRequestData;
 import com.ecaservice.server.model.evaluation.EvaluationResultsDataModel;
@@ -928,33 +922,6 @@ public class TestHelperUtils {
     }
 
     /**
-     * Creates evaluation method report.
-     *
-     * @return evaluation method
-     */
-    public static EvaluationMethodReport createEvaluationMethodReport() {
-        EvaluationMethodReport evaluationMethodReport = new EvaluationMethodReport();
-        evaluationMethodReport.setEvaluationMethod(com.ecaservice.ers.dto.EvaluationMethod.CROSS_VALIDATION);
-        evaluationMethodReport.setNumFolds(BigInteger.valueOf(NUM_FOLDS));
-        evaluationMethodReport.setNumTests(BigInteger.valueOf(NUM_TESTS));
-        evaluationMethodReport.setSeed(BigInteger.valueOf(SEED));
-        return evaluationMethodReport;
-    }
-
-    /**
-     * Creates classifier options request.
-     *
-     * @return classifier options request
-     */
-    public static ClassifierOptionsRequest createClassifierOptionsRequest() {
-        ClassifierOptionsRequest classifierOptionsRequest = new ClassifierOptionsRequest();
-        classifierOptionsRequest.setEvaluationMethodReport(new EvaluationMethodReport());
-        classifierOptionsRequest.setEvaluationMethodReport(createEvaluationMethodReport());
-        classifierOptionsRequest.setDataUuid(UUID.randomUUID().toString());
-        return classifierOptionsRequest;
-    }
-
-    /**
      * Creates classifier options response.
      *
      * @param classifierReports - classifier reports
@@ -966,63 +933,6 @@ public class TestHelperUtils {
         response.setClassifierReports(newArrayList());
         classifierReports.forEach(classifierReport -> response.getClassifierReports().add(classifierReport));
         return response;
-    }
-
-    /**
-     * Creates classifier options request model.
-     *
-     * @param instancesInfo                   - instances info
-     * @param requestDate                     - request date
-     * @param responseStatus                  - response status
-     * @param classifierOptionsResponseModels - classifier options response models list
-     * @return classifier options request model
-     */
-    public static ClassifierOptionsRequestModel createClassifierOptionsRequestModel(InstancesInfo instancesInfo,
-                                                                                    LocalDateTime requestDate,
-                                                                                    ErsResponseStatus responseStatus,
-                                                                                    List<ClassifierOptionsResponseModel> classifierOptionsResponseModels) {
-        ClassifierOptionsRequestModel requestModel = new ClassifierOptionsRequestModel();
-        requestModel.setRequestId(UUID.randomUUID().toString());
-        requestModel.setInstancesInfo(instancesInfo);
-        requestModel.setRequestDate(requestDate);
-        requestModel.setResponseStatus(responseStatus);
-        requestModel.setEvaluationMethod(EvaluationMethod.CROSS_VALIDATION);
-        requestModel.setNumFolds(NUM_FOLDS);
-        requestModel.setNumTests(NUM_TESTS);
-        requestModel.setSeed(SEED);
-        requestModel.setClassifierOptionsResponseModels(classifierOptionsResponseModels);
-        return requestModel;
-    }
-
-    /**
-     * Creates classifier options request entity.
-     *
-     * @param creationDate - creation date
-     * @param requestModel - classifier options request model
-     * @return classifier options request entity
-     */
-    public static ClassifierOptionsRequestEntity createClassifierOptionsRequestEntity(LocalDateTime creationDate,
-                                                                                      ClassifierOptionsRequestModel requestModel) {
-        ClassifierOptionsRequestEntity requestEntity = new ClassifierOptionsRequestEntity();
-        requestEntity.setRequestId(UUID.randomUUID().toString());
-        requestEntity.setCreationDate(creationDate);
-        requestEntity.setClassifierOptionsRequestModel(requestModel);
-        requestEntity.setSource(ClassifierOptionsRequestSource.ERS);
-        return requestEntity;
-    }
-
-    /**
-     * Creates classifier options response model.
-     *
-     * @param options - classifier options
-     * @return classifier options response model
-     */
-    public static ClassifierOptionsResponseModel createClassifierOptionsResponseModel(String options) {
-        ClassifierOptionsResponseModel responseModel = new ClassifierOptionsResponseModel();
-        responseModel.setClassifierName(DecisionTreeType.CART.name());
-        responseModel.setClassifierDescription(DecisionTreeType.CART.getDescription());
-        responseModel.setOptions(options);
-        return responseModel;
     }
 
     /**
@@ -1249,6 +1159,8 @@ public class TestHelperUtils {
         return BaseReportBean.<T>builder()
                 .items(Collections.emptyList())
                 .filters(Collections.emptyList())
+                .page(0)
+                .totalPages(0)
                 .build();
     }
 

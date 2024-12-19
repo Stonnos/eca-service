@@ -48,7 +48,7 @@
                 file="classifiers-form-templates/form-field-dictionaries-values.csv"/>
     </changeSet>
 
-    <changeSet author="roman.batygin@mail.ru" id="clear_classifiers_form_fields_2" context="data">
+    <changeSet author="roman.batygin@mail.ru" id="clear_classifiers_form_fields_3" context="data">
         <preConditions onFail="MARK_RAN">
             <tableExists tableName="form_field"/>
         </preConditions>
@@ -57,7 +57,7 @@
         </sql>
     </changeSet>
 
-    <changeSet author="roman.batygin@mail.ru" id="lib_insert_classifiers_form_fields_3" context="data">
+    <changeSet author="roman.batygin@mail.ru" id="lib_insert_classifiers_form_fields_4" context="data">
         <preConditions onFail="MARK_RAN">
             <tableExists tableName="form_field"/>
         </preConditions>

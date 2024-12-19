@@ -1,5 +1,4 @@
 import { StompConfig, StompService } from "@stomp/ng2-stompjs";
-import { AuthenticationKeys } from "../../auth/model/auth.keys";
 import { environment } from "../../../environments/environment";
 import { Injectable } from "@angular/core";
 
@@ -26,7 +25,7 @@ export class WsService {
 
   private getStompConfig(): StompConfig {
     return {
-      url: () => new WebSocket(this.getWsEndpoint()),
+      url: () => new WebSocket(this.wsUrl),
       headers: {
       },
       heartbeat_in: 0,
@@ -34,9 +33,5 @@ export class WsService {
       reconnect_delay: 5000,
       debug: environment.debug
     };
-  }
-
-  private getWsEndpoint(): string {
-    return `${this.wsUrl}?access_token=${localStorage.getItem(AuthenticationKeys.ACCESS_TOKEN)}`;
   }
 }

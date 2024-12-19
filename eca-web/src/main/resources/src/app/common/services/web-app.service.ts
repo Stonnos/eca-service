@@ -3,7 +3,6 @@ import { Injectable } from '@angular/core';
 import { Observable } from "rxjs/internal/Observable";
 import { MenuItemDto } from "../../../../../../../target/generated-sources/typescript/eca-web-dto";
 import { environment } from "../../../environments/environment";
-import { Utils } from "../util/utils";
 
 @Injectable()
 export class WebAppService {
@@ -13,8 +12,7 @@ export class WebAppService {
 
   public getMenuItems(): Observable<MenuItemDto[]> {
     const headers = new HttpHeaders({
-      'Content-type': 'application/json; charset=utf-8',
-      'Authorization': Utils.getBearerTokenHeader()
+      'Content-type': 'application/json; charset=utf-8'
     });
     return this.http.get<MenuItemDto[]>(environment.oauthUrl + '/web-config' + '/menu', { headers: headers });
   }

@@ -145,10 +145,6 @@ experiment:
     numThreads: 10
     numFoldsForStacking: 10
 
-ers:
-  useClassifierOptionsCache: false
-  classifierOptionsCacheDurationInDays: 2
-
 minio:
   url: http://localhost:9000
   proxyUrl: http://localhost:9000

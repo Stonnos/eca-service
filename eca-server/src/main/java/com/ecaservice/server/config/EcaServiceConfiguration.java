@@ -3,7 +3,6 @@ package com.ecaservice.server.config;
 import com.ecaservice.common.web.annotation.EnableGlobalExceptionHandler;
 import com.ecaservice.config.swagger.annotation.EnableOpenApi;
 import com.ecaservice.oauth2.annotation.Oauth2ResourceServer;
-import com.ecaservice.server.config.ers.ErsConfig;
 import com.ecaservice.server.model.entity.AbstractEvaluationEntity;
 import com.ecaservice.server.repository.EvaluationLogRepository;
 import io.micrometer.context.ContextExecutorService;
@@ -41,8 +40,8 @@ import java.util.concurrent.Executors;
 @EntityScan(basePackageClasses = AbstractEvaluationEntity.class)
 @EnableJpaRepositories(basePackageClasses = EvaluationLogRepository.class)
 @EnableConfigurationProperties(
-        {AppProperties.class, CrossValidationConfig.class, ExperimentConfig.class,
-                ErsConfig.class, ClassifiersProperties.class, ProcessConfig.class})
+        {AppProperties.class, CrossValidationConfig.class, ExperimentConfig.class, ClassifiersProperties.class,
+                ProcessConfig.class})
 @RequiredArgsConstructor
 public class EcaServiceConfiguration implements SchedulingConfigurer {
 

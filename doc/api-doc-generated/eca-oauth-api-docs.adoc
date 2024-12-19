@@ -701,6 +701,49 @@ a|
 ----
 |===
 
+== Logout current user and revokes access/refresh token pair
+
+__POST__ */users/logout* - Logout current user and revokes access/refresh token pair
+
+*Security requirement*
+
+[cols="^50%,^50%",options="header"]
+|===
+|*Name*|*Scopes*
+|
+<<EcaAuth>>
+a|
+
+* web
+
+|===
+
+
+
+*Api responses*
+[width=100%]
+|===
+|*Code*|*Description*|*Content type*|*Schema*|*Example*
+|200
+|OK
+|*-*
+|-
+a|
+-
+|401
+|Not authorized
+|*application/json*
+|-
+a|
+[source,json]
+----
+{
+  "error" : "unauthorized",
+  "error_description" : "Full authentication is required to access this resource"
+}
+----
+|===
+
 == Locks user
 
 __POST__ */users/lock* - Locks user

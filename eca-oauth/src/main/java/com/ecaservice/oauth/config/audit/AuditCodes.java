@@ -84,4 +84,14 @@ public class AuditCodes {
      * Updates user profile notification options
      */
     public static final String UPDATE_USER_PROFILE_NOTIFICATION_OPTIONS = "UPDATE_USER_PROFILE_NOTIFICATION_OPTIONS";
+
+    /**
+     * User login
+     */
+    public static final String LOGIN = "LOGIN";
+
+    /**
+     * User logout
+     */
+    public static final String LOGOUT = "LOGOUT";
 }

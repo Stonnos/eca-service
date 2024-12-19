@@ -97,7 +97,19 @@ public class FormFieldEntity {
     private String invalidPatternMessage;
 
     /**
-     * Place holder message
+     * Invalid required field message
+     */
+    @Column(name = "invalid_required_message")
+    private String invalidRequiredMessage;
+
+    /**
+     * Invalid max. length message
+     */
+    @Column(name = "invalid_max_length_message")
+    private String invalidMaxLengthMessage;
+
+    /**
+     * Placeholder message
      */
     @Column(name = "place_holder")
     private String placeHolder;

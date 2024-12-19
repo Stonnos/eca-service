@@ -29,6 +29,8 @@ export class FormField {
   defaultValue: string;
   currentValue: any;
   invalidPatternMessage: string;
+  invalidRequiredMessage: string;
+  invalidMaxLengthMessage: string;
   placeholder: string;
   selectedItem: any;
   selectedItemToEdit: any;

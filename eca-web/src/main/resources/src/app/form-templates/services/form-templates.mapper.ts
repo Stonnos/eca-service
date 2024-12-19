@@ -20,6 +20,8 @@ export class FormTemplatesMapper {
       formField.maxInclusive = formFieldDto.maxInclusive;
       formField.pattern = formFieldDto.pattern;
       formField.invalidPatternMessage = formFieldDto.invalidPatternMessage;
+      formField.invalidRequiredMessage = formFieldDto.invalidRequiredMessage;
+      formField.invalidMaxLengthMessage = formFieldDto.invalidMaxLengthMessage;
       formField.placeholder = formFieldDto.placeHolder;
       formField.defaultValue = formFieldDto.defaultValue;
       if (formFieldDto.fieldType == FormFieldType.REFERENCE && formFieldDto.dictionary &&
