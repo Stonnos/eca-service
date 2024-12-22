@@ -9,6 +9,8 @@ import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.springframework.stereotype.Service;
 
+import java.time.Duration;
+
 /**
  * Implements scheduler for retry requests mechanism.
  *
@@ -31,7 +33,7 @@ public class RetryRequestScheduler {
         log.info("Starting to initialize retry request redelivery job");
         retryRequestThreadPoolTaskScheduler.scheduleWithFixedDelay(
                 requestRedeliveryService::processNotSentRequests,
-                redeliveryProperties.getRedeliveryIntervalMillis()
+                Duration.ofMillis(redeliveryProperties.getRedeliveryIntervalMillis())
         );
         log.info("Retry request redelivery job has been started");
     }

@@ -1,13 +1,13 @@
 package com.ecaservice.core.redelivery.repository;
 
 import com.ecaservice.core.redelivery.entity.RetryRequest;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 /**
  * Repository to manage with {@link RetryRequest} persistence entity.
@@ -17,20 +17,12 @@ import java.util.List;
 public interface RetryRequestRepository extends JpaRepository<RetryRequest, Long> {
 
     /**
-     * Gets not sent retry requests ids.
+     * Gets not sent retry requests.
      *
      * @param date     - date bound
      * @param pageable - pageable object
-     * @return retry requests ids
+     * @return retry requests page
      */
-    @Query("select de.id from RetryRequest de where de.retryAt is null or de.retryAt < :date order by de.createdAt")
-    List<Long> getNotSentRequestIds(@Param("date") LocalDateTime date, Pageable pageable);
-
-    /**
-     * Gets retry requests by ids.
-     *
-     * @param ids - retry requests ids
-     * @return retry requests list
-     */
-    List<RetryRequest> findByIdIn(List<Long> ids);
+    @Query("select re from RetryRequest re where re.retryAt is null or re.retryAt < :date order by re.createdAt")
+    Page<RetryRequest> getNotSentRequests(@Param("date") LocalDateTime date, Pageable pageable);
 }
