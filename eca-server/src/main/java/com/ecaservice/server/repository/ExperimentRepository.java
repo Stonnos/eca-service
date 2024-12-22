@@ -2,13 +2,14 @@ package com.ecaservice.server.repository;
 
 import com.ecaservice.server.model.entity.Experiment;
 import com.ecaservice.server.model.projections.RequestStatusStatistics;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.time.LocalDateTime;
-import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -75,22 +76,18 @@ public interface ExperimentRepository extends JpaRepository<Experiment, Long>, J
     List<Long> findExperimentsToFinish();
 
     /**
-     * Gets experiments page with specified ids.
-     *
-     * @param ids - experiment ids
-     * @return experiments page
-     */
-    List<Experiment> findByIdIn(Collection<Long> ids);
-
-    /**
      * Finds experiments models to delete.
      *
      * @param dateTime - date time threshold value
+     * @param pageable - pageable object
      * @return experiments ids list
      */
-    @Query("select exp.id from Experiment exp where exp.requestStatus = 'FINISHED' and " +
-            "exp.deletedDate is null and exp.endDate < :dateTime order by exp.endDate")
-    List<Long> findExperimentsModelsToDelete(@Param("dateTime") LocalDateTime dateTime);
+    @Query("select e from Experiment e where e.requestStatus = 'FINISHED' and " +
+            "e.deletedDate is null and e.endDate < :dateTime and " +
+            "(e.deleteModelAfter is null or e.deleteModelAfter < :nowTime) order by e.endDate")
+    Page<Experiment> findExperimentsModelsToDelete(@Param("dateTime") LocalDateTime dateTime,
+                                                   @Param("nowTime") LocalDateTime nowTime,
+                                                   Pageable pageable);
 
     /**
      * Calculates requests status counting statistics.

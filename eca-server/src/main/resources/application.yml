@@ -79,6 +79,7 @@ app:
   numberOfDaysForStorage: 180
   ## Each day at midnight
   removeModelCron: 0 0 0 * * *
+  removeModelBackoffMinutes: 60
   pageSize: 10
   modelDownloadUrlExpirationDays: 7
   shortLifeUrlExpirationMinutes: 5

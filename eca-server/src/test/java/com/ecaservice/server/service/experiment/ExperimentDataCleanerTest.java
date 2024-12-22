@@ -71,6 +71,7 @@ class ExperimentDataCleanerTest extends AbstractJpaTest {
         Experiment experimentToRemove =
                 TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.FINISHED, instancesInfo);
         experimentToRemove.setEndDate(LocalDateTime.now().minusDays(appProperties.getNumberOfDaysForStorage() + 1));
+        experimentToRemove.setDeleteModelAfter(LocalDateTime.now().minusSeconds(1L));
         experiments.add(experimentToRemove);
         Experiment finishedExperiment =
                 TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.FINISHED, instancesInfo);
@@ -82,6 +83,10 @@ class ExperimentDataCleanerTest extends AbstractJpaTest {
         Experiment errorExperiment =
                 TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.ERROR, instancesInfo);
         experiments.add(errorExperiment);
+        Experiment experimentWithBackoff =
+                TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.FINISHED, instancesInfo);
+        experimentWithBackoff.setEndDate(LocalDateTime.now().minusDays(appProperties.getNumberOfDaysForStorage() + 1));
+        experimentWithBackoff.setDeleteModelAfter(LocalDateTime.now().plusMinutes(1));
         experimentRepository.saveAll(experiments);
         experimentDataCleaner.removeExperimentsModels();
         verify(experimentDataService, atLeastOnce()).removeExperimentModel(argumentCaptor.capture());

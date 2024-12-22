@@ -2,6 +2,7 @@ package com.ecaservice.server.repository;
 
 import com.ecaservice.server.model.entity.EvaluationLog;
 import com.ecaservice.server.model.projections.RequestStatusStatistics;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
@@ -9,7 +10,6 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.time.LocalDateTime;
-import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -51,18 +51,15 @@ public interface EvaluationLogRepository
     /**
      * Finds classifiers models to delete.
      *
-     * @param dateTime date time threshold value
+     * @param dateTime - date time threshold value
+     * @param nowTime - now date time
+     * @param pageable - pageable object
      * @return evaluation log ids list
      */
-    @Query("select ev.id from EvaluationLog ev where ev.requestStatus = 'FINISHED' and " +
-            "ev.deletedDate is null and ev.endDate < :dateTime order by ev.endDate")
-    List<Long> findModelsToDelete(@Param("dateTime") LocalDateTime dateTime);
-
-    /**
-     * Gets evaluation logs page with specified ids.
-     *
-     * @param ids - experiment ids
-     * @return evaluation logs page
-     */
-    List<EvaluationLog> findByIdIn(Collection<Long> ids);
+    @Query("select ev from EvaluationLog ev where ev.requestStatus = 'FINISHED' and " +
+            "ev.deletedDate is null and ev.endDate < :dateTime and " +
+            "(ev.deleteModelAfter is null or ev.deleteModelAfter < :nowTime) order by ev.endDate")
+    Page<EvaluationLog> findModelsToDelete(@Param("dateTime") LocalDateTime dateTime,
+                                           @Param("nowTime") LocalDateTime nowTime,
+                                           Pageable pageable);
 }

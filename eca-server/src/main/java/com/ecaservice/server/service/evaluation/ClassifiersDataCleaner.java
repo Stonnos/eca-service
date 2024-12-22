@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 
 import static com.ecaservice.common.web.util.LogHelper.TX_ID;
 import static com.ecaservice.common.web.util.LogHelper.putMdc;
-import static com.ecaservice.common.web.util.PageHelper.processWithPagination;
+import static com.ecaservice.server.util.PageHelper.processWithPagination;
 
 /**
  * Classifiers data cleaner.
@@ -37,9 +37,8 @@ public class ClassifiersDataCleaner {
     public void removeModels() {
         log.info("Starting to remove classifier models.");
         LocalDateTime dateTime = LocalDateTime.now().minusDays(appProperties.getNumberOfDaysForStorage());
-        var ids = evaluationLogRepository.findModelsToDelete(dateTime);
-        log.info("Obtained {} classifiers to remove model files", ids.size());
-        processWithPagination(ids, evaluationLogRepository::findByIdIn,
+        processWithPagination(
+                pageable -> evaluationLogRepository.findModelsToDelete(dateTime, LocalDateTime.now(), pageable),
                 evaluationLogs -> evaluationLogs.forEach(this::removeModel),
                 appProperties.getPageSize()
         );

@@ -257,6 +257,10 @@ public class EvaluationLogDataService {
         } catch (Exception ex) {
             log.error("There was an error while remove classifier [{}] model file: {}", evaluationLog.getRequestId(),
                     ex.getMessage());
+            // Sets backoff date to delete classifier model
+            evaluationLog.setDeleteModelAfter(
+                    LocalDateTime.now().plusMinutes(appProperties.getRemoveModelBackoffMinutes()));
+            evaluationLogRepository.save(evaluationLog);
         }
     }
 

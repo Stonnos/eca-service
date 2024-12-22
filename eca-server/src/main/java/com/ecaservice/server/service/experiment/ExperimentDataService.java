@@ -31,6 +31,7 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.Tuple;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -84,6 +85,10 @@ public class ExperimentDataService {
         } catch (Exception ex) {
             log.error("There was an error while remove experiment [{}] model file: {}", experiment.getRequestId(),
                     ex.getMessage());
+            // Sets backoff date to delete experiment model
+            experiment.setDeleteModelAfter(
+                    LocalDateTime.now().plusMinutes(appProperties.getRemoveModelBackoffMinutes()));
+            experimentRepository.save(experiment);
         }
     }
 
