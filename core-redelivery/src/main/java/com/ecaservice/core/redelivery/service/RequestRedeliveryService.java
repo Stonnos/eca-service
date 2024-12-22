@@ -43,7 +43,8 @@ public class RequestRedeliveryService {
                 log.debug("No one page has been fetched");
                 break;
             } else {
-                log.info("Process next retry requests page with size [{}]", page.getSize());
+                log.info("Process next retry requests page [{}] of [{}] with size [{}]", page.getNumber(),
+                        page.getTotalPages(), page.getSize());
                 page.getContent().forEach(this::retryRequest);
             }
         } while (page.hasNext());
