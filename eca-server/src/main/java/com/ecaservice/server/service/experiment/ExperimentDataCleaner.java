@@ -9,8 +9,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.function.Consumer;
 
 import static com.ecaservice.common.web.util.LogHelper.TX_ID;
 import static com.ecaservice.common.web.util.LogHelper.putMdc;
@@ -41,16 +39,14 @@ public class ExperimentDataCleaner {
         LocalDateTime dateTime = LocalDateTime.now().minusDays(appProperties.getNumberOfDaysForStorage());
         processWithPagination(
                 pageable -> experimentRepository.findExperimentsModelsToDelete(dateTime, LocalDateTime.now(), pageable),
-                experiments -> removeData(experiments, experimentDataService::removeExperimentModel),
+                experiments -> experiments.forEach(this::removeModel),
                 appProperties.getPageSize()
         );
         log.info("Experiments models removing has been finished.");
     }
 
-    private void removeData(List<Experiment> experiments, Consumer<Experiment> removeDataConsumer) {
-        experiments.forEach(experiment -> {
-            putMdc(TX_ID, experiment.getRequestId());
-            removeDataConsumer.accept(experiment);
-        });
+    private void removeModel(Experiment experiment) {
+        putMdc(TX_ID, experiment.getRequestId());
+        experimentDataService.removeExperimentModel(experiment);
     }
 }
