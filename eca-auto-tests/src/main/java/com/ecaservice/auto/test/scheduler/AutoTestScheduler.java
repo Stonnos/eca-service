@@ -19,13 +19,16 @@ import com.ecaservice.test.common.model.ExecutionStatus;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
-
-import static com.ecaservice.common.web.util.PageHelper.processWithPagination;
+import java.util.function.Consumer;
+import java.util.function.Function;
 
 /**
  * Auto test scheduler.
@@ -60,9 +63,8 @@ public class AutoTestScheduler {
     @Scheduled(fixedDelayString = "${auto-tests.delaySeconds}000")
     public void startNewTestsJobs() {
         log.trace("Starting to processed new tests jobs");
-        List<Long> testIds = autoTestsJobRepository.findNewTests();
-        processWithPagination(testIds, autoTestsJobRepository::findByIdInOrderByCreated,
-                pageContent -> pageContent.forEach(autoTestExecutor::runTests), autoTestsProperties.getPageSize());
+        processWithPagination(autoTestsJobRepository::findNewTests,
+                pageContent -> pageContent.forEach(autoTestExecutor::runTests));
         log.trace("New tests has been processed jobs");
     }
 
@@ -72,9 +74,9 @@ public class AutoTestScheduler {
     @Scheduled(fixedDelayString = "${auto-tests.delaySeconds}000")
     public void processExperimentResultsTestSteps() {
         log.trace("Starting to process experiment results test steps");
-        List<Long> ids = experimentResultsTestStepRepository.findStepsToCompareResults();
-        processWithPagination(ids, experimentResultsTestStepRepository::findByIdInOrderByCreated,
-                this::processExperimentResultsSteps, autoTestsProperties.getPageSize());
+        processWithPagination(experimentResultsTestStepRepository::findStepsToCompareResults,
+                this::processExperimentResultsSteps
+        );
     }
 
     /**
@@ -83,9 +85,8 @@ public class AutoTestScheduler {
     @Scheduled(fixedDelayString = "${auto-tests.delaySeconds}000")
     public void processEvaluationResultsTestSteps() {
         log.trace("Starting to process evaluation results test steps");
-        List<Long> ids = evaluationResultsTestStepRepository.findStepsToCompareResults();
-        processWithPagination(ids, evaluationResultsTestStepRepository::findByIdInOrderByCreated,
-                this::processEvaluationResultsSteps, autoTestsProperties.getPageSize());
+        processWithPagination(evaluationResultsTestStepRepository::findStepsToCompareResults,
+                this::processEvaluationResultsSteps);
     }
 
     /**
@@ -94,9 +95,10 @@ public class AutoTestScheduler {
     @Scheduled(fixedDelayString = "${auto-tests.delaySeconds}000")
     public void processFinishedEvaluationRequestsTests() {
         log.trace("Starting to process finished requests");
-        List<Long> finishedIds = baseEvaluationRequestRepository.findFinishedTests(FINISHED_EXECUTION_STATUSES);
-        processWithPagination(finishedIds, baseEvaluationRequestRepository::findByIdInOrderByCreated,
-                this::processFinishedEvaluationRequestsTests, autoTestsProperties.getPageSize());
+        processWithPagination(
+                pageable -> baseEvaluationRequestRepository.findFinishedTests(FINISHED_EXECUTION_STATUSES, pageable),
+                this::processFinishedEvaluationRequestsTests
+        );
     }
 
     /**
@@ -106,9 +108,9 @@ public class AutoTestScheduler {
     public void processExceededTestSteps() {
         log.trace("Starting to processed exceeded test steps");
         LocalDateTime exceededTime = LocalDateTime.now().minusSeconds(autoTestsProperties.getRequestTimeoutInSeconds());
-        List<Long> exceededIds = baseTestStepRepository.findExceededStepIds(exceededTime, FINISHED_EXECUTION_STATUSES);
-        processWithPagination(exceededIds, baseTestStepRepository::findByIdInOrderByCreated,
-                testStepService::exceedTestSteps, autoTestsProperties.getPageSize()
+        processWithPagination(
+                pageable -> baseTestStepRepository.findExceededStepIds(exceededTime, FINISHED_EXECUTION_STATUSES,
+                        pageable), testStepService::exceedTestSteps
         );
         log.trace("Exceeded test steps has been processed");
     }
@@ -120,10 +122,9 @@ public class AutoTestScheduler {
     public void processExceededRequests() {
         log.trace("Starting to processed exceeded requests");
         LocalDateTime exceededTime = LocalDateTime.now().minusSeconds(autoTestsProperties.getRequestTimeoutInSeconds());
-        List<Long> exceededIds =
-                baseEvaluationRequestRepository.findExceededRequestIds(exceededTime, FINISHED_EXECUTION_STATUSES);
-        processWithPagination(exceededIds, baseEvaluationRequestRepository::findByIdInOrderByCreated, pageContent ->
-                pageContent.forEach(evaluationRequestService::exceed), autoTestsProperties.getPageSize()
+        processWithPagination(pageable -> baseEvaluationRequestRepository.findExceededRequestIds(exceededTime,
+                        FINISHED_EXECUTION_STATUSES, pageable),
+                pageContent -> pageContent.forEach(evaluationRequestService::exceed)
         );
         log.trace("Exceeded requests has been processed");
     }
@@ -134,9 +135,9 @@ public class AutoTestScheduler {
     @Scheduled(fixedDelayString = "${auto-tests.delaySeconds}000")
     public void processFinishedTestJobs() {
         log.trace("Starting to processed finished tests jobs");
-        List<Long> testIds = autoTestsJobRepository.findFinishedJobs(FINISHED_EXECUTION_STATUSES);
-        processWithPagination(testIds, autoTestsJobRepository::findByIdInOrderByCreated, pageContent ->
-                pageContent.forEach(autoTestJobService::finish), autoTestsProperties.getPageSize()
+        processWithPagination(
+                pageable -> autoTestsJobRepository.findFinishedJobs(FINISHED_EXECUTION_STATUSES, pageable),
+                pageContent -> pageContent.forEach(autoTestJobService::finish)
         );
         log.trace("Finished tests jobs has been processed");
     }
@@ -155,5 +156,22 @@ public class AutoTestScheduler {
 
     private void processFinishedEvaluationRequestsTests(List<BaseEvaluationRequestEntity> requestEntities) {
         requestEntities.forEach(evaluationRequestService::complete);
+    }
+
+    private <T> void processWithPagination(Function<Pageable, Page<T>> nextPageFunction,
+                                           Consumer<List<T>> pageContentAction) {
+        Pageable pageRequest = PageRequest.of(0, autoTestsProperties.getPageSize());
+        Page<T> page;
+        do {
+            page = nextPageFunction.apply(pageRequest);
+            if (page == null || !page.hasContent()) {
+                log.debug("No one page has been fetched");
+                break;
+            } else {
+                log.debug("Process page [{}] of [{}] with size [{}]", page.getNumber(), page.getTotalPages(),
+                        page.getSize());
+                pageContentAction.accept(page.getContent());
+            }
+        } while (page.hasNext());
     }
 }

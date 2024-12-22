@@ -9,8 +9,6 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.time.LocalDateTime;
-import java.util.Collection;
-import java.util.List;
 import java.util.Optional;
 
 /**
@@ -41,19 +39,12 @@ public interface EvaluationRequestRepository extends JpaRepository<EvaluationReq
      * Finds exceeded requests ids.
      *
      * @param dateTime - date time value
+     * @param pageable - pageable
      * @return requests ids list
      */
-    @Query("select er.id from EvaluationRequestEntity er where er.stageType = 'REQUEST_SENT' " +
+    @Query("select er from EvaluationRequestEntity er where er.stageType = 'REQUEST_SENT' " +
             "and er.started < :dateTime order by er.started")
-    List<Long> findExceededRequestIds(@Param("dateTime") LocalDateTime dateTime);
-
-    /**
-     * Finds evaluation requests page with specified ids.
-     *
-     * @param ids - ids list
-     * @return evaluation requests page
-     */
-    List<EvaluationRequestEntity> findByIdIn(Collection<Long> ids);
+    Page<EvaluationRequestEntity> findExceededRequestIds(@Param("dateTime") LocalDateTime dateTime, Pageable pageable);
 
     /**
      * Gets max evaluation request finished date for specified load test.

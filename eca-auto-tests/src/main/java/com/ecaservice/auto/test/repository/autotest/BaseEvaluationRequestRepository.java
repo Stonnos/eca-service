@@ -3,6 +3,8 @@ package com.ecaservice.auto.test.repository.autotest;
 import com.ecaservice.auto.test.entity.autotest.AutoTestsJobEntity;
 import com.ecaservice.auto.test.entity.autotest.BaseEvaluationRequestEntity;
 import com.ecaservice.test.common.model.ExecutionStatus;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -24,20 +26,14 @@ public interface BaseEvaluationRequestRepository extends JpaRepository<BaseEvalu
      *
      * @param dateTime          - date time value
      * @param executionStatuses - finished execution statuses
-     * @return requests ids list
-     */
-    @Query("select er.id from BaseEvaluationRequestEntity er where er.executionStatus not in (:executionStatuses)" +
-            "and er.started < :dateTime order by er.started")
-    List<Long> findExceededRequestIds(@Param("dateTime") LocalDateTime dateTime,
-                                      @Param("executionStatuses") Collection<ExecutionStatus> executionStatuses);
-
-    /**
-     * Finds requests page with specified ids.
-     *
-     * @param ids - ids list
+     * @param pageable          - pageable
      * @return requests page
      */
-    List<BaseEvaluationRequestEntity> findByIdInOrderByCreated(Collection<Long> ids);
+    @Query("select er from BaseEvaluationRequestEntity er where er.executionStatus not in (:executionStatuses)" +
+            "and er.started < :dateTime order by er.started")
+    Page<BaseEvaluationRequestEntity> findExceededRequestIds(@Param("dateTime") LocalDateTime dateTime,
+                                      @Param("executionStatuses") Collection<ExecutionStatus> executionStatuses,
+                                      Pageable pageable);
 
     /**
      * Gets max experiment request finished date for specified auto test job.
@@ -69,13 +65,15 @@ public interface BaseEvaluationRequestRepository extends JpaRepository<BaseEvalu
      * Finds finished test ids.
      *
      * @param statuses - final execution statuses for test steps
-     * @return requests ids list
+     * @param pageable - pageable
+     * @return requests page
      */
-    @Query("select er.id from BaseEvaluationRequestEntity er where er.stageType = 'REQUEST_FINISHED' " +
+    @Query("select er from BaseEvaluationRequestEntity er where er.stageType = 'REQUEST_FINISHED' " +
             "and er.executionStatus not in (:statuses) " +
             "and not exists (select ts.id from BaseTestStepEntity ts where ts.evaluationRequestEntity = er and " +
             "ts.executionStatus not in (:statuses)) order by er.started")
-    List<Long> findFinishedTests(@Param("statuses") Collection<ExecutionStatus> statuses);
+    Page<BaseEvaluationRequestEntity> findFinishedTests(@Param("statuses") Collection<ExecutionStatus> statuses,
+                                                        Pageable pageable);
 
     /**
      * Finds request by request id

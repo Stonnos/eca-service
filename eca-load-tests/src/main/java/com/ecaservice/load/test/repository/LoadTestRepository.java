@@ -1,11 +1,11 @@
 package com.ecaservice.load.test.repository;
 
 import com.ecaservice.load.test.entity.LoadTestEntity;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
-import java.util.Collection;
-import java.util.List;
 import java.util.Optional;
 
 /**
@@ -26,26 +26,20 @@ public interface LoadTestRepository extends JpaRepository<LoadTestEntity, Long> 
     /**
      * Gets new tests for processing.
      *
+     * @param pageable - pageable object
      * @return tests ids list
      */
-    @Query("select t.id from LoadTestEntity t where t.executionStatus = 'NEW' order by t.created")
-    List<Long> findNewTests();
+    @Query("select t from LoadTestEntity t where t.executionStatus = 'NEW' order by t.created")
+    Page<LoadTestEntity> findNewTests(Pageable pageable);
 
     /**
      * Gets finished tests.
      *
+     * @param pageable - pageable
      * @return tests ids list
      */
-    @Query("select t.id from LoadTestEntity t where t.executionStatus = 'IN_PROGRESS' and " +
+    @Query("select t from LoadTestEntity t where t.executionStatus = 'IN_PROGRESS' and " +
             "(select count(er) from EvaluationRequestEntity er where er.loadTestEntity = t " +
             "and er.stageType = 'REQUEST_SENT') = 0 order by t.created")
-    List<Long> findFinishedTests();
-
-    /**
-     * Finds load tests page with specified ids.
-     *
-     * @param ids - ids list
-     * @return evaluation requests page
-     */
-    List<LoadTestEntity> findByIdIn(Collection<Long> ids);
+    Page<LoadTestEntity> findFinishedTests(Pageable pageable);
 }
