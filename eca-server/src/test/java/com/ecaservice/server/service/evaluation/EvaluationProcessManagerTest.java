@@ -249,7 +249,7 @@ class EvaluationProcessManagerTest extends AbstractEvaluationProcessManagerTest<
     void testProcessEvaluationWebRequestWithDisabledNotifications() {
         EvaluationLog evaluationLog = createAndSaveEvaluationLog();
         mockGetUserProfileOptions(false);
-        evaluationProcessManager.processEvaluationRequest(evaluationLog.getId());
+        evaluationProcessManager.processEvaluationRequest(evaluationLog);
         verify(getErsClient(), atLeastOnce()).save(evaluationResultsRequestArgumentCaptor.capture());
 
         var actualEvaluationLog = getEvaluationLog(evaluationLog.getRequestId());
@@ -280,7 +280,7 @@ class EvaluationProcessManagerTest extends AbstractEvaluationProcessManagerTest<
     }
 
     private void testProcessEvaluationRequest(EvaluationLog evaluationLog) {
-        evaluationProcessManager.processEvaluationRequest(evaluationLog.getId());
+        evaluationProcessManager.processEvaluationRequest(evaluationLog);
         verify(getWebPushClient(), atLeastOnce()).sendPush(pushRequestArgumentCaptor.capture());
     }
 

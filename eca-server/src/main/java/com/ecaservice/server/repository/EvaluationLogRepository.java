@@ -24,12 +24,13 @@ public interface EvaluationLogRepository
     /**
      * Finds new evaluation requests.
      *
+     * @param dateTime - date time to compare with lcoked ttl
      * @param pageable - pageable object
      * @return evaluation requests ids list
      */
-    @Query("select ev.id from EvaluationLog ev where ev.requestStatus = 'NEW' and ev.channel = 'WEB' " +
-            "order by ev.creationDate")
-    List<Long> findNewWebRequests(Pageable pageable);
+    @Query("select ev from EvaluationLog ev where ev.requestStatus = 'NEW' and ev.channel = 'WEB' " +
+            "and (ev.lockedTtl is null or ev.lockedTtl < :dateTime) order by ev.creationDate")
+    Page<EvaluationLog> findNewWebRequests(@Param("dateTime") LocalDateTime dateTime, Pageable pageable);
 
     /**
      * Finds evaluation log by request id.

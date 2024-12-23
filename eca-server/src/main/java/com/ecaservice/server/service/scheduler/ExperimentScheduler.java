@@ -3,7 +3,7 @@ package com.ecaservice.server.service.scheduler;
 import com.ecaservice.server.config.ExperimentConfig;
 import com.ecaservice.server.service.experiment.ExperimentDataCleaner;
 import com.ecaservice.server.service.experiment.ExperimentProcessManager;
-import com.ecaservice.server.service.experiment.ProcessExperimentFetcher;
+import com.ecaservice.server.service.experiment.ExperimentRequestFetcher;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -23,7 +23,7 @@ public class ExperimentScheduler {
 
     private final ExperimentConfig experimentConfig;
     private final ExperimentProcessManager experimentProcessManager;
-    private final ProcessExperimentFetcher processExperimentFetcher;
+    private final ExperimentRequestFetcher experimentRequestFetcher;
     private final ExperimentDataCleaner experimentDataCleaner;
 
     /**
@@ -33,7 +33,7 @@ public class ExperimentScheduler {
     public void processExperiments() {
         log.debug("Starting job to process experiments");
         processWithPagination(
-                processExperimentFetcher::getNextExperimentsToProcess,
+                experimentRequestFetcher::getNextExperimentsToProcess,
                 experiments -> experiments.forEach(experimentProcessManager::processExperiment),
                 experimentConfig.getBatchSize()
         );

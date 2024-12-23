@@ -121,10 +121,12 @@ springdoc:
 
 ## Classifier properties
 classifiers:
-  evaluationTimeoutMinutes: 15
+  evaluationTimeoutMinutes: 10
   ## Scheduler delay in seconds
   delaySeconds: 3
-  maxRequestsPerJob: 25
+  ## Must be grater than evaluationTimeoutMinutes
+  lockTtlSeconds: 660
+  batchSize: 5
 
 ## Experiment properties
 experiment:
@@ -185,12 +187,6 @@ processes:
   processEvaluationId: ProcessEvaluationWebRequest
   createExperimentRequestProcessId: CreateExperimentRequestProcess
   createEvaluationRequestProcessId: CreateEvaluationRequestProcess
-
-lock:
-  registries:
-    evaluations-registry:
-      ## Evaluation lock expiration in millis
-      expireAfter: 1200000
 
 management:
   observations:

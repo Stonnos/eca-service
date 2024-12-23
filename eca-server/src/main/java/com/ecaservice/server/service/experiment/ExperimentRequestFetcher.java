@@ -13,14 +13,14 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 
 /**
- * Process experiment requests fetcher.
+ * Experiment requests fetcher.
  *
  * @author Roman Batygin
  */
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class ProcessExperimentFetcher {
+public class ExperimentRequestFetcher {
 
     private final ExperimentConfig experimentConfig;
     private final ExperimentRepository experimentRepository;
