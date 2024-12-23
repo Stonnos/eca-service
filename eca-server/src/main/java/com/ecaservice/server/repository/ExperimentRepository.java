@@ -35,7 +35,7 @@ public interface ExperimentRepository extends JpaRepository<Experiment, Long>, J
      * @param pageable - pageable object
      * @return experiments page
      */
-    @Query("select e from Experiment e where e.requestStatus = 'NEW' or e.requestStatus = 'IN_PROGRESS' and " +
+    @Query("select e from Experiment e where (e.requestStatus = 'NEW' or e.requestStatus = 'IN_PROGRESS') and " +
             "(e.lockedTtl is null or e.lockedTtl < :dateTime) order by e.creationDate")
     Page<Experiment> findExperimentsToProcess(@Param("dateTime") LocalDateTime dateTime, Pageable pageable);
 
