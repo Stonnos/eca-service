@@ -287,8 +287,12 @@ public class EvaluationLogDataService {
     private EvaluationResultsDto getEvaluationResults(EvaluationLog evaluationLog) {
         EvaluationResultsStatus evaluationResultsStatus;
         if (!RequestStatus.FINISHED.equals(evaluationLog.getRequestStatus())) {
-            evaluationResultsStatus = RequestStatus.IN_PROGRESS.equals(evaluationLog.getRequestStatus()) ?
-                    EvaluationResultsStatus.EVALUATION_IN_PROGRESS : EvaluationResultsStatus.EVALUATION_ERROR;
+            if (RequestStatus.NEW.equals(evaluationLog.getRequestStatus()) ||
+                    RequestStatus.IN_PROGRESS.equals(evaluationLog.getRequestStatus())) {
+                evaluationResultsStatus = EvaluationResultsStatus.EVALUATION_IN_PROGRESS;
+            } else {
+                evaluationResultsStatus = EvaluationResultsStatus.EVALUATION_ERROR;
+            }
         } else {
             EvaluationResultsRequestEntity evaluationResultsRequestEntity =
                     evaluationResultsRequestEntityRepository.findByEvaluationLog(evaluationLog);
