@@ -1,31 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
 <databaseChangeLog
-        logicalFilePath="db/changelog/v84-add-delete-model-after-column.xml"
+        logicalFilePath="db/changelog/v84-add-experiment-locked-ttl-column.xml"
         xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
     
-    <changeSet id="add_evaluation_log_delete_model_after_column" author="roman.batygin@mail.ru" context="schema">
+    <changeSet id="add_evaluation_log_locked_ttl_column" author="roman.batygin@mail.ru" context="schema">
         <preConditions onFail="MARK_RAN">
             <tableExists tableName="evaluation_log"/>
             <not>
-                <columnExists tableName="evaluation_log" columnName="delete_model_after"/>
+                <columnExists tableName="evaluation_log" columnName="locked_ttl"/>
             </not>
         </preConditions>
        <addColumn tableName="evaluation_log">
-           <column name="delete_model_after" type="timestamp"/>
+           <column name="locked_ttl" type="timestamp"/>
        </addColumn>
     </changeSet>
 
-    <changeSet id="add_experiment_delete_model_after_column" author="roman.batygin@mail.ru" context="schema">
+    <changeSet id="add_experiment_locked_ttl_column" author="roman.batygin@mail.ru" context="schema">
         <preConditions onFail="MARK_RAN">
             <tableExists tableName="experiment"/>
             <not>
-                <columnExists tableName="experiment" columnName="delete_model_after"/>
+                <columnExists tableName="experiment" columnName="locked_ttl"/>
             </not>
         </preConditions>
         <addColumn tableName="experiment">
-            <column name="delete_model_after" type="timestamp"/>
+            <column name="locked_ttl" type="timestamp"/>
         </addColumn>
     </changeSet>
     

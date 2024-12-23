@@ -58,7 +58,7 @@ public interface EvaluationLogRepository
      */
     @Query("select ev from EvaluationLog ev where ev.requestStatus = 'FINISHED' and " +
             "ev.deletedDate is null and ev.endDate < :dateTime and " +
-            "(ev.deleteModelAfter is null or ev.deleteModelAfter < :nowTime) order by ev.endDate")
+            "(ev.lockedTtl is null or ev.lockedTtl < :nowTime) order by ev.endDate")
     Page<EvaluationLog> findModelsToDelete(@Param("dateTime") LocalDateTime dateTime,
                                            @Param("nowTime") LocalDateTime nowTime,
                                            Pageable pageable);

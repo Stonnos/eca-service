@@ -89,10 +89,10 @@ public abstract class AbstractEvaluationEntity {
     private LocalDateTime deletedDate;
 
     /**
-     * Delete model after
+     * Lock time to live date
      */
-    @Column(name = "delete_model_after")
-    private LocalDateTime deleteModelAfter;
+    @Column(name = "locked_ttl")
+    private LocalDateTime lockedTtl;
 
     /**
      * Request status
