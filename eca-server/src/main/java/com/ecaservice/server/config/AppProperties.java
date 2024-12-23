@@ -41,4 +41,9 @@ public class AppProperties {
      * Short life url expiration in minutes
      */
     private Integer shortLifeUrlExpirationMinutes;
+
+    /**
+     * Remove model backoff minutes
+     */
+    private Integer removeModelBackoffMinutes;
 }

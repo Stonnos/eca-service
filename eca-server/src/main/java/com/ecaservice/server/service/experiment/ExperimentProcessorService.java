@@ -1,10 +1,12 @@
 package com.ecaservice.server.service.experiment;
 
+import com.ecaservice.server.config.ExperimentConfig;
 import com.ecaservice.server.event.model.ExperimentProgressEvent;
 import com.ecaservice.server.exception.experiment.ExperimentException;
 import com.ecaservice.server.model.Cancelable;
 import com.ecaservice.server.model.entity.Experiment;
 import com.ecaservice.server.model.experiment.InitializationParams;
+import com.ecaservice.server.repository.ExperimentRepository;
 import com.ecaservice.server.service.experiment.visitor.ExperimentInitializationVisitor;
 import eca.dataminer.AbstractExperiment;
 import eca.dataminer.IterativeExperiment;
@@ -15,6 +17,8 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
+
+import java.time.LocalDateTime;
 
 import static com.ecaservice.common.web.util.LogHelper.TX_ID;
 import static com.ecaservice.common.web.util.LogHelper.putMdc;
@@ -31,6 +35,8 @@ public class ExperimentProcessorService {
 
     private static final int PROGRESS_STEP = 2;
 
+    private final ExperimentConfig experimentConfig;
+    private final ExperimentRepository experimentRepository;
     private final ExperimentInitializationVisitor experimentInitializer;
     private final ApplicationEventPublisher applicationEventPublisher;
 
@@ -49,6 +55,7 @@ public class ExperimentProcessorService {
         Assert.notNull(initializationParams, "Initialization params is not specified!");
         putMdc(TX_ID, experiment.getRequestId());
         log.info("Starting to initialize experiment [{}]", experiment.getRequestId());
+        renewExperimentLockTtl(experiment);
         AbstractExperiment<?> abstractExperiment =
                 experiment.getExperimentType().handle(experimentInitializer, initializationParams);
         log.info("Experiment has been initialized [{}]", experiment.getRequestId());
@@ -62,6 +69,7 @@ public class ExperimentProcessorService {
                 int percent = iterativeExperiment.getPercent();
                 if (percent != currentPercent && percent % PROGRESS_STEP == 0) {
                     currentPercent = percent;
+                    renewExperimentLockTtl(experiment);
                     applicationEventPublisher.publishEvent(
                             new ExperimentProgressEvent(this, experiment, currentPercent));
                 }
@@ -79,5 +87,12 @@ public class ExperimentProcessorService {
             throw new ExperimentException("No models has been built!");
         }
         return abstractExperiment;
+    }
+
+    private void renewExperimentLockTtl(Experiment experiment) {
+        experiment.setLockedTtl(
+                LocalDateTime.now().plusSeconds(experimentConfig.getExperimentProgressLockRenewalTtlSeconds()));
+        experimentRepository.save(experiment);
+        log.debug("Experiment [{}] lock has been renewed", experiment.getRequestId());
     }
 }

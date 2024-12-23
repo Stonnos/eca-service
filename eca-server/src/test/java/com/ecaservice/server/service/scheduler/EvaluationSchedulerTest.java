@@ -11,6 +11,7 @@ import com.ecaservice.server.repository.InstancesInfoRepository;
 import com.ecaservice.server.service.AbstractJpaTest;
 import com.ecaservice.server.service.evaluation.ClassifiersDataCleaner;
 import com.ecaservice.server.service.evaluation.EvaluationProcessManager;
+import com.ecaservice.server.service.evaluation.EvaluationRequestsFetcher;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -18,6 +19,7 @@ import org.springframework.context.annotation.Import;
 
 import java.util.UUID;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.verify;
 
@@ -26,7 +28,7 @@ import static org.mockito.Mockito.verify;
  *
  * @author Roman Batygin
  */
-@Import(ClassifiersProperties.class)
+@Import({ClassifiersProperties.class, EvaluationRequestsFetcher.class})
 class EvaluationSchedulerTest extends AbstractJpaTest {
 
     @Autowired
@@ -36,6 +38,9 @@ class EvaluationSchedulerTest extends AbstractJpaTest {
 
     @Autowired
     private ClassifiersProperties classifiersProperties;
+
+    @Autowired
+    private EvaluationRequestsFetcher evaluationRequestsFetcher;
 
     @MockBean
     private ClassifiersDataCleaner classifiersDataCleaner;
@@ -52,7 +57,7 @@ class EvaluationSchedulerTest extends AbstractJpaTest {
         instancesInfoRepository.save(instancesInfo);
         evaluationScheduler =
                 new EvaluationScheduler(classifiersProperties, evaluationProcessManager, classifiersDataCleaner,
-                        evaluationLogRepository);
+                        evaluationRequestsFetcher, evaluationLogRepository);
     }
 
     @Override
@@ -63,20 +68,20 @@ class EvaluationSchedulerTest extends AbstractJpaTest {
 
     @Test
     void testProcessNewEvaluationRequests() {
-        var newRequest = saveEvaluationLog(Channel.WEB, RequestStatus.NEW);
+        saveEvaluationLog(Channel.WEB, RequestStatus.NEW);
         saveEvaluationLog(Channel.QUEUE, RequestStatus.NEW);
         saveEvaluationLog(Channel.WEB, RequestStatus.FINISHED);
         saveEvaluationLog(Channel.WEB, RequestStatus.IN_PROGRESS);
         saveEvaluationLog(Channel.WEB, RequestStatus.ERROR);
         evaluationScheduler.processEvaluationRequests();
-        verify(evaluationProcessManager, atLeastOnce()).processEvaluationRequest(newRequest.getId());
+        verify(evaluationProcessManager, atLeastOnce()).processEvaluationRequest(any(EvaluationLog.class));
     }
 
-    private EvaluationLog saveEvaluationLog(Channel channel, RequestStatus requestStatus) {
+    private void saveEvaluationLog(Channel channel, RequestStatus requestStatus) {
         var evaluationLog =
                 TestHelperUtils.createEvaluationLog(UUID.randomUUID().toString(), requestStatus);
         evaluationLog.setChannel(channel);
         evaluationLog.setInstancesInfo(instancesInfo);
-        return evaluationLogRepository.save(evaluationLog);
+        evaluationLogRepository.save(evaluationLog);
     }
 }

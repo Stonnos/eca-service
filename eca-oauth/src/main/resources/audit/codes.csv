@@ -14,3 +14,5 @@ RESET_PASSWORD;Сброс пароля;true;USER_PROFILE_ACTIONS
 CREATE_CHANGE_EMAIL_REQUEST;Создание запроса на изменение Email;true;USER_PROFILE_ACTIONS
 CONFIRM_CHANGE_EMAIL_REQUEST;Подтверждение запроса на изменение Email;true;USER_PROFILE_ACTIONS
 UPDATE_USER_PROFILE_NOTIFICATION_OPTIONS;Изменение настроек уведомлений в личном кабинете;true;USER_PROFILE_ACTIONS
+LOGIN;Вход в систему;true;USER_PROFILE_ACTIONS
+LOGOUT;Выход из системы;true;USER_PROFILE_ACTIONS

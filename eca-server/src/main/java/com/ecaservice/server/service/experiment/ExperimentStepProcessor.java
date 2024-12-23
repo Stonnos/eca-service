@@ -1,9 +1,11 @@
 package com.ecaservice.server.service.experiment;
 
+import com.ecaservice.server.config.ExperimentConfig;
 import com.ecaservice.server.model.entity.Experiment;
 import com.ecaservice.server.model.entity.ExperimentStepEntity;
 import com.ecaservice.server.model.entity.ExperimentStepStatus;
 import com.ecaservice.server.model.experiment.ExperimentContext;
+import com.ecaservice.server.repository.ExperimentRepository;
 import com.ecaservice.server.repository.ExperimentStepRepository;
 import com.ecaservice.server.service.experiment.step.AbstractExperimentStepHandler;
 import lombok.RequiredArgsConstructor;
@@ -30,6 +32,8 @@ public class ExperimentStepProcessor {
     private static final List<ExperimentStepStatus> EXPERIMENT_STEP_ERROR_STATUSES =
             List.of(ExperimentStepStatus.ERROR, ExperimentStepStatus.TIMEOUT);
 
+    private final ExperimentConfig experimentConfig;
+    private final ExperimentRepository experimentRepository;
     private final ExperimentStepRepository experimentStepRepository;
     private final List<AbstractExperimentStepHandler> experimentStepHandlers;
 
@@ -61,11 +65,18 @@ public class ExperimentStepProcessor {
                 EXPERIMENT_STEP_STATUSES_TO_PROCESS);
     }
 
+    private void renewExperimentLockTtl(Experiment experiment) {
+        experiment.setLockedTtl(LocalDateTime.now().plusSeconds(experimentConfig.getLockTtlSeconds()));
+        experimentRepository.save(experiment);
+        log.debug("Experiment [{}] lock has been renewed", experiment.getRequestId());
+    }
+
     private void processSteps(List<ExperimentStepEntity> steps, ExperimentContext experimentContext) {
         var experiment = experimentContext.getExperiment();
         for (var experimentStepEntity : steps) {
             log.info("Starting to process experiment [{}] step [{}]", experiment.getRequestId(),
                     experimentStepEntity.getStep());
+            renewExperimentLockTtl(experiment);
             processStep(experimentContext, experimentStepEntity);
             if (!canHandleNext(experimentContext, experimentStepEntity)) {
                 break;

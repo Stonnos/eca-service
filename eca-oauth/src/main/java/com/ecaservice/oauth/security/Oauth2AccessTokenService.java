@@ -1,5 +1,6 @@
 package com.ecaservice.oauth.security;
 
+import com.ecaservice.core.audit.annotation.Audit;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
@@ -26,6 +27,8 @@ import org.springframework.security.oauth2.server.authorization.token.OAuth2Toke
 
 import java.security.Principal;
 
+import static com.ecaservice.oauth.config.audit.AuditCodes.LOGIN;
+
 /**
  * Oauth2 access token service.
  *
@@ -49,6 +52,7 @@ public class Oauth2AccessTokenService {
      * @return authentication object
      * @throws AuthenticationException in case of authentication error
      */
+    @Audit(value = LOGIN, initiatorKey = "#authenticatedUser.name")
     public Authentication createAccessToken(Authentication authenticationGrant,
                                             Authentication authenticatedUser,
                                             OAuth2ClientAuthenticationToken clientPrincipal,

@@ -1,8 +1,6 @@
 package com.ecaservice.server.model.entity;
 
 import eca.core.evaluation.EvaluationMethod;
-import lombok.Data;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -11,6 +9,8 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.MappedSuperclass;
+import lombok.Data;
+
 import java.time.LocalDateTime;
 
 /**
@@ -87,6 +87,12 @@ public abstract class AbstractEvaluationEntity {
      */
     @Column(name = "deleted_date")
     private LocalDateTime deletedDate;
+
+    /**
+     * Lock time to live date
+     */
+    @Column(name = "locked_ttl")
+    private LocalDateTime lockedTtl;
 
     /**
      * Request status

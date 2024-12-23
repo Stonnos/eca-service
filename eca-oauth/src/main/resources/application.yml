@@ -54,6 +54,8 @@ app:
   changeEmail:
     validityMinutes: 2880
   security:
+    writeTokenInCookie: true
+    refreshTokenCookiePath: /eca-oauth/oauth2/token
     whitelistUrls:
       - /api/internal/user/options/**
       - /reset-password/**

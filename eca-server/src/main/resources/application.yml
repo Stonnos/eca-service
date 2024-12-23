@@ -79,6 +79,7 @@ app:
   numberOfDaysForStorage: 180
   ## Each day at midnight
   removeModelCron: 0 0 0 * * *
+  removeModelBackoffMinutes: 60
   pageSize: 10
   modelDownloadUrlExpirationDays: 7
   shortLifeUrlExpirationMinutes: 5
@@ -120,10 +121,12 @@ springdoc:
 
 ## Classifier properties
 classifiers:
-  evaluationTimeoutMinutes: 15
+  evaluationTimeoutMinutes: 10
   ## Scheduler delay in seconds
-  delaySeconds: 3
-  maxRequestsPerJob: 25
+  delaySeconds: 5
+  ## Must be grater than evaluationTimeoutMinutes
+  lockTtlSeconds: 660
+  batchSize: 5
 
 ## Experiment properties
 experiment:
@@ -133,21 +136,18 @@ experiment:
   maximumFractionDigits: ${classifiers-options.maximumFractionDigits}
   ## Experiment evaluation timeout in minutes
   evaluationTimeoutMinutes: 120
-  ## Experiment request timeout in minutes
-  requestTimeoutMinutes: 125
   ## Scheduler delay in seconds
   delaySeconds: 30
   experimentLocalStoragePath: /home/experiment
+  lockTtlSeconds: 60
+  experimentProgressLockRenewalTtlSeconds: 300
+  batchSize: 1
   ensemble:
     numIterations: 25
     numBestClassifiers: 4
     multiThreadModeEnabled: true
     numThreads: 10
     numFoldsForStacking: 10
-
-ers:
-  useClassifierOptionsCache: false
-  classifierOptionsCacheDurationInDays: 2
 
 minio:
   url: http://localhost:9000
@@ -187,15 +187,6 @@ processes:
   processEvaluationId: ProcessEvaluationWebRequest
   createExperimentRequestProcessId: CreateExperimentRequestProcess
   createEvaluationRequestProcessId: CreateEvaluationRequestProcess
-
-lock:
-  registries:
-    evaluations-registry:
-      ## Evaluation lock expiration in millis
-      expireAfter: 1200000
-    experiments-registry:
-      ## Experiment lock expiration in millis. Must be equals to experiment.requestTimeoutMinutes value
-      expireAfter: 7500000
 
 management:
   observations:

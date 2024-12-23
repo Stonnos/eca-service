@@ -2,12 +2,13 @@ package com.ecaservice.auto.test.repository.autotest;
 
 import com.ecaservice.auto.test.entity.autotest.AutoTestsJobEntity;
 import com.ecaservice.test.common.model.ExecutionStatus;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.Collection;
-import java.util.List;
 import java.util.Optional;
 
 /**
@@ -20,29 +21,24 @@ public interface AutoTestsJobRepository extends JpaRepository<AutoTestsJobEntity
     /**
      * Gets new tests for processing.
      *
-     * @return tests ids list
+     * @param pageable - pageable
+     * @return auto tests jobs page
      */
-    @Query("select t.id from AutoTestsJobEntity t where t.executionStatus = 'NEW' order by t.created")
-    List<Long> findNewTests();
+    @Query("select t from AutoTestsJobEntity t where t.executionStatus = 'NEW' order by t.created")
+    Page<AutoTestsJobEntity> findNewTests(Pageable pageable);
 
     /**
      * Gets finished tests.
      *
      * @param executionStatuses - finished execution statuses
+     * @param pageable          - pageable
      * @return tests ids list
      */
-    @Query("select t.id from AutoTestsJobEntity t where t.executionStatus = 'IN_PROGRESS' and " +
+    @Query("select t from AutoTestsJobEntity t where t.executionStatus = 'IN_PROGRESS' and " +
             "not exists (select er.id from BaseEvaluationRequestEntity er where er.job = t " +
             "and er.executionStatus not in (:executionStatuses)) order by t.created")
-    List<Long> findFinishedJobs(@Param("executionStatuses") Collection<ExecutionStatus> executionStatuses);
-
-    /**
-     * Finds auto tests page with specified ids.
-     *
-     * @param ids - ids list
-     * @return evaluation requests page
-     */
-    List<AutoTestsJobEntity> findByIdInOrderByCreated(Collection<Long> ids);
+    Page<AutoTestsJobEntity> findFinishedJobs(@Param("executionStatuses") Collection<ExecutionStatus> executionStatuses,
+                                              Pageable pageable);
 
     /**
      * Finds auto tests job by uuid.

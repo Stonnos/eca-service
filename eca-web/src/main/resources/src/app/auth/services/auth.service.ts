@@ -4,7 +4,6 @@ import { Observable } from "rxjs/internal/Observable";
 import { UserModel } from "../model/user.model";
 import { AuthenticationKeys } from "../model/auth.keys";
 import { environment } from "../../../environments/environment";
-import { Utils } from "../../common/util/utils";
 
 @Injectable()
 export class AuthService {
@@ -34,25 +33,16 @@ export class AuthService {
 
   public refreshToken(): Observable<any> {
     const params = new URLSearchParams();
-    params.append('refresh_token', localStorage.getItem(AuthenticationKeys.REFRESH_TOKEN));
     params.append('grant_type', 'refresh_token');
     return this.performTokenRequest(params);
   }
 
-  public saveToken(token): void {
-    localStorage.setItem(AuthenticationKeys.ACCESS_TOKEN, token.access_token);
-    localStorage.setItem(AuthenticationKeys.REFRESH_TOKEN, token.refresh_token);
+  public saveLoggedInData(): void {
+    localStorage.setItem(AuthenticationKeys.LOGGED_IN, String(true));
   }
 
   public logoutRequest(): Observable<any> {
-    const headers = new HttpHeaders({
-      'Content-type': 'application/x-www-form-urlencoded; charset=utf-8',
-      'Authorization': this.getHttpBasicAuthorizationHeader()
-    });
-    const params = new URLSearchParams();
-    params.append('token', Utils.getBearerTokenHeader());
-    const options = { headers: headers };
-    return this.http.post(this.serviceUrl + '/oauth2/revoke', params.toString(), options);
+    return this.http.post(this.serviceUrl + '/users/logout', null);
   }
 
   private performTokenRequest(params: URLSearchParams): Observable<any> {

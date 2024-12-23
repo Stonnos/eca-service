@@ -4,6 +4,8 @@ import com.ecaservice.auto.test.entity.autotest.BaseEvaluationRequestEntity;
 import com.ecaservice.auto.test.entity.autotest.BaseTestStepEntity;
 import com.ecaservice.auto.test.projections.TestResultProjection;
 import com.ecaservice.test.common.model.ExecutionStatus;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -42,20 +44,15 @@ public interface BaseTestStepRepository extends JpaRepository<BaseTestStepEntity
      *
      * @param dateTime          - date time value
      * @param executionStatuses - finished execution statuses
-     * @return test steps ids list
+     * @param pageable          - pageable
+     * @return test steps page
      */
-    @Query("select er.id from BaseTestStepEntity er where er.executionStatus not in (:executionStatuses)" +
+    @Query("select er from BaseTestStepEntity er where er.executionStatus not in (:executionStatuses)" +
             "and er.started < :dateTime order by er.started")
-    List<Long> findExceededStepIds(@Param("dateTime") LocalDateTime dateTime,
-                                   @Param("executionStatuses") Collection<ExecutionStatus> executionStatuses);
-
-    /**
-     * Finds tests steps page with specified ids.
-     *
-     * @param ids - ids list
-     * @return tests steps page
-     */
-    List<BaseTestStepEntity> findByIdInOrderByCreated(Collection<Long> ids);
+    Page<BaseTestStepEntity> findExceededStepIds(@Param("dateTime") LocalDateTime dateTime,
+                                                 @Param("executionStatuses")
+                                                 Collection<ExecutionStatus> executionStatuses,
+                                                 Pageable pageable);
 
     /**
      * Gets test results for specified evaluation request.

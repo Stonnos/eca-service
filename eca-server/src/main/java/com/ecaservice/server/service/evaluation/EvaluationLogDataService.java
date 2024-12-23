@@ -30,15 +30,7 @@ import com.ecaservice.web.dto.model.PageDto;
 import com.ecaservice.web.dto.model.PageRequestDto;
 import com.ecaservice.web.dto.model.RequestStatusStatisticsDto;
 import com.ecaservice.web.dto.model.S3ContentResponseDto;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import io.micrometer.tracing.annotation.NewSpan;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
-import org.springframework.stereotype.Service;
-import org.springframework.validation.annotation.Validated;
-
 import jakarta.annotation.PostConstruct;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.Tuple;
@@ -47,6 +39,14 @@ import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Expression;
 import jakarta.persistence.criteria.Join;
 import jakarta.persistence.criteria.Root;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.stereotype.Service;
+import org.springframework.validation.annotation.Validated;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -248,9 +248,14 @@ public class EvaluationLogDataService {
     public void removeModel(EvaluationLog evaluationLog) {
         try {
             log.info("Starting to remove classifier [{}] model file", evaluationLog.getRequestId());
+            // Sets locked ttl date to delete classifier model
+            evaluationLog.setLockedTtl(
+                    LocalDateTime.now().plusMinutes(appProperties.getRemoveModelBackoffMinutes()));
+            evaluationLogRepository.save(evaluationLog);
             String modelPath = evaluationLog.getModelPath();
             objectStorageService.removeObject(modelPath);
             evaluationLog.setModelPath(null);
+            evaluationLog.setLockedTtl(null);
             evaluationLog.setDeletedDate(LocalDateTime.now());
             evaluationLogRepository.save(evaluationLog);
             log.info("Classifier [{}] model file has been deleted", evaluationLog.getRequestId());
@@ -282,8 +287,12 @@ public class EvaluationLogDataService {
     private EvaluationResultsDto getEvaluationResults(EvaluationLog evaluationLog) {
         EvaluationResultsStatus evaluationResultsStatus;
         if (!RequestStatus.FINISHED.equals(evaluationLog.getRequestStatus())) {
-            evaluationResultsStatus = RequestStatus.IN_PROGRESS.equals(evaluationLog.getRequestStatus()) ?
-                    EvaluationResultsStatus.EVALUATION_IN_PROGRESS : EvaluationResultsStatus.EVALUATION_ERROR;
+            if (RequestStatus.NEW.equals(evaluationLog.getRequestStatus()) ||
+                    RequestStatus.IN_PROGRESS.equals(evaluationLog.getRequestStatus())) {
+                evaluationResultsStatus = EvaluationResultsStatus.EVALUATION_IN_PROGRESS;
+            } else {
+                evaluationResultsStatus = EvaluationResultsStatus.EVALUATION_ERROR;
+            }
         } else {
             EvaluationResultsRequestEntity evaluationResultsRequestEntity =
                     evaluationResultsRequestEntityRepository.findByEvaluationLog(evaluationLog);

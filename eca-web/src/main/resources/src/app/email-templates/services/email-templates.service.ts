@@ -7,7 +7,6 @@ import {
 } from "../../../../../../../target/generated-sources/typescript/eca-web-dto";
 import { Observable } from "rxjs/internal/Observable";
 import { environment } from "../../../environments/environment";
-import { Utils } from "../../common/util/utils";
 
 @Injectable()
 export class EmailTemplatesService {
@@ -19,8 +18,7 @@ export class EmailTemplatesService {
 
   public getTemplates(pageRequest: PageRequestDto): Observable<PageDto<EmailTemplateDto>> {
     const headers = new HttpHeaders({
-      'Content-type': 'application/json; charset=utf-8',
-      'Authorization': Utils.getBearerTokenHeader()
+      'Content-type': 'application/json; charset=utf-8'
     });
     return this.http.post<PageDto<EmailTemplateDto>>(this.serviceUrl + '/list', pageRequest, { headers: headers });
   }

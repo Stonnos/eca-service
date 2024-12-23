@@ -14,3 +14,5 @@ id;event_type;message_template;audit_code_id
 13;SUCCESS;Пароль был сброшен;RESET_PASSWORD
 14;SUCCESS;Email адрес был изменен на [${returnValue.userEntity.email}];CONFIRM_CHANGE_EMAIL_REQUEST
 17;SUCCESS;Изменены настроки уведомлений в личном кабинете;UPDATE_USER_PROFILE_NOTIFICATION_OPTIONS
+18;SUCCESS;Успешный вход в систему;LOGIN
+19;SUCCESS;Выход из системы;LOGOUT

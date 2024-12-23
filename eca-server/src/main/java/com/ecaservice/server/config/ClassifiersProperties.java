@@ -23,7 +23,12 @@ public class ClassifiersProperties {
     private Integer delaySeconds;
 
     /**
-     * Max. requests per job
+     * Evaluation lock ttl in seconds
      */
-    private Integer maxRequestsPerJob;
+    private Integer lockTtlSeconds;
+
+    /**
+     * Batch size for processing
+     */
+    private Integer batchSize;
 }

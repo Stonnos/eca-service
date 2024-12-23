@@ -9,12 +9,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.function.Consumer;
 
 import static com.ecaservice.common.web.util.LogHelper.TX_ID;
 import static com.ecaservice.common.web.util.LogHelper.putMdc;
-import static com.ecaservice.common.web.util.PageHelper.processWithPagination;
+import static com.ecaservice.server.util.PageHelper.processWithPagination;
 
 /**
  * Experiment data cleaner.
@@ -39,19 +37,16 @@ public class ExperimentDataCleaner {
     public void removeExperimentsModels() {
         log.info("Starting to remove experiments models.");
         LocalDateTime dateTime = LocalDateTime.now().minusDays(appProperties.getNumberOfDaysForStorage());
-        var experimentIds = experimentRepository.findExperimentsModelsToDelete(dateTime);
-        log.info("Obtained {} experiments to remove model files", experimentIds.size());
-        processWithPagination(experimentIds, experimentRepository::findByIdIn,
-                experiments -> removeData(experiments, experimentDataService::removeExperimentModel),
+        processWithPagination(
+                pageable -> experimentRepository.findExperimentsModelsToDelete(dateTime, LocalDateTime.now(), pageable),
+                experiments -> experiments.forEach(this::removeModel),
                 appProperties.getPageSize()
         );
         log.info("Experiments models removing has been finished.");
     }
 
-    private void removeData(List<Experiment> experiments, Consumer<Experiment> removeDataConsumer) {
-        experiments.forEach(experiment -> {
-            putMdc(TX_ID, experiment.getRequestId());
-            removeDataConsumer.accept(experiment);
-        });
+    private void removeModel(Experiment experiment) {
+        putMdc(TX_ID, experiment.getRequestId());
+        experimentDataService.removeExperimentModel(experiment);
     }
 }

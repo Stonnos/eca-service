@@ -1,6 +1,7 @@
 package com.ecaservice.oauth.controller.web;
 
 import com.ecaservice.oauth.TestHelperUtils;
+import com.ecaservice.oauth.config.AppProperties;
 import com.ecaservice.oauth.dto.CreateUserDto;
 import com.ecaservice.oauth.dto.UpdateUserInfoDto;
 import com.ecaservice.oauth.entity.UserEntity;
@@ -10,6 +11,7 @@ import com.ecaservice.oauth.mapping.UserMapper;
 import com.ecaservice.oauth.mapping.UserMapperImpl;
 import com.ecaservice.oauth.repository.UserEntityRepository;
 import com.ecaservice.oauth.repository.UserPhotoRepository;
+import com.ecaservice.oauth.service.Oauth2RevokeTokenService;
 import com.ecaservice.oauth.service.PasswordService;
 import com.ecaservice.oauth.service.UserService;
 import com.ecaservice.oauth2.test.controller.AbstractControllerTest;
@@ -60,7 +62,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * @author Roman Batygin
  */
 @WebMvcTest(controllers = UserController.class)
-@Import({UserMapperImpl.class, RoleMapperImpl.class})
+@Import({UserMapperImpl.class, RoleMapperImpl.class, AppProperties.class})
 class UserControllerTest extends AbstractControllerTest {
 
     private static final String BASE_URL = "/users";
@@ -97,6 +99,8 @@ class UserControllerTest extends AbstractControllerTest {
     private UserService userService;
     @MockBean
     private PasswordService passwordService;
+    @MockBean
+    private Oauth2RevokeTokenService oauth2RevokeTokenService;
     @Autowired
     private UserMapper userMapper;
     @MockBean
@@ -105,6 +109,12 @@ class UserControllerTest extends AbstractControllerTest {
     private UserEntityRepository userEntityRepository;
     @MockBean
     private UserPhotoRepository userPhotoRepository;
+
+    @Test
+    void testLogoutUnauthorized() throws Exception {
+        mockMvc.perform(post(LOGOUT_URL))
+                .andExpect(status().isUnauthorized());
+    }
 
     @Test
     void testCreateUserUnauthorized() throws Exception {
