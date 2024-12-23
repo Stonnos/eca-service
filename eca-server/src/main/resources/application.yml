@@ -123,7 +123,7 @@ springdoc:
 classifiers:
   evaluationTimeoutMinutes: 10
   ## Scheduler delay in seconds
-  delaySeconds: 3
+  delaySeconds: 5
   ## Must be grater than evaluationTimeoutMinutes
   lockTtlSeconds: 660
   batchSize: 5
