@@ -63,9 +63,14 @@ public class ExperimentConfig {
     private Integer lockTtlSeconds;
 
     /**
-     * Max. requests per job
+     * Experiment progress lock renewal ttl in seconds
      */
-    private Integer maxRequestsPerJob;
+    private Integer experimentProgressLockRenewalTtlSeconds;
+
+    /**
+     * Batch size for experiments processing
+     */
+    private Integer batchSize;
 
     /**
      * Ensemble configuration properties.

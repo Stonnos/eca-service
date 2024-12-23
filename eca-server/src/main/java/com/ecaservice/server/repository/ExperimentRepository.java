@@ -33,11 +33,11 @@ public interface ExperimentRepository extends JpaRepository<Experiment, Long>, J
      *
      * @param dateTime - date time to compare with locked ttl
      * @param pageable - pageable object
-     * @return experiments list
+     * @return experiments page
      */
-    @Query("select exp from Experiment exp where exp.requestStatus = 'NEW' or exp.requestStatus = 'IN_PROGRESS' and " +
-            "(exp.lockedTtl is null or exp.lockedTtl < :dateTime) order by exp.creationDate")
-    List<Experiment> findExperimentsToProcess(@Param("dateTime") LocalDateTime dateTime, Pageable pageable);
+    @Query("select e from Experiment e where e.requestStatus = 'NEW' or e.requestStatus = 'IN_PROGRESS' and " +
+            "(e.lockedTtl is null or e.lockedTtl < :dateTime) order by e.creationDate")
+    Page<Experiment> findExperimentsToProcess(@Param("dateTime") LocalDateTime dateTime, Pageable pageable);
 
     /**
      * Finds experiments models to delete.

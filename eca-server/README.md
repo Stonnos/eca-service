@@ -44,7 +44,8 @@ ECA server
    * experiment.maximumFractionDigits - число десятичных знаков после запятой
    * experiment.evaluationTimeoutMinutes - время таймаута для построения эксперимента в минутах.
    * experiment.lockTtl - время жизни блокировки заявки на эксперимент (используется для исключения race condition, когда запущено несколько инстансов приложения)
-   * experiment.maxRequestsPerJob - максимальное число заявок обрабатываемое в рамках одного вызова scheduler
+   * experiment.experimentProgressLockRenewalTtlSeconds - время жизни для обновления блокировки эксперимента (используется для исключения race condition, когда запущено несколько инстансов приложения)
+   * experiment.batchSize - размер страницы для постраничной обработки заявок
    * experiment.delaySeconds - интервал между запусками scheduler для обработки экспериметов
    * experiment.ensemble.numIterations - число итераций для ансамблевых алгоритмов
    * experiment.ensemble.numBestClassifiers - число наилучших по точности базовых классификаторов, которые впоследствии

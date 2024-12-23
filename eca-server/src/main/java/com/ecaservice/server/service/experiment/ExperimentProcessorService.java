@@ -55,6 +55,7 @@ public class ExperimentProcessorService {
         Assert.notNull(initializationParams, "Initialization params is not specified!");
         putMdc(TX_ID, experiment.getRequestId());
         log.info("Starting to initialize experiment [{}]", experiment.getRequestId());
+        renewExperimentLockTtl(experiment);
         AbstractExperiment<?> abstractExperiment =
                 experiment.getExperimentType().handle(experimentInitializer, initializationParams);
         log.info("Experiment has been initialized [{}]", experiment.getRequestId());
@@ -89,7 +90,8 @@ public class ExperimentProcessorService {
     }
 
     private void renewExperimentLockTtl(Experiment experiment) {
-        experiment.setLockedTtl(LocalDateTime.now().plusSeconds(experimentConfig.getLockTtlSeconds()));
+        experiment.setLockedTtl(
+                LocalDateTime.now().plusSeconds(experimentConfig.getExperimentProgressLockRenewalTtlSeconds()));
         experimentRepository.save(experiment);
         log.debug("Experiment [{}] lock has been renewed", experiment.getRequestId());
     }

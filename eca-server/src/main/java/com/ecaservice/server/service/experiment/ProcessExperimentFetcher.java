@@ -6,12 +6,11 @@ import com.ecaservice.server.model.entity.Experiment;
 import com.ecaservice.server.repository.ExperimentRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import org.springframework.util.CollectionUtils;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 /**
  * Process experiment requests fetcher.
@@ -30,19 +29,19 @@ public class ProcessExperimentFetcher {
      * Gets next experiments for processing and sets a lock to prevent other threads from receiving the same data for
      * processing.
      *
-     * @return experiments list
+     * @param pageable - pageable object
+     * @return experiments page
      */
     @Locked(lockName = "getNextExperimentsToProcess")
-    public List<Experiment> getNextExperimentsToProcess() {
+    public Page<Experiment> getNextExperimentsToProcess(Pageable pageable) {
         log.debug("Starting to get next experiments to process");
-        List<Experiment> experiments = experimentRepository.findExperimentsToProcess(LocalDateTime.now(),
-                PageRequest.of(0, experimentConfig.getMaxRequestsPerJob()));
-        if (!CollectionUtils.isEmpty(experiments)) {
+        Page<Experiment> experiments = experimentRepository.findExperimentsToProcess(LocalDateTime.now(), pageable);
+        if (experiments.hasContent()) {
             // Sets a lock to prevent other threads from receiving the same data for processing
             experiments.forEach(experiment -> experiment.setLockedTtl(
                     LocalDateTime.now().plusSeconds(experimentConfig.getLockTtlSeconds())));
             experimentRepository.saveAll(experiments);
-            log.info("[{}] experiments to process has been fetched", experiments.size());
+            log.info("[{}] experiments to process has been fetched", experiments.getNumberOfElements());
         }
         log.debug("Next experiments to process has been fetched");
         return experiments;

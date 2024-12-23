@@ -65,7 +65,8 @@ class ExperimentSchedulerTest extends AbstractJpaTest {
     @Override
     public void init() {
         experimentScheduler =
-                new ExperimentScheduler(experimentProcessManager, processExperimentFetcher, experimentDataCleaner);
+                new ExperimentScheduler(experimentConfig, experimentProcessManager, processExperimentFetcher,
+                        experimentDataCleaner);
     }
 
     @Override

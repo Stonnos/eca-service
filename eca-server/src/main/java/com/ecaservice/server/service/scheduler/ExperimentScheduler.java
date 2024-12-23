@@ -1,6 +1,6 @@
 package com.ecaservice.server.service.scheduler;
 
-import com.ecaservice.server.model.entity.Experiment;
+import com.ecaservice.server.config.ExperimentConfig;
 import com.ecaservice.server.service.experiment.ExperimentDataCleaner;
 import com.ecaservice.server.service.experiment.ExperimentProcessManager;
 import com.ecaservice.server.service.experiment.ProcessExperimentFetcher;
@@ -8,9 +8,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
-import org.springframework.util.CollectionUtils;
 
-import java.util.List;
+import static com.ecaservice.server.util.PageHelper.processWithPagination;
 
 /**
  * Experiment scheduler.
@@ -22,6 +21,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ExperimentScheduler {
 
+    private final ExperimentConfig experimentConfig;
     private final ExperimentProcessManager experimentProcessManager;
     private final ProcessExperimentFetcher processExperimentFetcher;
     private final ExperimentDataCleaner experimentDataCleaner;
@@ -32,10 +32,11 @@ public class ExperimentScheduler {
     @Scheduled(fixedDelayString = "${experiment.delaySeconds}000")
     public void processExperiments() {
         log.debug("Starting job to process experiments");
-        List<Experiment> experiments = processExperimentFetcher.getNextExperimentsToProcess();
-        if (!CollectionUtils.isEmpty(experiments)) {
-            experiments.forEach(experimentProcessManager::processExperiment);
-        }
+        processWithPagination(
+                processExperimentFetcher::getNextExperimentsToProcess,
+                experiments -> experiments.forEach(experimentProcessManager::processExperiment),
+                experimentConfig.getBatchSize()
+        );
         log.debug("Process experiments job has been finished");
     }
 
