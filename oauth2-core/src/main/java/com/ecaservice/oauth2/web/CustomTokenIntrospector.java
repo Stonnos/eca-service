@@ -34,7 +34,7 @@ public class CustomTokenIntrospector implements OpaqueTokenIntrospector {
         populateAuthorities(claims, OAuth2TokenIntrospectionClaimAdditionalNames.ROLES, Function.identity(),
                 authorities);
         authorities.addAll(oAuth2AuthenticatedPrincipal.getAuthorities());
-        log.info("Token authorities: {}", authorities);
+        log.debug("Token authorities: {}", authorities);
         return new DefaultOAuth2AuthenticatedPrincipal(claims, authorities);
     }
 }
