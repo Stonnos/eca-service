@@ -5,6 +5,7 @@ import com.ecaservice.server.config.ExperimentConfig;
 import com.ecaservice.server.model.MockCancelable;
 import com.ecaservice.server.model.entity.Experiment;
 import com.ecaservice.server.model.experiment.InitializationParams;
+import com.ecaservice.server.repository.ExperimentRepository;
 import com.ecaservice.server.service.experiment.visitor.ExperimentInitializationVisitor;
 import eca.dataminer.AbstractExperiment;
 import eca.dataminer.AutomatedKNearestNeighbours;
@@ -37,6 +38,8 @@ class ExperimentProcessorServiceTest {
 
     @Mock
     private ExperimentConfig experimentConfig;
+    @Mock
+    private ExperimentRepository experimentRepository;
     @Mock
     private ApplicationEventPublisher applicationEventPublisher;
     @Mock

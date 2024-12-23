@@ -207,7 +207,7 @@ class ExperimentProcessManagerTest extends AbstractEvaluationProcessManagerTest<
     void testProcessExperimentWithWebChannelWithDisabledNotifications() {
         Experiment experiment = createAndSaveExperiment(Channel.WEB);
         mockGetUserProfileOptions(false);
-        experimentProcessManager.processExperiment(experiment.getId());
+        experimentProcessManager.processExperiment(experiment);
         verify(getWebPushClient(), atLeastOnce()).sendPush(pushRequestArgumentCaptor.capture());
         verify(getErsClient(), atLeastOnce()).save(evaluationResultsRequestArgumentCaptor.capture());
 
@@ -270,7 +270,7 @@ class ExperimentProcessManagerTest extends AbstractEvaluationProcessManagerTest<
     }
 
     private void testProcessExperiment(Experiment experiment) {
-        experimentProcessManager.processExperiment(experiment.getId());
+        experimentProcessManager.processExperiment(experiment);
         verify(getEmailClient(), atLeastOnce()).sendEmail(emailRequestArgumentCaptor.capture());
         verify(getWebPushClient(), atLeastOnce()).sendPush(pushRequestArgumentCaptor.capture());
         verify(getErsClient(), atLeastOnce()).save(evaluationResultsRequestArgumentCaptor.capture());

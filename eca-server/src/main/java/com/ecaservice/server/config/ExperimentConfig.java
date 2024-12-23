@@ -43,11 +43,6 @@ public class ExperimentConfig {
     private Integer evaluationTimeoutMinutes;
 
     /**
-     * Experiment request processing timeout value in minutes
-     */
-    private Integer requestTimeoutMinutes;
-
-    /**
      * Delay value for scheduler in seconds
      */
     private Integer delaySeconds;
@@ -61,6 +56,16 @@ public class ExperimentConfig {
      * Experiment local storage path on file system
      */
     private String experimentLocalStoragePath;
+
+    /**
+     * Experiment lock ttl in seconds
+     */
+    private Integer lockTtlSeconds;
+
+    /**
+     * Max. requests per job
+     */
+    private Integer maxRequestsPerJob;
 
     /**
      * Ensemble configuration properties.

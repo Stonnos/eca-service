@@ -15,6 +15,7 @@ import com.ecaservice.server.service.experiment.ExperimentDataCleaner;
 import com.ecaservice.server.service.experiment.ExperimentProcessManager;
 import com.ecaservice.server.service.experiment.ExperimentProgressService;
 import com.ecaservice.server.service.experiment.ExperimentService;
+import com.ecaservice.server.service.experiment.ProcessExperimentFetcher;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -24,6 +25,7 @@ import org.springframework.context.annotation.Import;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.verify;
 
@@ -32,11 +34,13 @@ import static org.mockito.Mockito.verify;
  *
  * @author Roman Batygin
  */
-@Import({ExperimentConfig.class, AppProperties.class})
+@Import({ExperimentConfig.class, AppProperties.class, ProcessExperimentFetcher.class})
 class ExperimentSchedulerTest extends AbstractJpaTest {
 
     @Autowired
     private ExperimentConfig experimentConfig;
+    @Autowired
+    private ProcessExperimentFetcher processExperimentFetcher;
     @Autowired
     private ExperimentRepository experimentRepository;
     @Autowired
@@ -60,8 +64,8 @@ class ExperimentSchedulerTest extends AbstractJpaTest {
 
     @Override
     public void init() {
-        experimentScheduler = new ExperimentScheduler(experimentConfig, experimentProcessManager, experimentDataCleaner,
-                experimentRepository);
+        experimentScheduler =
+                new ExperimentScheduler(experimentProcessManager, processExperimentFetcher, experimentDataCleaner);
     }
 
     @Override
@@ -77,7 +81,7 @@ class ExperimentSchedulerTest extends AbstractJpaTest {
         instancesInfoRepository.save(newExperiment.getInstancesInfo());
         experimentRepository.save(newExperiment);
         experimentScheduler.processExperiments();
-        verify(experimentProcessManager, atLeastOnce()).processExperiment(newExperiment.getId());
+        verify(experimentProcessManager, atLeastOnce()).processExperiment(any(Experiment.class));
     }
 
     @Test
@@ -87,53 +91,7 @@ class ExperimentSchedulerTest extends AbstractJpaTest {
         createAndSaveExperimentStep(experiment, ExperimentStep.UPLOAD_EXPERIMENT_MODEL, ExperimentStepStatus.READY);
         createAndSaveExperimentStep(experiment, ExperimentStep.GET_EXPERIMENT_DOWNLOAD_URL, ExperimentStepStatus.READY);
         experimentScheduler.processExperiments();
-        verify(experimentProcessManager, atLeastOnce()).processExperiment(experiment.getId());
-    }
-
-    @Test
-    void testProcessFinishedExperimentsWithErrorStep() {
-        var experiment = createAndSaveInProgressExperiment();
-        createAndSaveExperimentStep(experiment, ExperimentStep.EXPERIMENT_PROCESSING, ExperimentStepStatus.ERROR);
-        createAndSaveExperimentStep(experiment, ExperimentStep.UPLOAD_EXPERIMENT_MODEL, ExperimentStepStatus.CANCELED);
-        createAndSaveExperimentStep(experiment, ExperimentStep.GET_EXPERIMENT_DOWNLOAD_URL,
-                ExperimentStepStatus.CANCELED);
-        experimentScheduler.processExperiments();
-        verify(experimentProcessManager, atLeastOnce()).processExperiment(experiment.getId());
-    }
-
-    @Test
-    void testProcessFinishedExperimentsWithAllCompletedSteps() {
-        var experiment = createAndSaveInProgressExperiment();
-        createAndSaveExperimentStep(experiment, ExperimentStep.EXPERIMENT_PROCESSING, ExperimentStepStatus.COMPLETED);
-        createAndSaveExperimentStep(experiment, ExperimentStep.UPLOAD_EXPERIMENT_MODEL, ExperimentStepStatus.COMPLETED);
-        createAndSaveExperimentStep(experiment, ExperimentStep.GET_EXPERIMENT_DOWNLOAD_URL,
-                ExperimentStepStatus.COMPLETED);
-        experimentScheduler.processExperiments();
-        verify(experimentProcessManager, atLeastOnce()).processExperiment(experiment.getId());
-    }
-
-    @Test
-    void testProcessFinishedExperimentsWithNotAllCompleted() {
-        var experiment = createAndSaveInProgressExperiment();
-        createAndSaveExperimentStep(experiment, ExperimentStep.EXPERIMENT_PROCESSING, ExperimentStepStatus.COMPLETED);
-        createAndSaveExperimentStep(experiment, ExperimentStep.UPLOAD_EXPERIMENT_MODEL, ExperimentStepStatus.COMPLETED);
-        createAndSaveExperimentStep(experiment, ExperimentStep.GET_EXPERIMENT_DOWNLOAD_URL, ExperimentStepStatus.READY);
-        experimentScheduler.processExperiments();
-        verify(experimentProcessManager, atLeastOnce()).processExperiment(experiment.getId());
-    }
-
-    @Test
-    void testProcessTimeoutExperiment() {
-        var experiment = TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.IN_PROGRESS);
-        instancesInfoRepository.save(experiment.getInstancesInfo());
-        experiment.setStartDate(LocalDateTime.now().minusMinutes(experimentConfig.getRequestTimeoutMinutes() + 1));
-        experimentRepository.save(experiment);
-        createAndSaveExperimentStep(experiment, ExperimentStep.EXPERIMENT_PROCESSING, ExperimentStepStatus.COMPLETED);
-        createAndSaveExperimentStep(experiment, ExperimentStep.UPLOAD_EXPERIMENT_MODEL, ExperimentStepStatus.COMPLETED);
-        createAndSaveExperimentStep(experiment, ExperimentStep.GET_EXPERIMENT_DOWNLOAD_URL,
-                ExperimentStepStatus.IN_PROGRESS);
-        experimentScheduler.processExperiments();
-        verify(experimentProcessManager, atLeastOnce()).processExperiment(experiment.getId());
+        verify(experimentProcessManager, atLeastOnce()).processExperiment(any(Experiment.class));
     }
 
     private Experiment createAndSaveInProgressExperiment() {
