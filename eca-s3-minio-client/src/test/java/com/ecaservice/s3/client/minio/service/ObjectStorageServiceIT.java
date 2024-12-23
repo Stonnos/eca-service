@@ -6,6 +6,7 @@ import com.ecaservice.s3.client.minio.databind.JsonDeserializer;
 import com.ecaservice.s3.client.minio.databind.JsonSerializer;
 import com.ecaservice.s3.client.minio.metrics.MinioStorageMetricsService;
 import com.ecaservice.s3.client.minio.model.GetPresignedUrlObject;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +17,7 @@ import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.io.IOException;
+import java.net.URI;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
@@ -42,6 +44,8 @@ class ObjectStorageServiceIT {
 
     @Autowired
     private ObjectStorageService objectStorageService;
+
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
     @Test
     void testUploadObject() throws IOException, ClassNotFoundException {
@@ -70,8 +74,8 @@ class ObjectStorageServiceIT {
     @Test
     void testGetPresignedUrl() throws IOException {
         String objectPath = String.format(OBJECT_PATH_FORMAT, UUID.randomUUID());
-        uploadObject(objectPath);
-        String presignedUrl = objectStorageService.getObjectPresignedProxyUrl(
+        TestObject sourceObject = uploadObject(objectPath);
+        String presignedUrl = objectStorageService.getObjectPresignedUrl(
                 GetPresignedUrlObject.builder()
                         .objectPath(objectPath)
                         .expirationTime(EXPIRATION_TIME)
@@ -79,6 +83,10 @@ class ObjectStorageServiceIT {
                         .build()
         );
         assertThat(presignedUrl).isNotNull();
+        TestObject targetObject = objectMapper.readValue(URI.create(presignedUrl).toURL(), TestObject.class);
+        assertThat(targetObject).isNotNull();
+        assertThat(targetObject.getX()).isEqualTo(sourceObject.getX());
+        assertThat(targetObject.getY()).isEqualTo(sourceObject.getY());
     }
 
 

@@ -113,6 +113,17 @@ public class ObjectStorageService {
     }
 
     /**
+     * Gets S3 presigned url for object.
+     *
+     * @param presignedUrlObject - presigned url object
+     * @return presigned url
+     */
+    @NewSpan
+    public String getObjectPresignedUrl(GetPresignedUrlObject presignedUrlObject) {
+        return minioStorageService.getObjectPresignedUrl(presignedUrlObject);
+    }
+
+    /**
      * Gets S3 presigned proxy url for object.
      *
      * @param presignedUrlObject - presigned url object
