@@ -11,7 +11,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
@@ -61,10 +60,6 @@ public class EvaluationScheduler {
     private void processEvaluationRequests(List<EvaluationLog> evaluationLogs) {
         List<CompletableFuture<Void>> futures = evaluationLogs.stream()
                 .map(evaluationLog -> {
-                    // Renews locked ttl for evaluation log
-                    evaluationLog.setLockedTtl(
-                            LocalDateTime.now().plusSeconds(classifiersProperties.getLockTtlSeconds()));
-                    evaluationLogRepository.save(evaluationLog);
                     Runnable task = () -> evaluationProcessManager.processEvaluationRequest(evaluationLog);
                     return CompletableFuture.runAsync(task, evaluationRequestExecutorService);
                 }).toList();

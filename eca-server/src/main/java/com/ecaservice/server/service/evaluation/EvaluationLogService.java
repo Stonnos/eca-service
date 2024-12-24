@@ -88,7 +88,6 @@ public class EvaluationLogService {
                             evaluationLog.getRequestId()));
         }
         evaluationLog.setRequestStatus(requestStatus);
-        evaluationLog.setLockedTtl(null);
         evaluationLog.setEndDate(LocalDateTime.now());
         evaluationLogRepository.save(evaluationLog);
         log.info("Evaluation log [{}] has been finished with status [{}]", evaluationLog.getRequestId(), requestStatus);
