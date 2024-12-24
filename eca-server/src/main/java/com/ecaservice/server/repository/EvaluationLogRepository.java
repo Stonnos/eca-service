@@ -6,8 +6,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -53,7 +55,7 @@ public interface EvaluationLogRepository
      * Finds classifiers models to delete.
      *
      * @param dateTime - date time threshold value
-     * @param nowTime - now date time
+     * @param nowTime  - now date time
      * @param pageable - pageable object
      * @return evaluation log ids list
      */
@@ -63,4 +65,14 @@ public interface EvaluationLogRepository
     Page<EvaluationLog> findModelsToDelete(@Param("dateTime") LocalDateTime dateTime,
                                            @Param("nowTime") LocalDateTime nowTime,
                                            Pageable pageable);
+
+    /**
+     * Resets evaluation log lock.
+     *
+     * @param id - evaluation log id
+     */
+    @Transactional
+    @Modifying
+    @Query("update EvaluationLog ev set ev.lockedTtl = null where ev.id = :id")
+    void resetLock(@Param("id") Long id);
 }

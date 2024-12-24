@@ -58,12 +58,7 @@ public class ExperimentScheduler {
     private void processExperiments(List<Experiment> experiments) {
         experiments.forEach(experiment -> {
             experimentProcessManager.processExperiment(experiment);
-            resetLock(experiment);
+            experimentRepository.resetLock(experiment.getId());
         });
-    }
-
-    private void resetLock(Experiment experiment) {
-        experiment.setLockedTtl(null);
-        experimentRepository.save(experiment);
     }
 }

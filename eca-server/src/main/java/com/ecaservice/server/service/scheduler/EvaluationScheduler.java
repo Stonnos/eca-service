@@ -60,7 +60,10 @@ public class EvaluationScheduler {
     private void processEvaluationRequests(List<EvaluationLog> evaluationLogs) {
         List<CompletableFuture<Void>> futures = evaluationLogs.stream()
                 .map(evaluationLog -> {
-                    Runnable task = () -> evaluationProcessManager.processEvaluationRequest(evaluationLog);
+                    Runnable task = () -> {
+                        evaluationProcessManager.processEvaluationRequest(evaluationLog);
+                        evaluationLogRepository.resetLock(evaluationLog.getId());
+                    };
                     return CompletableFuture.runAsync(task, evaluationRequestExecutorService);
                 }).toList();
         CompletableFuture<Void> allFutures = CompletableFuture.allOf(futures.toArray(new CompletableFuture[0]));

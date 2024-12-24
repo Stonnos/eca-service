@@ -6,8 +6,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -61,4 +63,14 @@ public interface ExperimentRepository extends JpaRepository<Experiment, Long>, J
     @Query("select e.requestStatus as requestStatus, count(e.requestStatus) as requestsCount from " +
             "Experiment e group by e.requestStatus")
     List<RequestStatusStatistics> getRequestStatusesStatistics();
+
+    /**
+     * Resets experiment lock.
+     *
+     * @param id - experiment id
+     */
+    @Transactional
+    @Modifying
+    @Query("update Experiment e set e.lockedTtl = null where e.id = :id")
+    void resetLock(@Param("id") Long id);
 }
