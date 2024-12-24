@@ -18,6 +18,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 
 import java.util.UUID;
+import java.util.concurrent.Executors;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.atLeastOnce;
@@ -57,7 +58,7 @@ class EvaluationSchedulerTest extends AbstractJpaTest {
         instancesInfoRepository.save(instancesInfo);
         evaluationScheduler =
                 new EvaluationScheduler(classifiersProperties, evaluationProcessManager, classifiersDataCleaner,
-                        evaluationRequestsFetcher, evaluationLogRepository);
+                        evaluationRequestsFetcher, Executors.newSingleThreadExecutor(), evaluationLogRepository);
     }
 
     @Override

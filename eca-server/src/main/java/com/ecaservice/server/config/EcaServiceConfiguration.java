@@ -58,6 +58,17 @@ public class EcaServiceConfiguration implements SchedulingConfigurer {
         return ContextExecutorService.wrap(executorService, ContextSnapshotFactory.builder().build()::captureAll);
     }
 
+    /**
+     * Creates evaluation request executor service.
+     *
+     * @param classifiersProperties - classifiers properties
+     * @return executor service
+     */
+    @Bean
+    public ExecutorService evaluationRequestExecutorService(ClassifiersProperties classifiersProperties) {
+        return Executors.newFixedThreadPool(classifiersProperties.getThreadPoolSize());
+    }
+
     @Override
     public void configureTasks(ScheduledTaskRegistrar taskRegistrar) {
         var taskScheduler = new ThreadPoolTaskScheduler();

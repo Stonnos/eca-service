@@ -31,4 +31,9 @@ public class ClassifiersProperties {
      * Batch size for processing
      */
     private Integer batchSize;
+
+    /**
+     * Thread pool size
+     */
+    private Integer threadPoolSize;
 }

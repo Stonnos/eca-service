@@ -13,6 +13,8 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutorService;
 
 import static com.ecaservice.server.util.PageHelper.processWithPagination;
 
@@ -30,6 +32,7 @@ public class EvaluationScheduler {
     private final EvaluationProcessManager evaluationProcessManager;
     private final ClassifiersDataCleaner classifiersDataCleaner;
     private final EvaluationRequestsFetcher evaluationRequestsFetcher;
+    private final ExecutorService evaluationRequestExecutorService;
     private final EvaluationLogRepository evaluationLogRepository;
 
     /**
@@ -56,11 +59,16 @@ public class EvaluationScheduler {
     }
 
     private void processEvaluationRequests(List<EvaluationLog> evaluationLogs) {
-        evaluationLogs.forEach(evaluationLog -> {
-            // Renews locked ttl for evaluation log
-            evaluationLog.setLockedTtl(LocalDateTime.now().plusSeconds(classifiersProperties.getLockTtlSeconds()));
-            evaluationLogRepository.save(evaluationLog);
-            evaluationProcessManager.processEvaluationRequest(evaluationLog);
-        });
+        List<CompletableFuture<Void>> futures = evaluationLogs.stream()
+                .map(evaluationLog -> {
+                    // Renews locked ttl for evaluation log
+                    evaluationLog.setLockedTtl(
+                            LocalDateTime.now().plusSeconds(classifiersProperties.getLockTtlSeconds()));
+                    evaluationLogRepository.save(evaluationLog);
+                    Runnable task = () -> evaluationProcessManager.processEvaluationRequest(evaluationLog);
+                    return CompletableFuture.runAsync(task, evaluationRequestExecutorService);
+                }).toList();
+        CompletableFuture<Void> allFutures = CompletableFuture.allOf(futures.toArray(new CompletableFuture[0]));
+        allFutures.join();
     }
 }

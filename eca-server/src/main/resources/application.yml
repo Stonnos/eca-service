@@ -127,6 +127,7 @@ classifiers:
   ## Must be grater than evaluationTimeoutMinutes
   lockTtlSeconds: 660
   batchSize: 5
+  threadPoolSize: 3
 
 ## Experiment properties
 experiment:
