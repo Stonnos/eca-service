@@ -63,17 +63,17 @@ public class CalculateExperimentFinalStatusTaskHandler extends AbstractTaskHandl
             throw new ExperimentException(
                     String.format("Got empty steps for experiment [%s]", experiment.getRequestId()));
         }
-        if (stepStatuses.stream().anyMatch(EXPERIMENT_STEP_STATUSES_TO_PROCESS::contains)) {
-            String error =
-                    String.format("Can't calculate experiment [%s] final status. Steps contains one of %s status",
-                            experiment.getRequestId(), EXPERIMENT_STEP_STATUSES_TO_PROCESS);
-            throw new ExperimentException(error);
-        }
         if (stepStatuses.stream().anyMatch(ExperimentStepStatus.ERROR::equals)) {
             return RequestStatus.ERROR;
         }
         if (stepStatuses.stream().anyMatch(ExperimentStepStatus.TIMEOUT::equals)) {
             return RequestStatus.TIMEOUT;
+        }
+        if (stepStatuses.stream().anyMatch(EXPERIMENT_STEP_STATUSES_TO_PROCESS::contains)) {
+            String error =
+                    String.format("Can't calculate experiment [%s] final status. Steps contains one of %s status",
+                            experiment.getRequestId(), EXPERIMENT_STEP_STATUSES_TO_PROCESS);
+            throw new ExperimentException(error);
         }
         return RequestStatus.FINISHED;
     }
