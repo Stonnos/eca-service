@@ -63,11 +63,6 @@ public class ExperimentConfig {
     private Integer lockTtlSeconds;
 
     /**
-     * Experiment progress lock renewal ttl in seconds
-     */
-    private Integer experimentProgressLockRenewalTtlSeconds;
-
-    /**
      * Batch size for experiments processing
      */
     private Integer batchSize;

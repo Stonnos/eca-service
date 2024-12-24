@@ -140,8 +140,7 @@ experiment:
   ## Scheduler delay in seconds
   delaySeconds: 30
   experimentLocalStoragePath: /home/experiment
-  lockTtlSeconds: 60
-  experimentProgressLockRenewalTtlSeconds: 300
+  lockTtlSeconds: 300
   batchSize: 1
   ensemble:
     numIterations: 25

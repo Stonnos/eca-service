@@ -1,6 +1,8 @@
 package com.ecaservice.server.service.scheduler;
 
 import com.ecaservice.server.config.ExperimentConfig;
+import com.ecaservice.server.model.entity.Experiment;
+import com.ecaservice.server.repository.ExperimentRepository;
 import com.ecaservice.server.service.experiment.ExperimentDataCleaner;
 import com.ecaservice.server.service.experiment.ExperimentProcessManager;
 import com.ecaservice.server.service.experiment.ExperimentRequestFetcher;
@@ -8,6 +10,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 import static com.ecaservice.server.util.PageHelper.processWithPagination;
 
@@ -25,6 +29,7 @@ public class ExperimentScheduler {
     private final ExperimentProcessManager experimentProcessManager;
     private final ExperimentRequestFetcher experimentRequestFetcher;
     private final ExperimentDataCleaner experimentDataCleaner;
+    private final ExperimentRepository experimentRepository;
 
     /**
      * Processes experiment requests.
@@ -34,7 +39,7 @@ public class ExperimentScheduler {
         log.debug("Starting job to process experiments");
         processWithPagination(
                 experimentRequestFetcher::getNextExperimentsToProcess,
-                experiments -> experiments.forEach(experimentProcessManager::processExperiment),
+                this::processExperiments,
                 experimentConfig.getBatchSize()
         );
         log.debug("Process experiments job has been finished");
@@ -48,5 +53,17 @@ public class ExperimentScheduler {
         log.info("Starting job to removes experiments data files from disk");
         experimentDataCleaner.removeExperimentsModels();
         log.info("Removing experiments data files job has been finished");
+    }
+
+    private void processExperiments(List<Experiment> experiments) {
+        experiments.forEach(experiment -> {
+            experimentProcessManager.processExperiment(experiment);
+            resetLock(experiment);
+        });
+    }
+
+    private void resetLock(Experiment experiment) {
+        experiment.setLockedTtl(null);
+        experimentRepository.save(experiment);
     }
 }

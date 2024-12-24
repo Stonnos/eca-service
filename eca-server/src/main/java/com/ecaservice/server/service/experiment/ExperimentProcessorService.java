@@ -90,8 +90,7 @@ public class ExperimentProcessorService {
     }
 
     private void renewExperimentLockTtl(Experiment experiment) {
-        experiment.setLockedTtl(
-                LocalDateTime.now().plusSeconds(experimentConfig.getExperimentProgressLockRenewalTtlSeconds()));
+        experiment.setLockedTtl(LocalDateTime.now().plusSeconds(experimentConfig.getLockTtlSeconds()));
         experimentRepository.save(experiment);
         log.debug("Experiment [{}] lock has been renewed", experiment.getRequestId());
     }
