@@ -74,14 +74,10 @@ public class ExperimentDataService {
     public void removeExperimentModel(Experiment experiment) {
         try {
             log.info("Starting to remove experiment [{}] model file", experiment.getRequestId());
-            // Sets locked ttl date to delete experiment model
-            experiment.setLockedTtl(
-                    LocalDateTime.now().plusMinutes(appProperties.getRemoveModelBackoffMinutes()));
             experimentRepository.save(experiment);
             String experimentPath = experiment.getModelPath();
             objectStorageService.removeObject(experimentPath);
             experiment.setModelPath(null);
-            experiment.setLockedTtl(null);
             experiment.setExperimentDownloadUrl(null);
             experiment.setDeletedDate(LocalDateTime.now());
             experimentRepository.save(experiment);

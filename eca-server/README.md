@@ -58,7 +58,6 @@ ECA server
    * app.threadPoolSize - число потоков для асинхронных задач
    * app.schedulerPoolSize - число потоков для scheduler
    * app.removeModelCron - крон выражение для удаления моделей экспериментов/классификаторов
-   * app.removeModelBackoffMinutes - время в мин. для следующей попытки удаления модели
    * app.numberOfDaysForStorage - кол-во дней для хранения моделей экспериментов/классификаторов
    * app.pageSize - размер страницы для постраничной обработки заявок
    * app.modelDownloadUrlExpirationDays - время жизни ссылки на скачивание модели эксперимента/классификатора

@@ -38,7 +38,7 @@ public class ClassifiersDataCleaner {
         log.info("Starting to remove classifier models.");
         LocalDateTime dateTime = LocalDateTime.now().minusDays(appProperties.getNumberOfDaysForStorage());
         processWithPagination(
-                pageable -> evaluationLogRepository.findModelsToDelete(dateTime, LocalDateTime.now(), pageable),
+                pageable -> evaluationLogRepository.findModelsToDelete(dateTime, pageable),
                 evaluationLogs -> evaluationLogs.forEach(this::removeModel),
                 appProperties.getPageSize()
         );

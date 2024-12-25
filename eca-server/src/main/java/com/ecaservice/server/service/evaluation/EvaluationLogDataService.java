@@ -248,14 +248,10 @@ public class EvaluationLogDataService {
     public void removeModel(EvaluationLog evaluationLog) {
         try {
             log.info("Starting to remove classifier [{}] model file", evaluationLog.getRequestId());
-            // Sets locked ttl date to delete classifier model
-            evaluationLog.setLockedTtl(
-                    LocalDateTime.now().plusMinutes(appProperties.getRemoveModelBackoffMinutes()));
             evaluationLogRepository.save(evaluationLog);
             String modelPath = evaluationLog.getModelPath();
             objectStorageService.removeObject(modelPath);
             evaluationLog.setModelPath(null);
-            evaluationLog.setLockedTtl(null);
             evaluationLog.setDeletedDate(LocalDateTime.now());
             evaluationLogRepository.save(evaluationLog);
             log.info("Classifier [{}] model file has been deleted", evaluationLog.getRequestId());

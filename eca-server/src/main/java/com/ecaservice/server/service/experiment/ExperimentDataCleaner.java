@@ -38,7 +38,7 @@ public class ExperimentDataCleaner {
         log.info("Starting to remove experiments models.");
         LocalDateTime dateTime = LocalDateTime.now().minusDays(appProperties.getNumberOfDaysForStorage());
         processWithPagination(
-                pageable -> experimentRepository.findExperimentsModelsToDelete(dateTime, LocalDateTime.now(), pageable),
+                pageable -> experimentRepository.findExperimentsModelsToDelete(dateTime, pageable),
                 experiments -> experiments.forEach(this::removeModel),
                 appProperties.getPageSize()
         );
