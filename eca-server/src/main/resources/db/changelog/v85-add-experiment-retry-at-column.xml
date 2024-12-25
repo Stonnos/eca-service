@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+        logicalFilePath="db/changelog/v85-add-experiment-retry-at-column.xml"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+    
+    <changeSet id="add_evaluation_log_retry_at_column" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="evaluation_log"/>
+            <not>
+                <columnExists tableName="evaluation_log" columnName="retry_at"/>
+            </not>
+        </preConditions>
+       <addColumn tableName="evaluation_log">
+           <column name="retry_at" type="timestamp"/>
+       </addColumn>
+    </changeSet>
+
+    <changeSet id="add_experiment_retry_at_column" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="experiment"/>
+            <not>
+                <columnExists tableName="experiment" columnName="retry_at"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="experiment">
+            <column name="retry_at" type="timestamp"/>
+        </addColumn>
+    </changeSet>
+    
+</databaseChangeLog>

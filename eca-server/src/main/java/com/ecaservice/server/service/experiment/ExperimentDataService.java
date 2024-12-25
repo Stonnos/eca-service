@@ -8,6 +8,7 @@ import com.ecaservice.s3.client.minio.model.GetPresignedUrlObject;
 import com.ecaservice.s3.client.minio.service.ObjectStorageService;
 import com.ecaservice.server.bpm.model.ExperimentModel;
 import com.ecaservice.server.config.AppProperties;
+import com.ecaservice.server.config.ExperimentConfig;
 import com.ecaservice.server.filter.ExperimentFilter;
 import com.ecaservice.server.mapping.ExperimentMapper;
 import com.ecaservice.server.model.entity.Experiment;
@@ -58,6 +59,7 @@ import static com.ecaservice.server.util.StatisticsHelper.calculateRequestStatus
 @RequiredArgsConstructor
 public class ExperimentDataService {
 
+    private final ExperimentConfig experimentConfig;
     private final ExperimentRepository experimentRepository;
     private final ObjectStorageService objectStorageService;
     private final EntityManager entityManager;
@@ -85,6 +87,8 @@ public class ExperimentDataService {
         } catch (Exception ex) {
             log.error("There was an error while remove experiment [{}] model file: {}", experiment.getRequestId(),
                     ex.getMessage());
+            experiment.setRetryAt(LocalDateTime.now().plusSeconds(experimentConfig.getRetryIntervalSeconds()));
+            experimentRepository.save(experiment);
         }
     }
 

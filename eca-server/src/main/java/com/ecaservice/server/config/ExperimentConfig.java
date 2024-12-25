@@ -63,6 +63,11 @@ public class ExperimentConfig {
     private Integer lockTtlSeconds;
 
     /**
+     * Retry request interval in seconds
+     */
+    private Integer retryIntervalSeconds;
+
+    /**
      * Batch size for experiments processing
      */
     private Integer batchSize;

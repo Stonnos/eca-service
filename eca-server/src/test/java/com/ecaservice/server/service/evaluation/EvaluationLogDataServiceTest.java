@@ -5,6 +5,7 @@ import com.ecaservice.s3.client.minio.model.GetPresignedUrlObject;
 import com.ecaservice.s3.client.minio.service.ObjectStorageService;
 import com.ecaservice.server.TestHelperUtils;
 import com.ecaservice.server.config.AppProperties;
+import com.ecaservice.server.config.ClassifiersProperties;
 import com.ecaservice.server.mapping.ClassifierInfoMapperImpl;
 import com.ecaservice.server.mapping.DateTimeConverter;
 import com.ecaservice.server.mapping.EvaluationLogMapper;
@@ -46,6 +47,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.Page;
 
 import jakarta.persistence.EntityManager;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Arrays;
@@ -66,7 +68,7 @@ import static org.mockito.Mockito.when;
  * @author Roman Batygin
  */
 @Import({AppProperties.class, ClassifierInfoMapperImpl.class, EvaluationLogMapperImpl.class,
-        InstancesInfoMapperImpl.class, DateTimeConverter.class})
+        InstancesInfoMapperImpl.class, DateTimeConverter.class, ClassifiersProperties.class})
 class EvaluationLogDataServiceTest extends AbstractJpaTest {
 
     private static final String MODEL_DOWNLOAD_URL = "http://localhost:9000/classifier";
@@ -90,6 +92,8 @@ class EvaluationLogDataServiceTest extends AbstractJpaTest {
     @Autowired
     private AppProperties appProperties;
     @Autowired
+    private ClassifiersProperties classifiersProperties;
+    @Autowired
     private EvaluationLogMapper evaluationLogMapper;
 
     @Mock
@@ -109,10 +113,9 @@ class EvaluationLogDataServiceTest extends AbstractJpaTest {
         instancesInfo = TestHelperUtils.createInstancesInfo();
         instancesInfoRepository.save(instancesInfo);
         evaluationLogDataService =
-                new EvaluationLogDataService(appProperties, filterTemplateService, evaluationLogMapper,
-                        classifierOptionsInfoProcessor,
-                        ersService, entityManager, objectStorageService, evaluationLogRepository,
-                        evaluationResultsRequestEntityRepository);
+                new EvaluationLogDataService(classifiersProperties, appProperties, filterTemplateService,
+                        evaluationLogMapper, classifierOptionsInfoProcessor, ersService, entityManager,
+                        objectStorageService, evaluationLogRepository, evaluationResultsRequestEntityRepository);
         evaluationLogDataService.initialize();
     }
 

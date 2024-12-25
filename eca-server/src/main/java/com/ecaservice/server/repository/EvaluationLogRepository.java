@@ -55,12 +55,15 @@ public interface EvaluationLogRepository
      * Finds classifiers models to delete.
      *
      * @param dateTime - date time threshold value
+     * @param nowDate - now date
      * @param pageable - pageable object
      * @return evaluation log ids list
      */
     @Query("select ev from EvaluationLog ev where ev.requestStatus = 'FINISHED' and " +
-            "ev.deletedDate is null and ev.endDate < :dateTime order by ev.endDate")
+            "ev.deletedDate is null and ev.endDate < :dateTime and " +
+            "(ev.retryAt is null or ev.retryAt < :nowDate) order by ev.endDate")
     Page<EvaluationLog> findModelsToDelete(@Param("dateTime") LocalDateTime dateTime,
+                                           @Param("nowDate") LocalDateTime nowDate,
                                            Pageable pageable);
 
     /**

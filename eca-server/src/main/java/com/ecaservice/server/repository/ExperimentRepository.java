@@ -45,12 +45,15 @@ public interface ExperimentRepository extends JpaRepository<Experiment, Long>, J
      * Finds experiments models to delete.
      *
      * @param dateTime - date time threshold value
+     * @param nowDate - now date
      * @param pageable - pageable object
      * @return experiments ids list
      */
     @Query("select e from Experiment e where e.requestStatus = 'FINISHED' and " +
-            "e.deletedDate is null and e.endDate < :dateTime order by e.endDate")
+            "e.deletedDate is null and e.endDate < :dateTime and " +
+            "(e.retryAt is null or e.retryAt < :nowDate) order by e.endDate")
     Page<Experiment> findExperimentsModelsToDelete(@Param("dateTime") LocalDateTime dateTime,
+                                                   @Param("nowDate") LocalDateTime nowDate,
                                                    Pageable pageable);
 
     /**

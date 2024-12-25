@@ -288,6 +288,7 @@ image::./images/eca-db-schema.png[alt=Схема базы данных eca-serve
 |model_path                 |varchar(255)     |-|-|-                                    |Путь к объекту в S3 с моделью классификатора
 |deleted_date               |timestamp        |-|-|-                                    |Дата удаления модели классификатора
 |locked_ttl                 |timestamp        |-|-|-                                    |Дата истечения срока действия блокировки заявки
+|retry_at                   |timestamp        |-|-|-                                    |Дата следующей попытки обработки заявки
 |pct_correct                |numeric(19,4)    |-|-|-                                    |Точность классификатора
 |===
 
@@ -311,7 +312,8 @@ image::./images/eca-db-schema.png[alt=Схема базы данных eca-serve
 |model_path                   |varchar(255)     |-|-|-                                 |Путь к объекту в S3 с результатами эксперимента
 |error_message                |text             |-|-|-                                 |Текст ошибки
 |deleted_date                 |timestamp        |-|-|-                                 |Дата удаления файлов с результатами эксперимента
-|locked_ttl                   |timestamp        |-|-|-                                    |Дата истечения срока действия блокировки заявки
+|locked_ttl                   |timestamp        |-|-|-                                 |Дата истечения срока действия блокировки заявки
+|retry_at                     |timestamp        |-|-|-                                 |Дата следующей попытки обработки заявки
 |experiment_download_url      |varchar(1024)    |-|-|-                                 |Ссылка для скачивания результатов эксперимента из S3
 |channel_type                 |varchar(255)     |-|+|-                                 |Канал поступления заявки (QUEUE или WEB)
 |reply_to                     |varchar(255)     |-|-|-                                 |Название очереди для отправки ответных сообщений в MQ

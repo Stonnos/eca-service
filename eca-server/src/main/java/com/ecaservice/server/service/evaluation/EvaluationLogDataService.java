@@ -8,6 +8,7 @@ import com.ecaservice.s3.client.minio.model.GetPresignedUrlObject;
 import com.ecaservice.s3.client.minio.service.ObjectStorageService;
 import com.ecaservice.server.bpm.model.EvaluationLogModel;
 import com.ecaservice.server.config.AppProperties;
+import com.ecaservice.server.config.ClassifiersProperties;
 import com.ecaservice.server.filter.EvaluationLogFilter;
 import com.ecaservice.server.mapping.EvaluationLogMapper;
 import com.ecaservice.server.model.entity.ClassifierInfo;
@@ -78,6 +79,7 @@ import static com.google.common.collect.Lists.newArrayList;
 @RequiredArgsConstructor
 public class EvaluationLogDataService {
 
+    private final ClassifiersProperties classifiersProperties;
     private final AppProperties appProperties;
     private final FilterTemplateService filterTemplateService;
     private final EvaluationLogMapper evaluationLogMapper;
@@ -258,6 +260,8 @@ public class EvaluationLogDataService {
         } catch (Exception ex) {
             log.error("There was an error while remove classifier [{}] model file: {}", evaluationLog.getRequestId(),
                     ex.getMessage());
+            evaluationLog.setRetryAt(LocalDateTime.now().plusSeconds(classifiersProperties.getRetryIntervalSeconds()));
+            evaluationLogRepository.save(evaluationLog);
         }
     }
 

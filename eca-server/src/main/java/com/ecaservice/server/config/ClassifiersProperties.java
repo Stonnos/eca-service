@@ -36,4 +36,9 @@ public class ClassifiersProperties {
      * Thread pool size
      */
     private Integer threadPoolSize;
+
+    /**
+     * Retry request interval in seconds
+     */
+    private Integer retryIntervalSeconds;
 }

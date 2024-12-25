@@ -95,6 +95,12 @@ public abstract class AbstractEvaluationEntity {
     private LocalDateTime lockedTtl;
 
     /**
+     * Retry request processing date
+     */
+    @Column(name = "retry_at")
+    private LocalDateTime retryAt;
+
+    /**
      * Request status
      */
     @Enumerated(EnumType.STRING)

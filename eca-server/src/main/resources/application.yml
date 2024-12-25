@@ -127,6 +127,7 @@ classifiers:
   lockTtlSeconds: 660
   batchSize: 5
   threadPoolSize: 3
+  retryIntervalSeconds: 60
 
 ## Experiment properties
 experiment:
@@ -140,6 +141,7 @@ experiment:
   delaySeconds: 30
   experimentLocalStoragePath: /home/experiment
   lockTtlSeconds: 300
+  retryIntervalSeconds: 60
   batchSize: 1
   ensemble:
     numIterations: 25

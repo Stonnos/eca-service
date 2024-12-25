@@ -5,6 +5,7 @@ import com.ecaservice.report.model.BaseReportBean;
 import com.ecaservice.s3.client.minio.service.ObjectStorageService;
 import com.ecaservice.server.TestHelperUtils;
 import com.ecaservice.server.config.AppProperties;
+import com.ecaservice.server.config.ClassifiersProperties;
 import com.ecaservice.server.mapping.ClassifierInfoMapperImpl;
 import com.ecaservice.server.mapping.DateTimeConverter;
 import com.ecaservice.server.mapping.EvaluationLogMapper;
@@ -32,6 +33,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Import;
 
 import jakarta.persistence.EntityManager;
+
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
@@ -50,7 +52,7 @@ import static org.mockito.Mockito.when;
  * @author Roman Batygin
  */
 @Import({AppProperties.class, ClassifierInfoMapperImpl.class, EvaluationLogMapperImpl.class,
-        InstancesInfoMapperImpl.class, DateTimeConverter.class})
+        InstancesInfoMapperImpl.class, DateTimeConverter.class, ClassifiersProperties.class})
 class EvaluationLogsBaseReportDataFetcherTest extends AbstractJpaTest {
 
     private static final List<String> DATE_RANGE_VALUES = ImmutableList.of("2018-01-01", "2018-01-07");
@@ -68,6 +70,8 @@ class EvaluationLogsBaseReportDataFetcherTest extends AbstractJpaTest {
     @Autowired
     private AppProperties appProperties;
     @Autowired
+    private ClassifiersProperties classifiersProperties;
+    @Autowired
     private EvaluationLogMapper evaluationLogMapper;
     @Autowired
     private EntityManager entityManager;
@@ -83,10 +87,9 @@ class EvaluationLogsBaseReportDataFetcherTest extends AbstractJpaTest {
     @Override
     public void init() {
         EvaluationLogDataService evaluationLogDataService =
-                new EvaluationLogDataService(appProperties, filterTemplateService, evaluationLogMapper,
-                        classifierOptionsInfoProcessor,
-                        ersService, entityManager, objectStorageService, evaluationLogRepository,
-                        evaluationResultsRequestEntityRepository);
+                new EvaluationLogDataService(classifiersProperties, appProperties, filterTemplateService,
+                        evaluationLogMapper, classifierOptionsInfoProcessor, ersService, entityManager,
+                        objectStorageService, evaluationLogRepository, evaluationResultsRequestEntityRepository);
         evaluationLogsBaseReportDataFetcher =
                 new EvaluationLogsBaseReportDataFetcher(filterTemplateService, instancesInfoRepository,
                         evaluationLogDataService,

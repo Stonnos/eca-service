@@ -37,6 +37,7 @@ ECA server
    * classifiers.lockTtlSeconds - время жизни блокировки заявки (используется для исключения race condition, когда запущено несколько инстансов приложения)
    * classifiers.batchSize - размер страницы для постраничной обработки заявок
    * classifiers.threadPoolSize - размер пула потоков для параллельной обработки заявок
+   * classifiers.retryIntervalSeconds - дата следующей попытки обработки заявки
 4) experiment - настройки параметров модуля Data Miner. Ниже приведено описание
    основных настроек:
    * experiment.resultSize - число наилучших конфигураций классификаторов
@@ -47,6 +48,7 @@ ECA server
    * experiment.evaluationTimeoutMinutes - время таймаута для построения эксперимента в минутах.
    * experiment.lockTtlSeconds - время жизни блокировки заявки на эксперимент (используется для исключения race condition, когда запущено несколько инстансов приложения)
    * experiment.batchSize - размер страницы для постраничной обработки заявок
+   * experiment.retryIntervalSeconds - дата следующей попытки обработки заявки
    * experiment.delaySeconds - интервал между запусками scheduler для обработки экспериметов
    * experiment.ensemble.numIterations - число итераций для ансамблевых алгоритмов
    * experiment.ensemble.numBestClassifiers - число наилучших по точности базовых классификаторов, которые впоследствии
