@@ -71,6 +71,12 @@ public class ExperimentStepProcessor {
         log.debug("Experiment [{}] lock has been renewed", experiment.getRequestId());
     }
 
+    private void setNextRetryDate(Experiment experiment) {
+        experiment.setRetryAt(LocalDateTime.now().plusSeconds(experimentConfig.getRetryIntervalSeconds()));
+        experimentRepository.save(experiment);
+        log.info("New retry at date has been set for experiment [{}]", experiment.getRequestId());
+    }
+
     private void processSteps(List<ExperimentStepEntity> steps, ExperimentContext experimentContext) {
         var experiment = experimentContext.getExperiment();
         for (var experimentStepEntity : steps) {
@@ -79,6 +85,9 @@ public class ExperimentStepProcessor {
             renewExperimentLockTtl(experiment);
             processStep(experimentContext, experimentStepEntity);
             if (!canHandleNext(experimentContext, experimentStepEntity)) {
+                if (ExperimentStepStatus.FAILED.equals(experimentStepEntity.getStatus())) {
+                    setNextRetryDate(experiment);
+                }
                 break;
             }
         }

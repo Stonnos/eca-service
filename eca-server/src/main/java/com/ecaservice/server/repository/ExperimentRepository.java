@@ -33,19 +33,20 @@ public interface ExperimentRepository extends JpaRepository<Experiment, Long>, J
     /**
      * Finds all new and in progress experiments to process.
      *
-     * @param dateTime - date time to compare with locked ttl
+     * @param nowDate  - now date
      * @param pageable - pageable object
      * @return experiments page
      */
     @Query("select e from Experiment e where (e.requestStatus = 'NEW' or e.requestStatus = 'IN_PROGRESS') and " +
-            "(e.lockedTtl is null or e.lockedTtl < :dateTime) order by e.creationDate")
-    Page<Experiment> findExperimentsToProcess(@Param("dateTime") LocalDateTime dateTime, Pageable pageable);
+            "(e.lockedTtl is null or e.lockedTtl < :nowDate) and " +
+            "(e.retryAt is null or e.retryAt < :nowDate) order by e.creationDate")
+    Page<Experiment> findExperimentsToProcess(@Param("nowDate") LocalDateTime nowDate, Pageable pageable);
 
     /**
      * Finds experiments models to delete.
      *
      * @param dateTime - date time threshold value
-     * @param nowDate - now date
+     * @param nowDate  - now date
      * @param pageable - pageable object
      * @return experiments ids list
      */
