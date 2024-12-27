@@ -289,8 +289,8 @@ export class ExperimentListComponent extends BaseListComponent<ExperimentDto> im
       { name: ExperimentFields.MODEL_PATH, label: "Модель эксперимента", sortBy: ExperimentFilterFields.MODEL_PATH },
       { name: ExperimentFields.EVALUATION_TOTAL_TIME, label: "Время построения эксперимента" },
       { name: ExperimentFields.CREATION_DATE, label: "Дата создания заявки", sortBy: ExperimentFilterFields.CREATION_DATE },
-      { name: ExperimentFields.START_DATE, label: "Дата начала эксперимента", sortBy: ExperimentFilterFields.START_DATE },
-      { name: ExperimentFields.END_DATE, label: "Дата окончания эксперимента", sortBy: ExperimentFilterFields.END_DATE },
+      { name: ExperimentFields.START_DATE, label: "Дата начала обработки заявки", sortBy: ExperimentFilterFields.START_DATE },
+      { name: ExperimentFields.END_DATE, label: "Дата окончания обработки заявки", sortBy: ExperimentFilterFields.END_DATE },
       { name: ExperimentFields.DELETED_DATE, label: "Дата удаления модели", sortBy: ExperimentFilterFields.DELETED_DATE }
     ];
   }

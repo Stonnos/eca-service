@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+        logicalFilePath="db/changelog/v87-add-experiment-evaluation-time-column.xml"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+    
+    <changeSet id="add_evaluation_log_evaluation_time_millis_column" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="evaluation_log"/>
+            <not>
+                <columnExists tableName="evaluation_log" columnName="evaluation_time_millis"/>
+            </not>
+        </preConditions>
+       <addColumn tableName="evaluation_log">
+           <column name="evaluation_time_millis" type="bigint"/>
+       </addColumn>
+    </changeSet>
+
+    <changeSet id="add_experiment_evaluation_time_millis_column" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="experiment"/>
+            <not>
+                <columnExists tableName="experiment" columnName="evaluation_time_millis"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="experiment">
+            <column name="evaluation_time_millis" type="bigint"/>
+        </addColumn>
+    </changeSet>
+    
+</databaseChangeLog>

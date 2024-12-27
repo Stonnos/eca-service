@@ -394,8 +394,8 @@ export class ClassifierListComponent extends BaseListComponent<EvaluationLogDto>
       { name: EvaluationLogFields.MODEL_PATH, label: "Модель классификатора", sortBy: EvaluationLogFilterFields.MODEL_PATH },
       { name: EvaluationLogFields.EVALUATION_TOTAL_TIME, label: "Время построения модели" },
       { name: EvaluationLogFields.CREATION_DATE, label: "Дата создания заявки", sortBy: EvaluationLogFilterFields.CREATION_DATE },
-      { name: EvaluationLogFields.START_DATE, label: "Дата начала построения модели", sortBy: EvaluationLogFilterFields.START_DATE },
-      { name: EvaluationLogFields.END_DATE, label: "Дата окончания построения модели", sortBy: EvaluationLogFilterFields.END_DATE },
+      { name: EvaluationLogFields.START_DATE, label: "Дата начала обработки заявки", sortBy: EvaluationLogFilterFields.START_DATE },
+      { name: EvaluationLogFields.END_DATE, label: "Дата окончания обработки заявки", sortBy: EvaluationLogFilterFields.END_DATE },
       { name: EvaluationLogFields.DELETED_DATE, label: "Дата удаления модели", sortBy: EvaluationLogFilterFields.DELETED_DATE }
     ];
   }

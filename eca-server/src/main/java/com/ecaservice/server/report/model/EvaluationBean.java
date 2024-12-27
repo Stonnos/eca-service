@@ -31,12 +31,12 @@ public abstract class EvaluationBean {
     private String creationDate;
 
     /**
-     * Evaluation start date
+     * Request start date
      */
     private String startDate;
 
     /**
-     * Evaluation end date
+     * Request end date
      */
     private String endDate;
 

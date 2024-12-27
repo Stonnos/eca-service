@@ -113,6 +113,8 @@ public class EvaluationRequestService {
             //Save updated classifier options
             updateClassifierOptions(classifier, evaluationLog);
             var evaluationResultsDataModel = internalProcessRequest(classifier, data, evaluationLog);
+            evaluationLog.setEvaluationTimeMillis(
+                    evaluationResultsDataModel.getEvaluationResults().getEvaluation().getTotalTimeMillis());
             evaluationLogService.finishEvaluation(evaluationLog, RequestStatus.FINISHED);
             return evaluationResultsDataModel;
         } catch (ObjectStorageException ex) {
