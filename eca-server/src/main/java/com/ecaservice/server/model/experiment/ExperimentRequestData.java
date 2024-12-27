@@ -29,14 +29,4 @@ public class ExperimentRequestData extends AbstractEvaluationRequestData {
      * Evaluation method
      */
     private EvaluationMethod evaluationMethod;
-
-    /**
-     * Reply to queue
-     */
-    private String replyTo;
-
-    /**
-     * MQ message correlation id
-     */
-    private String correlationId;
 }

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+        logicalFilePath="db/changelog/v86-add-evaluation-log-reply-to-column.xml"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+    
+    <changeSet id="add_evaluation_log_reply_to_column" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="evaluation_log"/>
+            <not>
+                <columnExists tableName="evaluation_log" columnName="reply_to"/>
+            </not>
+        </preConditions>
+       <addColumn tableName="evaluation_log">
+           <column name="reply_to" type="varchar(255)"/>
+       </addColumn>
+    </changeSet>
+
+    <changeSet id="add_evaluation_log_correlation_id_column" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="evaluation_log"/>
+            <not>
+                <columnExists tableName="evaluation_log" columnName="correlation_id"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="evaluation_log">
+            <column name="correlation_id" type="varchar(255)"/>
+        </addColumn>
+    </changeSet>
+    
+</databaseChangeLog>

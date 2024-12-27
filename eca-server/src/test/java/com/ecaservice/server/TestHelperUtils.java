@@ -168,6 +168,7 @@ public class TestHelperUtils {
     private static final String INSTANCES_OBJECT_PATH = "instances.json";
     private static final String EVALUATION_RESULTS_RESPONSE_JSON = "evaluation-results-response.json";
     private static final String CONFUSION_MATRIX_JSON = "confusion-matrix.json";
+    private static final long EVALUATION_TIME_MILLIS = 1000L;
 
     /**
      * Creates page request dto.
@@ -659,6 +660,7 @@ public class TestHelperUtils {
         evaluationLog.setModelPath(CLASSIFIER_MODEL);
         evaluationLog.setPctCorrect(BigDecimal.TEN);
         evaluationLog.setChannel(Channel.QUEUE);
+        evaluationLog.setEvaluationTimeMillis(EVALUATION_TIME_MILLIS);
         evaluationLog.setTrainingDataUuid(UUID.randomUUID().toString());
         return evaluationLog;
     }

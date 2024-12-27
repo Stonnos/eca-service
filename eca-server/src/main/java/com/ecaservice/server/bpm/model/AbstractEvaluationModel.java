@@ -36,4 +36,14 @@ public class AbstractEvaluationModel implements Serializable {
      * User login
      */
     private String createdBy;
+
+    /**
+     * Correlation id
+     */
+    private String correlationId;
+
+    /**
+     * Reply to
+     */
+    private String replyTo;
 }

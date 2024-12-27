@@ -65,18 +65,18 @@ public abstract class AbstractEvaluationDto {
     private LocalDateTime creationDate;
 
     /**
-     * Evaluation start date
+     * Request start date
      */
-    @Schema(description = "Evaluation start date", type = "string", example = "2021-07-01 14:00:00",
+    @Schema(description = "Request start date", type = "string", example = "2021-07-01 14:00:00",
             maxLength = LOCAL_DATE_TIME_MAX_LENGTH)
     @JsonFormat(pattern = DATE_TIME_PATTERN)
     @JsonSerialize(using = LocalDateTimeSerializer.class)
     private LocalDateTime startDate;
 
     /**
-     * Evaluation end date
+     * Request end date
      */
-    @Schema(description = "Evaluation end date", type = "string", example = "2021-07-01 14:00:00",
+    @Schema(description = "Request end date", type = "string", example = "2021-07-01 14:00:00",
             maxLength = LOCAL_DATE_TIME_MAX_LENGTH)
     @JsonFormat(pattern = DATE_TIME_PATTERN)
     @JsonSerialize(using = LocalDateTimeSerializer.class)
@@ -125,7 +125,7 @@ public abstract class AbstractEvaluationDto {
     /**
      * Model evaluation total time in format HH:mm:ss:SS
      */
-    @Schema(description = "Model evaluation total time in format HH:mm:ss:SS", example = "00:00:01:43",
+    @Schema(description = "Model evaluation total time in format HH:mm:ss:SSS", example = "00:00:01:432",
             maxLength = EVALUATION_TOTAL_TIME_MAX_LENGTH)
     private String evaluationTotalTime;
 

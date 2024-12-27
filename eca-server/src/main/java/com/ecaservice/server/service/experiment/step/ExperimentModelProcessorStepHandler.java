@@ -91,6 +91,9 @@ public class ExperimentModelProcessorStepHandler extends AbstractExperimentStepH
             processExperiment(data, experimentContext);
             saveModelToLocalStorage(experimentStepEntity, experimentContext.getExperimentHistory());
             saveMaxPctCorrectValue(experimentContext);
+            Experiment experiment = experimentContext.getExperiment();
+            experiment.setEvaluationTimeMillis(experimentContext.getStopWatch().lastTaskInfo().getTimeMillis());
+            experimentRepository.save(experiment);
             experimentProgressService.finish(experimentStepEntity.getExperiment());
             experimentStepService.complete(experimentStepEntity);
         } catch (ObjectStorageException ex) {
@@ -152,7 +155,6 @@ public class ExperimentModelProcessorStepHandler extends AbstractExperimentStepH
                         String.format("Can't find best evaluation results for experiment [%s]",
                                 experiment.getRequestId())));
         experiment.setMaxPctCorrect(BigDecimal.valueOf(bestEvaluationResults.getEvaluation().pctCorrect()));
-        experimentRepository.save(experiment);
     }
 
     private void saveModelToLocalStorage(ExperimentStepEntity experimentStepEntity,

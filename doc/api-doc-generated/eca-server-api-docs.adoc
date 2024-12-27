@@ -6735,7 +6735,7 @@ __string__
 
 
 |*startDate*
-|Evaluation start date
+|Request start date
 a|
 __string__
 
@@ -6754,7 +6754,7 @@ __string__
 
 
 |*endDate*
-|Evaluation end date
+|Request end date
 a|
 __string__
 
@@ -6896,7 +6896,7 @@ __(int32)__
 
 
 |*evaluationTotalTime*
-|Model evaluation total time in format HH:mm:ss:SS
+|Model evaluation total time in format HH:mm:ss:SSS
 a|
 __string__
 
@@ -10126,7 +10126,7 @@ __string__
 
 
 |*startDate*
-|Evaluation start date
+|Request start date
 a|
 __string__
 
@@ -10145,7 +10145,7 @@ __string__
 
 
 |*endDate*
-|Evaluation end date
+|Request end date
 a|
 __string__
 
@@ -10287,7 +10287,7 @@ __(int32)__
 
 
 |*evaluationTotalTime*
-|Model evaluation total time in format HH:mm:ss:SS
+|Model evaluation total time in format HH:mm:ss:SSS
 a|
 __string__
 
@@ -12175,7 +12175,7 @@ __string__
 
 
 |*startDate*
-|Evaluation start date
+|Request start date
 a|
 __string__
 
@@ -12194,7 +12194,7 @@ __string__
 
 
 |*endDate*
-|Evaluation end date
+|Request end date
 a|
 __string__
 
@@ -12336,7 +12336,7 @@ __(int32)__
 
 
 |*evaluationTotalTime*
-|Model evaluation total time in format HH:mm:ss:SS
+|Model evaluation total time in format HH:mm:ss:SSS
 a|
 __string__
 

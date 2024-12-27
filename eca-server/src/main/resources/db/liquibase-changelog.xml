@@ -71,4 +71,6 @@
     <include file="db/changelog/v83-drop-classifier-options-request-table.xml"/>
     <include file="db/changelog/v84-add-experiment-locked-ttl-column.xml"/>
     <include file="db/changelog/v85-add-experiment-retry-at-column.xml"/>
+    <include file="db/changelog/v86-add-evaluation-log-reply-to-column.xml"/>
+    <include file="db/changelog/v87-add-experiment-evaluation-time-column.xml"/>
 </databaseChangeLog>

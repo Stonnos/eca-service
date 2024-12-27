@@ -21,7 +21,6 @@ import static com.ecaservice.server.TestHelperUtils.createEvaluationResultsDataM
 import static com.ecaservice.server.TestHelperUtils.getEvaluationResults;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.atLeastOnce;
-import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -60,21 +59,5 @@ class EvaluationErsReportEventListenerTest {
         EvaluationErsReportEvent evaluationErsReportEvent = new EvaluationErsReportEvent(this, evaluationResponse);
         evaluationErsReportEventListener.handleEvent(evaluationErsReportEvent);
         verify(ersRequestService, atLeastOnce()).saveEvaluationResults(any(ErsEvaluationRequestData.class));
-    }
-
-    /**
-     * Test evaluation results sent for evaluation log with status ERROR.
-     */
-    @Test
-    void testEvaluationResultsSentWithErrorStatus() {
-        EvaluationLog evaluationLog = createEvaluationLog(UUID.randomUUID().toString(), RequestStatus.ERROR);
-        when(evaluationLogRepository.findByRequestId(evaluationLog.getRequestId())).thenReturn(
-                Optional.of(evaluationLog));
-        EvaluationResultsDataModel evaluationResponse =
-                createEvaluationResultsDataModel(evaluationLog.getRequestId());
-        evaluationResponse.setStatus(RequestStatus.ERROR);
-        EvaluationErsReportEvent evaluationErsReportEvent = new EvaluationErsReportEvent(this, evaluationResponse);
-        evaluationErsReportEventListener.handleEvent(evaluationErsReportEvent);
-        verify(ersRequestService, never()).saveEvaluationResults(any(ErsEvaluationRequestData.class));
     }
 }

@@ -1,5 +1,6 @@
 package com.ecaservice.server.bpm.service.task;
 
+import com.ecaservice.server.bpm.model.EvaluationStatus;
 import com.ecaservice.server.bpm.model.TaskType;
 import com.ecaservice.server.event.model.EvaluationErsReportEvent;
 import com.ecaservice.server.mapping.EvaluationResultsModelMapper;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Component;
 import static com.ecaservice.server.bpm.CamundaVariables.EVALUATION_LOG_ID;
 import static com.ecaservice.server.bpm.CamundaVariables.EVALUATION_REQUEST_STATUS;
 import static com.ecaservice.server.bpm.CamundaVariables.EVALUATION_RESULTS_DATA;
+import static com.ecaservice.server.bpm.CamundaVariables.EVALUATION_STATUS;
 import static com.ecaservice.server.util.CamundaUtils.getVariable;
 
 /**
@@ -55,10 +57,15 @@ public class EvaluationProcessorTaskHandler extends AbstractTaskHandler {
         var evaluationLog = evaluationLogDataService.getById(id);
         var evaluationResultsDataModel
                 = evaluationRequestService.processEvaluationRequest(evaluationLog);
-        applicationEventPublisher.publishEvent(new EvaluationErsReportEvent(this, evaluationResultsDataModel));
+        log.info("Evaluation request [{}] has been processed with evaluation status [{}]", evaluationLog.getRequestId(),
+                evaluationResultsDataModel.getEvaluationStatus());
+        if (EvaluationStatus.SUCCESS.equals(evaluationResultsDataModel.getEvaluationStatus())) {
+            applicationEventPublisher.publishEvent(new EvaluationErsReportEvent(this, evaluationResultsDataModel));
+        }
         var evaluationResultsModel = evaluationResultsModelMapper.map(evaluationResultsDataModel);
         execution.setVariable(EVALUATION_RESULTS_DATA, evaluationResultsModel);
         execution.setVariable(EVALUATION_REQUEST_STATUS, evaluationResultsDataModel.getStatus().name());
+        execution.setVariable(EVALUATION_STATUS, evaluationResultsDataModel.getEvaluationStatus().name());
         log.info("Classifier evaluation [{}] processing task has been finished", execution.getProcessBusinessKey());
     }
 }

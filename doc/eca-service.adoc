@@ -275,8 +275,8 @@ image::./images/eca-db-schema.png[alt=Схема базы данных eca-serve
 |channel_type               |varchar(255)     |-|+|-                                    |Канал поступления заявки (QUEUE или WEB)
 |created_by                 |varchar(255)     |-|-|-                                    |Пользователь, создавший заявку через WEB
 |creation_date              |timestamp        |-|+|-                                    |Дата создания запроса
-|start_date                 |timestamp        |-|-|-                                    |Дата начала построения модели
-|end_date                   |timestamp        |-|-|-                                    |Дата завершения построения модели
+|start_date                 |timestamp        |-|-|-                                    |Дата начала обработки заявки
+|end_date                   |timestamp        |-|-|-                                    |Дата завершения обработки заявки
 |request_status             |varchar(255)     |-|+|-                                    |Статус запроса
 |evaluation_method          |varchar(255)     |-|+|-                                    |Метод оценки точности
 |num_folds                  |integer          |-|-|-                                    |Число блоков для k * V - блочной кросс проверки на тестовой выборке
@@ -290,6 +290,9 @@ image::./images/eca-db-schema.png[alt=Схема базы данных eca-serve
 |locked_ttl                 |timestamp        |-|-|-                                    |Дата истечения срока действия блокировки заявки
 |retry_at                   |timestamp        |-|-|-                                    |Дата следующей попытки обработки заявки
 |pct_correct                |numeric(19,4)    |-|-|-                                    |Точность классификатора
+|reply_to                   |varchar(255)     |-|-|-                                    |Название очереди для отправки ответных сообщений в MQ
+|correlation_id             |varchar(255)     |-|-|-                                    |Значение для корреляции запрос/ответ
+|evaluation_time_millis     |bigint           |-|-|-                                    |Время построения модели в мс.
 |===
 
 ==== Таблица 3.{counter:db-table-id} - 'experiment' - содержит данные о заявках на построение экспрериментов
@@ -299,8 +302,8 @@ image::./images/eca-db-schema.png[alt=Схема базы данных eca-serve
 |id                           |bigint           |+|+|+                                 |Идентификатор записи (первичный ключ)
 |request_id                   |varchar(255)     |+|+|experiment_uuid_key               |Уникальный UUID заявки
 |creation_date                |timestamp        |-|+|-                                 |Дата создания заявки
-|start_date                   |timestamp        |-|-|-                                 |Дата начала построения эксперимента
-|end_date                     |timestamp        |-|-|-                                 |Дата завершения построения эксперимента
+|start_date                   |timestamp        |-|-|-                                 |Дата начала обработки заявки
+|end_date                     |timestamp        |-|-|-                                 |Дата завершения обработки заявки
 |request_status               |varchar(255)     |-|+|-                                 |Статус заявки
 |evaluation_method            |varchar(255)     |-|+|-                                 |Метод оценки точности
 |num_folds                    |integer          |-|-|-                                 |Число блоков для k * V - блочной кросс проверки на тестовой выборке
@@ -321,6 +324,7 @@ image::./images/eca-db-schema.png[alt=Схема базы данных eca-serve
 |instances_info_id            |bigint           |-|+|+                                 |Внешний ключ, ID обучающей выборки
 |created_by                   |varchar(255)     |-|-|-                                 |Пользователь, создавший заявку через WEB
 |max_pct_correct              |numeric(19,4)    |-|-|-                                 |Точность наилучшего классификатора из истории эксперимента
+|evaluation_time_millis       |bigint           |-|-|-                                 |Время построения модели в мс.
 |===
 
 ==== Таблица 3.{counter:db-table-id} - 'experiment_progress' - содержит данные о статусах построения экспериментов

@@ -111,9 +111,10 @@ class EvaluationRequestServiceTest extends AbstractJpaTest {
     @Override
     public void init() {
         evaluationRequestService =
-                new EvaluationRequestService(appProperties, classifiersProperties, executorService,
-                        evaluationService, classifierInitializerService, objectStorageService, instancesLoaderService,
-                        evaluationLogService, classifierOptionsAdapter, classifierInfoRepository);
+                new EvaluationRequestService(appProperties, classifiersProperties, executorService, evaluationService,
+                        classifierInitializerService, objectStorageService, instancesLoaderService,
+                        evaluationLogService, classifierOptionsAdapter, classifierInfoRepository,
+                        evaluationLogRepository);
         mockLoadInstances();
     }
 

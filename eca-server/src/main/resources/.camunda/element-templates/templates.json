@@ -45,10 +45,6 @@
             "value": "SENT_EXPERIMENT_RESPONSE"
           },
           {
-            "name": "Отправить ответное сообщение в очередь для заявки на построение модели классификатора",
-            "value": "SENT_EVALUATION_RESPONSE"
-          },
-          {
             "name": "Получить данные о пользователе",
             "value": "GET_USER_INFO"
           },
@@ -91,10 +87,6 @@
           {
             "name": "Обработка ошибки при получении оптимальных настроек классификатора",
             "value": "OPTIMAL_CLASSIFIER_OPTIONS_ERROR_HANDLER"
-          },
-          {
-            "name": "Получение настроек профиля пользователя",
-            "value": "GET_USER_PROFILE_OPTIONS"
           }
         ],
         "binding": {
@@ -472,6 +464,61 @@
         "binding": {
           "type": "camunda:inputParameter",
           "name": "userLogin"
+        }
+      }
+    ],
+    "entriesVisible": {
+      "_all": true,
+      "candidateUsers": false,
+      "candidateGroups": false,
+      "property": true,
+      "class": false,
+      "implementation": false,
+      "delegate": false,
+      "asyncBefore": false,
+      "asyncAfter": true
+    }
+  },
+  {
+    "name": "Отправить ответное сообщение в очередь для заявки на построение модели классификатора",
+    "id": "SentEvaluationResponse",
+    "isDefault": false,
+    "appliesTo": [
+      "bpmn:ServiceTask"
+    ],
+    "properties": [
+      {
+        "type": "Hidden",
+        "value": "com.ecaservice.server.bpm.listeners.TaskExecutionListener",
+        "binding": {
+          "type": "property",
+          "name": "camunda:class"
+        }
+      },
+      {
+        "type": "Hidden",
+        "value": "SENT_EVALUATION_RESPONSE",
+        "binding": {
+          "type": "camunda:inputParameter",
+          "name": "taskType"
+        }
+      },
+      {
+        "label": "Expression для получения correlationId",
+        "type": "String",
+        "value": "${evaluationRequestData.correlationId}",
+        "binding": {
+          "type": "camunda:inputParameter",
+          "name": "correlationId"
+        }
+      },
+      {
+        "label": "Expression для получения replyTo",
+        "type": "String",
+        "value": "${evaluationRequestData.replyTo}",
+        "binding": {
+          "type": "camunda:inputParameter",
+          "name": "replyTo"
         }
       }
     ],

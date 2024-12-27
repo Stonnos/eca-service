@@ -132,6 +132,24 @@ public abstract class AbstractEvaluationEntity {
     private Integer seed;
 
     /**
+     * Reply to queue
+     */
+    @Column(name = "reply_to")
+    private String replyTo;
+
+    /**
+     * MQ message correlation id
+     */
+    @Column(name = "correlation_id")
+    private String correlationId;
+
+    /**
+     * Model evaluation time millis
+     */
+    @Column(name = "evaluation_time_millis")
+    private Long evaluationTimeMillis;
+
+    /**
      * Error message
      */
     @Column(name = "error_message", columnDefinition = "text")

@@ -55,7 +55,7 @@ import static org.mockito.Mockito.when;
  * @author Roman Batygin
  */
 @SpringBootTest
-@Deployment(resources = {"bpmn/create-evaluation-web-request.bpmn", "bpmn/process-evaluation-web-request.bpmn",
+@Deployment(resources = {"bpmn/create-evaluation-web-request.bpmn", "bpmn/process-evaluation-request.bpmn",
         "bpmn/create-and-process-evaluation-message-request.bpmn", "bpmn/create-evaluation-request-process.bpmn"})
 class EvaluationProcessManagerTest extends AbstractEvaluationProcessManagerTest<EvaluationLog> {
 
