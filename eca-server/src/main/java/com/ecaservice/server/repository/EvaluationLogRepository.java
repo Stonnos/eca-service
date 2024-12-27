@@ -24,15 +24,19 @@ public interface EvaluationLogRepository
         extends JpaRepository<EvaluationLog, Long>, JpaSpecificationExecutor<EvaluationLog> {
 
     /**
-     * Finds new evaluation requests.
+     * Finds evaluation requests to process:
+     * Evaluation new request and retry requests from web channel
+     * Evaluation retry requests from queue channel
      *
      * @param dateTime - date time to compare with locked ttl
      * @param pageable - pageable object
      * @return evaluation requests ids list
      */
     @Query("select ev from EvaluationLog ev where (ev.requestStatus = 'NEW' or ev.requestStatus = 'IN_PROGRESS') " +
-            "and ev.channel = 'WEB' and (ev.lockedTtl is null or ev.lockedTtl < :dateTime) order by ev.creationDate")
-    Page<EvaluationLog> findNewWebRequests(@Param("dateTime") LocalDateTime dateTime, Pageable pageable);
+            "and (ev.lockedTtl is null or ev.lockedTtl < :dateTime) and " +
+            "((ev.channel = 'QUEUE' and ev.retryAt is not null and ev.retryAt < :dateTime) or " +
+            "(ev.channel = 'WEB' and (ev.retryAt is null or ev.retryAt < :dateTime))) order by ev.creationDate")
+    Page<EvaluationLog> findRequestsToProcess(@Param("dateTime") LocalDateTime dateTime, Pageable pageable);
 
     /**
      * Finds evaluation log by request id.

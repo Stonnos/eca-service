@@ -78,6 +78,8 @@ class EvaluationLogMapperTest {
         evaluationRequestDataModel.setEvaluationMethod(EvaluationMethod.TRAINING_DATA);
         evaluationRequestDataModel.setDataUuid(UUID.randomUUID().toString());
         evaluationRequestDataModel.setClassifier(new KNearestNeighbours());
+        evaluationRequestDataModel.setReplyTo(UUID.randomUUID().toString());
+        evaluationRequestDataModel.setCorrelationId(UUID.randomUUID().toString());
         EvaluationLog evaluationLog = evaluationLogMapper.map(evaluationRequestDataModel, crossValidationConfig);
         assertThat(evaluationLog).isNotNull();
         assertThat(evaluationLog.getEvaluationMethod()).isEqualTo(evaluationRequestDataModel.getEvaluationMethod());
@@ -86,6 +88,8 @@ class EvaluationLogMapperTest {
         assertThat(evaluationLog.getNumTests()).isNull();
         assertThat(evaluationLog.getSeed()).isNull();
         assertThat(evaluationLog.getTrainingDataUuid()).isEqualTo(evaluationRequestDataModel.getDataUuid());
+        assertThat(evaluationLog.getReplyTo()).isEqualTo(evaluationRequestDataModel.getReplyTo());
+        assertThat(evaluationLog.getCorrelationId()).isEqualTo(evaluationRequestDataModel.getCorrelationId());
     }
 
     @Test

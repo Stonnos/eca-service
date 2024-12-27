@@ -35,7 +35,7 @@ public class EvaluationRequestsFetcher {
     @Locked(lockName = "getNextEvaluationRequestsToProcess")
     public Page<EvaluationLog> getNextEvaluationRequestsToProcess(Pageable pageable) {
         log.debug("Starting to get next evaluations to process");
-        Page<EvaluationLog> evaluationLogs = evaluationLogRepository.findNewWebRequests(LocalDateTime.now(), pageable);
+        Page<EvaluationLog> evaluationLogs = evaluationLogRepository.findRequestsToProcess(LocalDateTime.now(), pageable);
         if (evaluationLogs.hasContent()) {
             // Sets a lock to prevent other threads from receiving the same data for processing
             evaluationLogs.forEach(evaluationLog -> evaluationLog.setLockedTtl(

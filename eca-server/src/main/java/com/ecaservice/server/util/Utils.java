@@ -6,6 +6,7 @@ import com.ecaservice.base.model.MessageError;
 import com.ecaservice.base.model.TechnicalStatus;
 import com.ecaservice.ers.dto.ClassifierOptionsResponse;
 import com.ecaservice.ers.dto.ClassifierReport;
+import com.ecaservice.server.bpm.model.EvaluationStatus;
 import com.ecaservice.server.model.entity.RequestStatus;
 import com.ecaservice.server.model.evaluation.EvaluationResultsDataModel;
 import com.ecaservice.web.dto.model.EnumDto;
@@ -82,14 +83,18 @@ public class Utils {
     /**
      * Build evaluation response data model.
      *
-     * @param requestId - request id
-     * @param status    - request status
+     * @param requestId        - request id
+     * @param status           - request status
+     * @param evaluationStatus - evaluation status
      * @return evaluation response data model
      */
-    public static EvaluationResultsDataModel buildEvaluationResultsModel(String requestId, RequestStatus status) {
+    public static EvaluationResultsDataModel buildEvaluationResultsModel(String requestId,
+                                                                         RequestStatus status,
+                                                                         EvaluationStatus evaluationStatus) {
         EvaluationResultsDataModel evaluationResultsDataModel = new EvaluationResultsDataModel();
         evaluationResultsDataModel.setRequestId(requestId);
         evaluationResultsDataModel.setStatus(status);
+        evaluationResultsDataModel.setEvaluationStatus(evaluationStatus);
         return evaluationResultsDataModel;
     }
 
@@ -103,7 +108,7 @@ public class Utils {
     public static EvaluationResultsDataModel buildErrorEvaluationResultsModel(String requestId,
                                                                               ErrorCode errorCode) {
         EvaluationResultsDataModel evaluationResultsDataModel =
-                buildEvaluationResultsModel(requestId, RequestStatus.ERROR);
+                buildEvaluationResultsModel(requestId, RequestStatus.ERROR, EvaluationStatus.ERROR);
         evaluationResultsDataModel.setErrorCode(errorCode);
         return evaluationResultsDataModel;
     }

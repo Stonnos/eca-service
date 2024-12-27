@@ -34,4 +34,14 @@ public abstract class AbstractEvaluationRequestData implements Serializable {
      * User name
      */
     private String createdBy;
+
+    /**
+     * Reply to queue
+     */
+    private String replyTo;
+
+    /**
+     * MQ message correlation id
+     */
+    private String correlationId;
 }

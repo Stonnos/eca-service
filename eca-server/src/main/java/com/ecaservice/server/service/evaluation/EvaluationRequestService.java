@@ -1,8 +1,10 @@
 package com.ecaservice.server.service.evaluation;
 
 import com.ecaservice.classifier.options.adapter.ClassifierOptionsAdapter;
+import com.ecaservice.s3.client.minio.exception.ObjectStorageException;
 import com.ecaservice.s3.client.minio.model.GetPresignedUrlObject;
 import com.ecaservice.s3.client.minio.service.ObjectStorageService;
+import com.ecaservice.server.bpm.model.EvaluationStatus;
 import com.ecaservice.server.config.AppProperties;
 import com.ecaservice.server.config.ClassifiersProperties;
 import com.ecaservice.server.exception.EvaluationTimeoutException;
@@ -12,6 +14,7 @@ import com.ecaservice.server.model.evaluation.EvaluationInputDataModel;
 import com.ecaservice.server.model.evaluation.EvaluationRequestData;
 import com.ecaservice.server.model.evaluation.EvaluationResultsDataModel;
 import com.ecaservice.server.repository.ClassifierInfoRepository;
+import com.ecaservice.server.repository.EvaluationLogRepository;
 import com.ecaservice.server.service.TaskWorker;
 import com.ecaservice.server.service.data.InstancesLoaderService;
 import com.ecaservice.server.service.evaluation.initializers.ClassifierInitializerService;
@@ -26,6 +29,7 @@ import weka.core.Instances;
 
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -60,6 +64,7 @@ public class EvaluationRequestService {
     private final EvaluationLogService evaluationLogService;
     private final ClassifierOptionsAdapter classifierOptionsAdapter;
     private final ClassifierInfoRepository classifierInfoRepository;
+    private final EvaluationLogRepository evaluationLogRepository;
 
     /**
      * Creates evaluation request.
@@ -110,10 +115,18 @@ public class EvaluationRequestService {
             var evaluationResultsDataModel = internalProcessRequest(classifier, data, evaluationLog);
             evaluationLogService.finishEvaluation(evaluationLog, RequestStatus.FINISHED);
             return evaluationResultsDataModel;
+        } catch (ObjectStorageException ex) {
+            log.error("S3 object storage error while process evaluation request [{}]: {}",
+                    evaluationLog.getRequestId(), ex.getMessage());
+            evaluationLog.setRetryAt(LocalDateTime.now().plusSeconds(classifiersProperties.getRetryIntervalSeconds()));
+            evaluationLogRepository.save(evaluationLog);
+            return buildEvaluationResultsModel(evaluationLog.getRequestId(), evaluationLog.getRequestStatus(),
+                    EvaluationStatus.FAILED);
         } catch (EvaluationTimeoutException ex) {
             log.error("There was a timeout for evaluation [{}].", evaluationLog.getRequestId());
             evaluationLogService.finishEvaluation(evaluationLog, RequestStatus.TIMEOUT);
-            return buildEvaluationResultsModel(evaluationLog.getRequestId(), RequestStatus.TIMEOUT);
+            return buildEvaluationResultsModel(evaluationLog.getRequestId(), RequestStatus.TIMEOUT,
+                    EvaluationStatus.TIMEOUT);
         } catch (Exception ex) {
             log.error("There was an error occurred for evaluation [{}]: {}", evaluationLog.getRequestId(),
                     ex.getMessage());
@@ -146,7 +159,8 @@ public class EvaluationRequestService {
         String modelUrl = getModelPresignedUrl(evaluationLog.getModelPath());
         processEvaluationResults(evaluationResults, evaluationLog);
         EvaluationResultsDataModel evaluationResultsDataModel =
-                buildEvaluationResultsModel(evaluationLog.getRequestId(), RequestStatus.FINISHED);
+                buildEvaluationResultsModel(evaluationLog.getRequestId(), RequestStatus.FINISHED,
+                        EvaluationStatus.SUCCESS);
         evaluationResultsDataModel.setEvaluationResults(evaluationResults);
         evaluationResultsDataModel.setModelUrl(modelUrl);
         log.info("Evaluation request [{}] has been successfully finished.", evaluationLog.getRequestId());

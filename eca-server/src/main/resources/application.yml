@@ -185,7 +185,7 @@ auth-server:
 
 processes:
   processExperimentId: ExperimentProcess
-  processEvaluationId: ProcessEvaluationWebRequest
+  processEvaluationId: ProcessEvaluationRequest
   createExperimentRequestProcessId: CreateExperimentRequestProcess
   createEvaluationRequestProcessId: CreateEvaluationRequestProcess
 

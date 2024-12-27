@@ -46,18 +46,6 @@ public class Experiment extends AbstractEvaluationEntity {
     private String experimentDownloadUrl;
 
     /**
-     * Reply to queue
-     */
-    @Column(name = "reply_to")
-    private String replyTo;
-
-    /**
-     * MQ message correlation id
-     */
-    @Column(name = "correlation_id")
-    private String correlationId;
-
-    /**
      * The best classifier correctly classified percentage
      */
     @Column(name = "max_pct_correct", precision = PRECISION, scale = SCALE)

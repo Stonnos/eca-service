@@ -35,16 +35,16 @@ public class EvaluationScheduler {
     private final EvaluationLogRepository evaluationLogRepository;
 
     /**
-     * Processes new evaluation requests.
+     * Processes evaluation requests.
      */
     @Scheduled(fixedDelayString = "${classifiers.delaySeconds}000")
     public void processEvaluationRequests() {
-        log.debug("Starting to process new evaluation requests.");
+        log.debug("Starting to process evaluation requests.");
         processWithPagination(evaluationRequestsFetcher::getNextEvaluationRequestsToProcess,
                 this::processEvaluationRequests,
                 classifiersProperties.getBatchSize()
         );
-        log.debug("New evaluation request processing has been successfully finished.");
+        log.debug("Evaluation request processing has been successfully finished.");
     }
 
     /**
