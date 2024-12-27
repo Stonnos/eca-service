@@ -157,10 +157,12 @@
     <bpmn:sequenceFlow id="Flow_0ozr0xg" name="Заявка в работе?" sourceRef="Gateway_1014mjx" targetRef="Activity_08ji4xo">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${evaluationLog.requestStatus == 'IN_PROGRESS'}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
-    <bpmn:serviceTask id="Activity_0p3gbrn" name="Отправка сообщения с результатами построения модели в очередь" camunda:modelerTemplate="TaskExecution" camunda:class="com.ecaservice.server.bpm.listeners.TaskExecutionListener">
+    <bpmn:serviceTask id="Activity_0p3gbrn" name="Отправка сообщения с результатами построения модели в очередь" camunda:modelerTemplate="SentEvaluationResponse" camunda:class="com.ecaservice.server.bpm.listeners.TaskExecutionListener">
       <bpmn:extensionElements>
         <camunda:inputOutput>
           <camunda:inputParameter name="taskType">SENT_EVALUATION_RESPONSE</camunda:inputParameter>
+          <camunda:inputParameter name="correlationId">${evaluationLog.correlationId}</camunda:inputParameter>
+          <camunda:inputParameter name="replyTo">${evaluationLog.replyTo}</camunda:inputParameter>
         </camunda:inputOutput>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_0ynrkhb</bpmn:incoming>
@@ -222,6 +224,10 @@
   </bpmn:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="ProcessEvaluationRequest">
+      <bpmndi:BPMNEdge id="Flow_1ualyq8_di" bpmnElement="Flow_1ualyq8">
+        <di:waypoint x="470" y="790" />
+        <di:waypoint x="470" y="835" />
+      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1vno4ez_di" bpmnElement="Flow_1vno4ez">
         <di:waypoint x="495" y="1270" />
         <di:waypoint x="850" y="1270" />
@@ -382,10 +388,6 @@
         <di:waypoint x="470" y="118" />
         <di:waypoint x="470" y="180" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1ualyq8_di" bpmnElement="Flow_1ualyq8">
-        <di:waypoint x="470" y="790" />
-        <di:waypoint x="470" y="835" />
-      </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
         <dc:Bounds x="452" y="82" width="36" height="36" />
       </bpmndi:BPMNShape>
@@ -428,13 +430,25 @@
       <bpmndi:BPMNShape id="Event_06q29eg_di" bpmnElement="Event_06q29eg">
         <dc:Bounds x="452" y="2102" width="36" height="36" />
       </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_00dn8hl_di" bpmnElement="Gateway_00dn8hl" isMarkerVisible="true">
+        <dc:Bounds x="445" y="835" width="50" height="50" />
+      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Gateway_01nj26e_di" bpmnElement="Gateway_01nj26e" isMarkerVisible="true">
         <dc:Bounds x="445" y="1645" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0p3gbrn_di" bpmnElement="Activity_0p3gbrn">
+        <dc:Bounds x="640" y="1330" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Gateway_0nvghuh_di" bpmnElement="Gateway_0nvghuh" isMarkerVisible="true">
         <dc:Bounds x="445" y="585" width="50" height="50" />
         <bpmndi:BPMNLabel>
           <dc:Bounds x="348" y="600" width="85" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_0utgjob_di" bpmnElement="Gateway_0utgjob" isMarkerVisible="true">
+        <dc:Bounds x="445" y="1345" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="348" y="1360" width="85" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_0usyiqc_di" bpmnElement="Activity_0usyiqc">
@@ -443,20 +457,8 @@
       <bpmndi:BPMNShape id="Gateway_0k1bfe4_di" bpmnElement="Gateway_0k1bfe4" isMarkerVisible="true">
         <dc:Bounds x="445" y="1245" width="50" height="50" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Gateway_00dn8hl_di" bpmnElement="Gateway_00dn8hl" isMarkerVisible="true">
-        <dc:Bounds x="445" y="835" width="50" height="50" />
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_02ll8i1_di" bpmnElement="Activity_02ll8i1">
         <dc:Bounds x="420" y="710" width="100" height="80" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Gateway_0utgjob_di" bpmnElement="Gateway_0utgjob" isMarkerVisible="true">
-        <dc:Bounds x="445" y="1345" width="50" height="50" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="348" y="1360" width="85" height="14" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_0p3gbrn_di" bpmnElement="Activity_0p3gbrn">
-        <dc:Bounds x="640" y="1330" width="100" height="80" />
       </bpmndi:BPMNShape>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>

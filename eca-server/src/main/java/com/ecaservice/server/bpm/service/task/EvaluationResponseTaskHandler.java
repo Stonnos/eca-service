@@ -9,8 +9,10 @@ import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Component;
 
+import static com.ecaservice.server.bpm.CamundaVariables.CORRELATION_ID;
 import static com.ecaservice.server.bpm.CamundaVariables.EVALUATION_REQUEST_DATA;
 import static com.ecaservice.server.bpm.CamundaVariables.EVALUATION_RESULTS_DATA;
+import static com.ecaservice.server.bpm.CamundaVariables.REPLY_TO;
 import static com.ecaservice.server.util.CamundaUtils.getVariable;
 
 /**
@@ -27,7 +29,7 @@ public class EvaluationResponseTaskHandler extends AbstractTaskHandler {
     /**
      * Constructor with parameters.
      *
-     * @param eventPublisher        - event publisher
+     * @param eventPublisher - event publisher
      */
     public EvaluationResponseTaskHandler(ApplicationEventPublisher eventPublisher) {
         super(TaskType.SENT_EVALUATION_RESPONSE);
@@ -37,12 +39,11 @@ public class EvaluationResponseTaskHandler extends AbstractTaskHandler {
     @Override
     public void handle(DelegateExecution execution) {
         log.info("Starting to process evaluation [{}] response task", execution.getProcessBusinessKey());
-        var evaluationRequestModel =
-                getVariable(execution, EVALUATION_REQUEST_DATA, EvaluationRequestModel.class);
+        String correlationId = getVariable(execution, CORRELATION_ID, String.class);
+        String replyTo = getVariable(execution, REPLY_TO, String.class);
         var evaluationResultsModel =
                 getVariable(execution, EVALUATION_RESULTS_DATA, EvaluationResultsModel.class);
-        eventPublisher.publishEvent(new EvaluationResponseEvent(this, evaluationResultsModel,
-                evaluationRequestModel.getCorrelationId(), evaluationRequestModel.getReplyTo()));
+        eventPublisher.publishEvent(new EvaluationResponseEvent(this, evaluationResultsModel, correlationId, replyTo));
         log.info("Evaluation [{}] response task has been processed", execution.getProcessBusinessKey());
     }
 }

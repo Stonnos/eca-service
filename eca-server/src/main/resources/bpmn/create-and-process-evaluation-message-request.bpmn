@@ -34,10 +34,12 @@
       <bpmn:outgoing>Flow_19rfogn</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:sequenceFlow id="Flow_19rfogn" sourceRef="Activity_0u4bqn0" targetRef="Activity_0nisie8" />
-    <bpmn:serviceTask id="Activity_0p3gbrn" name="Отправка сообщения с результатами построения модели в очередь" camunda:modelerTemplate="TaskExecution" camunda:class="com.ecaservice.server.bpm.listeners.TaskExecutionListener">
+    <bpmn:serviceTask id="Activity_0p3gbrn" name="Отправка сообщения с результатами построения модели в очередь" camunda:modelerTemplate="SentEvaluationResponse" camunda:class="com.ecaservice.server.bpm.listeners.TaskExecutionListener">
       <bpmn:extensionElements>
         <camunda:inputOutput>
           <camunda:inputParameter name="taskType">SENT_EVALUATION_RESPONSE</camunda:inputParameter>
+          <camunda:inputParameter name="correlationId">${evaluationRequestData.correlationId}</camunda:inputParameter>
+          <camunda:inputParameter name="replyTo">${evaluationRequestData.replyTo}</camunda:inputParameter>
         </camunda:inputOutput>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_13dleoy</bpmn:incoming>
@@ -111,6 +113,19 @@
   </bpmn:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="CrateAndProcessEvaluationMessageRequest">
+      <bpmndi:BPMNEdge id="Flow_0fti50d_di" bpmnElement="Flow_0fti50d">
+        <di:waypoint x="1070" y="535" />
+        <di:waypoint x="1070" y="660" />
+        <di:waypoint x="1520" y="660" />
+        <di:waypoint x="1520" y="528" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1cfpsi4_di" bpmnElement="Flow_1cfpsi4">
+        <di:waypoint x="1095" y="510" />
+        <di:waypoint x="1260" y="510" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1138" y="460" width="63" height="40" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_13dleoy_di" bpmnElement="Flow_13dleoy">
         <di:waypoint x="760" y="80" />
         <di:waypoint x="1310" y="80" />
@@ -167,19 +182,6 @@
         <di:waypoint x="740" y="510" />
         <di:waypoint x="840" y="510" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1cfpsi4_di" bpmnElement="Flow_1cfpsi4">
-        <di:waypoint x="1095" y="510" />
-        <di:waypoint x="1260" y="510" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="1138" y="460" width="63" height="40" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0fti50d_di" bpmnElement="Flow_0fti50d">
-        <di:waypoint x="1070" y="535" />
-        <di:waypoint x="1070" y="660" />
-        <di:waypoint x="1520" y="660" />
-        <di:waypoint x="1520" y="528" />
-      </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
         <dc:Bounds x="152" y="492" width="36" height="36" />
       </bpmndi:BPMNShape>
@@ -191,6 +193,12 @@
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_0u4bqn0_di" bpmnElement="Activity_0u4bqn0">
         <dc:Bounds x="460" y="470" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0p3gbrn_di" bpmnElement="Activity_0p3gbrn">
+        <dc:Bounds x="1260" y="470" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1gx8465_di" bpmnElement="Event_1gx8465">
+        <dc:Bounds x="1502" y="492" width="36" height="36" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_1oqpaqq_di" bpmnElement="Activity_1oqpaqq">
         <dc:Bounds x="280" y="300" width="100" height="80" />
@@ -206,12 +214,6 @@
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_0j13htq_di" bpmnElement="Activity_0j13htq">
         <dc:Bounds x="660" y="40" width="100" height="80" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_1gx8465_di" bpmnElement="Event_1gx8465">
-        <dc:Bounds x="1502" y="492" width="36" height="36" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_0p3gbrn_di" bpmnElement="Activity_0p3gbrn">
-        <dc:Bounds x="1260" y="470" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Gateway_0yxg3rr_di" bpmnElement="Gateway_0yxg3rr" isMarkerVisible="true">
         <dc:Bounds x="1045" y="485" width="50" height="50" />

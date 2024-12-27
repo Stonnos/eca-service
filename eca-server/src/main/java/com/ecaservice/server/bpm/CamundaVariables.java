@@ -114,4 +114,14 @@ public class CamundaVariables {
      * User login
      */
     public static final String USER_LOGIN = "userLogin";
+
+    /**
+     * Reply to
+     */
+    public static final String REPLY_TO = "replyTo";
+
+    /**
+     * Correlation id
+     */
+    public static final String CORRELATION_ID = "correlationId";
 }
