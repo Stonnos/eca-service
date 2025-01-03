@@ -36,7 +36,7 @@ import static org.mockito.Mockito.verify;
  */
 @EnableAspectJAutoProxy
 @Import({RequestRedeliveryService.class, RedeliveryProperties.class, RetryService.class,
-        RetryRequestCacheService.class, RedeliverTestConfiguration.class, RetryAspect.class})
+        RetryRequestCacheService.class, RedeliverTestConfiguration.class, RetryAspect.class, RetryRequestFetcher.class})
 class RequestRedeliveryServiceTest extends AbstractJpaTest {
 
     private static final String REQUEST_1 = "REQUEST_1";

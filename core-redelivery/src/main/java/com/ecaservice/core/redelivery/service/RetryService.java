@@ -203,6 +203,7 @@ public class RetryService {
         retryRequest.setRetries(retryRequest.getRetries() + 1);
         LocalDateTime nextRetryAt = calculateNextRetryAt(retryRequest, retry);
         retryRequest.setRetryAt(nextRetryAt);
+        retryRequest.setLockedTtl(null);
         retryRequestRepository.save(retryRequest);
     }
 

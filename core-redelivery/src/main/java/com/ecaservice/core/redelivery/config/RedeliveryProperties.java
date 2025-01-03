@@ -18,6 +18,7 @@ public class RedeliveryProperties {
     private static final int DEFAULT_MAX_RETRIES_IN_ROW = 5;
     private static final long DEFAULT_MIN_RETRY_INTERVAL_MILLIS = 30000L;
     private static final long DEFAULT_MAX_RETRY_INTERVAL_MILLIS = 300000L;
+    private static final int DEFAULT_LOCK_TTL_SECONDS = 60;
 
     /**
      * Is redelivery lib enabled?
@@ -28,6 +29,11 @@ public class RedeliveryProperties {
      * Page size (used for pagination)
      */
     private Integer pageSize = DEFAULT_PAGE_SIZE;
+
+    /**
+     * Lock ttl in seconds
+     */
+    private Integer lockTtlSeconds = DEFAULT_LOCK_TTL_SECONDS;
 
     /**
      * Thread pool size

@@ -2,18 +2,26 @@ package com.ecaservice.server.repository;
 
 import com.ecaservice.server.model.entity.Experiment;
 import com.ecaservice.server.model.projections.RequestStatusStatistics;
+import jakarta.persistence.LockModeType;
+import jakarta.persistence.QueryHint;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import org.springframework.data.jpa.repository.Lock;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.jpa.repository.QueryHints;
 import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+
+import static com.ecaservice.server.util.JpaLockOptions.SKIP_LOCKED;
+import static org.hibernate.cfg.AvailableSettings.JAKARTA_LOCK_TIMEOUT;
 
 /**
  * Implements repository that manages with {@link Experiment} entities.
@@ -37,6 +45,8 @@ public interface ExperimentRepository extends JpaRepository<Experiment, Long>, J
      * @param pageable - pageable object
      * @return experiments page
      */
+    @Lock(LockModeType.PESSIMISTIC_WRITE)
+    @QueryHints({@QueryHint(name = JAKARTA_LOCK_TIMEOUT, value = SKIP_LOCKED)})
     @Query("select e from Experiment e where (e.requestStatus = 'NEW' or e.requestStatus = 'IN_PROGRESS') and " +
             "(e.lockedTtl is null or e.lockedTtl < :nowDate) and " +
             "(e.retryAt is null or e.retryAt < :nowDate) order by e.creationDate")
@@ -65,6 +75,16 @@ public interface ExperimentRepository extends JpaRepository<Experiment, Long>, J
     @Query("select e.requestStatus as requestStatus, count(e.requestStatus) as requestsCount from " +
             "Experiment e group by e.requestStatus")
     List<RequestStatusStatistics> getRequestStatusesStatistics();
+
+    /**
+     * Locks specified experiment requests.
+     *
+     * @param ids     - experiments ids
+     * @param nowTime - now time
+     */
+    @Modifying
+    @Query("update Experiment e set e.lockedTtl = :nowTime where e.id in (:ids)")
+    void lock(@Param("ids") Collection<Long> ids, @Param("nowTime") LocalDateTime nowTime);
 
     /**
      * Resets experiment lock.

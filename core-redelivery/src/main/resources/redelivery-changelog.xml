@@ -42,4 +42,16 @@
         </addColumn>
     </changeSet>
 
+    <changeSet id="add_locked_ttl_column_in_retry_request_table" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="retry_request"/>
+            <not>
+                <columnExists tableName="retry_request" columnName="locked_ttl"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="retry_request">
+            <column name="locked_ttl" type="timestamp"/>
+        </addColumn>
+    </changeSet>
+
 </databaseChangeLog>

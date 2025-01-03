@@ -950,6 +950,7 @@ image::./images/data-loader-db-schema.png[alt=Схема базы данных e
 |max_retries                         |integer          |-|-|-                                   |Макс. число попыток повторной отправки запроса
 |created_at                          |timestamp        |-|+|-                                   |Дата создания записи
 |retry_at                            |timestamp        |-|-|-                                   |Дата следующей попытки
+|locked_ttl                          |timestamp        |-|-|-                                   |Дата истечения срока действия блокировки (используется для исключения race condition, когда запущено несколько инстансов приложения)
 |===
 
 === 3.19 Описание служебных таблиц form-templates

@@ -69,4 +69,10 @@ public class RetryRequest {
      */
     @Column(name = "retry_at")
     private LocalDateTime retryAt;
+
+    /**
+     * Lock time to live date
+     */
+    @Column(name = "locked_ttl")
+    private LocalDateTime lockedTtl;
 }

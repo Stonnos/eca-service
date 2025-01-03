@@ -1,6 +1,5 @@
 package com.ecaservice.server.service.experiment;
 
-import com.ecaservice.core.lock.annotation.Locked;
 import com.ecaservice.server.config.ExperimentConfig;
 import com.ecaservice.server.model.entity.Experiment;
 import com.ecaservice.server.repository.ExperimentRepository;
@@ -9,6 +8,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 
@@ -32,15 +33,18 @@ public class ExperimentRequestFetcher {
      * @param pageable - pageable object
      * @return experiments page
      */
-    @Locked(lockName = "getNextExperimentsToProcess")
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public Page<Experiment> getNextExperimentsToProcess(Pageable pageable) {
         log.debug("Starting to get next experiments to process");
         Page<Experiment> experiments = experimentRepository.findExperimentsToProcess(LocalDateTime.now(), pageable);
         if (experiments.hasContent()) {
             // Sets a lock to prevent other threads from receiving the same data for processing
-            experiments.forEach(experiment -> experiment.setLockedTtl(
-                    LocalDateTime.now().plusSeconds(experimentConfig.getLockTtlSeconds())));
-            experimentRepository.saveAll(experiments);
+            LocalDateTime lockedTtl = LocalDateTime.now().plusSeconds(experimentConfig.getLockTtlSeconds());
+            var ids = experiments.getContent()
+                    .stream()
+                    .map(Experiment::getId)
+                    .toList();
+            experimentRepository.lock(ids, lockedTtl);
             log.info("[{}] experiments to process has been fetched", experiments.getNumberOfElements());
         }
         log.debug("Next experiments to process has been fetched");

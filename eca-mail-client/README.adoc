@@ -81,37 +81,6 @@ redelivery:
   redeliveryIntervalMillis: 60000
   ## Размер страницы для повторной отправки запросов
   pageSize: 25
-----
-
-== 3. Настройка использования блокировок для кластерной среды на примере redis
-
-В pom.xml необходимо добавить зависимости для интеграции с redis
-
-[source,xml]
-----
-<dependency>
-    <groupId>org.springframework.integration</groupId>
-    <artifactId>spring-integration-redis</artifactId>
-</dependency>
-
-<dependency>
-    <groupId>org.springframework.boot</groupId>
-    <artifactId>spring-boot-starter-data-redis</artifactId>
-</dependency>
-----
-
-В файле application.yml добавить следующие настройки
-
-[source,yml]
-----
-lock:
-  ## Вкл./выкл. распределенных блокировок.
-  ## Используется для scheduler повторной отправки email сообщений.
-  ## Необходимо использовать в случае, если запущено несколько инстансов приложения, во избежании data race
-  enabled: true
-  registry-type: REDIS
-  redis:
-    registryKey: your-registry-key
-    ## Время действия блокировки в милисекундах.
-    expireAfter: 60000
+  ## Время жизни блокировки retry записи (используется для исключения race condition, когда запущено несколько инстансов приложения)
+  lockTtlSeconds: 60
 ----

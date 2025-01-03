@@ -2,18 +2,26 @@ package com.ecaservice.server.repository;
 
 import com.ecaservice.server.model.entity.EvaluationLog;
 import com.ecaservice.server.model.projections.RequestStatusStatistics;
+import jakarta.persistence.LockModeType;
+import jakarta.persistence.QueryHint;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import org.springframework.data.jpa.repository.Lock;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.jpa.repository.QueryHints;
 import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+
+import static com.ecaservice.server.util.JpaLockOptions.SKIP_LOCKED;
+import static org.hibernate.cfg.AvailableSettings.JAKARTA_LOCK_TIMEOUT;
 
 /**
  * Implements repository that manages with {@link EvaluationLog} entities.
@@ -32,6 +40,8 @@ public interface EvaluationLogRepository
      * @param pageable - pageable object
      * @return evaluation requests ids list
      */
+    @Lock(LockModeType.PESSIMISTIC_WRITE)
+    @QueryHints({@QueryHint(name = JAKARTA_LOCK_TIMEOUT, value = SKIP_LOCKED)})
     @Query("select ev from EvaluationLog ev where (ev.requestStatus = 'NEW' or ev.requestStatus = 'IN_PROGRESS') " +
             "and (ev.lockedTtl is null or ev.lockedTtl < :dateTime) and " +
             "((ev.channel = 'QUEUE' and ev.retryAt is not null and ev.retryAt < :dateTime) or " +
@@ -59,7 +69,7 @@ public interface EvaluationLogRepository
      * Finds classifiers models to delete.
      *
      * @param dateTime - date time threshold value
-     * @param nowDate - now date
+     * @param nowDate  - now date
      * @param pageable - pageable object
      * @return evaluation log ids list
      */
@@ -69,6 +79,16 @@ public interface EvaluationLogRepository
     Page<EvaluationLog> findModelsToDelete(@Param("dateTime") LocalDateTime dateTime,
                                            @Param("nowDate") LocalDateTime nowDate,
                                            Pageable pageable);
+
+    /**
+     * Locks specified evaluation requests.
+     *
+     * @param ids     - evaluation logs ids
+     * @param nowTime - now time
+     */
+    @Modifying
+    @Query("update EvaluationLog ev set ev.lockedTtl = :nowTime where ev.id in (:ids)")
+    void lock(@Param("ids") Collection<Long> ids, @Param("nowTime") LocalDateTime nowTime);
 
     /**
      * Resets evaluation log lock.

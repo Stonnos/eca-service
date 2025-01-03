@@ -29,6 +29,8 @@ redelivery:
   enabled: true
   ## Размер страницы для постраничной обработки данных
   pageSize: 5
+  ## Время жизни блокировки retry записи (используется для исключения race condition, когда запущено несколько инстансов приложения)
+  lockTtlSeconds: 60
   ## Размер пула потоков для scheduler
   threadPoolSize: 1
   ## Интервал в мс. между запусками scheduler для повторной отправки данных
@@ -114,42 +116,9 @@ public class AppConfiguration {
 </databaseChangeLog>
 ----
 
-== 2. Настройка использования блокировок для кластерной среды на примере redis
+== 2. Описание таблиц
 
-В pom.xml необходимо добавить зависимости для интеграции с redis
-
-[source,xml]
-----
-<dependency>
-    <groupId>org.springframework.integration</groupId>
-    <artifactId>spring-integration-redis</artifactId>
-</dependency>
-
-<dependency>
-    <groupId>org.springframework.boot</groupId>
-    <artifactId>spring-boot-starter-data-redis</artifactId>
-</dependency>
-----
-
-В файле application.yml добавить следующие настройки
-
-[source,yml]
-----
-lock:
-  ## Вкл./выкл. распределенных блокировок.
-  ## Используется для scheduler повторной отправки данных.
-  ## Необходимо использовать в случае, если запущено несколько инстансов приложения, во избежании data race
-  enabled: true
-  registry-type: REDIS
-  redis:
-    registryKey: your-registry-key
-    ## Время действия блокировки в милисекундах.
-    expireAfter: 60000
-----
-
-== 3. Описание таблиц
-
-Таблица 3.1 - 'retry_request' - содержит данные запросов для повторной отправки
+Таблица 2.1 - 'retry_request' - содержит данные запросов для повторной отправки
 [cols="^20%,^14%,^8%,^8%,^8%,^30%",options="header"]
 |===
 |Название колонки|Тип|Unique|Not NULL|Индекс|Описание
@@ -162,9 +131,10 @@ lock:
 |max_retries                         |integer          |-|-|-                                   |Макс. число попыток повторной отправки запроса
 |created_at                          |timestamp        |-|+|-                                   |Дата создания записи
 |retry_at                            |timestamp        |-|-|-                                   |Дата следующей попытки
+|locked_ttl                          |timestamp        |-|-|-                                   |Дата истечения срока действия блокировки записи (используется для исключения race condition, когда запущено несколько инстансов приложения)
 |===
 
-== 4. Примеры использования
+== 3. Примеры использования
 
 Ниже приведен пример сервиса с поддержкой механизма redelivery:
 

@@ -42,9 +42,8 @@
             <version>${feign.version}</version>
         </dependency>
         <dependency>
-            <groupId>eca.service</groupId>
-            <artifactId>core-lock</artifactId>
-            <version>${project.version}</version>
+            <groupId>io.micrometer</groupId>
+            <artifactId>micrometer-registry-prometheus</artifactId>
         </dependency>
         <dependency>
             <groupId>eca.service</groupId>

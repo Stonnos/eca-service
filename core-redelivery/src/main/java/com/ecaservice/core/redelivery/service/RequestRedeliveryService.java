@@ -1,16 +1,12 @@
 package com.ecaservice.core.redelivery.service;
 
-import com.ecaservice.core.lock.annotation.Locked;
 import com.ecaservice.core.redelivery.config.RedeliveryProperties;
 import com.ecaservice.core.redelivery.entity.RetryRequest;
-import com.ecaservice.core.redelivery.repository.RetryRequestRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
-
-import java.time.LocalDateTime;
 
 import static com.ecaservice.common.web.util.LogHelper.TX_ID;
 import static com.ecaservice.common.web.util.LogHelper.putMdc;
@@ -27,18 +23,17 @@ public class RequestRedeliveryService {
 
     private final RedeliveryProperties redeliveryProperties;
     private final RetryService retryService;
-    private final RetryRequestRepository retryRequestRepository;
+    private final RetryRequestFetcher retryRequestFetcher;
 
     /**
      * Retries all not sent requests.
      */
-    @Locked(lockName = "processNotSentRetryRequests", waitForLock = false)
     public void processNotSentRequests() {
         log.debug("Starting retry requests job");
         var pageRequest = PageRequest.of(0, redeliveryProperties.getPageSize());
         Page<RetryRequest> page;
         do {
-            page = retryRequestRepository.getNotSentRequests(LocalDateTime.now(), pageRequest);
+            page = retryRequestFetcher.getNotSentRequests(pageRequest);
             if (page == null || !page.hasContent()) {
                 log.debug("No one page has been fetched");
                 break;
