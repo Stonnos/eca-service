@@ -4,7 +4,6 @@ import com.ecaservice.server.model.entity.Experiment;
 import com.ecaservice.server.model.projections.RequestStatusStatistics;
 import jakarta.persistence.LockModeType;
 import jakarta.persistence.QueryHint;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
@@ -43,14 +42,14 @@ public interface ExperimentRepository extends JpaRepository<Experiment, Long>, J
      *
      * @param nowDate  - now date
      * @param pageable - pageable object
-     * @return experiments page
+     * @return experiments list
      */
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     @QueryHints({@QueryHint(name = JAKARTA_LOCK_TIMEOUT, value = SKIP_LOCKED)})
     @Query("select e from Experiment e where (e.requestStatus = 'NEW' or e.requestStatus = 'IN_PROGRESS') and " +
             "(e.lockedTtl is null or e.lockedTtl < :nowDate) and " +
             "(e.retryAt is null or e.retryAt < :nowDate) order by e.creationDate")
-    Page<Experiment> findExperimentsToProcess(@Param("nowDate") LocalDateTime nowDate, Pageable pageable);
+    List<Experiment> findExperimentsToProcess(@Param("nowDate") LocalDateTime nowDate, Pageable pageable);
 
     /**
      * Finds experiments models to delete.
@@ -58,12 +57,12 @@ public interface ExperimentRepository extends JpaRepository<Experiment, Long>, J
      * @param dateTime - date time threshold value
      * @param nowDate  - now date
      * @param pageable - pageable object
-     * @return experiments ids list
+     * @return experiments list
      */
     @Query("select e from Experiment e where e.requestStatus = 'FINISHED' and " +
             "e.deletedDate is null and e.endDate < :dateTime and " +
             "(e.retryAt is null or e.retryAt < :nowDate) order by e.endDate")
-    Page<Experiment> findExperimentsModelsToDelete(@Param("dateTime") LocalDateTime dateTime,
+    List<Experiment> findExperimentsModelsToDelete(@Param("dateTime") LocalDateTime dateTime,
                                                    @Param("nowDate") LocalDateTime nowDate,
                                                    Pageable pageable);
 

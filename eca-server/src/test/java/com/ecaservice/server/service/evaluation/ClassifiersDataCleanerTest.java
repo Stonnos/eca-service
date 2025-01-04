@@ -21,7 +21,9 @@ import java.util.UUID;
 
 import static com.google.common.collect.Lists.newArrayList;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.atLeastOnce;
+import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.verify;
 
 /**
@@ -30,7 +32,7 @@ import static org.mockito.Mockito.verify;
  * @author Roman Batygin
  */
 @Import({ClassifiersDataCleaner.class, AppProperties.class})
-class ClassifierDataCleanerTest extends AbstractJpaTest {
+class ClassifiersDataCleanerTest extends AbstractJpaTest {
 
     @Autowired
     private EvaluationLogRepository evaluationLogRepository;
@@ -78,8 +80,18 @@ class ClassifierDataCleanerTest extends AbstractJpaTest {
         timeoutEvaluationLog.setDeletedDate(LocalDateTime.now());
         evaluationLogs.add(timeoutEvaluationLog);
         evaluationLogRepository.saveAll(evaluationLogs);
+        mockProcessEvaluationLog();
         classifiersDataCleaner.removeModels();
         verify(evaluationLogDataService, atLeastOnce()).removeModel(argumentCaptor.capture());
         assertThat(argumentCaptor.getValue().getId()).isEqualTo(evaluationLogToRemove.getId());
+    }
+
+    private void mockProcessEvaluationLog() {
+        doAnswer(invocation -> {
+            EvaluationLog experiment = invocation.getArgument(0);
+            experiment.setDeletedDate(LocalDateTime.now());
+            evaluationLogRepository.save(experiment);
+            return null;
+        }).when(evaluationLogDataService).removeModel(any(EvaluationLog.class));
     }
 }

@@ -6,13 +6,15 @@ import com.ecaservice.server.model.entity.EvaluationLog;
 import com.ecaservice.server.repository.EvaluationLogRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import static com.ecaservice.common.web.util.LogHelper.TX_ID;
 import static com.ecaservice.common.web.util.LogHelper.putMdc;
-import static com.ecaservice.server.util.PageHelper.processWithPagination;
 
 /**
  * Classifiers data cleaner.
@@ -36,12 +38,13 @@ public class ClassifiersDataCleaner {
     @Locked(lockName = CLASSIFIERS_CRON_JOB_KEY, waitForLock = false)
     public void removeModels() {
         log.info("Starting to remove classifier models.");
+        Pageable pageRequest = PageRequest.of(0, appProperties.getPageSize());
         LocalDateTime dateTime = LocalDateTime.now().minusDays(appProperties.getNumberOfDaysForStorage());
-        processWithPagination(
-                pageable -> evaluationLogRepository.findModelsToDelete(dateTime, LocalDateTime.now(), pageable),
-                evaluationLogs -> evaluationLogs.forEach(this::removeModel),
-                appProperties.getPageSize()
-        );
+        List<EvaluationLog> evaluationLogs;
+        while (!(evaluationLogs =
+                evaluationLogRepository.findModelsToDelete(dateTime, LocalDateTime.now(), pageRequest)).isEmpty()) {
+            evaluationLogs.forEach(this::removeModel);
+        }
         log.info("Classifier models removing has been finished.");
     }
 

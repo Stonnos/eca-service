@@ -38,7 +38,7 @@ public interface EvaluationLogRepository
      *
      * @param dateTime - date time to compare with locked ttl
      * @param pageable - pageable object
-     * @return evaluation requests ids list
+     * @return evaluation requests list
      */
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     @QueryHints({@QueryHint(name = JAKARTA_LOCK_TIMEOUT, value = SKIP_LOCKED)})
@@ -46,7 +46,7 @@ public interface EvaluationLogRepository
             "and (ev.lockedTtl is null or ev.lockedTtl < :dateTime) and " +
             "((ev.channel = 'QUEUE' and ev.retryAt is not null and ev.retryAt < :dateTime) or " +
             "(ev.channel = 'WEB' and (ev.retryAt is null or ev.retryAt < :dateTime))) order by ev.creationDate")
-    Page<EvaluationLog> findRequestsToProcess(@Param("dateTime") LocalDateTime dateTime, Pageable pageable);
+    List<EvaluationLog> findRequestsToProcess(@Param("dateTime") LocalDateTime dateTime, Pageable pageable);
 
     /**
      * Finds evaluation log by request id.
@@ -71,12 +71,12 @@ public interface EvaluationLogRepository
      * @param dateTime - date time threshold value
      * @param nowDate  - now date
      * @param pageable - pageable object
-     * @return evaluation log ids list
+     * @return evaluation log list
      */
     @Query("select ev from EvaluationLog ev where ev.requestStatus = 'FINISHED' and " +
             "ev.deletedDate is null and ev.endDate < :dateTime and " +
             "(ev.retryAt is null or ev.retryAt < :nowDate) order by ev.endDate")
-    Page<EvaluationLog> findModelsToDelete(@Param("dateTime") LocalDateTime dateTime,
+    List<EvaluationLog> findModelsToDelete(@Param("dateTime") LocalDateTime dateTime,
                                            @Param("nowDate") LocalDateTime nowDate,
                                            Pageable pageable);
 

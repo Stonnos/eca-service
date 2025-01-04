@@ -22,6 +22,7 @@ import java.util.concurrent.Executors;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.atLeastOnce;
+import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.verify;
 
 /**
@@ -74,6 +75,13 @@ class EvaluationSchedulerTest extends AbstractJpaTest {
         saveEvaluationLog(Channel.WEB, RequestStatus.FINISHED);
         saveEvaluationLog(Channel.WEB, RequestStatus.IN_PROGRESS);
         saveEvaluationLog(Channel.WEB, RequestStatus.ERROR);
+        doAnswer(invocation -> {
+            // Mock evaluation request processing, set finished status
+            EvaluationLog evaluationLog = invocation.getArgument(0);
+            evaluationLog.setRequestStatus(RequestStatus.FINISHED);
+            evaluationLogRepository.save(evaluationLog);
+            return null;
+        }).when(evaluationProcessManager).processEvaluationRequest(any(EvaluationLog.class));
         evaluationScheduler.processEvaluationRequests();
         verify(evaluationProcessManager, atLeastOnce()).processEvaluationRequest(any(EvaluationLog.class));
     }

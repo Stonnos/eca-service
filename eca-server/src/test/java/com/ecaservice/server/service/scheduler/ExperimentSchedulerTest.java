@@ -3,6 +3,7 @@ package com.ecaservice.server.service.scheduler;
 import com.ecaservice.server.TestHelperUtils;
 import com.ecaservice.server.config.AppProperties;
 import com.ecaservice.server.config.ExperimentConfig;
+import com.ecaservice.server.model.entity.EvaluationLog;
 import com.ecaservice.server.model.entity.Experiment;
 import com.ecaservice.server.model.entity.ExperimentStep;
 import com.ecaservice.server.model.entity.ExperimentStepStatus;
@@ -14,8 +15,8 @@ import com.ecaservice.server.service.AbstractJpaTest;
 import com.ecaservice.server.service.experiment.ExperimentDataCleaner;
 import com.ecaservice.server.service.experiment.ExperimentProcessManager;
 import com.ecaservice.server.service.experiment.ExperimentProgressService;
-import com.ecaservice.server.service.experiment.ExperimentService;
 import com.ecaservice.server.service.experiment.ExperimentRequestFetcher;
+import com.ecaservice.server.service.experiment.ExperimentService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -27,6 +28,7 @@ import java.util.UUID;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.atLeastOnce;
+import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.verify;
 
 /**
@@ -81,6 +83,7 @@ class ExperimentSchedulerTest extends AbstractJpaTest {
         var newExperiment = TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.NEW);
         instancesInfoRepository.save(newExperiment.getInstancesInfo());
         experimentRepository.save(newExperiment);
+        mockProcessExperiment();
         experimentScheduler.processExperiments();
         verify(experimentProcessManager, atLeastOnce()).processExperiment(any(Experiment.class));
     }
@@ -91,8 +94,19 @@ class ExperimentSchedulerTest extends AbstractJpaTest {
         createAndSaveExperimentStep(experiment, ExperimentStep.EXPERIMENT_PROCESSING, ExperimentStepStatus.FAILED);
         createAndSaveExperimentStep(experiment, ExperimentStep.UPLOAD_EXPERIMENT_MODEL, ExperimentStepStatus.READY);
         createAndSaveExperimentStep(experiment, ExperimentStep.GET_EXPERIMENT_DOWNLOAD_URL, ExperimentStepStatus.READY);
+        mockProcessExperiment();
         experimentScheduler.processExperiments();
         verify(experimentProcessManager, atLeastOnce()).processExperiment(any(Experiment.class));
+    }
+
+    private void mockProcessExperiment() {
+        doAnswer(invocation -> {
+            // Mock experiment processing, set finished status
+            Experiment experiment = invocation.getArgument(0);
+            experiment.setRequestStatus(RequestStatus.FINISHED);
+            experimentRepository.save(experiment);
+            return null;
+        }).when(experimentProcessManager).processExperiment(any(Experiment.class));
     }
 
     private Experiment createAndSaveInProgressExperiment() {

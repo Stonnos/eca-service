@@ -8,12 +8,12 @@ import com.ecaservice.server.service.experiment.ExperimentProcessManager;
 import com.ecaservice.server.service.experiment.ExperimentRequestFetcher;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-
-import static com.ecaservice.server.util.PageHelper.processWithPagination;
 
 /**
  * Experiment scheduler.
@@ -37,11 +37,11 @@ public class ExperimentScheduler {
     @Scheduled(fixedDelayString = "${experiment.delaySeconds}000")
     public void processExperiments() {
         log.debug("Starting job to process experiments");
-        processWithPagination(
-                experimentRequestFetcher::getNextExperimentsToProcess,
-                this::processExperiments,
-                experimentConfig.getBatchSize()
-        );
+        Pageable pageRequest = PageRequest.of(0, experimentConfig.getBatchSize());
+        List<Experiment> experiments;
+        while (!(experiments = experimentRequestFetcher.lockNextExperimentsToProcess(pageRequest)).isEmpty()) {
+            processExperiments(experiments);
+        }
         log.debug("Process experiments job has been finished");
     }
 

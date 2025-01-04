@@ -21,7 +21,9 @@ import java.util.UUID;
 
 import static com.google.common.collect.Lists.newArrayList;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.atLeastOnce;
+import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.verify;
 
 /**
@@ -84,8 +86,18 @@ class ExperimentDataCleanerTest extends AbstractJpaTest {
                 TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.ERROR, instancesInfo);
         experiments.add(errorExperiment);
         experimentRepository.saveAll(experiments);
+        mockProcessExperiment();
         experimentDataCleaner.removeExperimentsModels();
         verify(experimentDataService, atLeastOnce()).removeExperimentModel(argumentCaptor.capture());
         assertThat(argumentCaptor.getValue().getId()).isEqualTo(experimentToRemove.getId());
+    }
+
+    private void mockProcessExperiment() {
+        doAnswer(invocation -> {
+            Experiment experiment = invocation.getArgument(0);
+            experiment.setDeletedDate(LocalDateTime.now());
+            experimentRepository.save(experiment);
+            return null;
+        }).when(experimentDataService).removeExperimentModel(any(Experiment.class));
     }
 }

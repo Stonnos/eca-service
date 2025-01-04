@@ -8,14 +8,14 @@ import com.ecaservice.server.service.evaluation.EvaluationProcessManager;
 import com.ecaservice.server.service.evaluation.EvaluationRequestsFetcher;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
-
-import static com.ecaservice.server.util.PageHelper.processWithPagination;
 
 /**
  * Evaluation scheduler.
@@ -40,10 +40,12 @@ public class EvaluationScheduler {
     @Scheduled(fixedDelayString = "${classifiers.delaySeconds}000")
     public void processEvaluationRequests() {
         log.debug("Starting to process evaluation requests.");
-        processWithPagination(evaluationRequestsFetcher::getNextEvaluationRequestsToProcess,
-                this::processEvaluationRequests,
-                classifiersProperties.getBatchSize()
-        );
+        Pageable pageRequest = PageRequest.of(0, classifiersProperties.getBatchSize());
+        List<EvaluationLog> evaluationLogs;
+        while (!(evaluationLogs =
+                evaluationRequestsFetcher.lockNextEvaluationRequestsToProcess(pageRequest)).isEmpty()) {
+            processEvaluationRequests(evaluationLogs);
+        }
         log.debug("Evaluation request processing has been successfully finished.");
     }
 

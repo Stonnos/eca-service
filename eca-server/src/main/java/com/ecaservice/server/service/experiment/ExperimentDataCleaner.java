@@ -6,13 +6,15 @@ import com.ecaservice.server.model.entity.Experiment;
 import com.ecaservice.server.repository.ExperimentRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import static com.ecaservice.common.web.util.LogHelper.TX_ID;
 import static com.ecaservice.common.web.util.LogHelper.putMdc;
-import static com.ecaservice.server.util.PageHelper.processWithPagination;
 
 /**
  * Experiment data cleaner.
@@ -36,12 +38,13 @@ public class ExperimentDataCleaner {
     @Locked(lockName = EXPERIMENTS_CRON_JOB_KEY, waitForLock = false)
     public void removeExperimentsModels() {
         log.info("Starting to remove experiments models.");
+        Pageable pageRequest = PageRequest.of(0, appProperties.getPageSize());
         LocalDateTime dateTime = LocalDateTime.now().minusDays(appProperties.getNumberOfDaysForStorage());
-        processWithPagination(
-                pageable -> experimentRepository.findExperimentsModelsToDelete(dateTime, LocalDateTime.now(), pageable),
-                experiments -> experiments.forEach(this::removeModel),
-                appProperties.getPageSize()
-        );
+        List<Experiment> experiments;
+        while (!(experiments = experimentRepository.findExperimentsModelsToDelete(dateTime, LocalDateTime.now(),
+                pageRequest)).isEmpty()) {
+            experiments.forEach(this::removeModel);
+        }
         log.info("Experiments models removing has been finished.");
     }
 

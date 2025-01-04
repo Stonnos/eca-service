@@ -3,7 +3,6 @@ package com.ecaservice.core.redelivery.repository;
 import com.ecaservice.core.redelivery.entity.RetryRequest;
 import jakarta.persistence.LockModeType;
 import jakarta.persistence.QueryHint;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Lock;
@@ -14,6 +13,7 @@ import org.springframework.data.repository.query.Param;
 
 import java.time.LocalDateTime;
 import java.util.Collection;
+import java.util.List;
 
 import static org.hibernate.cfg.AvailableSettings.JAKARTA_LOCK_TIMEOUT;
 
@@ -40,7 +40,7 @@ public interface RetryRequestRepository extends JpaRepository<RetryRequest, Long
     @QueryHints({@QueryHint(name = JAKARTA_LOCK_TIMEOUT, value = SKIP_LOCKED)})
     @Query("select re from RetryRequest re where (re.lockedTtl is null or re.lockedTtl < :date) and " +
             "(re.retryAt is null or re.retryAt < :date) order by re.createdAt")
-    Page<RetryRequest> getNotSentRequests(@Param("date") LocalDateTime date, Pageable pageable);
+    List<RetryRequest> getNotSentRequests(@Param("date") LocalDateTime date, Pageable pageable);
 
     /**
      * Locks specified retry requests.
