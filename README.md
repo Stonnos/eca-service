@@ -38,6 +38,7 @@
 * feign-metrics - общая библиотека для поддержки метрик feign client в формате prometheus
 * eca-web-transport - модуль содержит dto классы для REST API WEB
 * core-redelivery - общая библиотека для поддержки механизмов redelivery
+* transactional-outbox - общая библиотека для поддержки механизмов transactional outbox
 * core-audit - библиотека для отправки событий аудита
 * core-filter - общая библиотека для фильтрации и сортировки
 * core-form-template - общая библиотека для работы с шаблонами CRUD - форм
