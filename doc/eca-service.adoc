@@ -487,18 +487,6 @@ image::./images/eca-oauth-db-schema.png[alt=Схема базы данных eca
 |version                 |integer          |-|+|-                                |Версия настроек
 |===
 
-==== Таблица 3.{counter:db-table-id} - 'user_profile_options_data_event' - содержит данные для отправки событий изменения настроек профиля пользователя
-[cols="^20%,^14%,^8%,^8%,^8%,^30%",options="header"]
-|===
-|Название колонки|Тип|Unique|Not NULL|Индекс|Описание
-|id                      |bigint           |+|+|+                                |Идентификатор записи (первичный ключ)
-|request_id              |varchar(255)     |-|+|-                                |UUID события
-|message_body            |varchar(2048)    |-|+|-                                |Сообщение для отправки
-|created                 |timestamp        |-|+|-                                |Дата создания
-|===
-
-Таблица также содержит уникальный индекс *user_profile_options_user_id_unique_idx* на поле user_id
-
 ==== Таблица 3.{counter:db-table-id} - 'user_notification_event_options' - содержит данные о настройказ профилей пользователей
 [cols="^20%,^14%,^8%,^8%,^8%,^30%",options="header"]
 |===
@@ -1115,4 +1103,17 @@ image::./images/data-loader-db-schema.png[alt=Схема базы данных e
 |updated                          |timestamp        |-|+|-                                           |Дата обновления
 |version                          |integer          |-|+|-                                           |Версия настроек
 |options_json                     |varchar(4096)    |-|+|-                                           |Настройки профиля в формате json
+|===
+
+=== 3.22 Описание служебных таблиц transactional-outbox
+
+Таблица 3.{counter:db-table-id} - 'outbox_message' - содержит данные об outbox сообщениях
+[cols="^20%,^14%,^8%,^8%,^8%,^30%",options="header"]
+|===
+|Название колонки|Тип|Unique|Not NULL|Индекс|Описание
+|id                                  |bigint           |+|+|+                                   |Идентификатор записи (первичный ключ)
+|message_code                        |varchar(255)     |-|+|-                                   |Код сообщения
+|message_body                        |text             |-|+|-                                   |Тело запроса
+|created_at                          |timestamp        |-|+|-                                   |Дата создания записи
+|locked_ttl                          |timestamp        |-|-|-                                   |Дата истечения срока действия блокировки записи (используется для исключения race condition, когда запущено несколько инстансов приложения)
 |===

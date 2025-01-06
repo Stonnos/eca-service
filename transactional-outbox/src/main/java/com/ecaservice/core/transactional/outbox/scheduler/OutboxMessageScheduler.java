@@ -25,7 +25,7 @@ public class OutboxMessageScheduler {
 
     private final TransactionalOutboxProperties transactionalOutboxProperties;
     private final OutboxMessageProcessor outboxMessageProcessor;
-    private final ThreadPoolTaskScheduler retryRequestThreadPoolTaskScheduler;
+    private final ThreadPoolTaskScheduler outboxThreadPoolTaskScheduler;
 
     /**
      * Starts scheduler.
@@ -33,7 +33,7 @@ public class OutboxMessageScheduler {
     @EventListener(ApplicationReadyEvent.class)
     public void start() {
         log.info("Starting to initialize transactional outbox message job");
-        retryRequestThreadPoolTaskScheduler.scheduleWithFixedDelay(
+        outboxThreadPoolTaskScheduler.scheduleWithFixedDelay(
                 outboxMessageProcessor::processNotSentMessages,
                 Duration.ofMillis(transactionalOutboxProperties.getRetryIntervalMillis())
         );

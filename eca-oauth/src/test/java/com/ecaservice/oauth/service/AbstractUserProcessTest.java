@@ -1,6 +1,7 @@
 package com.ecaservice.oauth.service;
 
 import com.ecaservice.core.mail.client.service.EmailRequestSender;
+import com.ecaservice.core.transactional.outbox.service.OutboxMessageService;
 import com.ecaservice.notification.dto.EmailRequest;
 import com.ecaservice.oauth.TestHelperUtils;
 import com.ecaservice.oauth.dto.CreateUserDto;
@@ -73,6 +74,8 @@ abstract class AbstractUserProcessTest {
 
     @MockBean
     private EmailRequestSender emailRequestSender;
+    @MockBean
+    private OutboxMessageService outboxMessageService;
     @Captor
     private ArgumentCaptor<EmailRequest> emailRequestArgumentCaptor;
 
