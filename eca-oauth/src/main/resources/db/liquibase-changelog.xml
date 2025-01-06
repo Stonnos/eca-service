@@ -48,4 +48,6 @@
     <include file="db/changelog/v37-drop-oauth-tables.xml"/>
     <include file="db/changelog/v38-add-registered-client-id-to-tfa-code-table.xml"/>
     <include file="db/changelog/v39-added-user-photo-id-column.xml"/>
+    <include file="db/changelog/v40-dop-user-profile-options-data-event-table.xml"/>
+    <include file="../transactional-outbox-changelog.xml" relativeToChangelogFile="true"/>
 </databaseChangeLog>

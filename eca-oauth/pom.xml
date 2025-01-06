@@ -149,6 +149,12 @@
 
         <dependency>
             <groupId>eca.service</groupId>
+            <artifactId>transactional-outbox</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>eca.service</groupId>
             <artifactId>core-data-cleaner</artifactId>
             <version>${project.version}</version>
         </dependency>

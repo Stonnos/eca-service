@@ -7,6 +7,7 @@ import com.ecaservice.common.web.exception.InvalidOperationException;
 import com.ecaservice.core.audit.annotation.Audit;
 import com.ecaservice.core.filter.service.FilterTemplateService;
 import com.ecaservice.core.filter.validation.annotations.ValidPageRequest;
+import com.ecaservice.core.transactional.outbox.service.OutboxMessageService;
 import com.ecaservice.oauth.config.AppProperties;
 import com.ecaservice.oauth.dto.CreateUserDto;
 import com.ecaservice.oauth.dto.UpdateUserInfoDto;
