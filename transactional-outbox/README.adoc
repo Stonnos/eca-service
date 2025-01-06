@@ -1,0 +1,130 @@
+= Библиотека transactional-outbox
+:toc:
+:toc-title: Оглавление
+
+== Введение
+
+Библиотека реализует функционал для отправки сообщений с помощью механизма transactional outbox
+
+== 1. Базовые настройки библиотеки
+
+Для начала, необходимо добавить зависимость в pom.xml
+
+[source,xml]
+----
+<dependency>
+    <groupId>eca.service</groupId>
+    <artifactId>transactional-outbox</artifactId>
+    <version>${project.version}</version>
+</dependency>
+----
+
+В файле application.yml добавить настройки библиотеки
+
+[source,yml]
+----
+transactional:
+  outbox:
+    ## Вкл./выкл. шедулера для повторной оправки сообщений в случае ошибок
+    retry: true
+    ## Размер страницы для постраничной обработки данных
+    pageSize: 5
+    ## Время жизни блокировки сообщения для отправки (используется для исключения race condition, когда запущено несколько инстансов приложения)
+    lockTtlSeconds: 60
+    ## Интервал в мс. между запусками scheduler для повторной отправки данных
+    retryIntervalMillis: 60000
+----
+
+Добавить java конфигурацию, если необходимо
+
+[source,java]
+----
+// Если в вашем модуле есть JPA сущности, то указать путь для сканирования
+@EntityScan(basePackageClasses = MyEntity.class)
+// Если в вашем модуле есть JPA репозитории, то указать путь для сканирования
+@EnableJpaRepositories(basePackageClasses = MyEntityRepository.class)
+@Configuration
+public class AppConfiguration {
+
+    //При необходимости сконфигурировать кастомный бин стратегии обработки исключений.
+    //Реализация определяет при каких ошибках нужно отправить сообщение повторно.
+    @Bean("myExceptionStrategyBean")
+    public ExceptionStrategy exceptionStrategy() {
+        return new ExceptionStrategyImpl();
+    }
+}
+----
+
+В конфигурационный файл liquibase, добавить путь к файлу transactional-outbox-changelog.xml со скриптами для создания служебных таблиц библиотеки
+
+[source,xml]
+----
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+    <!-- your change sets -->
+    <include file="../transactional-outbox-changelog.xml" relativeToChangelogFile="true"/>
+</databaseChangeLog>
+----
+
+== 2. Описание таблиц
+
+Таблица 2.1 - 'outbox_message' - содержит данные сообщения отправки
+[cols="^20%,^14%,^8%,^8%,^8%,^30%",options="header"]
+|===
+|Название колонки|Тип|Unique|Not NULL|Индекс|Описание
+|id                                  |bigint           |+|+|+                                   |Идентификатор записи (первичный ключ)
+|message_code                        |varchar(255)     |-|+|-                                   |Код сообщения
+|message_body                        |text             |-|+|-                                   |Тело запроса
+|created_at                          |timestamp        |-|+|-                                   |Дата создания записи
+|locked_ttl                          |timestamp        |-|-|-                                   |Дата истечения срока действия блокировки записи (используется для исключения race condition, когда запущено несколько инстансов приложения)
+|===
+
+== 3. Примеры использования
+
+Ниже приведен пример сервиса для сохранения outbox сообщения:
+
+[source,java]
+----
+@Slf4j
+@Service
+@RequiredArgsConstructor
+public class UserService {
+
+    private final UserRepository userRepository;
+    private final OutboxMessageService outboxMessageService;
+
+    @Transactional
+    public void register(User user) {
+        userRepository.save(user);
+        EmailRequest emailRequest = new EmailRequest(user.getEmail(), "User registered");
+        // Создаем outbox сообщение с кодом (используется для аннотации OutboxSender) и телом сообщения
+        OutboxMessage outboxMessage = new OutboxMessage("emailRequest", emailRequest);
+        // Важно! Необходимо вызывать метод в транзации
+        outboxMessageService.saveOutboxMessages(List.of(outboxMessage));
+    }
+}
+----
+
+Ниже приведен пример сервиса для отправки outbox сообщения:
+
+[source,java]
+----
+@Slf4j
+@Service
+//Аннотация маркер @TransactionalOutbox необходима для поддержки обработки аннотаций @OutboxSender
+@TransactionalOutbox
+@RequiredArgsConstructor
+public class EmailRequestSender {
+
+    private final EmailClient emailClient;
+
+    //Поле value (код сообщения) должно быть уникальным в рамках всего приложения
+    @OutboxSender(value = "emailRequest")
+    public void sendEmail(EmailRequest emailRequest) {
+        var emailResponse = emailClient.sendEmail(emailRequest);
+    }
+}
+----

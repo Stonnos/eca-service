@@ -31,6 +31,7 @@
         <module>feign-oauth2</module>
         <module>feign-metrics</module>
         <module>core-redelivery</module>
+        <module>transactional-outbox</module>
         <module>core-audit</module>
         <module>core-filter</module>
         <module>core-form-template</module>
