@@ -33,7 +33,7 @@ public class OutboxSenderService {
     /**
      * Sent outbox message.
      *
-     * @param outboxMessageEntity - retry request entity
+     * @param outboxMessageEntity - outbox message entity
      */
     public void sentOutboxMessage(OutboxMessageEntity outboxMessageEntity) {
         log.info("Starting to sent outbox message [{}] with id [{}]", outboxMessageEntity.getMessageCode(),

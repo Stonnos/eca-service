@@ -75,11 +75,11 @@ public class OutboxMessageService {
     }
 
     /**
-     * Gets next retry requests for processing and sets a lock to prevent other threads from receiving the same data for
+     * Gets next outbox messages for processing and sets a lock to prevent other threads from receiving the same data for
      * processing.
      *
      * @param pageable - pageable object
-     * @return retry requests list
+     * @return outbox messages list
      */
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public List<OutboxMessageEntity> lockNextNotSentMessages(Pageable pageable) {
