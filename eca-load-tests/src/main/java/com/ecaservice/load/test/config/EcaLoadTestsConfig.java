@@ -9,10 +9,12 @@ import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 
+import static com.ecaservice.load.test.dto.FieldConstraints.MAX_DURATION;
 import static com.ecaservice.load.test.dto.FieldConstraints.MAX_NUM_FOLDS;
 import static com.ecaservice.load.test.dto.FieldConstraints.MAX_NUM_REQUESTS;
 import static com.ecaservice.load.test.dto.FieldConstraints.MAX_NUM_TESTS;
 import static com.ecaservice.load.test.dto.FieldConstraints.MAX_NUM_THREADS;
+import static com.ecaservice.load.test.dto.FieldConstraints.MIN_DURATION;
 import static com.ecaservice.load.test.dto.FieldConstraints.MIN_NUM_FOLDS;
 import static com.ecaservice.load.test.dto.FieldConstraints.MIN_NUM_REQUESTS;
 import static com.ecaservice.load.test.dto.FieldConstraints.MIN_NUM_TESTS;
@@ -35,6 +37,14 @@ public class EcaLoadTestsConfig {
     @Min(MIN_NUM_REQUESTS)
     @Max(MAX_NUM_REQUESTS)
     private Integer numRequests;
+
+    /**
+     * Test duration in seconds
+     */
+    @NotNull
+    @Min(MIN_DURATION)
+    @Max(MAX_DURATION)
+    private Long durationSeconds;
 
     /**
      * Threads number for requests sending

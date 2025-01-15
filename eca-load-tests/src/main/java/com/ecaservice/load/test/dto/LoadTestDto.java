@@ -8,6 +8,7 @@ import eca.core.evaluation.EvaluationMethod;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 import static com.ecaservice.load.test.dto.FieldConstraints.DATE_TIME_PATTERN;
@@ -58,6 +59,12 @@ public class LoadTestDto {
     private Integer numRequests;
 
     /**
+     * Tests duration in seconds
+     */
+    @Schema(description = "Tests duration in seconds")
+    private Long durationSeconds;
+
+    /**
      * Threads number for requests sending
      */
     @Schema(description = "Threads number for requests sending")
@@ -92,6 +99,42 @@ public class LoadTestDto {
      */
     @Schema(description = "Test execution status")
     private ExecutionStatus executionStatus;
+
+    /**
+     * Total tests count
+     */
+    @Schema(description = "Total tests count")
+    private Integer totalCount;
+
+    /**
+     * Passed tests count
+     */
+    @Schema(description = "Passed tests count")
+    private Integer passedCount;
+
+    /**
+     * Failed tests count
+     */
+    @Schema(description = "Failed tests count")
+    private Integer failedCount;
+
+    /**
+     * Error tests count
+     */
+    @Schema(description = "Error tests count")
+    private Integer errorCount;
+
+    /**
+     * Request total time
+     */
+    @Schema(description = "Request total time")
+    private String totalTime;
+
+    /**
+     * Tps value
+     */
+    @Schema(description = "Tps value")
+    private BigDecimal tps;
 
     /**
      * Details string

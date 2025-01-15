@@ -26,8 +26,8 @@ public class Utils {
      * @param numRequests - requests number
      * @return tps value
      */
-    public static BigDecimal tps(LocalDateTime started, LocalDateTime finished, int numRequests) {
-        if (started != null && finished != null) {
+    public static BigDecimal tps(LocalDateTime started, LocalDateTime finished, Long numRequests) {
+        if (started != null && finished != null && numRequests != null && numRequests > 0) {
             long totalTimeMillis = ChronoUnit.MILLIS.between(started, finished);
             BigDecimal totalTimeSeconds = BigDecimal.valueOf(totalTimeMillis)
                     .divide(BigDecimal.valueOf(THOUSAND), SCALE, RoundingMode.HALF_UP);

@@ -47,6 +47,7 @@ spring:
 
 eca-load-tests:
   numRequests: 100
+  durationSeconds: 60
   numThreads: 10
   workerThreadTimeOutInSeconds: 180
   requestTimeoutInSeconds: 180

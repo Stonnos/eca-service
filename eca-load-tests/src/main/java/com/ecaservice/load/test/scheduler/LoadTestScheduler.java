@@ -6,8 +6,8 @@ import com.ecaservice.load.test.entity.LoadTestEntity;
 import com.ecaservice.load.test.entity.RequestStageType;
 import com.ecaservice.load.test.repository.EvaluationRequestRepository;
 import com.ecaservice.load.test.repository.LoadTestRepository;
+import com.ecaservice.load.test.service.LoadTestService;
 import com.ecaservice.load.test.service.executor.TestExecutor;
-import com.ecaservice.test.common.model.ExecutionStatus;
 import com.ecaservice.test.common.model.TestResult;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -33,6 +33,7 @@ import java.util.function.Function;
 public class LoadTestScheduler {
 
     private final EcaLoadTestsConfig ecaLoadTestsConfig;
+    private final LoadTestService loadTestService;
     private final TestExecutor testExecutor;
     private final LoadTestRepository loadTestRepository;
     private final EvaluationRequestRepository evaluationRequestRepository;
@@ -76,19 +77,14 @@ public class LoadTestScheduler {
             evaluationRequestEntity.setStageType(RequestStageType.EXCEEDED);
             evaluationRequestEntity.setTestResult(TestResult.ERROR);
             evaluationRequestEntity.setFinished(LocalDateTime.now());
-            evaluationRequestRepository.save(evaluationRequestEntity);
             log.info("Exceeded request with correlation id [{}]",
                     evaluationRequestEntity.getCorrelationId());
         });
+        evaluationRequestRepository.saveAll(evaluationRequestEntities);
     }
 
     private void processFinishedJobsTests(List<LoadTestEntity> loadTestEntityList) {
-        loadTestEntityList.forEach(loadTestEntity -> {
-            loadTestEntity.setExecutionStatus(ExecutionStatus.FINISHED);
-            loadTestEntity.setFinished(LocalDateTime.now());
-            loadTestRepository.save(loadTestEntity);
-            log.info("Load test [{}] has been finished", loadTestEntity.getTestUuid());
-        });
+        loadTestEntityList.forEach(loadTestService::finishTest);
     }
 
     private <T> void processWithPagination(Function<Pageable, Page<T>> nextPageFunction,

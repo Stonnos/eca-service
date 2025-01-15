@@ -2,9 +2,7 @@ package com.ecaservice.load.test.mapping;
 
 import com.ecaservice.base.model.EvaluationRequest;
 import com.ecaservice.load.test.dto.LoadTestDto;
-import com.ecaservice.load.test.entity.EvaluationRequestEntity;
 import com.ecaservice.load.test.entity.LoadTestEntity;
-import com.ecaservice.load.test.report.bean.EvaluationTestBean;
 import com.ecaservice.load.test.report.bean.LoadTestBean;
 import eca.core.evaluation.EvaluationMethod;
 import org.mapstruct.AfterMapping;
@@ -16,8 +14,6 @@ import org.mapstruct.Named;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Optional;
-
-import static com.ecaservice.test.common.util.Utils.totalTime;
 
 /**
  * Load test mapper.
@@ -55,22 +51,10 @@ public abstract class LoadTestMapper {
      * @return load test bean
      */
     @Mapping(source = "executionStatus.description", target = "executionStatus")
-    @Mapping(target = "started", ignore = true)
-    @Mapping(target = "finished", ignore = true)
-    @Mapping(target = "evaluationMethod", ignore = true)
-    public abstract LoadTestBean mapToBean(LoadTestEntity loadTestEntity);
-
-    /**
-     * Maps evaluation request to evaluation test bean.
-     *
-     * @param evaluationRequestEntity - evaluation request entity
-     * @return evaluation test bean
-     */
-    @Mapping(source = "testResult.description", target = "testResult")
-    @Mapping(source = "stageType.description", target = "stageType")
     @Mapping(source = "started", target = "started", qualifiedByName = "formatLocalDateTime")
     @Mapping(source = "finished", target = "finished", qualifiedByName = "formatLocalDateTime")
-    public abstract EvaluationTestBean map(EvaluationRequestEntity evaluationRequestEntity);
+    @Mapping(target = "evaluationMethod", ignore = true)
+    public abstract LoadTestBean mapToBean(LoadTestEntity loadTestEntity);
 
     /**
      * Format local date time to string.
@@ -97,12 +81,5 @@ public abstract class LoadTestMapper {
         } else {
             loadTestBean.setEvaluationMethod(loadTestEntity.getEvaluationMethod().getDescription());
         }
-    }
-
-    @AfterMapping
-    protected void mapTotalTime(EvaluationRequestEntity evaluationRequestEntity,
-                                @MappingTarget EvaluationTestBean evaluationTestBean) {
-        evaluationTestBean.setTotalTime(
-                totalTime(evaluationRequestEntity.getStarted(), evaluationRequestEntity.getFinished()));
     }
 }
