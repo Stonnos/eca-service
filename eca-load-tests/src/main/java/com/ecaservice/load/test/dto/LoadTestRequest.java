@@ -31,7 +31,7 @@ public class LoadTestRequest {
      */
     @Min(MIN_NUM_REQUESTS)
     @Max(MAX_NUM_REQUESTS)
-    @Schema(description = "Requests number to eca - server", example = "100")
+    @Schema(description = "Requests number to eca - server", example = "250")
     private Integer numRequests;
 
     /**
@@ -46,7 +46,7 @@ public class LoadTestRequest {
      * Evaluation method
      */
     @NotNull
-    @Schema(description = "Evaluation method", example = "CROSS_VALIDATION")
+    @Schema(description = "Evaluation method", example = "TRAINING_DATA")
     private EvaluationMethod evaluationMethod;
 
     /**
