@@ -5,6 +5,7 @@ import com.ecaservice.load.test.config.EcaLoadTestsConfig;
 import com.ecaservice.load.test.dto.LoadTestDto;
 import com.ecaservice.load.test.dto.LoadTestRequest;
 import com.ecaservice.load.test.entity.LoadTestEntity;
+import com.ecaservice.load.test.entity.TestExecutionModeVisitor;
 import com.ecaservice.load.test.mapping.LoadTestMapper;
 import com.ecaservice.load.test.projection.TestResultStatistics;
 import com.ecaservice.load.test.repository.EvaluationRequestRepository;
@@ -72,11 +73,12 @@ public class LoadTestService {
      * @return load test dto
      */
     public LoadTestDto getLoadTestDetails(String testUuid) {
+        log.info("Gets load test [{}] details", testUuid);
         LoadTestEntity loadTestEntity = getLoadTest(testUuid);
         LoadTestDto loadTestDto = loadTestMapper.mapToDto(loadTestEntity);
         String totalTime = totalTime(loadTestEntity.getStarted(), loadTestEntity.getFinished());
         BigDecimal tps =
-                tps(loadTestEntity.getStarted(), loadTestEntity.getFinished(), loadTestEntity.getNumRequests());
+                tps(loadTestEntity.getStarted(), loadTestEntity.getFinished(), loadTestEntity.getTotalCount());
         loadTestDto.setTotalTime(totalTime);
         loadTestDto.setTps(tps);
         log.info("Load test [{}] details has been fetched", testUuid);
@@ -96,6 +98,11 @@ public class LoadTestService {
         Map<TestResult, Integer> testResultStatisticsMap = testResultStatistics.stream()
                 .collect(Collectors.toMap(TestResultStatistics::getTestResult,
                         TestResultStatistics::getTestResultCount));
+        long totalCount = testResultStatistics.stream().
+                map(TestResultStatistics::getTestResultCount)
+                .mapToInt(Integer::intValue)
+                .sum();
+        loadTestEntity.setTotalCount(totalCount);
         loadTestEntity.setPassedCount(testResultStatisticsMap.getOrDefault(TestResult.PASSED, 0));
         loadTestEntity.setFailedCount(testResultStatisticsMap.getOrDefault(TestResult.FAILED, 0));
         loadTestEntity.setErrorCount(testResultStatisticsMap.getOrDefault(TestResult.ERROR, 0));
@@ -106,14 +113,26 @@ public class LoadTestService {
         log.info("Load test [{}] has been finished", loadTestEntity.getTestUuid());
     }
 
+    /**
+     * Finish load test with error.
+     *
+     * @param loadTestEntity - load test entity
+     * @param errorMessage   - error message
+     */
+    public void finishWithError(LoadTestEntity loadTestEntity, String errorMessage) {
+        loadTestEntity.setDetails(errorMessage);
+        loadTestEntity.setExecutionStatus(ExecutionStatus.ERROR);
+        loadTestEntity.setFinished(LocalDateTime.now());
+        loadTestRepository.save(loadTestEntity);
+        log.info("Load test [{}] has been finished with error", loadTestEntity.getTestUuid());
+    }
+
     private LoadTestEntity createLoadTestEntity(LoadTestRequest loadTestRequest) {
-        Integer numRequests =
-                Optional.ofNullable(loadTestRequest.getNumRequests()).orElse(ecaLoadTestsConfig.getNumRequests());
         Integer numThreads =
                 Optional.ofNullable(loadTestRequest.getNumThreads()).orElse(ecaLoadTestsConfig.getNumThreads());
         LoadTestEntity loadTestEntity = new LoadTestEntity();
         loadTestEntity.setTestUuid(UUID.randomUUID().toString());
-        loadTestEntity.setNumRequests(numRequests);
+        loadTestEntity.setExecutionMode(loadTestRequest.getExecutionMode());
         loadTestEntity.setNumThreads(numThreads);
         loadTestEntity.setExecutionStatus(ExecutionStatus.NEW);
         initializeOptions(loadTestEntity, loadTestRequest);
@@ -133,5 +152,20 @@ public class LoadTestService {
         Integer seed = Optional.ofNullable(loadTestRequest.getSeed()).orElse(ecaLoadTestsConfig.getSeed());
         loadTestEntity.setSeed(seed);
         loadTestEntity.setEvaluationMethod(evaluationMethod);
+        loadTestEntity.getExecutionMode().visit(new TestExecutionModeVisitor() {
+            @Override
+            public void visitDuration() {
+                Long durationSeconds = Optional.ofNullable(loadTestRequest.getDurationSeconds()).orElse(
+                        ecaLoadTestsConfig.getDurationSeconds());
+                loadTestEntity.setDurationSeconds(durationSeconds);
+            }
+
+            @Override
+            public void visitRequestsLimit() {
+                Integer numRequests = Optional.ofNullable(loadTestRequest.getNumRequests()).orElse(
+                        ecaLoadTestsConfig.getNumRequests());
+                loadTestEntity.setNumRequests(numRequests);
+            }
+        });
     }
 }

@@ -3,7 +3,6 @@ package com.ecaservice.load.test.report.bean;
 import lombok.Data;
 
 import java.math.BigDecimal;
-import java.util.List;
 
 /**
  * Load test bean.
@@ -57,6 +56,11 @@ public class LoadTestBean {
      * Total tests
      */
     private Integer numRequests;
+
+    /**
+     * Total tests count
+     */
+    private Long totalCount;
 
     /**
      * Passed tests count

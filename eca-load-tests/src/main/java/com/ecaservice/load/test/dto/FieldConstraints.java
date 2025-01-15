@@ -15,6 +15,10 @@ public class FieldConstraints {
     public static final int MIN_NUM_REQUESTS = 1;
     public static final int MAX_NUM_REQUESTS = 5000;
 
+    public static final int MIN_DURATION = 10;
+
+    public static final int MAX_DURATION = 3600;
+
     public static final int MIN_NUM_THREADS = 1;
     public static final int MAX_NUM_THREADS = 24;
 

@@ -34,7 +34,7 @@ public class TestResultsReportDataFetcher {
         LoadTestBean loadTestBean = loadTestMapper.mapToBean(loadTestEntity);
         String totalTime = totalTime(loadTestEntity.getStarted(), loadTestEntity.getFinished());
         BigDecimal tps =
-                tps(loadTestEntity.getStarted(), loadTestEntity.getFinished(), loadTestEntity.getNumRequests());
+                tps(loadTestEntity.getStarted(), loadTestEntity.getFinished(), loadTestEntity.getTotalCount());
         loadTestBean.setTotalTime(totalTime);
         loadTestBean.setTps(tps);
         return loadTestBean;

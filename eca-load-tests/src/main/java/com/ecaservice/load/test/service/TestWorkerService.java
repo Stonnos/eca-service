@@ -12,7 +12,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.concurrent.CountDownLatch;
 
 /**
  * Test worker service.
@@ -32,23 +31,20 @@ public class TestWorkerService {
      *
      * @param testId            - test id
      * @param evaluationRequest - evaluation request
-     * @param countDownLatch    - count down latch
      */
-    public void sendRequest(long testId, EvaluationRequest evaluationRequest, CountDownLatch countDownLatch) {
+    public void sendRequest(long testId, EvaluationRequest evaluationRequest) {
         EvaluationRequestEntity evaluationRequestEntity = evaluationRequestRepository.findById(testId)
                 .orElseThrow(() -> new EntityNotFoundException(EvaluationRequestEntity.class, testId));
         try {
             evaluationRequestEntity.setStarted(LocalDateTime.now());
             rabbitSender.send(evaluationRequest, evaluationRequestEntity.getCorrelationId());
             evaluationRequestEntity.setStageType(RequestStageType.REQUEST_SENT);
+            evaluationRequestRepository.save(evaluationRequestEntity);
             log.trace("Request with correlation id [{}] has been sent", evaluationRequestEntity.getCorrelationId());
         } catch (Exception ex) {
             log.error("Unknown error while sending request with correlation id [{}]: {}",
                     evaluationRequestEntity.getCorrelationId(), ex.getMessage());
             handleErrorRequest(evaluationRequestEntity);
-        } finally {
-            evaluationRequestRepository.save(evaluationRequestEntity);
-            countDownLatch.countDown();
         }
     }
 
@@ -56,5 +52,6 @@ public class TestWorkerService {
         evaluationRequestEntity.setTestResult(TestResult.ERROR);
         evaluationRequestEntity.setStageType(RequestStageType.ERROR);
         evaluationRequestEntity.setFinished(LocalDateTime.now());
+        evaluationRequestRepository.save(evaluationRequestEntity);
     }
 }

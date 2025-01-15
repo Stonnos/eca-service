@@ -59,6 +59,12 @@ public class LoadTestDto {
     private Integer numRequests;
 
     /**
+     * Tests duration in seconds
+     */
+    @Schema(description = "Tests duration in seconds")
+    private Long durationSeconds;
+
+    /**
      * Threads number for requests sending
      */
     @Schema(description = "Threads number for requests sending")
@@ -93,6 +99,12 @@ public class LoadTestDto {
      */
     @Schema(description = "Test execution status")
     private ExecutionStatus executionStatus;
+
+    /**
+     * Total tests count
+     */
+    @Schema(description = "Total tests count")
+    private Integer totalCount;
 
     /**
      * Passed tests count

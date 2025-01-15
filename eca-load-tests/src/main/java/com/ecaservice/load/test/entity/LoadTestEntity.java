@@ -37,10 +37,23 @@ public class LoadTestEntity extends BaseEntity {
     private LocalDateTime created;
 
     /**
+     * Test execution mode.
+     */
+    @Enumerated(EnumType.STRING)
+    @Column(name = "execution_mode")
+    private TestExecutionMode executionMode;
+
+    /**
      * Requests number to eca - server
      */
     @Column(name = "num_requests")
     private Integer numRequests;
+
+    /**
+     * Test duration in seconds
+     */
+    @Column(name = "duration_seconds")
+    private Long durationSeconds;
 
     /**
      * Threads number for requests sending
@@ -78,6 +91,12 @@ public class LoadTestEntity extends BaseEntity {
     @Enumerated(EnumType.STRING)
     @Column(name = "execution_status")
     private ExecutionStatus executionStatus;
+
+    /**
+     * Total tests count
+     */
+    @Column(name = "total_count")
+    private Long totalCount;
 
     /**
      * Passed tests count

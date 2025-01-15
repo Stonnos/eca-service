@@ -1,17 +1,19 @@
 package com.ecaservice.load.test.dto;
 
+import com.ecaservice.load.test.entity.TestExecutionMode;
 import eca.core.evaluation.EvaluationMethod;
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.Data;
-
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
+import lombok.Data;
 
+import static com.ecaservice.load.test.dto.FieldConstraints.MAX_DURATION;
 import static com.ecaservice.load.test.dto.FieldConstraints.MAX_NUM_FOLDS;
 import static com.ecaservice.load.test.dto.FieldConstraints.MAX_NUM_REQUESTS;
 import static com.ecaservice.load.test.dto.FieldConstraints.MAX_NUM_TESTS;
 import static com.ecaservice.load.test.dto.FieldConstraints.MAX_NUM_THREADS;
+import static com.ecaservice.load.test.dto.FieldConstraints.MIN_DURATION;
 import static com.ecaservice.load.test.dto.FieldConstraints.MIN_NUM_FOLDS;
 import static com.ecaservice.load.test.dto.FieldConstraints.MIN_NUM_REQUESTS;
 import static com.ecaservice.load.test.dto.FieldConstraints.MIN_NUM_TESTS;
@@ -27,12 +29,27 @@ import static com.ecaservice.load.test.dto.FieldConstraints.MIN_NUM_THREADS;
 public class LoadTestRequest {
 
     /**
+     * Test execution mode
+     */
+    @NotNull
+    @Schema(description = "Test execution mode", example = "REQUESTS_LIMIT")
+    private TestExecutionMode executionMode;
+
+    /**
      * Requests number to eca - server
      */
     @Min(MIN_NUM_REQUESTS)
     @Max(MAX_NUM_REQUESTS)
     @Schema(description = "Requests number to eca - server", example = "250")
     private Integer numRequests;
+
+    /**
+     * Test duration in seconds
+     */
+    @Min(MIN_DURATION)
+    @Max(MAX_DURATION)
+    @Schema(description = "Test duration in seconds", example = "30")
+    private Long durationSeconds;
 
     /**
      * Threads number for requests sending
