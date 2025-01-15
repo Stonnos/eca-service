@@ -17,11 +17,6 @@ public enum RequestStageType implements DescriptiveEnum {
     REQUEST_SENT("Запрос отправлен"),
 
     /**
-     * Response received
-     */
-    RESPONSE_RECEIVED("Получен ответ"),
-
-    /**
      * Error status
      */
     ERROR("Ошибка"),

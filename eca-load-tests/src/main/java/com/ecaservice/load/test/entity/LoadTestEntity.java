@@ -28,7 +28,7 @@ public class LoadTestEntity extends BaseEntity {
     /**
      * Load test uuid
      */
-    @Column(name = "test_uuid", nullable = false)
+    @Column(name = "test_uuid", nullable = false, unique = true)
     private String testUuid;
 
     /**
@@ -78,6 +78,24 @@ public class LoadTestEntity extends BaseEntity {
     @Enumerated(EnumType.STRING)
     @Column(name = "execution_status")
     private ExecutionStatus executionStatus;
+
+    /**
+     * Passed tests count
+     */
+    @Column(name = "passed_count")
+    private Integer passedCount;
+
+    /**
+     * Failed tests count
+     */
+    @Column(name = "failed_count")
+    private Integer failedCount;
+
+    /**
+     * Error tests count
+     */
+    @Column(name = "error_count")
+    private Integer errorCount;
 
     /**
      * Details string

@@ -28,7 +28,7 @@ public class EvaluationRequestEntity extends BaseEntity {
     /**
      * Message correlation id
      */
-    @Column(name = "correlation_id")
+    @Column(name = "correlation_id", unique = true)
     private String correlationId;
 
     /**

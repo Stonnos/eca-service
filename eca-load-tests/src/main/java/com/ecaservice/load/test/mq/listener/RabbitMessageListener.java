@@ -46,8 +46,6 @@ public class RabbitMessageListener {
         if (RequestStageType.EXCEEDED.equals(evaluationRequestEntity.getStageType())) {
             log.warn("Got exceeded request entity with correlation id [{}]", correlationId);
         } else {
-            evaluationRequestEntity.setStageType(RequestStageType.RESPONSE_RECEIVED);
-            evaluationRequestRepository.save(evaluationRequestEntity);
             try {
                 evaluationRequestEntity.setTestResult(testResultMapper.map(evaluationResponse.getStatus()));
                 evaluationRequestEntity.setStageType(RequestStageType.COMPLETED);

@@ -2,6 +2,7 @@ package com.ecaservice.load.test.repository;
 
 import com.ecaservice.load.test.entity.EvaluationRequestEntity;
 import com.ecaservice.load.test.entity.LoadTestEntity;
+import com.ecaservice.load.test.projection.TestResultStatistics;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -9,6 +10,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -19,21 +21,22 @@ import java.util.Optional;
 public interface EvaluationRequestRepository extends JpaRepository<EvaluationRequestEntity, Long> {
 
     /**
-     * Finds evaluation requests for specified load test entity.
-     *
-     * @param loadTestEntity - load test entity
-     * @param pageable       - pageable object
-     * @return evaluation requests page
-     */
-    Page<EvaluationRequestEntity> findByLoadTestEntityOrderByStarted(LoadTestEntity loadTestEntity, Pageable pageable);
-
-    /**
      * Finds evaluation request with correlation id and stage.
      *
      * @param correlationId - correlation id
      * @return evaluation request entity
      */
     EvaluationRequestEntity findByCorrelationId(String correlationId);
+
+    /**
+     * Gets test results statistics for specified load test.
+     *
+     * @param loadTestEntity - load test entity
+     * @return test results statistics
+     */
+    @Query("select er.testResult as testResult, count(er) as testResultCount from EvaluationRequestEntity er " +
+            "where er.loadTestEntity = :loadTest group by er.testResult")
+    List<TestResultStatistics> getTestResultStatistics(@Param("loadTest") LoadTestEntity loadTestEntity);
 
     /**
      * Finds exceeded requests ids.
@@ -54,13 +57,4 @@ public interface EvaluationRequestRepository extends JpaRepository<EvaluationReq
      */
     @Query("select max(er.finished) from EvaluationRequestEntity er where er.loadTestEntity = :loadTestEntity")
     Optional<LocalDateTime> getMaxFinishedDate(@Param("loadTestEntity") LoadTestEntity loadTestEntity);
-
-    /**
-     * Gets min evaluation request started date for specified load test.
-     *
-     * @param loadTestEntity - load test entity
-     * @return min started date
-     */
-    @Query("select min(er.started) from EvaluationRequestEntity er where er.loadTestEntity = :loadTestEntity")
-    Optional<LocalDateTime> getMinStartedDate(@Param("loadTestEntity") LoadTestEntity loadTestEntity);
 }
