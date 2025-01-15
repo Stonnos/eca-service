@@ -22,6 +22,7 @@
 1) spring.datasource - настройки БД для хранения информации
 2) eca-load-tests — настройки параметров для тестов:
    * eca-load-tests.numRequests - число запросов в eca-server
+   * eca-load-tests.durationSeconds - интервал в течении которого происходит отправка запросов в eca-server
    * eca-load-tests.numThreads - число потоков для параллельной отправки запросов
    * eca-load-tests.workerThreadTimeOutInSeconds - таймаут для отправки всех запросов
    * eca-load-tests.requestTimeoutInSeconds - таймаут для обработки одного запроса сервером eca - server
@@ -32,6 +33,7 @@
    * eca-load-tests.classifiersStoragePath - относительный путь к директории (в resources) с настройками классификаторов
    * eca-load-tests.pageSize - размер страницы для постраничной обработки
    * eca-load-tests.delaySeconds - интервал между запусками scheduler для обработки тестов
+   * eca-load-tests.waitTimeMillisBetweenRequests - задержка в мс. между отправкой следующего запроса
 3) open-api - настройки Swagger
    * open-api.tokenBaseUrl - базовый url - сервера авторизации
    * open-api.projectVersion - версия API

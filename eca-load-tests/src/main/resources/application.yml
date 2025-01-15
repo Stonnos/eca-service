@@ -58,6 +58,7 @@ eca-load-tests:
   classifiersStoragePath: classpath*:classifiers/**/*.json
   pageSize: 25
   delaySeconds: 2
+  waitTimeMillisBetweenRequests: 100
 
 data-loader:
   url: http://localhost:8080/eca-data-loader

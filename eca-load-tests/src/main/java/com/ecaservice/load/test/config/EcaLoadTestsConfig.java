@@ -111,4 +111,10 @@ public class EcaLoadTestsConfig {
      */
     @NotNull
     private Integer delaySeconds;
+
+    /**
+     * Wait time between requests in ms
+     */
+    @NotNull
+    private Integer waitTimeMillisBetweenRequests;
 }

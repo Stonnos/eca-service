@@ -48,8 +48,6 @@ import java.util.stream.IntStream;
 @RequiredArgsConstructor
 public class TestExecutor {
 
-    private static final long WAIT_NEXT_REQUEST_MILLIS = 100L;
-
     private final EcaLoadTestsConfig ecaLoadTestsConfig;
     private final ObjectMapper objectMapper;
     private final LoadTestService loadTestService;
@@ -133,7 +131,7 @@ public class TestExecutor {
                     EvaluationRequestEntity evaluationRequestEntity =
                             createAndSaveEvaluationRequest(loadTestEntity, instancesResource, evaluationRequest);
                     testWorkerService.sendRequest(evaluationRequestEntity.getId(), evaluationRequest);
-                    Thread.sleep(WAIT_NEXT_REQUEST_MILLIS);
+                    Thread.sleep(ecaLoadTestsConfig.getWaitTimeMillisBetweenRequests());
                 } catch (InterruptedException ex) {
                     log.error("Thread interrupted error: {}", ex.getMessage());
                     Thread.currentThread().interrupt();
