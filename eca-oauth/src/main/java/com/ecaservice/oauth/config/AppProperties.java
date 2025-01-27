@@ -115,5 +115,10 @@ public class AppProperties {
          * Token in cookie available grant types
          */
         private List<String> tokenInCookieAvailableGrantTypes = TOKEN_IN_COOKIES_GRANT_TYPES;
+
+        /**
+         * Token in cookie client ids
+         */
+        private List<String> tokenInCookieClientIds = newArrayList();
     }
 }

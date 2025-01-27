@@ -28,6 +28,7 @@
    * app.security.writeTokenInCookie - получать access/refresh токен в куках
    * app.security.refreshTokenCookiePath - refresh токен куки path
    * app.security.tokenInCookieAvailableGrantTypes - список доступных схем (grant_type) для получения access/refresh токен в куках. По умолчанию: password, tfa_code, refresh_token
+   * app.security.tokenInCookieClientIds - список доступных client id для получения access/refresh токен в куках
 3) open-api - настройки Swagger
    * open-api.tokenBaseUrl - базовый url - сервера авторизации
    * open-api.projectVersion - версия API

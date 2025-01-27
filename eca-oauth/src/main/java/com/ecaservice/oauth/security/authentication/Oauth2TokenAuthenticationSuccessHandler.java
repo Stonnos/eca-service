@@ -51,15 +51,22 @@ public class Oauth2TokenAuthenticationSuccessHandler implements AuthenticationSu
     public void onAuthenticationSuccess(HttpServletRequest request,
                                         HttpServletResponse response,
                                         Authentication authentication) throws IOException {
-        String grantType = request.getParameter(OAuth2ParameterNames.GRANT_TYPE);
-        if (appProperties.getSecurity().isWriteTokenInCookie() &&
-                appProperties.getSecurity().getTokenInCookieAvailableGrantTypes().contains(grantType)) {
+        if (supportsAccessTokenResponseInCookie(request, authentication)) {
             // Writes token response in cookie
             sendAccessTokenResponseInCookie(response, authentication);
         } else {
             // Writes token response in json body
             sendAccessTokenResponse(response, authentication);
         }
+    }
+
+    private boolean supportsAccessTokenResponseInCookie(HttpServletRequest request, Authentication authentication) {
+        String grantType = request.getParameter(OAuth2ParameterNames.GRANT_TYPE);
+        var oAuth2AccessTokenAuthenticationToken = (OAuth2AccessTokenAuthenticationToken) authentication;
+        String clientId = oAuth2AccessTokenAuthenticationToken.getRegisteredClient().getClientId();
+        return appProperties.getSecurity().isWriteTokenInCookie() &&
+                appProperties.getSecurity().getTokenInCookieAvailableGrantTypes().contains(grantType) &&
+                appProperties.getSecurity().getTokenInCookieClientIds().contains(clientId);
     }
 
     private void sendAccessTokenResponseInCookie(HttpServletResponse response, Authentication authentication)
