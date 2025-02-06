@@ -21,6 +21,7 @@ import com.ecaservice.web.dto.model.EvaluationResultsStatus;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import eca.dataminer.AbstractExperiment;
+import eca.trees.CART;
 import feign.FeignException;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -32,6 +33,8 @@ import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.UUID;
 
+import static com.ecaservice.server.TestHelperUtils.createDecisionTreeOptions;
+import static com.ecaservice.server.util.ClassifierOptionsHelper.toJsonString;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.atLeastOnce;
@@ -95,7 +98,8 @@ class ErsServiceTest extends AbstractJpaTest {
         experimentResultsEntity.setResultsIndex(0);
         experimentResultsEntity.setExperiment(experiment);
         experimentResultsEntity.setPctCorrect(BigDecimal.TEN);
-        experimentResultsEntity.setClassifierInfo(TestHelperUtils.createClassifierInfo());
+        experimentResultsEntity.setClassifierName(CART.class.getSimpleName());
+        experimentResultsEntity.setClassifierOptions(toJsonString(createDecisionTreeOptions()));
         return experimentResultsEntityRepository.save(experimentResultsEntity);
     }
 

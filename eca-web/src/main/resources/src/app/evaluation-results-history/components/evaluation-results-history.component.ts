@@ -34,6 +34,7 @@ export class EvaluationResultsHistoryComponent extends BaseListComponent<Evaluat
                      private filterService: FilterService) {
     super(injector.get(MessageService), injector.get(FieldService));
     this.defaultSortField = EvaluationResultsHistoryFields.SAVE_DATE;
+    this.notSortableColumns = [EvaluationResultsHistoryFields.EVALUATION_METHOD_DESCRIPTION];
     this.linkColumns = [EvaluationResultsHistoryFields.CLASSIFIER_DESCRIPTION, EvaluationResultsHistoryFields.EVALUATION_METHOD_DESCRIPTION,
       EvaluationResultsHistoryFields.RELATION_NAME];
     this.initColumns();
@@ -84,7 +85,7 @@ export class EvaluationResultsHistoryComponent extends BaseListComponent<Evaluat
     this.columns = [
       { name: EvaluationResultsHistoryFields.CLASSIFIER_DESCRIPTION, label: "Классификатор", sortBy: EvaluationResultsHistoryFilterFields.CLASSIFIER_NAME },
       { name: EvaluationResultsHistoryFields.RELATION_NAME, label: "Обучающая выборка", sortBy: EvaluationResultsHistoryFilterFields.RELATION_NAME },
-      { name: EvaluationResultsHistoryFields.EVALUATION_METHOD_DESCRIPTION, label: "Метод оценки точности", sortBy: EvaluationResultsHistoryFilterFields.EVALUATION_METHOD },
+      { name: EvaluationResultsHistoryFields.EVALUATION_METHOD_DESCRIPTION, label: "Метод оценки точности" },
       { name: EvaluationResultsHistoryFields.PCT_CORRECT, label: "Точность классификатора, %", sortBy: EvaluationResultsHistoryFilterFields.PCT_CORRECT },
       { name: EvaluationResultsHistoryFields.MEAN_ABSOLUTE_ERROR, label: "Средняя абсолютная ошибка", sortBy: EvaluationResultsHistoryFilterFields.MEAN_ABSOLUTE_ERROR },
       { name: EvaluationResultsHistoryFields.MAX_AUC, label: "Значение max AUC", sortBy: EvaluationResultsHistoryFilterFields.MAX_AUC },

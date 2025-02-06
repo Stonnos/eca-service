@@ -32,8 +32,6 @@ class ClassifierReportMapperTest {
         ClassifierOptionsResponseModel classifierOptionsResponseModel = classifierReportMapper.map(classifierReport);
         assertThat(classifierOptionsResponseModel.getClassifierName()).isEqualTo(
                 classifierReport.getClassifierName());
-        assertThat(classifierOptionsResponseModel.getClassifierDescription()).isEqualTo(
-                classifierReport.getClassifierDescription());
         assertThat(classifierOptionsResponseModel.getOptions()).isEqualTo(classifierReport.getOptions());
     }
 

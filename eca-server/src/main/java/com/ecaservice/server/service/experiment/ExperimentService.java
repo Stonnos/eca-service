@@ -16,6 +16,7 @@ import com.ecaservice.server.service.InstancesInfoService;
 import io.micrometer.tracing.annotation.NewSpan;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,6 +25,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static com.ecaservice.server.config.cache.CacheNames.EXPERIMENTS_TOTAL_COUNT_QUERY;
+
 /**
  * Experiment service.
  *
@@ -31,6 +34,7 @@ import java.util.stream.Stream;
  */
 @Slf4j
 @Service
+@CacheEvict(value = EXPERIMENTS_TOTAL_COUNT_QUERY, allEntries = true)
 @RequiredArgsConstructor
 public class ExperimentService {
 
@@ -59,6 +63,7 @@ public class ExperimentService {
         try {
             Experiment experiment = experimentMapper.map(experimentRequestData, crossValidationConfig);
             var instancesInfo = instancesInfoService.getOrSaveInstancesInfo(experimentRequestData.getDataUuid());
+            experiment.setRelationName(instancesInfo.getRelationName());
             experiment.setInstancesInfo(instancesInfo);
             setAdditionalProperties(experiment, experimentRequestData);
             experiment.setRequestStatus(RequestStatus.NEW);

@@ -17,6 +17,7 @@ import com.ecaservice.server.report.model.ExperimentBean;
 import com.ecaservice.server.repository.ExperimentRepository;
 import com.ecaservice.server.repository.InstancesInfoRepository;
 import com.ecaservice.server.service.AbstractJpaTest;
+import com.ecaservice.server.service.experiment.ExperimentCountQueryExecutor;
 import com.ecaservice.server.service.experiment.ExperimentDataService;
 import com.ecaservice.server.service.experiment.ExperimentStepProcessor;
 import com.ecaservice.web.dto.model.FilterRequestDto;
@@ -47,7 +48,7 @@ import static com.google.common.collect.Lists.newArrayList;
  */
 @Import({ExperimentMapperImpl.class, ExperimentConfig.class, AppProperties.class, CrossValidationConfig.class,
         DateTimeConverter.class, InstancesInfoMapperImpl.class, ExperimentDataService.class,
-        ExperimentsBaseReportDataFetcher.class})
+        ExperimentsBaseReportDataFetcher.class, ExperimentCountQueryExecutor.class})
 class ExperimentsBaseReportDataFetcherTest extends AbstractJpaTest {
 
     private static final List<String> DATE_RANGE_VALUES = ImmutableList.of("2018-01-01", "2018-01-07");

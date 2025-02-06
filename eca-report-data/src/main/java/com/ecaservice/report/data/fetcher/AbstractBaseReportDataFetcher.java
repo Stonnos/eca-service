@@ -42,6 +42,7 @@ public abstract class AbstractBaseReportDataFetcher<E, B> {
     @Getter
     private final String reportType;
     private final String filterTemplateType;
+    private final Integer maxPagesNum;
     private final FilterTemplateService filterTemplateService;
 
     private final List<FilterValueReportCustomizer> filterValueReportCustomizers = new ArrayList<>();
@@ -72,7 +73,7 @@ public abstract class AbstractBaseReportDataFetcher<E, B> {
         Page<E> page = getItemsPage(pageRequestDto);
         List<B> beans = convertToBeans(page);
         List<FilterBean> filterBeans = getFilterBeans(pageRequestDto);
-        int totalPages = page.getTotalPages() > 0 ? page.getTotalPages() : 1;
+        int totalPages = getTotalPages(page);
         return BaseReportBean.<B>builder()
                 .page(page.getNumber() + 1)
                 .totalPages(totalPages)
@@ -88,6 +89,11 @@ public abstract class AbstractBaseReportDataFetcher<E, B> {
      */
     public void addFilterValueReportCustomizer(FilterValueReportCustomizer filterValueReportCustomizer) {
         this.filterValueReportCustomizers.add(filterValueReportCustomizer);
+    }
+
+    private int getTotalPages(Page<E> page) {
+        int totalPages = page.getTotalPages() > 0 ? page.getTotalPages() : 1;
+        return Integer.min(totalPages, maxPagesNum);
     }
 
     private List<FilterBean> getFilterBeans(PageRequestDto pageRequestDto) {

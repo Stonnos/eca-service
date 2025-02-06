@@ -59,7 +59,7 @@ import static org.mockito.Mockito.when;
  */
 @Import({ExperimentMapperImpl.class, ExperimentConfig.class, AppProperties.class, CrossValidationConfig.class,
         DateTimeConverter.class, InstancesInfoMapperImpl.class, ExperimentDataService.class,
-        ExperimentProgressService.class})
+        ExperimentProgressService.class, ExperimentCountQueryExecutor.class})
 class ExperimentDataServiceTest extends AbstractJpaTest {
 
     private static final int PAGE_NUMBER = 0;

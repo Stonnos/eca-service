@@ -17,7 +17,6 @@ import com.ecaservice.ers.dto.RocCurveReport;
 import com.ecaservice.ers.dto.SortDirection;
 import com.ecaservice.ers.dto.StatisticsReport;
 import com.ecaservice.ers.model.ClassificationCostsInfo;
-import com.ecaservice.ers.model.ClassifierOptionsInfo;
 import com.ecaservice.ers.model.ConfusionMatrix;
 import com.ecaservice.ers.model.EvaluationResultsInfo;
 import com.ecaservice.ers.model.InstancesInfo;
@@ -56,9 +55,7 @@ public class TestHelperUtils {
     private static final String RELATION_NAME = "relation";
     private static final String CLASS_NAME = "class";
     private static final String CLASSIFIER_NAME = "Classifier";
-    private static final String CLASSIFIER_DESCRIPTION = "description";
     private static final String OPTIONS = "options";
-    private static final String DATA_HASH = "3032e188204cb537f69fc7364f638641";
     private static final String EVALUATION_RESULTS_HISTORY_FILTER_FIELDS_JSON =
             "evaluation_results_history_filter_fields.json";
     private static final String FILTER_NAME = "filterName";
@@ -302,22 +299,8 @@ public class TestHelperUtils {
     public static ClassifierReport buildClassifierReport() {
         ClassifierReport classifierReport = new ClassifierReport();
         classifierReport.setClassifierName(CLASSIFIER_NAME);
-        classifierReport.setClassifierDescription(CLASSIFIER_DESCRIPTION);
         classifierReport.setOptions(OPTIONS);
         return classifierReport;
-    }
-
-    /**
-     * Creates classifier options info list.
-     *
-     * @return classifier options info list
-     */
-    public static ClassifierOptionsInfo buildClassifierOptionsInfo() {
-        ClassifierOptionsInfo classifierOptionsInfo = new ClassifierOptionsInfo();
-        classifierOptionsInfo.setClassifierName(CLASSIFIER_NAME);
-        classifierOptionsInfo.setClassifierDescription(CLASSIFIER_DESCRIPTION);
-        classifierOptionsInfo.setOptions(OPTIONS);
-        return classifierOptionsInfo;
     }
 
     /**
@@ -360,7 +343,7 @@ public class TestHelperUtils {
      * Creates evaluation results info.
      *
      * @param instancesInfo         - instances info
-     * @param classifierOptionsInfo - classifier options info
+     * @param classifierName        - classifier name
      * @param evaluationMethod      - evaluation method
      * @param pctCorrect            - pct correct
      * @param maxAucValue           - max AUC value
@@ -368,7 +351,7 @@ public class TestHelperUtils {
      * @return evaluation results info
      */
     public static EvaluationResultsInfo createEvaluationResultsInfo(InstancesInfo instancesInfo,
-                                                                    ClassifierOptionsInfo classifierOptionsInfo,
+                                                                    String classifierName,
                                                                     EvaluationMethod evaluationMethod,
                                                                     BigDecimal pctCorrect,
                                                                     BigDecimal maxAucValue,
@@ -377,7 +360,9 @@ public class TestHelperUtils {
         evaluationResultsInfo.setRequestId(UUID.randomUUID().toString());
         evaluationResultsInfo.setSaveDate(LocalDateTime.now());
         evaluationResultsInfo.setInstancesInfo(instancesInfo);
-        evaluationResultsInfo.setClassifierInfo(classifierOptionsInfo);
+        evaluationResultsInfo.setRelationName(instancesInfo.getRelationName());
+        evaluationResultsInfo.setClassifierName(classifierName);
+        evaluationResultsInfo.setClassifierOptions(OPTIONS);
         evaluationResultsInfo.setNumFolds(NUM_FOLDS);
         evaluationResultsInfo.setNumTests(NUM_TESTS);
         evaluationResultsInfo.setSeed(SEED);
@@ -397,7 +382,9 @@ public class TestHelperUtils {
     public static EvaluationResultsInfo createEvaluationResultsInfo() {
         EvaluationResultsInfo evaluationResultsInfo = new EvaluationResultsInfo();
         evaluationResultsInfo.setInstancesInfo(buildInstancesInfo());
-        evaluationResultsInfo.setClassifierInfo(buildClassifierOptionsInfo());
+        evaluationResultsInfo.setRelationName(RELATION_NAME);
+        evaluationResultsInfo.setClassifierName(CLASSIFIER_NAME);
+        evaluationResultsInfo.setClassifierOptions(OPTIONS);
         evaluationResultsInfo.setEvaluationMethod(EvaluationMethod.CROSS_VALIDATION);
         evaluationResultsInfo.setNumFolds(NUM_FOLDS);
         evaluationResultsInfo.setNumTests(NUM_TESTS);

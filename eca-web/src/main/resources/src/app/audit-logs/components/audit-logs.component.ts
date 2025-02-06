@@ -35,6 +35,7 @@ export class AuditLogsComponent extends BaseListComponent<AuditLogDto> {
                      private usersService: UsersService) {
     super(injector.get(MessageService), injector.get(FieldService));
     this.defaultSortField = AuditLogFields.EVENT_DATE;
+    this.notSortableColumns = [AuditLogFields.MESSAGE, AuditLogFields.CODE_TITLE, AuditLogFields.GROUP_TITLE, AuditLogFields.CORRELATION_ID];
     this.initColumns();
   }
 
@@ -73,11 +74,11 @@ export class AuditLogsComponent extends BaseListComponent<AuditLogDto> {
   private initColumns() {
     this.columns = [
       { name: AuditLogFields.EVENT_ID, label: "ID события", sortBy: AuditLogFilterFields.EVENT_ID },
-      { name: AuditLogFields.CORRELATION_ID, label: "ID корреляции", sortBy: AuditLogFilterFields.CORRELATION_ID },
+      { name: AuditLogFields.CORRELATION_ID, label: "ID корреляции" },
       { name: AuditLogFields.EVENT_DATE, label: "Дата события", sortBy: AuditLogFilterFields.EVENT_DATE },
-      { name: AuditLogFields.GROUP_TITLE, label: "Группа событий", sortBy: AuditLogFilterFields.GROUP_TITLE },
-      { name: AuditLogFields.CODE_TITLE, label: "Код события", sortBy: AuditLogFilterFields.CODE_TITLE },
-      { name: AuditLogFields.MESSAGE, label: "Текст сообщения", sortBy: AuditLogFilterFields.MESSAGE },
+      { name: AuditLogFields.GROUP_TITLE, label: "Группа событий" },
+      { name: AuditLogFields.CODE_TITLE, label: "Код события" },
+      { name: AuditLogFields.MESSAGE, label: "Текст сообщения" },
       { name: AuditLogFields.INITIATOR, label: "Инициатор события", sortBy: AuditLogFilterFields.INITIATOR },
     ];
   }

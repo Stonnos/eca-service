@@ -6,7 +6,6 @@ import com.ecaservice.s3.client.minio.service.ObjectStorageService;
 import com.ecaservice.server.TestHelperUtils;
 import com.ecaservice.server.config.AppProperties;
 import com.ecaservice.server.config.ClassifiersProperties;
-import com.ecaservice.server.mapping.ClassifierInfoMapperImpl;
 import com.ecaservice.server.mapping.DateTimeConverter;
 import com.ecaservice.server.mapping.EvaluationLogMapper;
 import com.ecaservice.server.mapping.EvaluationLogMapperImpl;
@@ -21,6 +20,7 @@ import com.ecaservice.server.repository.InstancesInfoRepository;
 import com.ecaservice.server.service.AbstractJpaTest;
 import com.ecaservice.server.service.classifiers.ClassifierOptionsInfoProcessor;
 import com.ecaservice.server.service.ers.ErsService;
+import com.ecaservice.server.service.evaluation.EvaluationLogCountQueryExecutor;
 import com.ecaservice.server.service.evaluation.EvaluationLogDataService;
 import com.ecaservice.web.dto.model.FilterRequestDto;
 import com.ecaservice.web.dto.model.MatchMode;
@@ -51,8 +51,9 @@ import static org.mockito.Mockito.when;
  *
  * @author Roman Batygin
  */
-@Import({AppProperties.class, ClassifierInfoMapperImpl.class, EvaluationLogMapperImpl.class,
-        InstancesInfoMapperImpl.class, DateTimeConverter.class, ClassifiersProperties.class})
+@Import({AppProperties.class, EvaluationLogMapperImpl.class,
+        InstancesInfoMapperImpl.class, DateTimeConverter.class, ClassifiersProperties.class,
+        EvaluationLogCountQueryExecutor.class})
 class EvaluationLogsBaseReportDataFetcherTest extends AbstractJpaTest {
 
     private static final List<String> DATE_RANGE_VALUES = ImmutableList.of("2018-01-01", "2018-01-07");
@@ -67,6 +68,8 @@ class EvaluationLogsBaseReportDataFetcherTest extends AbstractJpaTest {
     @Mock
     private ObjectStorageService objectStorageService;
 
+    @Autowired
+    private EvaluationLogCountQueryExecutor evaluationLogCountQueryExecutor;
     @Autowired
     private AppProperties appProperties;
     @Autowired
@@ -89,9 +92,10 @@ class EvaluationLogsBaseReportDataFetcherTest extends AbstractJpaTest {
         EvaluationLogDataService evaluationLogDataService =
                 new EvaluationLogDataService(classifiersProperties, appProperties, filterTemplateService,
                         evaluationLogMapper, classifierOptionsInfoProcessor, ersService, entityManager,
-                        objectStorageService, evaluationLogRepository, evaluationResultsRequestEntityRepository);
+                        objectStorageService, evaluationLogRepository, evaluationResultsRequestEntityRepository,
+                        evaluationLogCountQueryExecutor);
         evaluationLogsBaseReportDataFetcher =
-                new EvaluationLogsBaseReportDataFetcher(filterTemplateService, instancesInfoRepository,
+                new EvaluationLogsBaseReportDataFetcher(filterTemplateService, appProperties, instancesInfoRepository,
                         evaluationLogDataService,
                         evaluationLogMapper);
         when(filterTemplateService.getFilterDictionary(CLASSIFIER_NAME)).thenReturn(createFilterDictionaryDto());

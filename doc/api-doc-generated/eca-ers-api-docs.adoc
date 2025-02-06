@@ -554,7 +554,6 @@ a|
   },
   "classifierReport" : {
     "classifierName" : "Logistic",
-    "classifierDescription" : null,
     "options" : "{\"type\":\"logistic\",\"maxIts\":200,\"useConjugateGradientDescent\":false}"
   },
   "evaluationMethodReport" : {
@@ -966,7 +965,6 @@ a|
   },
   "classifierReport" : {
     "classifierName" : "Logistic",
-    "classifierDescription" : null,
     "options" : "{\"type\":\"logistic\",\"maxIts\":200,\"useConjugateGradientDescent\":false}"
   },
   "evaluationMethodReport" : {
@@ -1326,11 +1324,9 @@ a|
   "requestId" : "f8cecbf7-405b-403b-9a94-f51e8fb73ed8",
   "classifierReports" : [ {
     "classifierName" : "ExtraTreesClassifier",
-    "classifierDescription" : null,
     "options" : "{\"type\":\"extra_trees\",\"numIterations\":20,\"numThreads\":6,\"seed\":1,\"numRandomAttr\":5,\"minObj\":2,\"maxDepth\":0,\"decisionTreeType\":\"ID3\",\"numRandomSplits\":6,\"useBootstrapSamples\":false}"
   }, {
     "classifierName" : "ExtraTreesClassifier",
-    "classifierDescription" : null,
     "options" : "{\"type\":\"extra_trees\",\"numIterations\":20,\"numThreads\":6,\"seed\":1,\"numRandomAttr\":5,\"minObj\":2,\"maxDepth\":0,\"decisionTreeType\":\"ID3\",\"numRandomSplits\":6,\"useBootstrapSamples\":false}"
   } ]
 }
@@ -2922,25 +2918,6 @@ __string__
 
 
 *Min. length*: 1
-
-*Max. length*: 255
-
-
-
-
-
-
-
-
-
-
-|*classifierDescription*
-|Classifier description
-a|
-__string__
-
-
-*Min. length*: 0
 
 *Max. length*: 255
 

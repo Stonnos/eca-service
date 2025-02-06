@@ -31,7 +31,7 @@ import static com.ecaservice.server.util.Utils.getEvaluationMethodDescription;
  *
  * @author Roman Batygin
  */
-@Mapper(uses = {InstancesInfoMapper.class, ClassifierInfoMapper.class, DateTimeConverter.class},
+@Mapper(uses = {InstancesInfoMapper.class, DateTimeConverter.class},
         injectionStrategy = InjectionStrategy.CONSTRUCTOR)
 public abstract class EvaluationLogMapper extends AbstractEvaluationMapper {
 
@@ -120,7 +120,6 @@ public abstract class EvaluationLogMapper extends AbstractEvaluationMapper {
      * @param crossValidationConfig - cross validation config
      * @return evaluation log entity
      */
-    @Mapping(source = "evaluationRequest.classifier", target = "classifierInfo")
     @Mapping(source = "evaluationRequest.dataUuid", target = "trainingDataUuid")
     @Mapping(target = "numFolds", ignore = true)
     @Mapping(target = "numTests", ignore = true)
@@ -170,7 +169,6 @@ public abstract class EvaluationLogMapper extends AbstractEvaluationMapper {
     @Mapping(source = "creationDate", target = "creationDate", qualifiedByName = "formatLocalDateTime")
     @Mapping(source = "startDate", target = "startDate", qualifiedByName = "formatLocalDateTime")
     @Mapping(source = "endDate", target = "endDate", qualifiedByName = "formatLocalDateTime")
-    @Mapping(source = "instancesInfo.relationName", target = "relationName")
     @Mapping(target = "classifierName", ignore = true)
     public abstract EvaluationLogBean mapToBean(EvaluationLog evaluationLog);
 
@@ -180,7 +178,6 @@ public abstract class EvaluationLogMapper extends AbstractEvaluationMapper {
      * @param evaluationLog - evaluation log entity
      * @return evaluation log bpmn model
      */
-    @Mapping(source = "classifierInfo.classifierName", target = "classifierName")
     public abstract EvaluationLogModel mapToModel(EvaluationLog evaluationLog);
 
     @AfterMapping

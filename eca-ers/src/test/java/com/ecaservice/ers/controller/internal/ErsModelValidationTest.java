@@ -71,7 +71,7 @@ class ErsModelValidationTest {
      * Not large string fields to tests
      */
     private static final List<String> CLASSIFIER_FIELDS_LARGE_TEST =
-            ImmutableList.of("classifierName", "classifierDescription");
+            ImmutableList.of("classifierName");
     private static final List<String> INSTANCES_FIELDS_LARGE_TEST =
             ImmutableList.of("relationName", "className");
     private static final List<String> CLASSIFICATION_COSTS_FIELDS_LARGE_TEST =

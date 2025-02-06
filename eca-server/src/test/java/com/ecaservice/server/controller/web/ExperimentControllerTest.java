@@ -2,6 +2,7 @@ package com.ecaservice.server.controller.web;
 
 import com.ecaservice.common.web.exception.EntityNotFoundException;
 import com.ecaservice.server.TestHelperUtils;
+import com.ecaservice.server.config.AppProperties;
 import com.ecaservice.server.dto.CreateExperimentRequestDto;
 import com.ecaservice.server.mapping.DateTimeConverter;
 import com.ecaservice.server.mapping.ExperimentMapper;
@@ -62,7 +63,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  */
 @WebMvcTest(controllers = ExperimentController.class)
 @Import({ExperimentMapperImpl.class, ExperimentProgressMapperImpl.class, DateTimeConverter.class,
-        InstancesInfoMapperImpl.class})
+        InstancesInfoMapperImpl.class, AppProperties.class})
 class ExperimentControllerTest extends PageRequestControllerTest {
 
     private static final String BASE_URL = "/experiment";
@@ -217,7 +218,7 @@ class ExperimentControllerTest extends PageRequestControllerTest {
                 Collections.singletonList(TestHelperUtils.createExperiment(UUID.randomUUID().toString()));
         PageDto<ExperimentDto> expected = PageDto.of(experimentMapper.map(experiments), PAGE_NUMBER, TOTAL_ELEMENTS);
         when(experimentPage.getContent()).thenReturn(experiments);
-        when(experimentDataService.getNextPage(any(PageRequestDto.class))).thenReturn(experimentPage);
+        when(experimentDataService.getExperimentsPage(any(PageRequestDto.class))).thenReturn(expected);
         mockMvc.perform(post(LIST_URL)
                         .header(HttpHeaders.AUTHORIZATION, getBearerToken())
                         .content(objectMapper.writeValueAsString(createPageRequestDto()))

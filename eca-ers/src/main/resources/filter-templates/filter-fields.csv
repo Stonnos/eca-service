@@ -1,5 +1,5 @@
 id;field_name;description;field_order;filter_field_type;match_mode;multiple;filter_dictionary_id;filter_template_id
-1;classifierInfo.classifierName;Классификатор;0;REFERENCE;EQUALS;true;1;1
+1;classifierName;Классификатор;0;REFERENCE;EQUALS;true;1;1
 2;instancesInfo.id;Обучающая выборка;1;LAZY_REFERENCE;EQUALS;false;NULL;1
 3;evaluationMethod;Метод оценки точности;2;REFERENCE;EQUALS;false;2;1
 4;saveDate;Дата сохранения результатов;3;DATE;RANGE;true;NULL;1

@@ -2,8 +2,6 @@ package com.ecaservice.ers.model;
 
 import com.ecaservice.ers.dto.EvaluationMethod;
 import com.ecaservice.ers.util.FieldSize;
-import lombok.Data;
-
 import jakarta.persistence.AttributeOverride;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -13,15 +11,14 @@ import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
-import jakarta.persistence.Index;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.NamedAttributeNode;
 import jakarta.persistence.NamedEntityGraph;
 import jakarta.persistence.OneToMany;
-import jakarta.persistence.OneToOne;
 import jakarta.persistence.OrderBy;
-import jakarta.persistence.Table;
+import lombok.Data;
+
 import java.time.LocalDateTime;
 import java.util.Set;
 
@@ -32,11 +29,9 @@ import java.util.Set;
  */
 @Data
 @Entity
-@Table(name = "evaluation_results_info", indexes = @Index(columnList = "request_id", name = "request_id_index"))
 @NamedEntityGraph(name = "evaluationResults",
         attributeNodes = {
                 @NamedAttributeNode(value = "instancesInfo"),
-                @NamedAttributeNode(value = "classifierInfo"),
                 @NamedAttributeNode(value = "classificationCosts"),
                 @NamedAttributeNode(value = "confusionMatrix")
         }
@@ -60,18 +55,29 @@ public class EvaluationResultsInfo {
     private LocalDateTime saveDate;
 
     /**
-     * Training data info
+     * Instances name
+     */
+    @Column(name = "relation_name", nullable = false)
+    private String relationName;
+
+    /**
+     * Training data details info
      */
     @ManyToOne
     @JoinColumn(name = "instances_info_id", nullable = false)
     private InstancesInfo instancesInfo;
 
     /**
-     * Classifier options info
+     * Classifier name.
      */
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "classifier_options_info_id", nullable = false)
-    private ClassifierOptionsInfo classifierInfo;
+    @Column(name = "classifier_name", nullable = false)
+    private String classifierName;
+
+    /**
+     * Classifier options json
+     */
+    @Column(name = "classifier_options", columnDefinition = "text", nullable = false)
+    private String classifierOptions;
 
     /**
      * Evaluation method

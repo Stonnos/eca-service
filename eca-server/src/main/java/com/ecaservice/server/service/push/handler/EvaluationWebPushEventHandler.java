@@ -80,8 +80,7 @@ public class EvaluationWebPushEventHandler extends AbstractUserPushNotificationE
     }
 
     private String getClassifierDescription(EvaluationLog evaluationLog) {
-        var classifierInfo = evaluationLog.getClassifierInfo();
-        var classifierOptions = parseOptions(classifierInfo.getClassifierOptions());
+        var classifierOptions = parseOptions(evaluationLog.getClassifierOptions());
         var classifierTemplate = classifiersFormTemplateProvider.getTemplate(classifierOptions);
         return classifierOptionsInfoProcessor.processTemplateTitle(classifierTemplate, classifierOptions);
     }

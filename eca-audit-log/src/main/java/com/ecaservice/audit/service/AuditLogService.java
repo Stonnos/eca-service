@@ -1,5 +1,6 @@
 package com.ecaservice.audit.service;
 
+import com.ecaservice.audit.config.AuditLogProperties;
 import com.ecaservice.audit.dto.AuditEventRequest;
 import com.ecaservice.audit.entity.AuditLogEntity;
 import com.ecaservice.audit.exception.DuplicateEventIdException;
@@ -9,6 +10,8 @@ import com.ecaservice.audit.repository.AuditLogRepository;
 import com.ecaservice.core.filter.service.FilterTemplateService;
 import com.ecaservice.core.filter.validation.annotations.ValidPageRequest;
 import com.ecaservice.core.lock.annotation.Locked;
+import com.ecaservice.web.dto.model.AuditLogDto;
+import com.ecaservice.web.dto.model.PageDto;
 import com.ecaservice.web.dto.model.PageRequestDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -35,6 +38,7 @@ import static com.ecaservice.core.filter.util.FilterUtils.buildSort;
 @RequiredArgsConstructor
 public class AuditLogService {
 
+    private final AuditLogProperties auditLogProperties;
     private final AuditLogMapper auditLogMapper;
     private final FilterTemplateService filterTemplateService;
     private final AuditLogRepository auditLogRepository;
@@ -78,5 +82,20 @@ public class AuditLogService {
                 auditLogsPage.getNumber(), auditLogsPage.getTotalPages(), auditLogsPage.getNumberOfElements(),
                 pageRequestDto);
         return auditLogsPage;
+    }
+
+    /**
+     * Gets audit logs page.
+     *
+     * @param pageRequestDto - page request dto
+     * @return audit logs page
+     */
+    public PageDto<AuditLogDto> getAuditLogsPage(
+            @ValidPageRequest(filterTemplateName = AUDIT_LOG_TEMPLATE) PageRequestDto pageRequestDto) {
+        var auditLogsPage = getNextPage(pageRequestDto);
+        List<AuditLogDto> auditLogDtoList = auditLogMapper.map(auditLogsPage.getContent());
+        long totalElements = Long.min(auditLogsPage.getTotalElements(),
+                pageRequestDto.getSize() * auditLogProperties.getMaxPagesNum());
+        return PageDto.of(auditLogDtoList, pageRequestDto.getPage(), totalElements);
     }
 }

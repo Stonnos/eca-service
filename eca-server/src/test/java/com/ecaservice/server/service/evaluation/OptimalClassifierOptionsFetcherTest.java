@@ -14,7 +14,6 @@ import com.ecaservice.server.config.AppProperties;
 import com.ecaservice.server.config.ClassifiersProperties;
 import com.ecaservice.server.config.CrossValidationConfig;
 import com.ecaservice.server.configuation.ExecutorConfiguration;
-import com.ecaservice.server.mapping.ClassifierInfoMapperImpl;
 import com.ecaservice.server.mapping.ClassifierOptionsRequestMapperImpl;
 import com.ecaservice.server.mapping.ClassifierOptionsRequestModelMapperImpl;
 import com.ecaservice.server.mapping.ClassifierReportMapperImpl;
@@ -80,7 +79,7 @@ import static org.mockito.Mockito.when;
         EvaluationLogMapperImpl.class, ClassifiersProperties.class,
         EvaluationService.class, ErsResponseStatusMapperImpl.class, OptimalClassifierOptionsFetcherImpl.class,
         InstancesInfoMapperImpl.class, ErsRequestService.class, InstancesInfoService.class, InstancesProvider.class,
-        ClassifierInfoMapperImpl.class, ErsErrorHandler.class, DateTimeConverter.class})
+        ErsErrorHandler.class, DateTimeConverter.class})
 class OptimalClassifierOptionsFetcherTest extends AbstractJpaTest {
 
     private static final ObjectMapper objectMapper = new ObjectMapper();

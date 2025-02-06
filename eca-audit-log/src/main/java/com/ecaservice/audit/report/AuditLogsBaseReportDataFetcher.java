@@ -1,5 +1,6 @@
 package com.ecaservice.audit.report;
 
+import com.ecaservice.audit.config.AuditLogProperties;
 import com.ecaservice.audit.entity.AuditLogEntity;
 import com.ecaservice.audit.mapping.AuditLogMapper;
 import com.ecaservice.audit.report.model.AuditLogBean;
@@ -30,15 +31,17 @@ public class AuditLogsBaseReportDataFetcher
     /**
      * Constructor with spring dependency injection.
      *
+     * @param auditLogProperties    - audit log properties
      * @param filterTemplateService - filter service bean
      * @param auditLogService       - audit log service bean
      * @param auditLogMapper        - audit log mapper bean
      */
     @Autowired
-    public AuditLogsBaseReportDataFetcher(FilterTemplateService filterTemplateService,
+    public AuditLogsBaseReportDataFetcher(AuditLogProperties auditLogProperties,
+                                          FilterTemplateService filterTemplateService,
                                           AuditLogService auditLogService,
                                           AuditLogMapper auditLogMapper) {
-        super("AUDIT_LOGS", AUDIT_LOG_TEMPLATE, filterTemplateService);
+        super("AUDIT_LOGS", AUDIT_LOG_TEMPLATE, auditLogProperties.getMaxPagesNum(), filterTemplateService);
         this.auditLogService = auditLogService;
         this.auditLogMapper = auditLogMapper;
     }

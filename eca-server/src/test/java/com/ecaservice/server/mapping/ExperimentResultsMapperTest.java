@@ -5,14 +5,12 @@ import com.ecaservice.server.model.entity.Experiment;
 import com.ecaservice.server.model.entity.ExperimentResultsEntity;
 import com.ecaservice.web.dto.model.ExperimentResultsDetailsDto;
 import com.ecaservice.web.dto.model.ExperimentResultsDto;
-import eca.core.evaluation.EvaluationResults;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import java.math.BigDecimal;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -24,24 +22,12 @@ import static org.assertj.core.api.Assertions.assertThat;
  * @author Roman Batygin
  */
 @ExtendWith(SpringExtension.class)
-@Import({ExperimentResultsMapperImpl.class, ClassifierInfoMapperImpl.class,
-        ExperimentMapperImpl.class, DateTimeConverter.class, InstancesInfoMapperImpl.class})
+@Import({ExperimentResultsMapperImpl.class, ExperimentMapperImpl.class,
+        DateTimeConverter.class, InstancesInfoMapperImpl.class})
 class ExperimentResultsMapperTest {
 
     @Autowired
     private ExperimentResultsMapper experimentResultsMapper;
-
-    @Test
-    void testMapEvaluationResultsToExperimentResults() {
-        EvaluationResults evaluationResults = TestHelperUtils.getEvaluationResults();
-        ExperimentResultsEntity experimentResultsEntity = experimentResultsMapper.map(evaluationResults);
-        assertThat(experimentResultsEntity).isNotNull();
-        assertThat(experimentResultsEntity.getClassifierInfo()).isNotNull();
-        assertThat(experimentResultsEntity.getClassifierInfo().getClassifierName()).isEqualTo(
-                evaluationResults.getClassifier().getClass().getSimpleName());
-        assertThat(experimentResultsEntity.getPctCorrect()).isEqualTo(
-                BigDecimal.valueOf(evaluationResults.getEvaluation().pctCorrect()));
-    }
 
     @Test
     void testMapToExperimentResultsDto() {
@@ -57,7 +43,8 @@ class ExperimentResultsMapperTest {
         Experiment experiment = TestHelperUtils.createExperiment(UUID.randomUUID().toString());
         ExperimentResultsEntity experimentResultsEntity = TestHelperUtils.createExperimentResultsEntity(experiment);
         experimentResultsEntity.setId(1L);
-        ExperimentResultsDetailsDto experimentResultsDetailsDto = experimentResultsMapper.mapDetails(experimentResultsEntity);
+        ExperimentResultsDetailsDto experimentResultsDetailsDto =
+                experimentResultsMapper.mapDetails(experimentResultsEntity);
         assertExperimentResultsDto(experimentResultsDetailsDto, experimentResultsEntity);
         assertThat(experimentResultsDetailsDto.getExperimentDto()).isNotNull();
     }

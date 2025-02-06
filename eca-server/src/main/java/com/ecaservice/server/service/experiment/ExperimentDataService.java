@@ -2,6 +2,7 @@ package com.ecaservice.server.service.experiment;
 
 import com.ecaservice.base.model.ExperimentType;
 import com.ecaservice.common.web.exception.EntityNotFoundException;
+import com.ecaservice.core.filter.query.FilterQueryExecutor;
 import com.ecaservice.core.filter.service.FilterTemplateService;
 import com.ecaservice.core.filter.validation.annotations.ValidPageRequest;
 import com.ecaservice.s3.client.minio.model.GetPresignedUrlObject;
@@ -16,6 +17,8 @@ import com.ecaservice.server.model.projections.RequestStatusStatistics;
 import com.ecaservice.server.repository.ExperimentRepository;
 import com.ecaservice.server.service.filter.dictionary.FilterDictionaries;
 import com.ecaservice.web.dto.model.ChartDto;
+import com.ecaservice.web.dto.model.ExperimentDto;
+import com.ecaservice.web.dto.model.PageDto;
 import com.ecaservice.web.dto.model.PageRequestDto;
 import com.ecaservice.web.dto.model.RequestStatusStatisticsDto;
 import com.ecaservice.web.dto.model.S3ContentResponseDto;
@@ -30,6 +33,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StopWatch;
 import org.springframework.validation.annotation.Validated;
 
 import java.time.LocalDate;
@@ -66,6 +70,7 @@ public class ExperimentDataService {
     private final AppProperties appProperties;
     private final FilterTemplateService filterTemplateService;
     private final ExperimentMapper experimentMapper;
+    private final ExperimentCountQueryExecutor experimentCountQueryExecutor;
 
     /**
      * Removes experiment model file from object storage.
@@ -101,16 +106,37 @@ public class ExperimentDataService {
     public Page<Experiment> getNextPage(
             @ValidPageRequest(filterTemplateName = EXPERIMENT) PageRequestDto pageRequestDto) {
         log.info("Gets experiments next page: {}", pageRequestDto);
+        StopWatch stopWatch = new StopWatch();
         Sort sort = buildSort(pageRequestDto.getSortFields(), CREATION_DATE, true);
         List<String> globalFilterFields = filterTemplateService.getGlobalFilterFields(EXPERIMENT);
         ExperimentFilter filter =
                 new ExperimentFilter(pageRequestDto.getSearchQuery(), globalFilterFields, pageRequestDto.getFilters());
         var pageRequest = PageRequest.of(pageRequestDto.getPage(), pageRequestDto.getSize(), sort);
-        var experimentsPage = experimentRepository.findAll(filter, pageRequest);
+        var queryExecutor = new FilterQueryExecutor(entityManager);
+        stopWatch.start();
+        var experimentsPage =
+                queryExecutor.executePageQuery(pageRequestDto, filter, pageRequest, experimentCountQueryExecutor);
+        stopWatch.stop();
+        log.info("QUERY time: {} ms", stopWatch.getTotalTimeMillis());
         log.info("Experiments page [{} of {}] with size [{}] has been fetched for page request [{}]",
                 experimentsPage.getNumber(), experimentsPage.getTotalPages(), experimentsPage.getNumberOfElements(),
                 pageRequestDto);
         return experimentsPage;
+    }
+
+    /**
+     * Gets experiments dto page.
+     *
+     * @param pageRequestDto - page request dto
+     * @return experiments page
+     */
+    public PageDto<ExperimentDto> getExperimentsPage(
+            @ValidPageRequest(filterTemplateName = EXPERIMENT) PageRequestDto pageRequestDto) {
+        var experimentPage = getNextPage(pageRequestDto);
+        List<ExperimentDto> experimentDtoList = experimentMapper.map(experimentPage.getContent());
+        long totalElements =
+                Long.min(experimentPage.getTotalElements(), pageRequestDto.getSize() * appProperties.getMaxPagesNum());
+        return PageDto.of(experimentDtoList, pageRequestDto.getPage(), totalElements);
     }
 
     /**

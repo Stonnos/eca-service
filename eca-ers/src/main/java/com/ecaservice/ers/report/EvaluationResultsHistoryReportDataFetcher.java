@@ -1,6 +1,7 @@
 package com.ecaservice.ers.report;
 
 import com.ecaservice.core.filter.service.FilterTemplateService;
+import com.ecaservice.ers.config.ErsConfig;
 import com.ecaservice.ers.mapping.EvaluationResultsMapper;
 import com.ecaservice.ers.model.EvaluationResultsInfo;
 import com.ecaservice.ers.report.customize.InstancesInfoFilterReportCustomizer;
@@ -14,6 +15,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
 
 import jakarta.annotation.PostConstruct;
+
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -36,17 +38,20 @@ public class EvaluationResultsHistoryReportDataFetcher
     /**
      * Constructor with spring dependency injection.
      *
+     * @param ersConfig                       - ers config
      * @param filterTemplateService           - filter service bean
      * @param evaluationResultsHistoryService - evaluation results history service bean
      * @param evaluationResultsMapper         - evaluation results mapper
      * @param instancesInfoRepository         - instances info repository
      */
     @Autowired
-    public EvaluationResultsHistoryReportDataFetcher(FilterTemplateService filterTemplateService,
+    public EvaluationResultsHistoryReportDataFetcher(ErsConfig ersConfig,
+                                                     FilterTemplateService filterTemplateService,
                                                      EvaluationResultsHistoryService evaluationResultsHistoryService,
                                                      EvaluationResultsMapper evaluationResultsMapper,
                                                      InstancesInfoRepository instancesInfoRepository) {
-        super("EVALUATION_RESULTS_HISTORY", EVALUATION_RESULTS_HISTORY_TEMPLATE, filterTemplateService);
+        super("EVALUATION_RESULTS_HISTORY", EVALUATION_RESULTS_HISTORY_TEMPLATE, ersConfig.getMaxPagesNum(),
+                filterTemplateService);
         this.evaluationResultsHistoryService = evaluationResultsHistoryService;
         this.evaluationResultsMapper = evaluationResultsMapper;
         this.instancesInfoRepository = instancesInfoRepository;
@@ -69,8 +74,8 @@ public class EvaluationResultsHistoryReportDataFetcher
                 .map(evaluationResultsInfo -> {
                     var evaluationResultsHistoryBean =
                             evaluationResultsMapper.mapToEvaluationResultsHistoryBean(evaluationResultsInfo);
-                    var classifierName = getDictionaryLabelByCode(CLASSIFIER_NAME,
-                            evaluationResultsInfo.getClassifierInfo().getClassifierName());
+                    var classifierName =
+                            getDictionaryLabelByCode(CLASSIFIER_NAME, evaluationResultsInfo.getClassifierName());
                     evaluationResultsHistoryBean.setClassifierName(classifierName);
                     return evaluationResultsHistoryBean;
                 })

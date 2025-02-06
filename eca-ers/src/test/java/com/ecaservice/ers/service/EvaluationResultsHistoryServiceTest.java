@@ -4,9 +4,8 @@ import com.ecaservice.classifier.options.model.LogisticOptions;
 import com.ecaservice.classifier.template.processor.service.ClassifierOptionsProcessor;
 import com.ecaservice.core.filter.service.FilterTemplateService;
 import com.ecaservice.ers.AbstractJpaTest;
+import com.ecaservice.ers.config.ErsConfig;
 import com.ecaservice.ers.mapping.ClassificationCostsReportMapperImpl;
-import com.ecaservice.ers.mapping.ClassifierOptionsInfoMapperImpl;
-import com.ecaservice.ers.mapping.ClassifierReportMapperImpl;
 import com.ecaservice.ers.mapping.ConfusionMatrixMapperImpl;
 import com.ecaservice.ers.mapping.EvaluationResultsMapperImpl;
 import com.ecaservice.ers.mapping.InstancesMapperImpl;
@@ -42,17 +41,16 @@ import static org.mockito.Mockito.when;
  *
  * @author Roman Batygin
  */
-@Import({EvaluationResultsHistoryService.class, EvaluationResultsMapperImpl.class,
+@Import({EvaluationResultsHistoryService.class, EvaluationResultsMapperImpl.class, ErsConfig.class,
         ClassificationCostsReportMapperImpl.class, ConfusionMatrixMapperImpl.class, StatisticsReportMapperImpl.class,
-        InstancesMapperImpl.class, RocCurveReportMapperImpl.class, ClassifierReportMapperImpl.class,
-        ClassifierOptionsInfoMapperImpl.class})
+        InstancesMapperImpl.class, RocCurveReportMapperImpl.class, EvaluationResultsHistoryCountQueryExecutor.class})
 public class EvaluationResultsHistoryServiceTest extends AbstractJpaTest {
 
     private static final int PAGE_NUMBER = 0;
     private static final int PAGE_SIZE = 10;
-    private static final String INSTANCES_INFO_RELATION_NAME = "instancesInfo.relationName";
+    private static final String RELATION_NAME = "relationName";
     private static final String INSTANCES_INFO_ID = "instancesInfo.id";
-    private static final String CLASSIFIER_INFO_CLASSIFIER_NAME = "classifierInfo.classifierName";
+    private static final String CLASSIFIER_NAME = "classifierName";
 
     @MockBean
     private FilterTemplateService filterTemplateService;
@@ -77,7 +75,7 @@ public class EvaluationResultsHistoryServiceTest extends AbstractJpaTest {
     public void init() {
         saveEvaluationResultsData();
         when(filterTemplateService.getGlobalFilterFields(EVALUATION_RESULTS_HISTORY_TEMPLATE)).thenReturn(
-                Arrays.asList(INSTANCES_INFO_RELATION_NAME, EVALUATION_METHOD));
+                Arrays.asList(RELATION_NAME, EVALUATION_METHOD));
     }
 
     /**
@@ -104,7 +102,7 @@ public class EvaluationResultsHistoryServiceTest extends AbstractJpaTest {
                 new PageRequestDto(PAGE_NUMBER, PAGE_SIZE, Collections.singletonList(sortFieldRequestDto),
                         StringUtils.EMPTY, newArrayList());
         pageRequestDto.getFilters().add(
-                new FilterRequestDto(CLASSIFIER_INFO_CLASSIFIER_NAME, Collections.singletonList("CART"),
+                new FilterRequestDto(CLASSIFIER_NAME, Collections.singletonList("CART"),
                         MatchMode.EQUALS));
         var pageDto = evaluationResultsHistoryService.getNextPage(pageRequestDto);
         assertThat(pageDto).isNotNull();
@@ -132,12 +130,12 @@ public class EvaluationResultsHistoryServiceTest extends AbstractJpaTest {
 
     private void saveEvaluationResultsData() {
         var evaluationResultsInfo1 = createEvaluationResultsInfo();
-        evaluationResultsInfo1.getClassifierInfo().setClassifierName("CART");
-        evaluationResultsInfo1.getClassifierInfo().setOptions(toJsonString(new LogisticOptions()));
+        evaluationResultsInfo1.setClassifierName("CART");
+        evaluationResultsInfo1.setClassifierOptions(toJsonString(new LogisticOptions()));
         evaluationResultsInfo1.getInstancesInfo().setUuid(UUID.randomUUID().toString());
         var evaluationResultsInfo2 = createEvaluationResultsInfo();
-        evaluationResultsInfo2.getClassifierInfo().setClassifierName("C45");
-        evaluationResultsInfo2.getClassifierInfo().setOptions(toJsonString(new LogisticOptions()));
+        evaluationResultsInfo2.setClassifierName("C45");
+        evaluationResultsInfo2.setClassifierOptions(toJsonString(new LogisticOptions()));
         evaluationResultsInfo2.getInstancesInfo().setUuid(UUID.randomUUID().toString());
         instancesInfoRepository.save(evaluationResultsInfo1.getInstancesInfo());
         instancesInfoRepository.save(evaluationResultsInfo2.getInstancesInfo());

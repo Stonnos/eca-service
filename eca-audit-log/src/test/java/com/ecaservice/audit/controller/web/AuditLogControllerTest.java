@@ -77,7 +77,7 @@ class AuditLogControllerTest extends AbstractControllerTest {
         List<AuditLogEntity> auditLogs = Collections.singletonList(createAuditLog());
         PageDto<AuditLogDto> expected = PageDto.of(auditLogMapper.map(auditLogs), PAGE_NUMBER, TOTAL_ELEMENTS);
         when(page.getContent()).thenReturn(auditLogs);
-        when(auditLogService.getNextPage(any(PageRequestDto.class))).thenReturn(page);
+        when(auditLogService.getAuditLogsPage(any(PageRequestDto.class))).thenReturn(expected);
         mockMvc.perform(post(LIST_URL)
                 .header(HttpHeaders.AUTHORIZATION, getBearerToken())
                 .content(objectMapper.writeValueAsString(createPageRequestDto()))

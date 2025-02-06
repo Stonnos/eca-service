@@ -12,12 +12,14 @@ import com.ecaservice.server.service.InstancesInfoService;
 import io.micrometer.tracing.annotation.NewSpan;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.stereotype.Service;
 import weka.classifiers.AbstractClassifier;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
+import static com.ecaservice.server.config.cache.CacheNames.EVALUATION_LOGS_TOTAL_COUNT_QUERY;
 import static com.ecaservice.server.util.ClassifierOptionsHelper.toJsonString;
 
 /**
@@ -27,6 +29,7 @@ import static com.ecaservice.server.util.ClassifierOptionsHelper.toJsonString;
  */
 @Slf4j
 @Service
+@CacheEvict(value = EVALUATION_LOGS_TOTAL_COUNT_QUERY, allEntries = true)
 @RequiredArgsConstructor
 public class EvaluationLogService {
 
@@ -50,6 +53,8 @@ public class EvaluationLogService {
         var instancesInfo = instancesInfoService.getOrSaveInstancesInfo(evaluationRequestData.getDataUuid());
         EvaluationLog evaluationLog = evaluationLogMapper.map(evaluationRequestData, crossValidationConfig);
         evaluationLog.setInstancesInfo(instancesInfo);
+        evaluationLog.setClassifierName(evaluationRequestData.getClassifier().getClass().getSimpleName());
+        evaluationLog.setRelationName(instancesInfo.getRelationName());
         saveClassifierOptions(evaluationRequestData.getClassifier(), evaluationLog);
         setAdditionalProperties(evaluationLog, evaluationRequestData);
         evaluationLog.setRequestStatus(RequestStatus.NEW);
@@ -95,7 +100,7 @@ public class EvaluationLogService {
 
     private void saveClassifierOptions(AbstractClassifier classifier, EvaluationLog evaluationLog) {
         var classifierOptions = classifierOptionsAdapter.convert(classifier);
-        evaluationLog.getClassifierInfo().setClassifierOptions(toJsonString(classifierOptions));
+        evaluationLog.setClassifierOptions(toJsonString(classifierOptions));
     }
 
     private void setAdditionalProperties(EvaluationLog evaluationLog,

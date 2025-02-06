@@ -11,7 +11,6 @@ import com.ecaservice.server.config.AppProperties;
 import com.ecaservice.server.config.ClassifiersProperties;
 import com.ecaservice.server.config.CrossValidationConfig;
 import com.ecaservice.server.configuation.ExecutorConfiguration;
-import com.ecaservice.server.mapping.ClassifierInfoMapperImpl;
 import com.ecaservice.server.mapping.DateTimeConverter;
 import com.ecaservice.server.mapping.EvaluationLogMapper;
 import com.ecaservice.server.mapping.EvaluationLogMapperImpl;
@@ -22,7 +21,6 @@ import com.ecaservice.server.model.entity.RequestStatus;
 import com.ecaservice.server.model.evaluation.EvaluationRequestData;
 import com.ecaservice.server.model.evaluation.EvaluationResultsDataModel;
 import com.ecaservice.server.repository.AttributesInfoRepository;
-import com.ecaservice.server.repository.ClassifierInfoRepository;
 import com.ecaservice.server.repository.EvaluationLogRepository;
 import com.ecaservice.server.repository.InstancesInfoRepository;
 import com.ecaservice.server.service.AbstractJpaTest;
@@ -60,7 +58,7 @@ import static org.mockito.Mockito.when;
 @Import({ExecutorConfiguration.class, CrossValidationConfig.class, EvaluationLogService.class,
         ClassifiersProperties.class, AppProperties.class, InstancesInfoService.class, InstancesProvider.class,
         EvaluationLogMapperImpl.class, EvaluationService.class, DateTimeConverter.class,
-        InstancesInfoMapperImpl.class, ClassifierInfoMapperImpl.class, ClassifiersOptionsAutoConfiguration.class})
+        InstancesInfoMapperImpl.class, ClassifiersOptionsAutoConfiguration.class})
 class EvaluationRequestServiceTest extends AbstractJpaTest {
 
     private static final String MODEL_DOWNLOAD_URL = "http//:localhost/model";
@@ -90,8 +88,6 @@ class EvaluationRequestServiceTest extends AbstractJpaTest {
     private InstancesInfoService instancesInfoService;
     @Autowired
     private EvaluationLogService evaluationLogService;
-    @Autowired
-    private ClassifierInfoRepository classifierInfoRepository;
 
     @Mock
     private ClassifierInitializerService classifierInitializerService;
@@ -113,8 +109,7 @@ class EvaluationRequestServiceTest extends AbstractJpaTest {
         evaluationRequestService =
                 new EvaluationRequestService(appProperties, classifiersProperties, executorService, evaluationService,
                         classifierInitializerService, objectStorageService, instancesLoaderService,
-                        evaluationLogService, classifierOptionsAdapter, classifierInfoRepository,
-                        evaluationLogRepository);
+                        evaluationLogService, classifierOptionsAdapter, evaluationLogRepository);
         mockLoadInstances();
     }
 

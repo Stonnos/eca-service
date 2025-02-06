@@ -1,26 +1,29 @@
 package com.ecaservice.ers.service;
 
 import com.ecaservice.classifier.template.processor.service.ClassifierOptionsProcessor;
+import com.ecaservice.core.filter.query.FilterQueryExecutor;
 import com.ecaservice.core.filter.service.FilterTemplateService;
 import com.ecaservice.core.filter.specification.FilterFieldCustomizer;
 import com.ecaservice.core.filter.validation.annotations.ValidPageRequest;
+import com.ecaservice.ers.config.ErsConfig;
 import com.ecaservice.ers.filter.ClassifierNameFilterFieldCustomizer;
 import com.ecaservice.ers.filter.EvaluationResultsHistoryFilter;
 import com.ecaservice.ers.mapping.EvaluationResultsMapper;
 import com.ecaservice.ers.model.EvaluationResultsInfo;
-import com.ecaservice.ers.repository.EvaluationResultsInfoRepository;
 import com.ecaservice.web.dto.model.EvaluationResultsHistoryDto;
 import com.ecaservice.web.dto.model.PageDto;
 import com.ecaservice.web.dto.model.PageRequestDto;
+import jakarta.annotation.PostConstruct;
+import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StopWatch;
 import org.springframework.validation.annotation.Validated;
 
-import jakarta.annotation.PostConstruct;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -41,10 +44,12 @@ import static com.google.common.collect.Lists.newArrayList;
 @RequiredArgsConstructor
 public class EvaluationResultsHistoryService {
 
+    private final ErsConfig ersConfig;
     private final FilterTemplateService filterTemplateService;
     private final EvaluationResultsMapper evaluationResultsMapper;
     private final ClassifierOptionsProcessor classifierOptionsProcessor;
-    private final EvaluationResultsInfoRepository evaluationResultsInfoRepository;
+    private final EntityManager entityManager;
+    private final EvaluationResultsHistoryCountQueryExecutor evaluationResultsHistoryCountQueryExecutor;
 
     private final List<FilterFieldCustomizer> globalFilterFieldCustomizers = newArrayList();
 
@@ -70,9 +75,15 @@ public class EvaluationResultsHistoryService {
         var filter = new EvaluationResultsHistoryFilter(pageRequestDto.getSearchQuery(), globalFilterFields,
                 pageRequestDto.getFilters());
         filter.setGlobalFilterFieldsCustomizers(globalFilterFieldCustomizers);
+        var queryExecutor = new FilterQueryExecutor(entityManager);
         var pageRequest = PageRequest.of(pageRequestDto.getPage(), pageRequestDto.getSize(), sort);
-        var evaluationResultsInfoPage =
-                evaluationResultsInfoRepository.findAll(filter, pageRequest);
+        StopWatch stopWatch = new StopWatch();
+        stopWatch.start();
+        var evaluationResultsInfoPage = queryExecutor.executePageQuery(pageRequestDto, filter, pageRequest,
+                evaluationResultsHistoryCountQueryExecutor);
+
+        stopWatch.stop();
+        log.info("QUERY time: {} ms", stopWatch.getTotalTimeMillis());
         log.info("Evaluation results page [{} of {}] with size [{}] has been fetched for page request [{}]",
                 evaluationResultsInfoPage.getNumber(), evaluationResultsInfoPage.getTotalPages(),
                 evaluationResultsInfoPage.getNumberOfElements(), pageRequestDto);
@@ -94,8 +105,9 @@ public class EvaluationResultsHistoryService {
         log.info("Evaluation results page [{} of {}] with size [{}] has been fetched for page request [{}]",
                 evaluationResultsInfoPage.getNumber(), evaluationResultsInfoPage.getTotalPages(),
                 evaluationResultsInfoPage.getNumberOfElements(), pageRequestDto);
-        return PageDto.of(evaluationResultsDtoList, pageRequestDto.getPage(),
-                evaluationResultsInfoPage.getTotalElements());
+        long totalElements = Long.min(evaluationResultsInfoPage.getTotalElements(),
+                pageRequestDto.getSize() * ersConfig.getMaxPagesNum());
+        return PageDto.of(evaluationResultsDtoList, pageRequestDto.getPage(), totalElements);
     }
 
     private List<EvaluationResultsHistoryDto> mapToEvaluationResultsHistoryList(
@@ -105,7 +117,7 @@ public class EvaluationResultsHistoryService {
                     var evaluationResultsHistoryDto =
                             evaluationResultsMapper.mapToEvaluationResultsHistory(evaluationResultsInfo);
                     var classifierOptions =
-                            parseOptions(evaluationResultsInfo.getClassifierInfo().getOptions());
+                            parseOptions(evaluationResultsInfo.getClassifierOptions());
                     var classifierInfoDto =
                             classifierOptionsProcessor.processClassifierOptions(classifierOptions);
                     evaluationResultsHistoryDto.setClassifierInfo(classifierInfoDto);

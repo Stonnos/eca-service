@@ -4,6 +4,7 @@ import com.ecaservice.core.filter.service.FilterTemplateService;
 import com.ecaservice.core.lock.config.CoreLockAutoConfiguration;
 import com.ecaservice.core.lock.metrics.LockMeterService;
 import com.ecaservice.ers.AbstractJpaTest;
+import com.ecaservice.ers.config.ErsConfig;
 import com.ecaservice.ers.dto.EvaluationMethod;
 import com.ecaservice.ers.dto.EvaluationResultsRequest;
 import com.ecaservice.ers.dto.EvaluationResultsResponse;
@@ -13,8 +14,6 @@ import com.ecaservice.ers.dto.InstancesReport;
 import com.ecaservice.ers.exception.DuplicateRequestIdException;
 import com.ecaservice.ers.exception.ResultsNotFoundException;
 import com.ecaservice.ers.mapping.ClassificationCostsReportMapperImpl;
-import com.ecaservice.ers.mapping.ClassifierOptionsInfoMapperImpl;
-import com.ecaservice.ers.mapping.ClassifierReportMapperImpl;
 import com.ecaservice.ers.mapping.ConfusionMatrixMapperImpl;
 import com.ecaservice.ers.mapping.EvaluationResultsMapperImpl;
 import com.ecaservice.ers.mapping.InstancesMapperImpl;
@@ -49,8 +48,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 @Import({EvaluationResultsMapperImpl.class, ClassificationCostsReportMapperImpl.class,
         ConfusionMatrixMapperImpl.class, StatisticsReportMapperImpl.class, InstancesMapperImpl.class,
         RocCurveReportMapperImpl.class, InstancesService.class, InstancesProvider.class,
-        EvaluationResultsService.class, ClassifierReportMapperImpl.class,
-        ClassifierOptionsInfoMapperImpl.class, CoreLockAutoConfiguration.class})
+        EvaluationResultsService.class, CoreLockAutoConfiguration.class, ErsConfig.class})
 class EvaluationResultsServiceTest extends AbstractJpaTest {
 
     private static final int NUM_THREADS = 2;
@@ -102,7 +100,10 @@ class EvaluationResultsServiceTest extends AbstractJpaTest {
         assertThat(evaluationResultsInfo.getClassificationCosts()).isNotNull();
         assertThat(evaluationResultsInfo.getClassificationCosts()).hasSameSizeAs(
                 request.getClassificationCosts());
-        assertThat(evaluationResultsInfo.getClassifierInfo()).isNotNull();
+        assertThat(evaluationResultsInfo.getClassifierName()).isEqualTo(
+                request.getClassifierReport().getClassifierName());
+        assertThat(evaluationResultsInfo.getClassifierOptions()).isEqualTo(
+                request.getClassifierReport().getOptions());
         assertThat(evaluationResultsInfo.getInstancesInfo()).isNotNull();
     }
 

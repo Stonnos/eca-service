@@ -1,15 +1,15 @@
 package com.ecaservice.ers.service;
 
+import com.ecaservice.core.filter.query.FilterQueryExecutor;
 import com.ecaservice.ers.config.ErsConfig;
 import com.ecaservice.ers.dto.ClassifierOptionsRequest;
 import com.ecaservice.ers.dto.EvaluationMethodReport;
 import com.ecaservice.ers.exception.DataNotFoundException;
 import com.ecaservice.ers.filter.OptimalEvaluationResultsFilter;
-import com.ecaservice.ers.model.ClassifierOptionsInfo;
 import com.ecaservice.ers.model.EvaluationResultsInfo;
-import com.ecaservice.ers.repository.EvaluationResultsInfoRepository;
 import com.ecaservice.ers.repository.InstancesInfoRepository;
 import io.micrometer.tracing.annotation.NewSpan;
+import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
@@ -17,7 +17,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Implements service for searching optimal classifier options.
@@ -30,9 +29,9 @@ import java.util.stream.Collectors;
 public class ClassifierOptionsService {
 
     private final InstancesInfoRepository instancesInfoRepository;
-    private final EvaluationResultsInfoRepository evaluationResultsInfoRepository;
     private final ErsConfig ersConfig;
     private final SortFieldService sortFieldService;
+    private final EntityManager entityManager;
 
     /**
      * Finds optimal classifiers options.
@@ -41,7 +40,7 @@ public class ClassifierOptionsService {
      * @return optimal classifiers options list
      */
     @NewSpan
-    public List<ClassifierOptionsInfo> findBestClassifierOptions(ClassifierOptionsRequest classifierOptionsRequest) {
+    public List<EvaluationResultsInfo> findBestClassifierOptions(ClassifierOptionsRequest classifierOptionsRequest) {
         String dataUuid = classifierOptionsRequest.getDataUuid();
         var instancesInfo = instancesInfoRepository.findByUuid(dataUuid);
         if (instancesInfo == null) {
@@ -54,11 +53,8 @@ public class ClassifierOptionsService {
             var filter = new OptimalEvaluationResultsFilter(instancesInfo, evaluationMethodReport);
             Sort sort = sortFieldService.buildSort(classifierOptionsRequest);
             PageRequest pageRequest = PageRequest.of(0, ersConfig.getResultSize(), sort);
-            var evaluationResultsInfoPage = evaluationResultsInfoRepository.findAll(filter, pageRequest);
-            return evaluationResultsInfoPage.getContent()
-                    .stream()
-                    .map(EvaluationResultsInfo::getClassifierInfo)
-                    .collect(Collectors.toList());
+            var queryExecutor = new FilterQueryExecutor(entityManager);
+            return queryExecutor.executeListQuery(filter, pageRequest, EvaluationResultsInfo.class);
         }
     }
 }

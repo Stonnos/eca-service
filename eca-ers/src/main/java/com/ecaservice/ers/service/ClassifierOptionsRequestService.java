@@ -2,12 +2,14 @@ package com.ecaservice.ers.service;
 
 import com.ecaservice.ers.dto.ClassifierOptionsRequest;
 import com.ecaservice.ers.dto.ClassifierOptionsResponse;
+import com.ecaservice.ers.dto.ClassifierReport;
 import com.ecaservice.ers.exception.ResultsNotFoundException;
-import com.ecaservice.ers.mapping.ClassifierOptionsInfoMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
+
+import java.util.stream.Collectors;
 
 /**
  * Service for handling classifier options requests.
@@ -20,7 +22,6 @@ import org.springframework.util.CollectionUtils;
 public class ClassifierOptionsRequestService {
 
     private final ClassifierOptionsService classifierOptionsService;
-    private final ClassifierOptionsInfoMapper classifierOptionsInfoMapper;
 
     /**
      * Finds optimal classifiers options.
@@ -40,7 +41,13 @@ public class ClassifierOptionsRequestService {
             log.info("[{}] best classifiers options has been found for data uuid [{}], request id [{}]",
                     classifierOptionsInfoList.size(), classifierOptionsRequest.getDataUuid(),
                     classifierOptionsRequest.getRequestId());
-            var classifierOptionsReports = classifierOptionsInfoMapper.map(classifierOptionsInfoList);
+            var classifierOptionsReports = classifierOptionsInfoList.stream()
+                    .map(evaluationResultsInfo -> {
+                        ClassifierReport classifierReport = new ClassifierReport();
+                        classifierReport.setClassifierName(evaluationResultsInfo.getClassifierName());
+                        classifierReport.setOptions(evaluationResultsInfo.getClassifierOptions());
+                        return classifierReport;
+                    }).collect(Collectors.toList());
             return ClassifierOptionsResponse.builder()
                     .requestId(classifierOptionsRequest.getRequestId())
                     .classifierReports(classifierOptionsReports)

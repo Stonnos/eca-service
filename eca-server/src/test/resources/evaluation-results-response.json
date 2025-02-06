@@ -10,7 +10,6 @@
   },
   "classifierReport": {
     "classifierName": "Logistic",
-    "classifierDescription": null,
     "options": "{\"type\":\"logistic\",\"maxIts\":200,\"useConjugateGradientDescent\":false}"
   },
   "evaluationMethodReport": {

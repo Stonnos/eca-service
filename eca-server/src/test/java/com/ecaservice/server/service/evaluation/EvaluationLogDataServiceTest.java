@@ -6,7 +6,6 @@ import com.ecaservice.s3.client.minio.service.ObjectStorageService;
 import com.ecaservice.server.TestHelperUtils;
 import com.ecaservice.server.config.AppProperties;
 import com.ecaservice.server.config.ClassifiersProperties;
-import com.ecaservice.server.mapping.ClassifierInfoMapperImpl;
 import com.ecaservice.server.mapping.DateTimeConverter;
 import com.ecaservice.server.mapping.EvaluationLogMapper;
 import com.ecaservice.server.mapping.EvaluationLogMapperImpl;
@@ -24,6 +23,7 @@ import com.ecaservice.server.repository.InstancesInfoRepository;
 import com.ecaservice.server.service.AbstractJpaTest;
 import com.ecaservice.server.service.classifiers.ClassifierOptionsInfoProcessor;
 import com.ecaservice.server.service.ers.ErsService;
+import com.ecaservice.server.service.filter.dictionary.FilterDictionaries;
 import com.ecaservice.web.dto.model.ChartDataDto;
 import com.ecaservice.web.dto.model.EvaluationLogDetailsDto;
 import com.ecaservice.web.dto.model.EvaluationResultsDto;
@@ -55,7 +55,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
-import static com.ecaservice.server.service.filter.dictionary.FilterDictionaries.CLASSIFIER_NAME;
 import static com.google.common.collect.Lists.newArrayList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -67,8 +66,9 @@ import static org.mockito.Mockito.when;
  *
  * @author Roman Batygin
  */
-@Import({AppProperties.class, ClassifierInfoMapperImpl.class, EvaluationLogMapperImpl.class,
-        InstancesInfoMapperImpl.class, DateTimeConverter.class, ClassifiersProperties.class})
+@Import({AppProperties.class, EvaluationLogMapperImpl.class,
+        InstancesInfoMapperImpl.class, DateTimeConverter.class, ClassifiersProperties.class,
+        EvaluationLogCountQueryExecutor.class})
 class EvaluationLogDataServiceTest extends AbstractJpaTest {
 
     private static final String MODEL_DOWNLOAD_URL = "http://localhost:9000/classifier";
@@ -77,7 +77,7 @@ class EvaluationLogDataServiceTest extends AbstractJpaTest {
     private static final int PAGE_SIZE = 10;
     private static final String INSTANCES_INFO_RELATION_NAME = "instancesInfo.relationName";
     private static final String INSTANCES_INFO_ID = "instancesInfo.id";
-    private static final String CLASSIFIER_INFO_CLASSIFIER_NAME = "classifierInfo.classifierName";
+    private static final String CLASSIFIER_NAME = "classifierName";
     private static final String CART_DESCRIPTION = "Алгоритм CART";
     private static final String C45_DESCRIPTION = "Алгоритм C45";
 
@@ -95,6 +95,8 @@ class EvaluationLogDataServiceTest extends AbstractJpaTest {
     private ClassifiersProperties classifiersProperties;
     @Autowired
     private EvaluationLogMapper evaluationLogMapper;
+    @Autowired
+    private EvaluationLogCountQueryExecutor evaluationLogCountQueryExecutor;
 
     @Mock
     private FilterTemplateService filterTemplateService;
@@ -115,7 +117,8 @@ class EvaluationLogDataServiceTest extends AbstractJpaTest {
         evaluationLogDataService =
                 new EvaluationLogDataService(classifiersProperties, appProperties, filterTemplateService,
                         evaluationLogMapper, classifierOptionsInfoProcessor, ersService, entityManager,
-                        objectStorageService, evaluationLogRepository, evaluationResultsRequestEntityRepository);
+                        objectStorageService, evaluationLogRepository, evaluationResultsRequestEntityRepository,
+                        evaluationLogCountQueryExecutor);
         evaluationLogDataService.initialize();
     }
 
@@ -165,33 +168,33 @@ class EvaluationLogDataServiceTest extends AbstractJpaTest {
         EvaluationLog evaluationLog =
                 TestHelperUtils.createEvaluationLog(UUID.randomUUID().toString(), RequestStatus.FINISHED,
                         instancesInfo);
-        evaluationLog.getClassifierInfo().setClassifierName(CART.class.getSimpleName());
+        evaluationLog.setClassifierName(CART.class.getSimpleName());
         evaluationLogRepository.save(evaluationLog);
         EvaluationLog evaluationLog1 =
                 TestHelperUtils.createEvaluationLog(UUID.randomUUID().toString(), RequestStatus.FINISHED,
                         instancesInfo);
-        evaluationLog1.getClassifierInfo().setClassifierName(C45.class.getSimpleName());
+        evaluationLog1.setClassifierName(C45.class.getSimpleName());
         evaluationLogRepository.save(evaluationLog1);
         EvaluationLog evaluationLog2 =
                 TestHelperUtils.createEvaluationLog(UUID.randomUUID().toString(), RequestStatus.ERROR, instancesInfo);
-        evaluationLog2.getClassifierInfo().setClassifierName(CART.class.getSimpleName());
+        evaluationLog2.setClassifierName(CART.class.getSimpleName());
         evaluationLogRepository.save(evaluationLog2);
         EvaluationLog evaluationLog3 =
                 TestHelperUtils.createEvaluationLog(UUID.randomUUID().toString(), RequestStatus.FINISHED,
                         instancesInfo);
-        evaluationLog3.getClassifierInfo().setClassifierName(KNearestNeighbours.class.getSimpleName());
+        evaluationLog3.setClassifierName(KNearestNeighbours.class.getSimpleName());
         evaluationLogRepository.save(evaluationLog3);
         EvaluationLog evaluationLog4 =
                 TestHelperUtils.createEvaluationLog(UUID.randomUUID().toString(), RequestStatus.ERROR, instancesInfo);
-        evaluationLog4.getClassifierInfo().setClassifierName(NeuralNetwork.class.getSimpleName());
+        evaluationLog4.setClassifierName(NeuralNetwork.class.getSimpleName());
         evaluationLogRepository.save(evaluationLog4);
         PageRequestDto pageRequestDto = new PageRequestDto(PAGE_NUMBER, PAGE_SIZE,
-                Collections.singletonList(new SortFieldRequestDto(CLASSIFIER_INFO_CLASSIFIER_NAME, false)), null,
+                Collections.singletonList(new SortFieldRequestDto(CLASSIFIER_NAME, false)), null,
                 newArrayList());
         pageRequestDto.getFilters().add(new FilterRequestDto(EvaluationLog_.REQUEST_STATUS,
                 Collections.singletonList(RequestStatus.FINISHED.name()), MatchMode.EQUALS));
         pageRequestDto.getFilters().add(
-                new FilterRequestDto(CLASSIFIER_INFO_CLASSIFIER_NAME, Collections.singletonList("C"), MatchMode.LIKE));
+                new FilterRequestDto(CLASSIFIER_NAME, Collections.singletonList("C"), MatchMode.LIKE));
         Page<EvaluationLog> evaluationLogPage = evaluationLogDataService.getNextPage(pageRequestDto);
         List<EvaluationLog> evaluationLogs = evaluationLogPage.getContent();
         assertThat(evaluationLogPage).isNotNull();
@@ -213,7 +216,7 @@ class EvaluationLogDataServiceTest extends AbstractJpaTest {
         instancesInfoRepository.save(evaluationLog1.getInstancesInfo());
         evaluationLogRepository.save(evaluationLog1);
         PageRequestDto pageRequestDto = new PageRequestDto(PAGE_NUMBER, PAGE_SIZE,
-                Collections.singletonList(new SortFieldRequestDto(CLASSIFIER_INFO_CLASSIFIER_NAME, false)), null,
+                Collections.singletonList(new SortFieldRequestDto(CLASSIFIER_NAME, false)), null,
                 newArrayList());
         pageRequestDto.getFilters().add(new FilterRequestDto(INSTANCES_INFO_ID,
                 Collections.singletonList(String.valueOf(evaluationLog.getInstancesInfo().getId())), MatchMode.EQUALS));
@@ -230,14 +233,14 @@ class EvaluationLogDataServiceTest extends AbstractJpaTest {
         EvaluationLog evaluationLog =
                 TestHelperUtils.createEvaluationLog(UUID.randomUUID().toString(), RequestStatus.FINISHED,
                         instancesInfo);
-        evaluationLog.getClassifierInfo().setClassifierName(CART.class.getSimpleName());
+        evaluationLog.setClassifierName(CART.class.getSimpleName());
         EvaluationLog evaluationLog1 =
                 TestHelperUtils.createEvaluationLog(UUID.randomUUID().toString(), RequestStatus.ERROR, instancesInfo);
-        evaluationLog1.getClassifierInfo().setClassifierName(CART.class.getSimpleName());
+        evaluationLog1.setClassifierName(CART.class.getSimpleName());
         EvaluationLog evaluationLog2 =
                 TestHelperUtils.createEvaluationLog(UUID.randomUUID().toString(), RequestStatus.FINISHED,
                         instancesInfo);
-        evaluationLog2.getClassifierInfo().setClassifierName(ID3.class.getSimpleName());
+        evaluationLog2.setClassifierName(ID3.class.getSimpleName());
         evaluationLogRepository.saveAll(Arrays.asList(evaluationLog, evaluationLog1, evaluationLog2));
         PageRequestDto pageRequestDto = new PageRequestDto(PAGE_NUMBER, PAGE_SIZE,
                 Collections.singletonList(new SortFieldRequestDto(EvaluationLog_.CREATION_DATE, false)), "car",
@@ -245,7 +248,7 @@ class EvaluationLogDataServiceTest extends AbstractJpaTest {
         pageRequestDto.getFilters().add(new FilterRequestDto(EvaluationLog_.REQUEST_STATUS,
                 Collections.singletonList(RequestStatus.FINISHED.name()), MatchMode.EQUALS));
         when(filterTemplateService.getGlobalFilterFields(FilterTemplateType.EVALUATION_LOG)).thenReturn(
-                Arrays.asList(CLASSIFIER_INFO_CLASSIFIER_NAME, EvaluationLog_.REQUEST_ID,
+                Arrays.asList(CLASSIFIER_NAME, EvaluationLog_.REQUEST_ID,
                         INSTANCES_INFO_RELATION_NAME));
         mockClassifiersDictionary();
         var evaluationLogPage = evaluationLogDataService.getEvaluationLogsPage(pageRequestDto);
@@ -363,18 +366,18 @@ class EvaluationLogDataServiceTest extends AbstractJpaTest {
         EvaluationLog evaluationLog =
                 TestHelperUtils.createEvaluationLog(UUID.randomUUID().toString(), RequestStatus.FINISHED,
                         instancesInfo);
-        evaluationLog.getClassifierInfo().setClassifierName(CART.class.getSimpleName());
+        evaluationLog.setClassifierName(CART.class.getSimpleName());
         EvaluationLog evaluationLog1 =
                 TestHelperUtils.createEvaluationLog(UUID.randomUUID().toString(), RequestStatus.FINISHED,
                         instancesInfo);
-        evaluationLog1.getClassifierInfo().setClassifierName(C45.class.getSimpleName());
+        evaluationLog1.setClassifierName(C45.class.getSimpleName());
         EvaluationLog evaluationLog2 =
                 TestHelperUtils.createEvaluationLog(UUID.randomUUID().toString(), RequestStatus.ERROR, instancesInfo);
-        evaluationLog2.getClassifierInfo().setClassifierName(CART.class.getSimpleName());
+        evaluationLog2.setClassifierName(CART.class.getSimpleName());
         EvaluationLog evaluationLog3 =
                 TestHelperUtils.createEvaluationLog(UUID.randomUUID().toString(), RequestStatus.FINISHED,
                         instancesInfo);
-        evaluationLog3.getClassifierInfo().setClassifierName(KNearestNeighbours.class.getSimpleName());
+        evaluationLog3.setClassifierName(KNearestNeighbours.class.getSimpleName());
         return evaluationLogRepository.saveAll(List.of(evaluationLog, evaluationLog1, evaluationLog2, evaluationLog3));
     }
 
@@ -419,6 +422,6 @@ class EvaluationLogDataServiceTest extends AbstractJpaTest {
                 KNearestNeighbours.class.getSimpleName()));
         classifiersDictionary.getValues().add(new FilterDictionaryValueDto(NeuralNetwork.class.getSimpleName(),
                 NeuralNetwork.class.getSimpleName()));
-        when(filterTemplateService.getFilterDictionary(CLASSIFIER_NAME)).thenReturn(classifiersDictionary);
+        when(filterTemplateService.getFilterDictionary(FilterDictionaries.CLASSIFIER_NAME)).thenReturn(classifiersDictionary);
     }
 }
