@@ -75,7 +75,7 @@ class EvaluationLogDataServiceTest extends AbstractJpaTest {
 
     private static final int PAGE_NUMBER = 0;
     private static final int PAGE_SIZE = 10;
-    private static final String INSTANCES_INFO_RELATION_NAME = "instancesInfo.relationName";
+    private static final String INSTANCES_INFO_RELATION_NAME = "relationName";
     private static final String INSTANCES_INFO_ID = "instancesInfo.id";
     private static final String CLASSIFIER_NAME = "classifierName";
     private static final String CART_DESCRIPTION = "Алгоритм CART";

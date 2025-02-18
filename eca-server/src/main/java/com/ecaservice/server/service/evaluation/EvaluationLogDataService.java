@@ -4,6 +4,7 @@ import com.ecaservice.common.web.exception.EntityNotFoundException;
 import com.ecaservice.core.filter.query.FilterQueryExecutor;
 import com.ecaservice.core.filter.service.FilterTemplateService;
 import com.ecaservice.core.filter.specification.FilterFieldCustomizer;
+import com.ecaservice.core.filter.specification.UuidFilterFieldCustomizer;
 import com.ecaservice.core.filter.validation.annotations.ValidPageRequest;
 import com.ecaservice.s3.client.minio.model.GetPresignedUrlObject;
 import com.ecaservice.s3.client.minio.service.ObjectStorageService;
@@ -11,9 +12,11 @@ import com.ecaservice.server.bpm.model.EvaluationLogModel;
 import com.ecaservice.server.config.AppProperties;
 import com.ecaservice.server.config.ClassifiersProperties;
 import com.ecaservice.server.filter.EvaluationLogFilter;
+import com.ecaservice.server.filter.customize.ClassifierNameFilterFieldCustomizer;
 import com.ecaservice.server.mapping.EvaluationLogMapper;
 import com.ecaservice.server.model.entity.ErsResponseStatus;
 import com.ecaservice.server.model.entity.EvaluationLog;
+import com.ecaservice.server.model.entity.EvaluationLog_;
 import com.ecaservice.server.model.entity.EvaluationResultsRequestEntity;
 import com.ecaservice.server.model.entity.RequestStatus;
 import com.ecaservice.server.model.projections.RequestStatusStatistics;
@@ -95,6 +98,7 @@ public class EvaluationLogDataService {
     @PostConstruct
     public void initialize() {
         globalFilterFieldCustomizers.add(new ClassifierNameFilterFieldCustomizer(filterTemplateService));
+        globalFilterFieldCustomizers.add(new UuidFilterFieldCustomizer(EvaluationLog_.REQUEST_ID));
     }
 
     /**
