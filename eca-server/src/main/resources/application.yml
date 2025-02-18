@@ -177,10 +177,10 @@ cache:
       expireAfterWriteSeconds: 18000
       maxSize: 100
     evaluationLogsTotalCountQuery:
-      expireAfterWriteSeconds: 3600
+      expireAfterWriteSeconds: 1200
       maxSize: 512
     experimentsTotalCountQuery:
-      expireAfterWriteSeconds: 3600
+      expireAfterWriteSeconds: 1200
       maxSize: 512
 
 auth-server:
