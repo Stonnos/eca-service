@@ -133,20 +133,6 @@
         </createIndex>
     </changeSet>
 
-    <changeSet id="create_idx_gin_evaluation_log_request_id" author="roman.batygin@mail.ru" context="schema">
-        <preConditions onFail="MARK_RAN">
-            <dbms type="postgresql"/>
-            <tableExists tableName="evaluation_log"/>
-            <columnExists tableName="evaluation_log" columnName="request_id"/>
-            <not>
-                <indexExists indexName="idx_gin_evaluation_log_request_id"/>
-            </not>
-        </preConditions>
-        <sql>
-            CREATE INDEX idx_gin_evaluation_log_request_id ON evaluation_log USING gin (request_id gin_trgm_ops)
-        </sql>
-    </changeSet>
-
     <changeSet id="create_idx_gin_evaluation_log_relation_name" author="roman.batygin@mail.ru" context="schema">
         <preConditions onFail="MARK_RAN">
             <dbms type="postgresql"/>
@@ -185,20 +171,6 @@
         <createIndex tableName="experiment" indexName="idx_experiment_creation_date">
             <column name="creation_date"/>
         </createIndex>
-    </changeSet>
-
-    <changeSet id="create_idx_gin_experiment_request_id" author="roman.batygin@mail.ru" context="schema">
-        <preConditions onFail="MARK_RAN">
-            <dbms type="postgresql"/>
-            <tableExists tableName="experiment"/>
-            <columnExists tableName="experiment" columnName="request_id"/>
-            <not>
-                <indexExists indexName="idx_gin_experiment_request_id"/>
-            </not>
-        </preConditions>
-        <sql>
-            CREATE INDEX idx_gin_experiment_request_id ON experiment USING gin (request_id gin_trgm_ops)
-        </sql>
     </changeSet>
 
     <changeSet id="create_idx_gin_experiment_relation_name" author="roman.batygin@mail.ru" context="schema">
