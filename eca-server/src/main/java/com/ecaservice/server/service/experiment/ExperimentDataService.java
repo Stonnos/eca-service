@@ -37,7 +37,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StopWatch;
 import org.springframework.validation.annotation.Validated;
 
 import java.time.LocalDate;
@@ -121,7 +120,6 @@ public class ExperimentDataService {
     public Page<Experiment> getNextPage(
             @ValidPageRequest(filterTemplateName = EXPERIMENT) PageRequestDto pageRequestDto) {
         log.info("Gets experiments next page: {}", pageRequestDto);
-        StopWatch stopWatch = new StopWatch();
         Sort sort = buildSort(pageRequestDto.getSortFields(), CREATION_DATE, true);
         List<String> globalFilterFields = filterTemplateService.getGlobalFilterFields(EXPERIMENT);
         ExperimentFilter filter =
@@ -129,11 +127,8 @@ public class ExperimentDataService {
         filter.setGlobalFilterFieldsCustomizers(globalFilterFieldCustomizers);
         var pageRequest = PageRequest.of(pageRequestDto.getPage(), pageRequestDto.getSize(), sort);
         var queryExecutor = new FilterQueryExecutor(entityManager);
-        stopWatch.start();
         var experimentsPage =
                 queryExecutor.executePageQuery(pageRequestDto, filter, pageRequest, experimentCountQueryExecutor);
-        stopWatch.stop();
-        log.info("QUERY time: {} ms", stopWatch.getTotalTimeMillis());
         log.info("Experiments page [{} of {}] with size [{}] has been fetched for page request [{}]",
                 experimentsPage.getNumber(), experimentsPage.getTotalPages(), experimentsPage.getNumberOfElements(),
                 pageRequestDto);

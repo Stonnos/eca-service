@@ -42,7 +42,6 @@ import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.time.StopWatch;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -110,8 +109,6 @@ public class EvaluationLogDataService {
     public Page<EvaluationLog> getNextPage(
             @ValidPageRequest(filterTemplateName = EVALUATION_LOG) PageRequestDto pageRequestDto) {
         log.info("Gets evaluation logs next page: {}", pageRequestDto);
-        StopWatch stopWatch = new StopWatch();
-        stopWatch.start();
         Sort sort = buildSort(pageRequestDto.getSortFields(), CREATION_DATE, true);
         List<String> globalFilterFields = filterTemplateService.getGlobalFilterFields(EVALUATION_LOG);
         var filter = new EvaluationLogFilter(pageRequestDto.getSearchQuery(), globalFilterFields,
@@ -121,8 +118,6 @@ public class EvaluationLogDataService {
         FilterQueryExecutor filterQueryExecutor = new FilterQueryExecutor(entityManager);
         Page<EvaluationLog> evaluationLogsPage =
                 filterQueryExecutor.executePageQuery(pageRequestDto, filter, pageRequest, countQueryExecutor);
-        stopWatch.stop();
-        log.info("Total time: {}. PR {}", stopWatch.getTime(TimeUnit.MILLISECONDS), pageRequestDto);
         log.info("Evaluation logs page [{} of {}] with size [{}] has been fetched for page request [{}]",
                 evaluationLogsPage.getNumber(), evaluationLogsPage.getTotalPages(),
                 evaluationLogsPage.getNumberOfElements(), pageRequestDto);

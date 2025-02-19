@@ -21,7 +21,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StopWatch;
 import org.springframework.validation.annotation.Validated;
 
 import java.util.List;
@@ -77,13 +76,8 @@ public class EvaluationResultsHistoryService {
         filter.setGlobalFilterFieldsCustomizers(globalFilterFieldCustomizers);
         var queryExecutor = new FilterQueryExecutor(entityManager);
         var pageRequest = PageRequest.of(pageRequestDto.getPage(), pageRequestDto.getSize(), sort);
-        StopWatch stopWatch = new StopWatch();
-        stopWatch.start();
         var evaluationResultsInfoPage = queryExecutor.executePageQuery(pageRequestDto, filter, pageRequest,
                 evaluationResultsHistoryCountQueryExecutor);
-
-        stopWatch.stop();
-        log.info("QUERY time: {} ms", stopWatch.getTotalTimeMillis());
         log.info("Evaluation results page [{} of {}] with size [{}] has been fetched for page request [{}]",
                 evaluationResultsInfoPage.getNumber(), evaluationResultsInfoPage.getTotalPages(),
                 evaluationResultsInfoPage.getNumberOfElements(), pageRequestDto);
