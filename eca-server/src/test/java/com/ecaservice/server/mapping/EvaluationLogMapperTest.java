@@ -34,7 +34,7 @@ import static org.mockito.Mockito.when;
 @ExtendWith(SpringExtension.class)
 @TestPropertySource("classpath:application.properties")
 @Import({EvaluationLogMapperImpl.class, InstancesInfoMapperImpl.class, DateTimeConverter.class,
-        ClassifierInfoMapperImpl.class, CrossValidationConfig.class})
+        CrossValidationConfig.class})
 class EvaluationLogMapperTest {
 
     @Autowired
@@ -83,7 +83,6 @@ class EvaluationLogMapperTest {
         EvaluationLog evaluationLog = evaluationLogMapper.map(evaluationRequestDataModel, crossValidationConfig);
         assertThat(evaluationLog).isNotNull();
         assertThat(evaluationLog.getEvaluationMethod()).isEqualTo(evaluationRequestDataModel.getEvaluationMethod());
-        assertThat(evaluationLog.getClassifierInfo()).isNotNull();
         assertThat(evaluationLog.getNumFolds()).isNull();
         assertThat(evaluationLog.getNumTests()).isNull();
         assertThat(evaluationLog.getSeed()).isNull();
@@ -159,7 +158,7 @@ class EvaluationLogMapperTest {
         assertThat(evaluationLogModel.getRequestStatus()).isEqualTo(evaluationLog.getRequestStatus().name());
         assertThat(evaluationLogModel.getChannel()).isEqualTo(evaluationLog.getChannel().name());
         assertThat(evaluationLogModel.getClassifierName()).isEqualTo(
-                evaluationLog.getClassifierInfo().getClassifierName());
+                evaluationLog.getClassifierName());
     }
 
     @Test

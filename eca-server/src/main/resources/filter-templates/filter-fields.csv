@@ -1,10 +1,10 @@
 id;field_name;description;field_order;filter_field_type;match_mode;filter_template_id;filter_dictionary_id;multiple
-10;requestId;UUID заявки;0;TEXT;LIKE;2;NULL;false
+10;requestId;UUID заявки;0;TEXT;EQUALS;2;NULL;false
 12;evaluationMethod;Метод оценки точности;3;REFERENCE;EQUALS;2;1;false
 14;creationDate;Дата создания заявки;5;DATE;RANGE;2;NULL;true
 13;requestStatus;Статус заявки;4;REFERENCE;EQUALS;2;2;false
-1;requestId;UUID заявки;0;TEXT;LIKE;1;NULL;false
-11;classifierInfo.classifierName;Классификатор;1;REFERENCE;EQUALS;2;5;true
+1;requestId;UUID заявки;0;TEXT;EQUALS;1;NULL;false
+11;classifierName;Классификатор;1;REFERENCE;EQUALS;2;5;true
 24;actionType;Тип события;1;REFERENCE;EQUALS;4;6;true
 25;createdAt;Дата события;2;DATE;RANGE;4;NULL;true
 22;instancesInfo.id;Обучающая выборка;2;LAZY_REFERENCE;EQUALS;2;NULL;false

@@ -89,7 +89,10 @@ export class ExperimentListComponent extends BaseListComponent<ExperimentDto> im
     this.defaultSortField = ExperimentFields.CREATION_DATE;
     this.linkColumns = [ExperimentFields.RELATION_NAME, ExperimentFields.MODEL_PATH,
       ExperimentFields.REQUEST_ID, ExperimentFields.EVALUATION_METHOD_DESCRIPTION];
-    this.notSortableColumns = [ExperimentFields.EVALUATION_TOTAL_TIME];
+    this.notSortableColumns = [ExperimentFields.EVALUATION_TOTAL_TIME, ExperimentFields.MODEL_PATH, ExperimentFields.START_DATE,
+      ExperimentFields.END_DATE, ExperimentFields.DELETED_DATE, ExperimentFields.EVALUATION_METHOD_DESCRIPTION,
+      ExperimentFields.REQUEST_STATUS_DESCRIPTION
+    ];
     this.initColumns();
   }
 
@@ -281,17 +284,17 @@ export class ExperimentListComponent extends BaseListComponent<ExperimentDto> im
     this.columns = [
       { name: ExperimentFields.REQUEST_ID, label: "UUID заявки", sortBy: ExperimentFilterFields.REQUEST_ID },
       { name: ExperimentFields.EXPERIMENT_TYPE_DESCRIPTION, label: "Тип эксперимента", sortBy: ExperimentFilterFields.EXPERIMENT_TYPE },
-      { name: ExperimentFields.REQUEST_STATUS_DESCRIPTION, label: "Статус заявки", sortBy: ExperimentFilterFields.REQUEST_STATUS },
+      { name: ExperimentFields.REQUEST_STATUS_DESCRIPTION, label: "Статус заявки" },
       { name: ExperimentFields.MAX_PCT_CORRECT, label: "Точность наличшего классификатора, %", sortBy: ExperimentFilterFields.MAX_PCT_CORRECT },
       { name: ExperimentFields.RELATION_NAME, label: "Обучающая выборка", sortBy: ExperimentFilterFields.RELATION_NAME },
-      { name: ExperimentFields.EVALUATION_METHOD_DESCRIPTION, label: "Метод оценки точности", sortBy: ExperimentFilterFields.EVALUATION_METHOD },
-      { name: ExperimentFields.CREATED_BY, label: "Пользователь", sortBy: ExperimentFilterFields.CREATED_BY },
-      { name: ExperimentFields.MODEL_PATH, label: "Модель эксперимента", sortBy: ExperimentFilterFields.MODEL_PATH },
+      { name: ExperimentFields.EVALUATION_METHOD_DESCRIPTION, label: "Метод оценки точности" },
+      { name: ExperimentFields.CREATED_BY, label: "Пользователь" },
+      { name: ExperimentFields.MODEL_PATH, label: "Модель эксперимента" },
       { name: ExperimentFields.EVALUATION_TOTAL_TIME, label: "Время построения эксперимента" },
       { name: ExperimentFields.CREATION_DATE, label: "Дата создания заявки", sortBy: ExperimentFilterFields.CREATION_DATE },
-      { name: ExperimentFields.START_DATE, label: "Дата начала обработки заявки", sortBy: ExperimentFilterFields.START_DATE },
-      { name: ExperimentFields.END_DATE, label: "Дата окончания обработки заявки", sortBy: ExperimentFilterFields.END_DATE },
-      { name: ExperimentFields.DELETED_DATE, label: "Дата удаления модели", sortBy: ExperimentFilterFields.DELETED_DATE }
+      { name: ExperimentFields.START_DATE, label: "Дата начала обработки заявки" },
+      { name: ExperimentFields.END_DATE, label: "Дата окончания обработки заявки" },
+      { name: ExperimentFields.DELETED_DATE, label: "Дата удаления модели" }
     ];
   }
 }

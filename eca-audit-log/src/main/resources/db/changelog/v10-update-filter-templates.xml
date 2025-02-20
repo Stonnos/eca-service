@@ -16,7 +16,7 @@
                 file="filter-templates/sort-templates.csv"/>
     </changeSet>
 
-    <changeSet author="roman.batygin@mail.ru" id="insert_sort_templates_fields_2" context="data">
+    <changeSet author="roman.batygin@mail.ru" id="insert_sort_templates_fields_3" context="data">
         <preConditions onFail="MARK_RAN">
             <tableExists tableName="sort_template"/>
             <tableExists tableName="sort_field"/>
@@ -85,7 +85,7 @@
                 file="filter-templates/filter-templates.csv"/>
     </changeSet>
 
-    <changeSet author="roman.batygin@mail.ru" id="insert_filter_template_fields_2" context="data">
+    <changeSet author="roman.batygin@mail.ru" id="insert_filter_template_fields_3" context="data">
         <preConditions onFail="MARK_RAN">
             <tableExists tableName="filter_template"/>
             <tableExists tableName="filter_field"/>

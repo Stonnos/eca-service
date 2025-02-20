@@ -73,4 +73,5 @@
     <include file="db/changelog/v85-add-experiment-retry-at-column.xml"/>
     <include file="db/changelog/v86-add-evaluation-log-reply-to-column.xml"/>
     <include file="db/changelog/v87-add-experiment-evaluation-time-column.xml"/>
+    <include file="db/changelog/v88-add-gin-indexes.xml"/>
 </databaseChangeLog>

@@ -27,7 +27,6 @@ import java.util.List;
 import java.util.stream.IntStream;
 
 import static com.ecaservice.server.TestHelperUtils.createAdaBoostOptions;
-import static com.ecaservice.server.TestHelperUtils.createClassifierInfo;
 import static com.ecaservice.server.TestHelperUtils.createDecisionTreeOptions;
 import static com.ecaservice.server.TestHelperUtils.createExtraTreesOptions;
 import static com.ecaservice.server.TestHelperUtils.createHeterogeneousClassifierOptions;
@@ -39,6 +38,7 @@ import static com.ecaservice.server.TestHelperUtils.createRandomForestsOptions;
 import static com.ecaservice.server.TestHelperUtils.createStackingOptions;
 import static com.ecaservice.server.TestHelperUtils.loadClassifiersTemplates;
 import static com.ecaservice.server.TestHelperUtils.loadEnsembleClassifiersTemplates;
+import static com.ecaservice.server.util.ClassifierOptionsHelper.toJsonString;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
 import static org.mockito.Mockito.when;
@@ -543,7 +543,6 @@ class ClassifierOptionsInfoProcessorTest {
     }
 
     private ClassifierInfoDto processClassifierOptions(ClassifierOptions classifierOptions) {
-        var classifierInfo = createClassifierInfo(classifierOptions);
-        return classifierOptionsInfoProcessor.processClassifierInfo(classifierInfo);
+        return classifierOptionsInfoProcessor.processClassifierInfo(toJsonString(classifierOptions));
     }
 }

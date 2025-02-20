@@ -5,7 +5,6 @@ import com.ecaservice.ers.config.ErsConfig;
 import com.ecaservice.ers.dto.ClassifierOptionsRequest;
 import com.ecaservice.ers.dto.EvaluationMethod;
 import com.ecaservice.ers.exception.DataNotFoundException;
-import com.ecaservice.ers.model.ClassifierOptionsInfo;
 import com.ecaservice.ers.model.EvaluationResultsInfo;
 import com.ecaservice.ers.model.InstancesInfo;
 import com.ecaservice.ers.repository.EvaluationResultsInfoRepository;
@@ -18,7 +17,6 @@ import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 
-import static com.ecaservice.ers.TestHelperUtils.buildClassifierOptionsInfo;
 import static com.ecaservice.ers.TestHelperUtils.buildInstancesInfo;
 import static com.ecaservice.ers.TestHelperUtils.createClassifierOptionsRequest;
 import static com.ecaservice.ers.TestHelperUtils.createEvaluationResultsInfo;
@@ -85,56 +83,38 @@ class ClassifierOptionsServiceTest extends AbstractJpaTest {
         InstancesInfo anotherInstancesInfo = buildInstancesInfo();
         instancesInfoRepository.saveAll(Arrays.asList(instancesInfo, anotherInstancesInfo));
 
-        ClassifierOptionsInfo classifierOptionsInfo1 = buildClassifierOptionsInfo();
-        classifierOptionsInfo1.setClassifierName("Classifier1");
-        ClassifierOptionsInfo classifierOptionsInfo2 = buildClassifierOptionsInfo();
-        classifierOptionsInfo2.setClassifierName("Classifier2");
-        ClassifierOptionsInfo classifierOptionsInfo3 = buildClassifierOptionsInfo();
-        classifierOptionsInfo3.setClassifierName("Classifier3");
-        ClassifierOptionsInfo classifierOptionsInfo4 = buildClassifierOptionsInfo();
-        classifierOptionsInfo4.setClassifierName("Classifier4");
-        ClassifierOptionsInfo classifierOptionsInfo5 = buildClassifierOptionsInfo();
-        classifierOptionsInfo5.setClassifierName("Classifier5");
-        ClassifierOptionsInfo classifierOptionsInfo6 = buildClassifierOptionsInfo();
-        classifierOptionsInfo6.setClassifierName("Classifier6");
-        ClassifierOptionsInfo classifierOptionsInfo7 = buildClassifierOptionsInfo();
-        classifierOptionsInfo7.setClassifierName("Classifier7");
-
         EvaluationResultsInfo evaluationResultsInfo1 = createEvaluationResultsInfo(instancesInfo,
-                classifierOptionsInfo1, evaluationMethod, BigDecimal.valueOf(67.73d),
+                "Classifier1", evaluationMethod, BigDecimal.valueOf(67.73d),
                 BigDecimal.valueOf(0.76d), BigDecimal.valueOf(0.07d));
         EvaluationResultsInfo evaluationResultsInfo2 = createEvaluationResultsInfo(instancesInfo,
-                classifierOptionsInfo2, evaluationMethod, BigDecimal.valueOf(65.96d),
+                "Classifier2", evaluationMethod, BigDecimal.valueOf(65.96d),
                 BigDecimal.valueOf(0.72d), BigDecimal.valueOf(0.046d));
         EvaluationResultsInfo evaluationResultsInfo3 = createEvaluationResultsInfo(instancesInfo,
-                classifierOptionsInfo3, evaluationMethod, BigDecimal.valueOf(61.08d),
+                "Classifier3", evaluationMethod, BigDecimal.valueOf(61.08d),
                 BigDecimal.valueOf(0.73d), BigDecimal.valueOf(0.006d));
         EvaluationResultsInfo evaluationResultsInfo4 = createEvaluationResultsInfo(instancesInfo,
-                classifierOptionsInfo4, evaluationMethod, BigDecimal.valueOf(87.79d),
+                "Classifier4", evaluationMethod, BigDecimal.valueOf(87.79d),
                 BigDecimal.valueOf(0.71d), BigDecimal.valueOf(0.01d));
         EvaluationResultsInfo evaluationResultsInfo5 = createEvaluationResultsInfo(instancesInfo,
-                classifierOptionsInfo5, evaluationMethod, BigDecimal.valueOf(87.79d),
+                "Classifier5", evaluationMethod, BigDecimal.valueOf(87.79d),
                 BigDecimal.valueOf(0.79d), BigDecimal.valueOf(0.04d));
         EvaluationResultsInfo evaluationResultsInfo6 = createEvaluationResultsInfo(anotherInstancesInfo,
-                classifierOptionsInfo6, evaluationMethod, BigDecimal.valueOf(56.80d),
+                "Classifier6", evaluationMethod, BigDecimal.valueOf(56.80d),
                 BigDecimal.valueOf(0.88d), BigDecimal.valueOf(0.09d));
         EvaluationResultsInfo evaluationResultsInfo7 = createEvaluationResultsInfo(instancesInfo,
-                classifierOptionsInfo7, evaluationMethod, BigDecimal.valueOf(87.79d),
+                "Classifier7", evaluationMethod, BigDecimal.valueOf(87.79d),
                 BigDecimal.valueOf(0.81d), BigDecimal.valueOf(0.03d));
         evaluationResultsInfoRepository.saveAll(
                 Arrays.asList(evaluationResultsInfo1, evaluationResultsInfo2, evaluationResultsInfo3,
                         evaluationResultsInfo4, evaluationResultsInfo5, evaluationResultsInfo6,
                         evaluationResultsInfo7));
 
-        List<ClassifierOptionsInfo> classifierOptionsInfoList =
+        List<EvaluationResultsInfo> bestClassifierOptions =
                 classifierOptionsService.findBestClassifierOptions(request);
-        assertThat(classifierOptionsInfoList).isNotEmpty();
-        assertThat(classifierOptionsInfoList).hasSize(ersConfig.getResultSize());
-        assertThat(classifierOptionsInfoList.get(0).getClassifierName()).isEqualTo
-                (classifierOptionsInfo7.getClassifierName());
-        assertThat(classifierOptionsInfoList.get(1).getClassifierName()).isEqualTo
-                (classifierOptionsInfo5.getClassifierName());
-        assertThat(classifierOptionsInfoList.get(2).getClassifierName()).isEqualTo
-                (classifierOptionsInfo4.getClassifierName());
+        assertThat(bestClassifierOptions).isNotEmpty();
+        assertThat(bestClassifierOptions).hasSize(ersConfig.getResultSize());
+        assertThat(bestClassifierOptions.get(0).getClassifierName()).isEqualTo("Classifier7");
+        assertThat(bestClassifierOptions.get(1).getClassifierName()).isEqualTo("Classifier5");
+        assertThat(bestClassifierOptions.get(2).getClassifierName()).isEqualTo("Classifier4");
     }
 }

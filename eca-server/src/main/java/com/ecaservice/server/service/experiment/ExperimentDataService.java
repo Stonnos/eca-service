@@ -2,7 +2,10 @@ package com.ecaservice.server.service.experiment;
 
 import com.ecaservice.base.model.ExperimentType;
 import com.ecaservice.common.web.exception.EntityNotFoundException;
+import com.ecaservice.core.filter.query.FilterQueryExecutor;
 import com.ecaservice.core.filter.service.FilterTemplateService;
+import com.ecaservice.core.filter.specification.FilterFieldCustomizer;
+import com.ecaservice.core.filter.specification.UuidFilterFieldCustomizer;
 import com.ecaservice.core.filter.validation.annotations.ValidPageRequest;
 import com.ecaservice.s3.client.minio.model.GetPresignedUrlObject;
 import com.ecaservice.s3.client.minio.service.ObjectStorageService;
@@ -12,14 +15,18 @@ import com.ecaservice.server.config.ExperimentConfig;
 import com.ecaservice.server.filter.ExperimentFilter;
 import com.ecaservice.server.mapping.ExperimentMapper;
 import com.ecaservice.server.model.entity.Experiment;
+import com.ecaservice.server.model.entity.Experiment_;
 import com.ecaservice.server.model.projections.RequestStatusStatistics;
 import com.ecaservice.server.repository.ExperimentRepository;
 import com.ecaservice.server.service.filter.dictionary.FilterDictionaries;
 import com.ecaservice.web.dto.model.ChartDto;
+import com.ecaservice.web.dto.model.ExperimentDto;
+import com.ecaservice.web.dto.model.PageDto;
 import com.ecaservice.web.dto.model.PageRequestDto;
 import com.ecaservice.web.dto.model.RequestStatusStatisticsDto;
 import com.ecaservice.web.dto.model.S3ContentResponseDto;
 import io.micrometer.tracing.annotation.NewSpan;
+import jakarta.annotation.PostConstruct;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.Tuple;
 import jakarta.persistence.criteria.CriteriaBuilder;
@@ -47,6 +54,7 @@ import static com.ecaservice.server.model.entity.FilterTemplateType.EXPERIMENT;
 import static com.ecaservice.server.util.QueryHelper.buildGroupByStatisticsQuery;
 import static com.ecaservice.server.util.StatisticsHelper.calculateChartData;
 import static com.ecaservice.server.util.StatisticsHelper.calculateRequestStatusesStatistics;
+import static com.google.common.collect.Lists.newArrayList;
 
 /**
  * Experiment data service.
@@ -66,6 +74,17 @@ public class ExperimentDataService {
     private final AppProperties appProperties;
     private final FilterTemplateService filterTemplateService;
     private final ExperimentMapper experimentMapper;
+    private final ExperimentCountQueryExecutor experimentCountQueryExecutor;
+
+    private final List<FilterFieldCustomizer> globalFilterFieldCustomizers = newArrayList();
+
+    /**
+     * Initialization method.
+     */
+    @PostConstruct
+    public void initialize() {
+        globalFilterFieldCustomizers.add(new UuidFilterFieldCustomizer(Experiment_.REQUEST_ID));
+    }
 
     /**
      * Removes experiment model file from object storage.
@@ -105,12 +124,30 @@ public class ExperimentDataService {
         List<String> globalFilterFields = filterTemplateService.getGlobalFilterFields(EXPERIMENT);
         ExperimentFilter filter =
                 new ExperimentFilter(pageRequestDto.getSearchQuery(), globalFilterFields, pageRequestDto.getFilters());
+        filter.setGlobalFilterFieldsCustomizers(globalFilterFieldCustomizers);
         var pageRequest = PageRequest.of(pageRequestDto.getPage(), pageRequestDto.getSize(), sort);
-        var experimentsPage = experimentRepository.findAll(filter, pageRequest);
+        var queryExecutor = new FilterQueryExecutor(entityManager);
+        var experimentsPage =
+                queryExecutor.executePageQuery(pageRequestDto, filter, pageRequest, experimentCountQueryExecutor);
         log.info("Experiments page [{} of {}] with size [{}] has been fetched for page request [{}]",
                 experimentsPage.getNumber(), experimentsPage.getTotalPages(), experimentsPage.getNumberOfElements(),
                 pageRequestDto);
         return experimentsPage;
+    }
+
+    /**
+     * Gets experiments dto page.
+     *
+     * @param pageRequestDto - page request dto
+     * @return experiments page
+     */
+    public PageDto<ExperimentDto> getExperimentsPage(
+            @ValidPageRequest(filterTemplateName = EXPERIMENT) PageRequestDto pageRequestDto) {
+        var experimentPage = getNextPage(pageRequestDto);
+        List<ExperimentDto> experimentDtoList = experimentMapper.map(experimentPage.getContent());
+        long totalElements =
+                Long.min(experimentPage.getTotalElements(), pageRequestDto.getSize() * appProperties.getMaxPagesNum());
+        return PageDto.of(experimentDtoList, pageRequestDto.getPage(), totalElements);
     }
 
     /**

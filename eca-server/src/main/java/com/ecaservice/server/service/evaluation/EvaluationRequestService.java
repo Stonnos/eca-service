@@ -13,7 +13,6 @@ import com.ecaservice.server.model.entity.RequestStatus;
 import com.ecaservice.server.model.evaluation.EvaluationInputDataModel;
 import com.ecaservice.server.model.evaluation.EvaluationRequestData;
 import com.ecaservice.server.model.evaluation.EvaluationResultsDataModel;
-import com.ecaservice.server.repository.ClassifierInfoRepository;
 import com.ecaservice.server.repository.EvaluationLogRepository;
 import com.ecaservice.server.service.TaskWorker;
 import com.ecaservice.server.service.data.InstancesLoaderService;
@@ -63,7 +62,6 @@ public class EvaluationRequestService {
     private final InstancesLoaderService instancesLoaderService;
     private final EvaluationLogService evaluationLogService;
     private final ClassifierOptionsAdapter classifierOptionsAdapter;
-    private final ClassifierInfoRepository classifierInfoRepository;
     private final EvaluationLogRepository evaluationLogRepository;
 
     /**
@@ -90,10 +88,10 @@ public class EvaluationRequestService {
      */
     public void startEvaluationRequest(EvaluationLog evaluationLog) {
         log.info("Starts evaluation request [{}] for classifier [{}]", evaluationLog.getRequestId(),
-                evaluationLog.getClassifierInfo().getClassifierName());
+                evaluationLog.getClassifierName());
         evaluationLogService.startEvaluationLog(evaluationLog);
         log.info("Evaluation request [{}] has been started for classifier [{}]", evaluationLog.getRequestId(),
-                evaluationLog.getClassifierInfo().getClassifierName());
+                evaluationLog.getClassifierName());
     }
 
     /**
@@ -105,7 +103,7 @@ public class EvaluationRequestService {
     @NewSpan
     public EvaluationResultsDataModel processEvaluationRequest(EvaluationLog evaluationLog) {
         log.info("Starting to process request for classifier [{}] evaluation with data uuid [{}]",
-                evaluationLog.getClassifierInfo().getClassifierName(), evaluationLog.getTrainingDataUuid());
+                evaluationLog.getClassifierName(), evaluationLog.getTrainingDataUuid());
         try {
             Instances data = instancesLoaderService.loadInstances(evaluationLog.getTrainingDataUuid());
             //Initialize classifier options based on training data
@@ -138,8 +136,7 @@ public class EvaluationRequestService {
     }
 
     private AbstractClassifier initializeClassifier(Instances data, EvaluationLog evaluationLog) {
-        var initialClassifierOptions =
-                parseOptions(evaluationLog.getClassifierInfo().getClassifierOptions());
+        var initialClassifierOptions = parseOptions(evaluationLog.getClassifierOptions());
         var classifier = classifierOptionsAdapter.convert(initialClassifierOptions);
         classifierInitializerService.initialize(classifier, data);
         return classifier;
@@ -147,9 +144,8 @@ public class EvaluationRequestService {
 
     private void updateClassifierOptions(AbstractClassifier classifier, EvaluationLog evaluationLog) {
         var finalClassifierOptions = classifierOptionsAdapter.convert(classifier);
-        var classifierInfo = evaluationLog.getClassifierInfo();
-        classifierInfo.setClassifierOptions(toJsonString(finalClassifierOptions));
-        classifierInfoRepository.save(classifierInfo);
+        evaluationLog.setClassifierOptions(toJsonString(finalClassifierOptions));
+        evaluationLogRepository.save(evaluationLog);
     }
 
     private EvaluationResultsDataModel internalProcessRequest(AbstractClassifier classifier,

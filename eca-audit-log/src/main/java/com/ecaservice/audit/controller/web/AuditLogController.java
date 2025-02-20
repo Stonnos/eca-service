@@ -1,7 +1,5 @@
 package com.ecaservice.audit.controller.web;
 
-import com.ecaservice.audit.entity.AuditLogEntity;
-import com.ecaservice.audit.mapping.AuditLogMapper;
 import com.ecaservice.audit.report.AuditLogsBaseReportDataFetcher;
 import com.ecaservice.audit.service.AuditLogService;
 import com.ecaservice.common.error.model.ValidationErrorDto;
@@ -20,10 +18,10 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
 import lombok.Cleanup;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -33,7 +31,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import jakarta.validation.Valid;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.List;
@@ -61,7 +58,6 @@ public class AuditLogController {
 
     private final AuditLogService auditLogService;
     private final FilterTemplateService filterTemplateService;
-    private final AuditLogMapper auditLogMapper;
     private final AuditLogsBaseReportDataFetcher auditLogsBaseReportDataFetcher;
 
     /**
@@ -135,9 +131,7 @@ public class AuditLogController {
     @PostMapping(value = "/list")
     public PageDto<AuditLogDto> getAuditLogsPage(@Valid @RequestBody PageRequestDto pageRequestDto) {
         log.info("Received audit logs page request: {}", pageRequestDto);
-        Page<AuditLogEntity> auditLogsPage = auditLogService.getNextPage(pageRequestDto);
-        List<AuditLogDto> auditLogDtoList = auditLogMapper.map(auditLogsPage.getContent());
-        return PageDto.of(auditLogDtoList, pageRequestDto.getPage(), auditLogsPage.getTotalElements());
+        return auditLogService.getAuditLogsPage(pageRequestDto);
     }
 
     /**

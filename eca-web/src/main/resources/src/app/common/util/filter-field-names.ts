@@ -1,30 +1,18 @@
 export class ExperimentFilterFields {
   public static readonly REQUEST_ID: string = "requestId";
   public static readonly EXPERIMENT_TYPE: string = "experimentType";
-  public static readonly REQUEST_STATUS: string = "requestStatus";
-  public static readonly EVALUATION_METHOD: string = "evaluationMethod";
   public static readonly CREATED_BY: string = "createdBy";
-  public static readonly MODEL_PATH: string = "modelPath";
   public static readonly CREATION_DATE: string = "creationDate";
-  public static readonly START_DATE: string = "startDate";
-  public static readonly END_DATE: string = "endDate";
-  public static readonly DELETED_DATE: string = "deletedDate";
   public static readonly MAX_PCT_CORRECT: string = "maxPctCorrect";
-  public static readonly RELATION_NAME: string = "instancesInfo.relationName";
+  public static readonly RELATION_NAME: string = "relationName";
 }
 
 export class EvaluationLogFilterFields {
   public static readonly REQUEST_ID: string = "requestId";
-  public static readonly CLASSIFIER_NAME: string = "classifierInfo.classifierName";
-  public static readonly REQUEST_STATUS: string = "requestStatus";
-  public static readonly RELATION_NAME: string = "instancesInfo.relationName";
-  public static readonly EVALUATION_METHOD: string = "evaluationMethod";
+  public static readonly CLASSIFIER_NAME: string = "classifierName";
+  public static readonly RELATION_NAME: string = "relationName";
   public static readonly CREATED_BY: string = "createdBy";
   public static readonly CREATION_DATE: string = "creationDate";
-  public static readonly START_DATE: string = "startDate";
-  public static readonly END_DATE: string = "endDate";
-  public static readonly MODEL_PATH: string = "modelPath";
-  public static readonly DELETED_DATE: string = "deletedDate";
   public static readonly PCT_CORRECT: string = "pctCorrect";
 }
 
@@ -40,9 +28,6 @@ export class AuditLogFilterFields {
   public static readonly EVENT_ID: string = "eventId";
   public static readonly CORRELATION_ID: string = "correlationId";
   public static readonly EVENT_DATE: string = "eventDate";
-  public static readonly GROUP_TITLE: string = "groupTitle";
-  public static readonly CODE_TITLE: string = "codeTitle";
-  public static readonly MESSAGE: string = "message";
   public static readonly INITIATOR: string = "initiator";
 }
 

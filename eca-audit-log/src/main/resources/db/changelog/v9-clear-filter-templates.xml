@@ -5,7 +5,7 @@
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
 
-    <changeSet author="roman.batygin@mail.ru" id="delete_sort_templates_fields_2" context="data">
+    <changeSet author="roman.batygin@mail.ru" id="delete_sort_templates_fields_3" context="data">
         <preConditions onFail="MARK_RAN">
             <tableExists tableName="sort_field"/>
         </preConditions>

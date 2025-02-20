@@ -20,13 +20,14 @@ import com.ecaservice.web.dto.model.ExperimentResultsDetailsDto;
 import com.ecaservice.web.dto.model.ExperimentResultsDto;
 import eca.core.evaluation.EvaluationResults;
 import eca.dataminer.AbstractExperiment;
+import io.micrometer.tracing.annotation.NewSpan;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import io.micrometer.tracing.annotation.NewSpan;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import weka.classifiers.AbstractClassifier;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -66,14 +67,7 @@ public class ExperimentResultsService {
         List<ExperimentResultsEntity> experimentResultsEntities =
                 IntStream.range(0, evaluationResultsList.size()).mapToObj(i -> {
                     EvaluationResults evaluationResults = evaluationResultsList.get(i);
-                    ExperimentResultsEntity experimentResultsEntity =
-                            experimentResultsMapper.map(evaluationResults);
-                    var classifierOptions =
-                            classifierOptionsAdapter.convert((AbstractClassifier) evaluationResults.getClassifier());
-                    experimentResultsEntity.getClassifierInfo().setClassifierOptions(toJsonString(classifierOptions));
-                    experimentResultsEntity.setExperiment(experiment);
-                    experimentResultsEntity.setResultsIndex(i);
-                    return experimentResultsEntity;
+                    return createExperimentResultsEntity(evaluationResults, experiment, i);
                 }).collect(Collectors.toList());
         List<ExperimentResultsEntity> saved = experimentResultsEntityRepository.saveAll(experimentResultsEntities);
         log.info("[{}] experiment [{}] results has been saved to ERS sent", saved.size(), experiment.getRequestId());
@@ -92,7 +86,7 @@ public class ExperimentResultsService {
         ExperimentResultsDetailsDto experimentResultsDetailsDto =
                 experimentResultsMapper.mapDetails(experimentResultsEntity);
         experimentResultsDetailsDto.setClassifierInfo(
-                classifierOptionsInfoProcessor.processClassifierInfo(experimentResultsEntity.getClassifierInfo()));
+                classifierOptionsInfoProcessor.processClassifierInfo(experimentResultsEntity.getClassifierOptions()));
         experimentResultsDetailsDto.setEvaluationResultsDto(getEvaluationResults(experimentResultsEntity));
         log.info("Experiment [{}] result details [{}] has been fetched",
                 experimentResultsEntity.getExperiment().getRequestId(), experimentResultsEntity.getId());
@@ -138,11 +132,27 @@ public class ExperimentResultsService {
                 .map(experimentResultsEntity -> {
                     var experimentResultsDto = experimentResultsMapper.map(experimentResultsEntity);
                     var classifierInfoDto = classifierOptionsInfoProcessor.processClassifierInfo(
-                            experimentResultsEntity.getClassifierInfo());
+                            experimentResultsEntity.getClassifierOptions());
                     experimentResultsDto.setClassifierInfo(classifierInfoDto);
                     return experimentResultsDto;
                 })
                 .collect(Collectors.toList());
+    }
+
+    private ExperimentResultsEntity createExperimentResultsEntity(EvaluationResults evaluationResults,
+                                                                  Experiment experiment,
+                                                                  int resultIndex) {
+        ExperimentResultsEntity experimentResultsEntity = new ExperimentResultsEntity();
+        var classifierOptions =
+                classifierOptionsAdapter.convert((AbstractClassifier) evaluationResults.getClassifier());
+        experimentResultsEntity.setClassifierName(
+                evaluationResults.getClassifier().getClass().getSimpleName());
+        experimentResultsEntity.setPctCorrect(
+                BigDecimal.valueOf(evaluationResults.getEvaluation().pctCorrect()));
+        experimentResultsEntity.setClassifierOptions(toJsonString(classifierOptions));
+        experimentResultsEntity.setExperiment(experiment);
+        experimentResultsEntity.setResultsIndex(resultIndex);
+        return experimentResultsEntity;
     }
 
     private void populateErsReportStatusForNotFinishedExperiment(Experiment experiment,

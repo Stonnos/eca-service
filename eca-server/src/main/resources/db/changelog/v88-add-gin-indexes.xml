@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+        logicalFilePath="db/changelog/v88-add-gin-indexes.xml"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="add_evaluation_log_classifier_name_column" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="evaluation_log"/>
+            <not>
+                <columnExists tableName="evaluation_log" columnName="classifier_name"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="evaluation_log">
+            <column name="classifier_name" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="add_evaluation_log_classifier_options_column" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="evaluation_log"/>
+            <not>
+                <columnExists tableName="evaluation_log" columnName="classifier_options"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="evaluation_log">
+            <column name="classifier_options" type="text">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="add_evaluation_log_relation_name_column" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="evaluation_log"/>
+            <not>
+                <columnExists tableName="evaluation_log" columnName="relation_name"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="evaluation_log">
+            <column name="relation_name" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="drop_evaluation_log_classifier_info_id_column" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="evaluation_log"/>
+            <columnExists tableName="evaluation_log" columnName="classifier_info_id"/>
+        </preConditions>
+        <dropColumn tableName="evaluation_log" columnName="classifier_info_id"/>
+    </changeSet>
+
+    <changeSet id="add_experiment_results_classifier_name_column" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="experiment_results"/>
+            <not>
+                <columnExists tableName="experiment_results" columnName="classifier_name"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="experiment_results">
+            <column name="classifier_name" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="add_experiment_results_classifier_options_column" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="experiment_results"/>
+            <not>
+                <columnExists tableName="experiment_results" columnName="classifier_options"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="experiment_results">
+            <column name="classifier_options" type="text">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="drop_experiment_results_classifier_info_id_column" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="experiment_results"/>
+            <columnExists tableName="experiment_results" columnName="classifier_info_id"/>
+        </preConditions>
+        <dropColumn tableName="experiment_results" columnName="classifier_info_id"/>
+    </changeSet>
+
+    <changeSet id="drop_classifier_info_table" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="classifier_info"/>
+        </preConditions>
+        <dropTable tableName="classifier_info"/>
+    </changeSet>
+
+    <changeSet id="add_experiment_relation_name_column" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="experiment"/>
+            <not>
+                <columnExists tableName="experiment" columnName="relation_name"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="experiment">
+            <column name="relation_name" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="create_pg_trgm_extension" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+           <dbms type="postgresql"/>
+        </preConditions>
+        <sql>
+            CREATE EXTENSION pg_trgm;
+        </sql>
+    </changeSet>
+
+    <!-- Added indexes for evaluation log -->
+
+    <changeSet id="create_evaluation_log_creation_date_index" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="evaluation_log"/>
+            <columnExists tableName="evaluation_log" columnName="creation_date"/>
+        </preConditions>
+        <createIndex tableName="evaluation_log" indexName="idx_evaluation_log_creation_date">
+            <column name="creation_date"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="create_idx_gin_evaluation_log_relation_name" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <dbms type="postgresql"/>
+            <tableExists tableName="evaluation_log"/>
+            <columnExists tableName="evaluation_log" columnName="relation_name"/>
+            <not>
+                <indexExists indexName="idx_gin_evaluation_log_relation_name"/>
+            </not>
+        </preConditions>
+        <sql>
+            CREATE INDEX idx_gin_evaluation_log_relation_name ON evaluation_log USING gin (relation_name gin_trgm_ops)
+        </sql>
+    </changeSet>
+
+    <changeSet id="create_idx_gin_evaluation_log_created_by" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <dbms type="postgresql"/>
+            <tableExists tableName="evaluation_log"/>
+            <columnExists tableName="evaluation_log" columnName="created_by"/>
+            <not>
+                <indexExists indexName="idx_gin_evaluation_log_created_by"/>
+            </not>
+        </preConditions>
+        <sql>
+            CREATE INDEX idx_gin_evaluation_log_created_by ON evaluation_log USING gin (created_by gin_trgm_ops)
+        </sql>
+    </changeSet>
+
+    <!-- Created indexes for experiment -->
+
+    <changeSet id="create_experiment_creation_date_index" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="experiment"/>
+            <columnExists tableName="experiment" columnName="creation_date"/>
+        </preConditions>
+        <createIndex tableName="experiment" indexName="idx_experiment_creation_date">
+            <column name="creation_date"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="create_idx_gin_experiment_relation_name" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <dbms type="postgresql"/>
+            <tableExists tableName="experiment"/>
+            <columnExists tableName="experiment" columnName="relation_name"/>
+            <not>
+                <indexExists indexName="idx_gin_experiment_relation_name"/>
+            </not>
+        </preConditions>
+        <sql>
+            CREATE INDEX idx_gin_experiment_relation_name ON experiment USING gin (relation_name gin_trgm_ops)
+        </sql>
+    </changeSet>
+
+    <changeSet id="create_idx_gin_experiment_created_by" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <dbms type="postgresql"/>
+            <tableExists tableName="experiment"/>
+            <columnExists tableName="experiment" columnName="created_by"/>
+            <not>
+                <indexExists indexName="idx_gin_experiment_created_by"/>
+            </not>
+        </preConditions>
+        <sql>
+            CREATE INDEX idx_gin_experiment_created_by ON experiment USING gin (created_by gin_trgm_ops)
+        </sql>
+    </changeSet>
+
+</databaseChangeLog>

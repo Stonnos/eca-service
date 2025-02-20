@@ -2,7 +2,6 @@ package com.ecaservice.server.service.classifiers;
 
 import com.ecaservice.classifier.options.model.ClassifierOptions;
 import com.ecaservice.classifier.template.processor.service.ClassifierOptionsProcessor;
-import com.ecaservice.server.model.entity.ClassifierInfo;
 import com.ecaservice.web.dto.model.ClassifierInfoDto;
 import com.ecaservice.web.dto.model.FormTemplateDto;
 import com.ecaservice.web.dto.model.InputOptionDto;
@@ -39,12 +38,12 @@ public class ClassifierOptionsInfoProcessor {
     /**
      * Processes classifier input options json string to classifier info.
      *
-     * @param classifierInfo - classifier options
-     * @return classifier info
+     * @param classifierOptionsJson - classifier options json
+     * @return classifier info dto
      */
-    public ClassifierInfoDto processClassifierInfo(ClassifierInfo classifierInfo) {
-        log.debug("Starting to process classifier info [{}]", classifierInfo.getClassifierName());
-        var classifierOptions = parseOptions(classifierInfo.getClassifierOptions());
+    public ClassifierInfoDto processClassifierInfo(String classifierOptionsJson) {
+        log.debug("Starting to process classifier info [{}]", classifierOptionsJson);
+        var classifierOptions = parseOptions(classifierOptionsJson);
         return classifierOptionsProcessor.processClassifierOptions(classifierOptions);
     }
 

@@ -23,8 +23,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @ExtendWith(SpringExtension.class)
 @Import({EvaluationResultsMapperImpl.class, ClassificationCostsReportMapperImpl.class,
         ConfusionMatrixMapperImpl.class, StatisticsReportMapperImpl.class,
-        InstancesMapperImpl.class, ClassifierReportMapperImpl.class,
-        RocCurveReportMapperImpl.class, ClassifierOptionsInfoMapperImpl.class})
+        InstancesMapperImpl.class, RocCurveReportMapperImpl.class})
 class EvaluationResultsMapperTest {
 
     @Autowired
@@ -43,7 +42,10 @@ class EvaluationResultsMapperTest {
         assertThat(evaluationResultsInfo.getConfusionMatrix()).isNotNull();
         assertThat(evaluationResultsInfo.getConfusionMatrix()).hasSameSizeAs(
                 resultsRequest.getConfusionMatrix());
-        assertThat(evaluationResultsInfo.getClassifierInfo()).isNotNull();
+        assertThat(evaluationResultsInfo.getClassifierName()).isEqualTo(
+                resultsRequest.getClassifierReport().getClassifierName());
+        assertThat(evaluationResultsInfo.getClassifierOptions()).isEqualTo(
+                resultsRequest.getClassifierReport().getOptions());
         assertThat(evaluationResultsInfo.getNumFolds().intValue()).isEqualTo(
                 resultsRequest.getEvaluationMethodReport().getNumFolds().intValue());
         assertThat(evaluationResultsInfo.getNumTests().intValue()).isEqualTo(
@@ -112,7 +114,9 @@ class EvaluationResultsMapperTest {
                 evaluationResultsInfo.getStatistics().getRootMeanSquaredError());
         assertThat(evaluationResultsHistoryBean.getRelationName()).isEqualTo(
                 evaluationResultsInfo.getInstancesInfo().getRelationName());
+        assertThat(evaluationResultsHistoryBean.getClassifierName())
+                .isEqualTo(evaluationResultsInfo.getClassifierName());
         assertThat(evaluationResultsHistoryBean.getClassifierOptions())
-                .isEqualTo(evaluationResultsInfo.getClassifierInfo().getOptions());
+                .isEqualTo(evaluationResultsInfo.getClassifierOptions());
     }
 }

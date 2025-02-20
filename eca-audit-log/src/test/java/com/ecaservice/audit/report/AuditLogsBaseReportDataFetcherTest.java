@@ -1,6 +1,7 @@
 package com.ecaservice.audit.report;
 
 import com.ecaservice.audit.AbstractJpaTest;
+import com.ecaservice.audit.config.AuditLogProperties;
 import com.ecaservice.audit.entity.AuditLogEntity_;
 import com.ecaservice.audit.mapping.AuditLogMapperImpl;
 import com.ecaservice.audit.repository.AuditLogRepository;
@@ -30,7 +31,8 @@ import static org.assertj.core.api.Assertions.assertThat;
  *
  * @author Roman Batygin
  */
-@Import({AuditLogsBaseReportDataFetcher.class, AuditLogMapperImpl.class, AuditLogService.class})
+@Import({AuditLogsBaseReportDataFetcher.class, AuditLogMapperImpl.class,
+        AuditLogService.class, AuditLogProperties.class})
 class AuditLogsBaseReportDataFetcherTest extends AbstractJpaTest {
 
     private static final List<String> DATE_RANGE_VALUES = ImmutableList.of("2018-01-01", "2018-07-07");

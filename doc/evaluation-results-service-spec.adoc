@@ -35,7 +35,6 @@ Evaluation results service представляет собой сервис, к�
   },
   "classifierReport": {
     "classifierName": "Logistic",
-    "classifierDescription": null,
     "options": "{\"type\":\"logistic\",\"maxIts\":200,\"useConjugateGradientDescent\":false}"
   },
   "evaluationMethodReport": {
@@ -461,13 +460,6 @@ Evaluation results service представляет собой сервис, к�
 |-
 |Строка с настройками классификатора
 |
-|3
-|classifierDescription
-|string
-|-
-|255
-|Дополнительная информация о классификаторе
-|
 |===
 
 ==== 2.2.4. Описание полей блока EvaluationMethodReport
@@ -847,26 +839,21 @@ Evaluation results service представляет собой сервис, к�
   "classifierReports": [
     {
       "classifierName": "ExtraTreesClassifier",
-      "classifierDescription": null,
       "options": "{\"type\":\"extra_trees\",\"numIterations\":20,\"numThreads\":6,\"seed\":1,\"numRandomAttr\":5,\"minObj\":2,\"maxDepth\":0,\"decisionTreeType\":\"ID3\",\"numRandomSplits\":6,\"useBootstrapSamples\":false}"
     {
       "classifierName": "ExtraTreesClassifier",
-      "classifierDescription": null,
       "options": "{\"type\":\"extra_trees\",\"numIterations\":20,\"numThreads\":6,\"seed\":1,\"numRandomAttr\":5,\"minObj\":2,\"maxDepth\":0,\"decisionTreeType\":\"ID3\",\"numRandomSplits\":6,\"useBootstrapSamples\":false}"
     },
     {
       "classifierName": "ExtraTreesClassifier",
-      "classifierDescription": null,
       "options": "{\"type\":\"extra_trees\",\"numIterations\":20,\"numThreads\":6,\"seed\":1,\"numRandomAttr\":5,\"minObj\":2,\"maxDepth\":0,\"decisionTreeType\":\"ID3\",\"numRandomSplits\":6,\"useBootstrapSamples\":false}"
     },
     {
       "classifierName": "ExtraTreesClassifier",
-      "classifierDescription": null,
       "options": "{\"type\":\"extra_trees\",\"numIterations\":20,\"numThreads\":6,\"seed\":1,\"numRandomAttr\":5,\"minObj\":2,\"maxDepth\":0,\"decisionTreeType\":\"ID3\",\"numRandomSplits\":6,\"useBootstrapSamples\":false}"
     },
     {
       "classifierName": "ExtraTreesClassifier",
-      "classifierDescription": null,
       "options": "{\"type\":\"extra_trees\",\"numIterations\":20,\"numThreads\":6,\"seed\":1,\"numRandomAttr\":5,\"minObj\":2,\"maxDepth\":0,\"decisionTreeType\":\"ID3\",\"numRandomSplits\":6,\"useBootstrapSamples\":false}"
     }
   ]
@@ -936,7 +923,6 @@ Evaluation results service представляет собой сервис, к�
   },
   "classifierReport": {
     "classifierName": "Logistic",
-    "classifierDescription": null,
     "options": "{\"type\":\"logistic\",\"maxIts\":200,\"useConjugateGradientDescent\":false}"
   },
   "evaluationMethodReport": {

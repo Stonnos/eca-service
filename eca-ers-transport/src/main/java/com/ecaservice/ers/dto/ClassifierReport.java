@@ -27,13 +27,6 @@ public class ClassifierReport {
     private String classifierName;
 
     /**
-     * Classifier description
-     */
-    @Size(max = MAX_LENGTH_255)
-    @Schema(description = "Classifier description")
-    private String classifierDescription;
-
-    /**
      * Classifier options string
      */
     @NotBlank

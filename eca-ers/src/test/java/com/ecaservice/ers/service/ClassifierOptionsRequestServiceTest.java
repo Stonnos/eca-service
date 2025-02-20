@@ -5,22 +5,18 @@ import com.ecaservice.ers.dto.ClassifierOptionsResponse;
 import com.ecaservice.ers.dto.EvaluationMethod;
 import com.ecaservice.ers.exception.DataNotFoundException;
 import com.ecaservice.ers.exception.ResultsNotFoundException;
-import com.ecaservice.ers.mapping.ClassifierOptionsInfoMapper;
-import com.ecaservice.ers.mapping.ClassifierOptionsInfoMapperImpl;
-import com.ecaservice.ers.model.ClassifierOptionsInfo;
+import com.ecaservice.ers.model.EvaluationResultsInfo;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.Collections;
 import java.util.List;
 
-import static com.ecaservice.ers.TestHelperUtils.buildClassifierOptionsInfo;
 import static com.ecaservice.ers.TestHelperUtils.createClassifierOptionsRequest;
+import static com.ecaservice.ers.TestHelperUtils.createEvaluationResultsInfo;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
@@ -31,11 +27,7 @@ import static org.mockito.Mockito.when;
  * @author Roman Batygin
  */
 @ExtendWith(SpringExtension.class)
-@Import(ClassifierOptionsInfoMapperImpl.class)
 class ClassifierOptionsRequestServiceTest {
-
-    @Autowired
-    private ClassifierOptionsInfoMapper classifierOptionsInfoMapper;
 
     @Mock
     private ClassifierOptionsService classifierOptionsService;
@@ -44,8 +36,7 @@ class ClassifierOptionsRequestServiceTest {
 
     @BeforeEach
     void init() {
-        classifierOptionsRequestService =
-                new ClassifierOptionsRequestService(classifierOptionsService, classifierOptionsInfoMapper);
+        classifierOptionsRequestService = new ClassifierOptionsRequestService(classifierOptionsService);
     }
 
     @Test
@@ -67,9 +58,9 @@ class ClassifierOptionsRequestServiceTest {
     @Test
     void testSuccessStatus() {
         ClassifierOptionsRequest request = createClassifierOptionsRequest(EvaluationMethod.CROSS_VALIDATION);
-        List<ClassifierOptionsInfo> expected = Collections.singletonList(buildClassifierOptionsInfo());
-        when(classifierOptionsService.findBestClassifierOptions(request)).thenReturn(expected);
+        List<EvaluationResultsInfo> evaluationResults = Collections.singletonList(createEvaluationResultsInfo());
+        when(classifierOptionsService.findBestClassifierOptions(request)).thenReturn(evaluationResults);
         ClassifierOptionsResponse response = classifierOptionsRequestService.findClassifierOptions(request);
-        assertThat(response.getClassifierReports()).hasSameSizeAs(expected);
+        assertThat(response.getClassifierReports()).hasSameSizeAs(evaluationResults);
     }
 }

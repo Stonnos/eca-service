@@ -39,7 +39,13 @@ public abstract class AbstractEvaluationEntity {
     private String trainingDataUuid;
 
     /**
-     * Training data info
+     * Instances name
+     */
+    @Column(name = "relation_name", nullable = false, updatable = false)
+    private String relationName;
+
+    /**
+     * Training data details info
      */
     @ManyToOne
     @JoinColumn(name = "instances_info_id", nullable = false)

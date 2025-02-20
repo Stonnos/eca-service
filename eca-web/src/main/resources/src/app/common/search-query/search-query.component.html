@@ -1,18 +1,15 @@
 <div class="ui-inputgroup mr-2 mt-2 mb-2">
-  <span class="ui-inputgroup-addon">
-    <i class="fa fa-search"></i>
-  </span>
   <input
-    type="text"
+    type="search"
     pInputText
     placeholder="Поиск"
     maxlength="255"
     [(ngModel)]="searchQuery"
-    (input)="onSearch()"
+    (search)="clearSearchQuery()"
     class="w-100">
-  <a *ngIf="searchQuery?.length > 0" [routerLink]="" (click)="clearSearchQuery()">
-    <span class="ui-inputgroup-addon">
-      <i class="fa fa-close"></i>
-    </span>
-  </a>
+  <button pButton
+          type="button"
+          icon="pi pi-fw pi-search"
+          (click)="onSearch()">
+  </button>
 </div>

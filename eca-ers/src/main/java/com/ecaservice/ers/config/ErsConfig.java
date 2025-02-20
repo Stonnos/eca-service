@@ -19,11 +19,18 @@ import java.util.List;
 @ConfigurationProperties("ers")
 public class ErsConfig {
 
+    private static final int DEFAULT_MAXIMUM_PAGES_NUM = 99;
+
     /**
      * Optimal results size
      */
     @NotNull
     private Integer resultSize;
+
+    /**
+     * Maximum pages number
+     */
+    private Integer maxPagesNum = DEFAULT_MAXIMUM_PAGES_NUM;
 
     /**
      * Evaluation results sort fields

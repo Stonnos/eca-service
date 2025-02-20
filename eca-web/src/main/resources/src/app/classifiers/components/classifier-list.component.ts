@@ -114,7 +114,10 @@ export class ClassifierListComponent extends BaseListComponent<EvaluationLogDto>
     this.defaultSortField = EvaluationLogFields.CREATION_DATE;
     this.linkColumns = [EvaluationLogFields.CLASSIFIER_DESCRIPTION, EvaluationLogFields.EVALUATION_METHOD_DESCRIPTION,
       EvaluationLogFields.RELATION_NAME, EvaluationLogFields.REQUEST_ID, EvaluationLogFields.MODEL_PATH];
-    this.notSortableColumns = [EvaluationLogFields.EVALUATION_TOTAL_TIME];
+    this.notSortableColumns = [EvaluationLogFields.EVALUATION_TOTAL_TIME, EvaluationLogFields.MODEL_PATH,
+      EvaluationLogFields.START_DATE, EvaluationLogFields.END_DATE, EvaluationLogFields.EVALUATION_METHOD_DESCRIPTION,
+      EvaluationLogFields.REQUEST_STATUS_DESCRIPTION, EvaluationLogFields.DELETED_DATE
+    ];
     this.initColumns();
   }
 
@@ -386,17 +389,17 @@ export class ClassifierListComponent extends BaseListComponent<EvaluationLogDto>
     this.columns = [
       { name: EvaluationLogFields.REQUEST_ID, label: "UUID заявки", sortBy: EvaluationLogFilterFields.REQUEST_ID },
       { name: EvaluationLogFields.CLASSIFIER_DESCRIPTION, label: "Классификатор", sortBy: EvaluationLogFilterFields.CLASSIFIER_NAME },
-      { name: EvaluationLogFields.REQUEST_STATUS_DESCRIPTION, label: "Статус заявки", sortBy: EvaluationLogFilterFields.REQUEST_STATUS },
+      { name: EvaluationLogFields.REQUEST_STATUS_DESCRIPTION, label: "Статус заявки"  },
       { name: EvaluationLogFields.PCT_CORRECT, label: "Точность классификатора, %", sortBy: EvaluationLogFilterFields.PCT_CORRECT },
       { name: EvaluationLogFields.RELATION_NAME, label: "Обучающая выборка", sortBy: EvaluationLogFilterFields.RELATION_NAME },
-      { name: EvaluationLogFields.EVALUATION_METHOD_DESCRIPTION, label: "Метод оценки точности", sortBy: EvaluationLogFilterFields.EVALUATION_METHOD },
+      { name: EvaluationLogFields.EVALUATION_METHOD_DESCRIPTION, label: "Метод оценки точности"  },
       { name: EvaluationLogFields.CREATED_BY, label: "Пользователь", sortBy: EvaluationLogFilterFields.CREATED_BY },
-      { name: EvaluationLogFields.MODEL_PATH, label: "Модель классификатора", sortBy: EvaluationLogFilterFields.MODEL_PATH },
+      { name: EvaluationLogFields.MODEL_PATH, label: "Модель классификатора" },
       { name: EvaluationLogFields.EVALUATION_TOTAL_TIME, label: "Время построения модели" },
       { name: EvaluationLogFields.CREATION_DATE, label: "Дата создания заявки", sortBy: EvaluationLogFilterFields.CREATION_DATE },
-      { name: EvaluationLogFields.START_DATE, label: "Дата начала обработки заявки", sortBy: EvaluationLogFilterFields.START_DATE },
-      { name: EvaluationLogFields.END_DATE, label: "Дата окончания обработки заявки", sortBy: EvaluationLogFilterFields.END_DATE },
-      { name: EvaluationLogFields.DELETED_DATE, label: "Дата удаления модели", sortBy: EvaluationLogFilterFields.DELETED_DATE }
+      { name: EvaluationLogFields.START_DATE, label: "Дата начала обработки заявки"  },
+      { name: EvaluationLogFields.END_DATE, label: "Дата окончания обработки заявки"  },
+      { name: EvaluationLogFields.DELETED_DATE, label: "Дата удаления модели" }
     ];
   }
 }

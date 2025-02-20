@@ -19,7 +19,7 @@ import static com.ecaservice.ers.dictionary.FilterDictionaries.CLASSIFIER_NAME;
  */
 public class ClassifierNameFilterFieldCustomizer extends FilterFieldCustomizer {
 
-    private static final String CLASSIFIER_NAME_FIELD = "classifierInfo.classifierName";
+    private static final String CLASSIFIER_NAME_FIELD = "classifierName";
 
     private final FilterTemplateService filterTemplateService;
 

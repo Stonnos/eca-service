@@ -3,12 +3,10 @@
   "classifierReports": [
     {
       "classifierName": "ExtraTreesClassifier",
-      "classifierDescription": null,
       "options": "{\"type\":\"extra_trees\",\"numIterations\":20,\"numThreads\":6,\"seed\":1,\"numRandomAttr\":5,\"minObj\":2,\"maxDepth\":0,\"decisionTreeType\":\"ID3\",\"numRandomSplits\":6,\"useBootstrapSamples\":false}"
     },
     {
       "classifierName": "ExtraTreesClassifier",
-      "classifierDescription": null,
       "options": "{\"type\":\"extra_trees\",\"numIterations\":20,\"numThreads\":6,\"seed\":1,\"numRandomAttr\":5,\"minObj\":2,\"maxDepth\":0,\"decisionTreeType\":\"ID3\",\"numRandomSplits\":6,\"useBootstrapSamples\":false}"
     }
   ]

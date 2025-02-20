@@ -25,8 +25,6 @@ spring:
         jdbc:
           lob:
             non_contextual_creation: true
-        order_by:
-          default_null_ordering: last
   liquibase:
     contexts: schema,data
     change-log: classpath:db/liquibase-changelog.xml
@@ -80,6 +78,7 @@ app:
   ## Each day at midnight
   removeModelCron: 0 0 0 * * *
   pageSize: 10
+  maxPagesNum: 99
   modelDownloadUrlExpirationDays: 7
   shortLifeUrlExpirationMinutes: 5
 
@@ -177,6 +176,12 @@ cache:
     message-templates:
       expireAfterWriteSeconds: 18000
       maxSize: 100
+    evaluationLogsTotalCountQuery:
+      expireAfterWriteSeconds: 1200
+      maxSize: 512
+    experimentsTotalCountQuery:
+      expireAfterWriteSeconds: 1200
+      maxSize: 512
 
 auth-server:
   baseUrl: http://localhost:8085/eca-oauth

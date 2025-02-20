@@ -14,14 +14,14 @@ export class SearchQueryComponent implements OnInit {
   public searchQuery: string = '';
 
   @Output()
-  public search: EventEmitter<string> = new EventEmitter<string>();
+  public searchEvent: EventEmitter<string> = new EventEmitter<string>();
 
   public ngOnInit() {
   }
 
   public onSearch() {
     if (this.searchQuery.length == 0 || this.searchQuery.length >= this.minQuerySize) {
-      this.search.emit(this.searchQuery);
+      this.searchEvent.emit(this.searchQuery);
     }
   }
 

@@ -1,10 +1,7 @@
 package com.ecaservice.server.model.entity;
 
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -26,15 +23,20 @@ import static com.ecaservice.server.util.FieldConstraints.SCALE;
 public class EvaluationLog extends AbstractEvaluationEntity {
 
     /**
-     * Classifier info
-     */
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "classifier_info_id", nullable = false)
-    private ClassifierInfo classifierInfo;
-
-    /**
      * Correctly classified percentage
      */
     @Column(name = "pct_correct", precision = PRECISION, scale = SCALE)
     private BigDecimal pctCorrect;
+
+    /**
+     * Classifier name
+     */
+    @Column(name = "classifier_name", nullable = false, updatable = false)
+    private String classifierName;
+
+    /**
+     * Classifier options json
+     */
+    @Column(name = "classifier_options", columnDefinition = "text", nullable = false)
+    private String classifierOptions;
 }

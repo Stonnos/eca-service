@@ -12,6 +12,8 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @ConfigurationProperties("app")
 public class AppProperties {
 
+    private static final int DEFAULT_MAXIMUM_PAGES_NUM = 99;
+
     /**
      * Thread pool size for async tasks
      */
@@ -31,6 +33,11 @@ public class AppProperties {
      * Page size for processing
      */
     private Integer pageSize;
+
+    /**
+     * Maximum pages number
+     */
+    private Integer maxPagesNum = DEFAULT_MAXIMUM_PAGES_NUM;
 
     /**
      * Model download url expiration in days

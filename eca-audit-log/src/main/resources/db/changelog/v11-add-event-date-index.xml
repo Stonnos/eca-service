@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+        logicalFilePath="db/changelog/v11-add-event-date-index.xml"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="create_audit_log_event_date_index" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="audit_log"/>
+            <columnExists tableName="audit_log" columnName="event_date"/>
+        </preConditions>
+        <createIndex tableName="audit_log" indexName="idx_audit_log_event_date">
+            <column name="event_date"/>
+        </createIndex>
+    </changeSet>
+
+</databaseChangeLog>

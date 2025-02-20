@@ -1,8 +1,10 @@
 package com.ecaservice.server.service.evaluation;
 
 import com.ecaservice.common.web.exception.EntityNotFoundException;
+import com.ecaservice.core.filter.query.FilterQueryExecutor;
 import com.ecaservice.core.filter.service.FilterTemplateService;
 import com.ecaservice.core.filter.specification.FilterFieldCustomizer;
+import com.ecaservice.core.filter.specification.UuidFilterFieldCustomizer;
 import com.ecaservice.core.filter.validation.annotations.ValidPageRequest;
 import com.ecaservice.s3.client.minio.model.GetPresignedUrlObject;
 import com.ecaservice.s3.client.minio.service.ObjectStorageService;
@@ -10,10 +12,11 @@ import com.ecaservice.server.bpm.model.EvaluationLogModel;
 import com.ecaservice.server.config.AppProperties;
 import com.ecaservice.server.config.ClassifiersProperties;
 import com.ecaservice.server.filter.EvaluationLogFilter;
+import com.ecaservice.server.filter.customize.ClassifierNameFilterFieldCustomizer;
 import com.ecaservice.server.mapping.EvaluationLogMapper;
-import com.ecaservice.server.model.entity.ClassifierInfo;
 import com.ecaservice.server.model.entity.ErsResponseStatus;
 import com.ecaservice.server.model.entity.EvaluationLog;
+import com.ecaservice.server.model.entity.EvaluationLog_;
 import com.ecaservice.server.model.entity.EvaluationResultsRequestEntity;
 import com.ecaservice.server.model.entity.RequestStatus;
 import com.ecaservice.server.model.projections.RequestStatusStatistics;
@@ -37,9 +40,6 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.Tuple;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
-import jakarta.persistence.criteria.Expression;
-import jakarta.persistence.criteria.Join;
-import jakarta.persistence.criteria.Root;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -54,13 +54,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.concurrent.TimeUnit;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static com.ecaservice.core.filter.util.FilterUtils.buildSort;
 import static com.ecaservice.server.model.entity.AbstractEvaluationEntity_.CREATION_DATE;
-import static com.ecaservice.server.model.entity.ClassifierInfo_.CLASSIFIER_NAME;
-import static com.ecaservice.server.model.entity.EvaluationLog_.CLASSIFIER_INFO;
+import static com.ecaservice.server.model.entity.EvaluationLog_.CLASSIFIER_NAME;
 import static com.ecaservice.server.model.entity.FilterTemplateType.EVALUATION_LOG;
 import static com.ecaservice.server.util.QueryHelper.buildGroupByStatisticsQuery;
 import static com.ecaservice.server.util.StatisticsHelper.calculateChartData;
@@ -89,6 +87,7 @@ public class EvaluationLogDataService {
     private final ObjectStorageService objectStorageService;
     private final EvaluationLogRepository evaluationLogRepository;
     private final EvaluationResultsRequestEntityRepository evaluationResultsRequestEntityRepository;
+    private final EvaluationLogCountQueryExecutor countQueryExecutor;
 
     private final List<FilterFieldCustomizer> globalFilterFieldCustomizers = newArrayList();
 
@@ -98,6 +97,7 @@ public class EvaluationLogDataService {
     @PostConstruct
     public void initialize() {
         globalFilterFieldCustomizers.add(new ClassifierNameFilterFieldCustomizer(filterTemplateService));
+        globalFilterFieldCustomizers.add(new UuidFilterFieldCustomizer(EvaluationLog_.REQUEST_ID));
     }
 
     /**
@@ -115,7 +115,9 @@ public class EvaluationLogDataService {
                 pageRequestDto.getFilters());
         filter.setGlobalFilterFieldsCustomizers(globalFilterFieldCustomizers);
         var pageRequest = PageRequest.of(pageRequestDto.getPage(), pageRequestDto.getSize(), sort);
-        var evaluationLogsPage = evaluationLogRepository.findAll(filter, pageRequest);
+        FilterQueryExecutor filterQueryExecutor = new FilterQueryExecutor(entityManager);
+        Page<EvaluationLog> evaluationLogsPage =
+                filterQueryExecutor.executePageQuery(pageRequestDto, filter, pageRequest, countQueryExecutor);
         log.info("Evaluation logs page [{} of {}] with size [{}] has been fetched for page request [{}]",
                 evaluationLogsPage.getNumber(), evaluationLogsPage.getTotalPages(),
                 evaluationLogsPage.getNumberOfElements(), pageRequestDto);
@@ -136,12 +138,14 @@ public class EvaluationLogDataService {
                 .map(evaluationLog -> {
                     var evaluationLogDto = evaluationLogMapper.map(evaluationLog);
                     var classifierInfoDto =
-                            classifierOptionsInfoProcessor.processClassifierInfo(evaluationLog.getClassifierInfo());
+                            classifierOptionsInfoProcessor.processClassifierInfo(evaluationLog.getClassifierOptions());
                     evaluationLogDto.setClassifierInfo(classifierInfoDto);
                     return evaluationLogDto;
                 })
                 .collect(Collectors.toList());
-        return PageDto.of(evaluationLogDtoList, pageRequestDto.getPage(), evaluationLogsPage.getTotalElements());
+        long totalElements = Long.min(evaluationLogsPage.getTotalElements(),
+                pageRequestDto.getSize() * appProperties.getMaxPagesNum());
+        return PageDto.of(evaluationLogDtoList, pageRequestDto.getPage(), totalElements);
     }
 
     /**
@@ -152,7 +156,8 @@ public class EvaluationLogDataService {
      */
     public EvaluationLogDetailsDto getEvaluationLogDetails(EvaluationLog evaluationLog) {
         var evaluationLogDetailsDto = evaluationLogMapper.mapDetails(evaluationLog);
-        var classifierInfoDto = classifierOptionsInfoProcessor.processClassifierInfo(evaluationLog.getClassifierInfo());
+        var classifierInfoDto =
+                classifierOptionsInfoProcessor.processClassifierInfo(evaluationLog.getClassifierOptions());
         evaluationLogDetailsDto.setClassifierInfo(classifierInfoDto);
         evaluationLogDetailsDto.setEvaluationResultsDto(getEvaluationResults(evaluationLog));
         return evaluationLogDetailsDto;
@@ -268,15 +273,8 @@ public class EvaluationLogDataService {
     private CriteriaQuery<Tuple> buildClassifiersStatisticsDataCriteria(LocalDate createdDateFrom,
                                                                         LocalDate createdDateTo) {
         CriteriaBuilder builder = entityManager.getCriteriaBuilder();
-        var groupBy = new Function<Root<EvaluationLog>, Expression<?>>() {
-            @Override
-            public Expression<?> apply(Root<EvaluationLog> root) {
-                Join<EvaluationLog, ClassifierInfo> classifierInfoJoin = root.join(CLASSIFIER_INFO);
-                return classifierInfoJoin.get(CLASSIFIER_NAME);
-            }
-        };
-        return buildGroupByStatisticsQuery(builder, EvaluationLog.class, groupBy, CREATION_DATE, createdDateFrom,
-                createdDateTo);
+        return buildGroupByStatisticsQuery(builder, EvaluationLog.class, root -> root.get(CLASSIFIER_NAME),
+                CREATION_DATE, createdDateFrom, createdDateTo);
     }
 
     private ChartDto populateClassifiersChartData(Map<String, Long> classifiersStatisticsMap) {

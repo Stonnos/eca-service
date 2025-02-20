@@ -2,20 +2,21 @@ package com.ecaservice.core.filter.specification;
 
 import com.ecaservice.web.dto.MatchModeVisitor;
 import com.ecaservice.web.dto.model.FilterRequestDto;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Expression;
+import jakarta.persistence.criteria.Predicate;
+import jakarta.persistence.criteria.Root;
 import lombok.Getter;
 import lombok.Setter;
 import org.apache.commons.lang3.StringUtils;
+import org.hibernate.query.criteria.HibernateCriteriaBuilder;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.NumberUtils;
 import org.springframework.util.ReflectionUtils;
 
-import jakarta.persistence.criteria.CriteriaBuilder;
-import jakarta.persistence.criteria.CriteriaQuery;
-import jakarta.persistence.criteria.Expression;
-import jakarta.persistence.criteria.Predicate;
-import jakarta.persistence.criteria.Root;
 import java.lang.reflect.Method;
 import java.text.MessageFormat;
 import java.time.LocalDate;
@@ -45,25 +46,26 @@ public abstract class AbstractFilter<T> implements Specification<T> {
     /**
      * Entity class
      */
-    private Class<T> clazz;
+    @Getter
+    private final Class<T> entityClass;
 
     /**
      * Search query string for global filter
      */
     @Getter
-    private String searchQuery;
+    private final String searchQuery;
 
     /**
      * Global filter fields list
      */
     @Getter
-    private List<String> globalFilterFields;
+    private final List<String> globalFilterFields;
 
     /**
      * Filters requests
      */
     @Getter
-    private List<FilterRequestDto> filters;
+    private final List<FilterRequestDto> filters;
 
     /**
      * Global filter fields customizers
@@ -72,10 +74,10 @@ public abstract class AbstractFilter<T> implements Specification<T> {
     @Setter
     private List<FilterFieldCustomizer> globalFilterFieldsCustomizers;
 
-    protected AbstractFilter(Class<T> clazz, String searchQuery, List<String> globalFilterFields,
+    protected AbstractFilter(Class<T> entityClass, String searchQuery, List<String> globalFilterFields,
                              List<FilterRequestDto> filters) {
-        Assert.notNull(clazz, "Class isn't specified!");
-        this.clazz = clazz;
+        Assert.notNull(entityClass, "Class isn't specified!");
+        this.entityClass = entityClass;
         this.searchQuery = searchQuery;
         this.globalFilterFields = globalFilterFields;
         this.filters = filters;
@@ -99,9 +101,9 @@ public abstract class AbstractFilter<T> implements Specification<T> {
     }
 
     private Predicate buildPredicateForGlobalFilter(Root<T> root, CriteriaBuilder criteriaBuilder) {
-        String trimQuery = searchQuery.trim().toLowerCase();
+        String lowerCaseQuery = searchQuery.trim().toLowerCase();
         Predicate[] predicates = globalFilterFields.stream()
-                .map(field -> buildSinglePredicateForGlobalFilter(root, criteriaBuilder, field, trimQuery))
+                .map(field -> buildSinglePredicateForGlobalFilter(root, criteriaBuilder, field, lowerCaseQuery))
                 .filter(Objects::nonNull)
                 .toArray(Predicate[]::new);
         return criteriaBuilder.or(predicates);
@@ -146,10 +148,10 @@ public abstract class AbstractFilter<T> implements Specification<T> {
 
     private Predicate buildGreaterThanOrEqualPredicate(FilterRequestDto filterRequestDto, String value, Root<T> root,
                                                        CriteriaBuilder criteriaBuilder) {
-        Class<?> fieldClazz = getFieldType(filterRequestDto.getName(), clazz);
+        Class<?> fieldClazz = getFieldType(filterRequestDto.getName(), entityClass);
         if (fieldClazz.isEnum()) {
             throw new IllegalStateException(String.format("Can't build GTE predicate for filter field [%s] of class %s",
-                    filterRequestDto.getName(), clazz.getName()));
+                    filterRequestDto.getName(), entityClass.getName()));
         } else if (LocalDateTime.class.isAssignableFrom(fieldClazz)) {
             Expression<LocalDateTime> expression = buildExpression(root, filterRequestDto.getName());
             LocalDate localDate = parseDate(filterRequestDto.getName(), value);
@@ -161,10 +163,10 @@ public abstract class AbstractFilter<T> implements Specification<T> {
 
     private Predicate buildLessThanOrEqualPredicate(FilterRequestDto filterRequestDto, String value, Root<T> root,
                                                     CriteriaBuilder criteriaBuilder) {
-        Class<?> fieldClazz = getFieldType(filterRequestDto.getName(), clazz);
+        Class<?> fieldClazz = getFieldType(filterRequestDto.getName(), entityClass);
         if (fieldClazz.isEnum()) {
             throw new IllegalStateException(String.format("Can't build LTE predicate for filter field [%s] of class %s",
-                    filterRequestDto.getName(), clazz.getName()));
+                    filterRequestDto.getName(), entityClass.getName()));
         } else if (LocalDateTime.class.isAssignableFrom(fieldClazz)) {
             Expression<LocalDateTime> expression = buildExpression(root, filterRequestDto.getName());
             LocalDate localDate = parseDate(filterRequestDto.getName(), value);
@@ -176,7 +178,7 @@ public abstract class AbstractFilter<T> implements Specification<T> {
 
     private Predicate buildEqualPredicate(FilterRequestDto filterRequestDto, List<String> values, Root<T> root,
                                           CriteriaBuilder criteriaBuilder) {
-        Class fieldClazz = getFieldType(filterRequestDto.getName(), clazz);
+        Class fieldClazz = getFieldType(filterRequestDto.getName(), entityClass);
         if (LocalDateTime.class.isAssignableFrom(fieldClazz)) {
             Predicate[] predicates = values.stream().map(value -> {
                 Expression<LocalDateTime> expression = buildExpression(root, filterRequestDto.getName());
@@ -200,16 +202,15 @@ public abstract class AbstractFilter<T> implements Specification<T> {
 
     private Predicate buildLikePredicate(FilterRequestDto filterRequestDto, List<String> values, Root<T> root,
                                          CriteriaBuilder criteriaBuilder) {
-        Class<?> fieldClazz = getFieldType(filterRequestDto.getName(), clazz);
+        Class<?> fieldClazz = getFieldType(filterRequestDto.getName(), entityClass);
         if (!String.class.isAssignableFrom(fieldClazz)) {
             throw new IllegalStateException(
                     String.format("Can't build LIKE predicate for filter field [%s] of class %s",
-                            filterRequestDto.getName(), clazz.getName()));
+                            filterRequestDto.getName(), entityClass.getName()));
         } else {
             Expression<String> expression = buildExpression(root, filterRequestDto.getName());
             Predicate[] predicates = values.stream()
-                    .map(value -> criteriaBuilder.like(criteriaBuilder.lower(expression),
-                            MessageFormat.format(LIKE_FORMAT, value.toLowerCase())))
+                    .map(value -> buildLikePredicate(criteriaBuilder, expression, value.toLowerCase()))
                     .toArray(Predicate[]::new);
             return criteriaBuilder.or(predicates);
         }
@@ -232,19 +233,18 @@ public abstract class AbstractFilter<T> implements Specification<T> {
         if (filterFieldCustomizer != null) {
             return filterFieldCustomizer.toPredicate(root, criteriaBuilder, value);
         } else {
-            Class<?> fieldClazz = getFieldType(field, clazz);
+            Class<?> fieldClazz = getFieldType(field, entityClass);
             if (fieldClazz.isEnum()) {
                 return buildGlobalFilterPredicateForEnumField(fieldClazz, root, field, value);
             } else if (String.class.isAssignableFrom(fieldClazz)) {
                 Expression<String> expression = buildExpression(root, field);
-                return criteriaBuilder.like(criteriaBuilder.lower(expression),
-                        MessageFormat.format(LIKE_FORMAT, value));
+                return buildLikePredicate(criteriaBuilder, expression, value);
             } else if (Long.class.isAssignableFrom(fieldClazz)) {
                 return buildGlobalFilterPredicateForNumericField(root, criteriaBuilder, field, value);
             } else {
                 throw new IllegalStateException(
                         String.format("Can't build LIKE predicate for filter field [%s] of class %s", field,
-                                clazz.getName()));
+                                entityClass.getName()));
             }
         }
     }
@@ -288,5 +288,12 @@ public abstract class AbstractFilter<T> implements Specification<T> {
             }
         }
         return null;
+    }
+
+    private Predicate buildLikePredicate(CriteriaBuilder criteriaBuilder,
+                                         Expression<String> expression,
+                                         String value) {
+        HibernateCriteriaBuilder hibernateCriteriaBuilder = (HibernateCriteriaBuilder) criteriaBuilder;
+        return hibernateCriteriaBuilder.ilike(expression, MessageFormat.format(LIKE_FORMAT, value));
     }
 }

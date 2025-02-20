@@ -1,6 +1,7 @@
 package com.ecaservice.audit.service;
 
 import com.ecaservice.audit.AbstractJpaTest;
+import com.ecaservice.audit.config.AuditLogProperties;
 import com.ecaservice.audit.entity.AuditLogEntity;
 import com.ecaservice.audit.exception.DuplicateEventIdException;
 import com.ecaservice.audit.mapping.AuditLogMapperImpl;
@@ -45,7 +46,7 @@ import static org.mockito.Mockito.when;
  * @author Roman Batygin
  */
 @EnableAspectJAutoProxy
-@Import({AuditLogMapperImpl.class, AuditLogService.class, CoreLockAutoConfiguration.class})
+@Import({AuditLogMapperImpl.class, AuditLogService.class, CoreLockAutoConfiguration.class, AuditLogProperties.class})
 class AuditLogServiceTest extends AbstractJpaTest {
 
     private static final int PAGE_NUMBER = 0;

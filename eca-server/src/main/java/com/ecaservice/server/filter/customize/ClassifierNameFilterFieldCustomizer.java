@@ -1,4 +1,4 @@
-package com.ecaservice.server.service.evaluation;
+package com.ecaservice.server.filter.customize;
 
 import com.ecaservice.core.filter.service.FilterTemplateService;
 import com.ecaservice.core.filter.specification.FilterFieldCustomizer;
@@ -19,7 +19,7 @@ import static com.ecaservice.server.service.filter.dictionary.FilterDictionaries
  */
 public class ClassifierNameFilterFieldCustomizer extends FilterFieldCustomizer {
 
-    private static final String CLASSIFIER_NAME_FIELD = "classifierInfo.classifierName";
+    private static final String CLASSIFIER_NAME_FIELD = "classifierName";
 
     private final FilterTemplateService filterTemplateService;
 

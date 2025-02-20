@@ -27,8 +27,8 @@ import static com.ecaservice.ers.util.Utils.getEvaluationMethodDescription;
  * @author Roman Batygin
  */
 @Mapper(uses = {ClassificationCostsReportMapper.class, ConfusionMatrixMapper.class,
-        StatisticsReportMapper.class, ClassifierReportMapper.class,
-        ClassifierOptionsInfoMapper.class, InstancesMapper.class}, injectionStrategy = InjectionStrategy.CONSTRUCTOR)
+        StatisticsReportMapper.class, InstancesMapper.class},
+        injectionStrategy = InjectionStrategy.CONSTRUCTOR)
 public interface EvaluationResultsMapper {
 
     DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
@@ -43,7 +43,9 @@ public interface EvaluationResultsMapper {
     @Mapping(source = "evaluationMethodReport.numFolds", target = "numFolds")
     @Mapping(source = "evaluationMethodReport.numTests", target = "numTests")
     @Mapping(source = "evaluationMethodReport.seed", target = "seed")
-    @Mapping(source = "classifierReport", target = "classifierInfo")
+    @Mapping(source = "instances.relationName", target = "relationName")
+    @Mapping(source = "classifierReport.classifierName", target = "classifierName")
+    @Mapping(source = "classifierReport.options", target = "classifierOptions")
     @Mapping(target = "instancesInfo", ignore = true)
     EvaluationResultsInfo map(EvaluationResultsRequest evaluationResultsRequest);
 
@@ -57,7 +59,8 @@ public interface EvaluationResultsMapper {
     @Mapping(source = "numFolds", target = "evaluationMethodReport.numFolds")
     @Mapping(source = "numTests", target = "evaluationMethodReport.numTests")
     @Mapping(source = "seed", target = "evaluationMethodReport.seed")
-    @Mapping(source = "classifierInfo", target = "classifierReport")
+    @Mapping(source = "classifierName", target = "classifierReport.classifierName")
+    @Mapping(source = "classifierOptions", target = "classifierReport.options")
     @Mapping(source = "instancesInfo", target = "instances")
     GetEvaluationResultsResponse map(EvaluationResultsInfo evaluationResultsInfo);
 
@@ -92,9 +95,7 @@ public interface EvaluationResultsMapper {
      * @return evaluation results history report model
      */
     @Mapping(target = "evaluationMethod", ignore = true)
-    @Mapping(target = "classifierName", ignore = true)
     @Mapping(source = "saveDate", target = "saveDate", qualifiedByName = "formatLocalDateTime")
-    @Mapping(source = "classifierInfo.options", target = "classifierOptions")
     @Mapping(source = "instancesInfo.relationName", target = "relationName")
     @Mapping(source = "statistics.numTestInstances", target = "numTestInstances")
     @Mapping(source = "statistics.numCorrect", target = "numCorrect")

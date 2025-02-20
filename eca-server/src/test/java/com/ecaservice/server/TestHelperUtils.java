@@ -33,7 +33,6 @@ import com.ecaservice.server.dto.CreateExperimentRequestDto;
 import com.ecaservice.server.dto.CreateOptimalEvaluationRequestDto;
 import com.ecaservice.server.model.ClassifierOptionsResult;
 import com.ecaservice.server.model.entity.Channel;
-import com.ecaservice.server.model.entity.ClassifierInfo;
 import com.ecaservice.server.model.entity.ClassifierOptionsDatabaseModel;
 import com.ecaservice.server.model.entity.ClassifiersConfiguration;
 import com.ecaservice.server.model.entity.ClassifiersConfigurationActionType;
@@ -458,6 +457,7 @@ public class TestHelperUtils {
         experiment.setReplyTo(REPLY_TO);
         experiment.setCorrelationId(UUID.randomUUID().toString());
         experiment.setInstancesInfo(createInstancesInfo());
+        experiment.setRelationName(RELATION_NAME);
         return experiment;
     }
 
@@ -474,6 +474,7 @@ public class TestHelperUtils {
                                               InstancesInfo instancesInfo) {
         Experiment experiment = createExperiment(requestId, experimentStatus);
         experiment.setInstancesInfo(instancesInfo);
+        experiment.setRelationName(instancesInfo.getRelationName());
         return experiment;
     }
 
@@ -616,30 +617,6 @@ public class TestHelperUtils {
     }
 
     /**
-     * Create classifier info.
-     *
-     * @return classifier info
-     */
-    public static ClassifierInfo createClassifierInfo() {
-        ClassifierInfo classifierInfo = new ClassifierInfo();
-        classifierInfo.setClassifierName(CART.class.getSimpleName());
-        classifierInfo.setClassifierOptions(toJsonString(createLogisticOptions()));
-        return classifierInfo;
-    }
-
-    /**
-     * Create classifier info.
-     *
-     * @param classifierOptions - classifier options
-     * @return classifier info
-     */
-    public static ClassifierInfo createClassifierInfo(ClassifierOptions classifierOptions) {
-        ClassifierInfo classifierInfo = createClassifierInfo();
-        classifierInfo.setClassifierOptions(toJsonString(classifierOptions));
-        return classifierInfo;
-    }
-
-    /**
      * Creates evaluation log.
      *
      * @return evaluation log
@@ -650,8 +627,10 @@ public class TestHelperUtils {
         evaluationLog.setCreationDate(LocalDateTime.now());
         evaluationLog.setStartDate(LocalDateTime.now());
         evaluationLog.setEndDate(LocalDateTime.now());
-        evaluationLog.setClassifierInfo(createClassifierInfo());
+        evaluationLog.setClassifierName(CART.class.getSimpleName());
+        evaluationLog.setClassifierOptions(toJsonString(createDecisionTreeOptions()));
         evaluationLog.setInstancesInfo(createInstancesInfo());
+        evaluationLog.setRelationName(RELATION_NAME);
         evaluationLog.setEvaluationMethod(EvaluationMethod.CROSS_VALIDATION);
         evaluationLog.setNumFolds(NUM_FOLDS);
         evaluationLog.setNumTests(NUM_TESTS);
@@ -692,6 +671,7 @@ public class TestHelperUtils {
         EvaluationLog evaluationLog = createEvaluationLog();
         evaluationLog.setRequestStatus(requestStatus);
         evaluationLog.setRequestId(requestId);
+        evaluationLog.setRelationName(instancesInfo.getRelationName());
         evaluationLog.setInstancesInfo(instancesInfo);
         return evaluationLog;
     }
@@ -918,7 +898,6 @@ public class TestHelperUtils {
     public static ClassifierReport createClassifierReport(String options) {
         ClassifierReport classifierReport = new ClassifierReport();
         classifierReport.setClassifierName(DecisionTreeType.CART.name());
-        classifierReport.setClassifierDescription(DecisionTreeType.CART.getDescription());
         classifierReport.setOptions(options);
         return classifierReport;
     }
@@ -947,7 +926,8 @@ public class TestHelperUtils {
         ExperimentResultsEntity experimentResultsEntity = new ExperimentResultsEntity();
         experimentResultsEntity.setExperiment(experiment);
         experimentResultsEntity.setResultsIndex(0);
-        experimentResultsEntity.setClassifierInfo(createClassifierInfo());
+        experimentResultsEntity.setClassifierName(CART.class.getSimpleName());
+        experimentResultsEntity.setClassifierOptions(toJsonString(createDecisionTreeOptions()));
         experimentResultsEntity.setPctCorrect(BigDecimal.TEN);
         return experimentResultsEntity;
     }

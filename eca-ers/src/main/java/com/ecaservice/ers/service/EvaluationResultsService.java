@@ -13,9 +13,12 @@ import com.ecaservice.ers.model.InstancesInfo;
 import com.ecaservice.ers.repository.EvaluationResultsInfoRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+
+import static com.ecaservice.ers.config.CacheNames.EVALUATION_RESULTS_HISTORY_COUNT_QUERY;
 
 /**
  * Implements service for saving evaluation results into database.
@@ -37,6 +40,7 @@ public class EvaluationResultsService {
      * @param evaluationResultsRequest - evaluation results report
      * @return evaluation results response
      */
+    @CacheEvict(value = EVALUATION_RESULTS_HISTORY_COUNT_QUERY, allEntries = true)
     @Locked(lockName = "saveEvaluationResults", key = "#evaluationResultsRequest.requestId")
     public EvaluationResultsResponse saveEvaluationResults(EvaluationResultsRequest evaluationResultsRequest) {
         log.info("Starting to save evaluation results report with request id = {}.",

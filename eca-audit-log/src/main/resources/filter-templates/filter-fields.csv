@@ -1,5 +1,5 @@
 id;field_name;description;field_order;filter_field_type;match_mode;filter_template_id;filter_dictionary_id;multiple
-1;eventId;ID события;0;TEXT;LIKE;1;NULL;false
+1;eventId;ID события;0;TEXT;EQUALS;1;NULL;false
 2;groupCode;Группа событий;2;REFERENCE;EQUALS;1;1;false
 4;eventDate;Дата события;4;DATE;RANGE;1;NULL;true
 5;correlationId;ID корреляции;1;TEXT;EQUALS;1;NULL;false

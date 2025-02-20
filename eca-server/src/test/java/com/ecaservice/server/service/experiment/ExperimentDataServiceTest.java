@@ -59,7 +59,7 @@ import static org.mockito.Mockito.when;
  */
 @Import({ExperimentMapperImpl.class, ExperimentConfig.class, AppProperties.class, CrossValidationConfig.class,
         DateTimeConverter.class, InstancesInfoMapperImpl.class, ExperimentDataService.class,
-        ExperimentProgressService.class})
+        ExperimentProgressService.class, ExperimentCountQueryExecutor.class})
 class ExperimentDataServiceTest extends AbstractJpaTest {
 
     private static final int PAGE_NUMBER = 0;
@@ -161,11 +161,11 @@ class ExperimentDataServiceTest extends AbstractJpaTest {
         experimentRepository.saveAll(Arrays.asList(experiment, experiment1, experiment2, experiment3));
         PageRequestDto pageRequestDto = new PageRequestDto(PAGE_NUMBER, PAGE_SIZE,
                 Collections.singletonList(new SortFieldRequestDto(Experiment_.CREATION_DATE, false)),
-                experiment1.getRequestId().substring(4, 10), newArrayList());
+                experiment1.getRequestId(), newArrayList());
         pageRequestDto.getFilters().add(new FilterRequestDto(Experiment_.REQUEST_STATUS,
                 Collections.singletonList(RequestStatus.FINISHED.name()), MatchMode.EQUALS));
         when(filterTemplateService.getGlobalFilterFields(FilterTemplateType.EXPERIMENT)).thenReturn(
-                Arrays.asList(Experiment_.EMAIL, Experiment_.REQUEST_ID));
+                Collections.singletonList(Experiment_.REQUEST_ID));
         Page<Experiment> evaluationLogPage = experimentDataService.getNextPage(pageRequestDto);
         assertThat(evaluationLogPage).isNotNull();
         assertThat(evaluationLogPage.getTotalElements()).isOne();

@@ -12,6 +12,13 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @ConfigurationProperties("audit")
 public class AuditLogProperties {
 
+    private static final int DEFAULT_MAXIMUM_PAGES_NUM = 99;
+
+    /**
+     * Maximum pages number
+     */
+    private Integer maxPagesNum = DEFAULT_MAXIMUM_PAGES_NUM;
+
     /**
      * Rabbit properties
      */
