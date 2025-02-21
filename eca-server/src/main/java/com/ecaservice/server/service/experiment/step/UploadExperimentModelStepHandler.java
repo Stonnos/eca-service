@@ -25,7 +25,7 @@ import org.springframework.util.StopWatch;
 @Component
 public class UploadExperimentModelStepHandler extends AbstractExperimentStepHandler {
 
-    private static final String EXPERIMENT_PATH_FORMAT = "experiment-%s.zip";
+    private static final String EXPERIMENT_PATH_FORMAT = "experiments/experiment-%s.zip";
 
     private final MinioStorageService minioStorageService;
     private final ExperimentStepService experimentStepService;

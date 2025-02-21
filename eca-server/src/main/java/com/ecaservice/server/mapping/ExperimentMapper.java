@@ -82,6 +82,7 @@ public abstract class ExperimentMapper extends AbstractEvaluationMapper {
      * @return experiment dto model
      */
     @Mapping(source = "experiment", target = "evaluationTotalTime", qualifiedByName = "calculateEvaluationTotalTime")
+    @Mapping(source = "modelPath", target = "modelPath", qualifiedByName = "mapModelPath")
     @Mapping(target = "evaluationMethod", ignore = true)
     @Mapping(target = "experimentType", ignore = true)
     @Mapping(target = "requestStatus", ignore = true)
@@ -114,6 +115,7 @@ public abstract class ExperimentMapper extends AbstractEvaluationMapper {
      */
     @Mapping(source = "instancesInfo.relationName", target = "relationName")
     @Mapping(source = "experiment", target = "evaluationTotalTime", qualifiedByName = "calculateEvaluationTotalTime")
+    @Mapping(source = "modelPath", target = "modelPath", qualifiedByName = "mapModelPath")
     @Mapping(target = "evaluationMethod", ignore = true)
     @Mapping(source = "experimentType.description", target = "experimentType")
     @Mapping(source = "requestStatus.description", target = "requestStatus")

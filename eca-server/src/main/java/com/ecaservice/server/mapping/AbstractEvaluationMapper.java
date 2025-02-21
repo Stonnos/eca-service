@@ -1,6 +1,8 @@
 package com.ecaservice.server.mapping;
 
 import com.ecaservice.server.model.entity.AbstractEvaluationEntity;
+import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.mapstruct.Named;
 
 import java.time.Instant;
@@ -28,5 +30,13 @@ public abstract class AbstractEvaluationMapper {
             return evaluationTimeFormatter.format(totalTime);
         }
         return null;
+    }
+
+    @Named("mapModelPath")
+    protected String mapModelPath(String modelPath) {
+        if (StringUtils.isEmpty(modelPath)) {
+            return null;
+        }
+        return FilenameUtils.getName(modelPath);
     }
 }

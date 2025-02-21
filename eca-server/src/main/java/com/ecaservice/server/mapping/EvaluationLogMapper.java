@@ -134,6 +134,7 @@ public abstract class EvaluationLogMapper extends AbstractEvaluationMapper {
      * @return evaluation log dto
      */
     @Mapping(source = "evaluationLog", target = "evaluationTotalTime", qualifiedByName = "calculateEvaluationTotalTime")
+    @Mapping(source = "modelPath", target = "modelPath", qualifiedByName = "mapModelPath")
     @Mapping(target = "evaluationMethod", ignore = true)
     @Mapping(target = "requestStatus", ignore = true)
     @Mapping(target = "numFolds", ignore = true)
@@ -149,6 +150,7 @@ public abstract class EvaluationLogMapper extends AbstractEvaluationMapper {
      * @return evaluation log details dto
      */
     @Mapping(source = "evaluationLog", target = "evaluationTotalTime", qualifiedByName = "calculateEvaluationTotalTime")
+    @Mapping(source = "modelPath", target = "modelPath", qualifiedByName = "mapModelPath")
     @Mapping(target = "evaluationMethod", ignore = true)
     @Mapping(target = "requestStatus", ignore = true)
     @Mapping(target = "numFolds", ignore = true)
@@ -166,6 +168,7 @@ public abstract class EvaluationLogMapper extends AbstractEvaluationMapper {
     @Mapping(target = "evaluationMethod", ignore = true)
     @Mapping(source = "requestStatus.description", target = "requestStatus")
     @Mapping(source = "evaluationLog", target = "evaluationTotalTime", qualifiedByName = "calculateEvaluationTotalTime")
+    @Mapping(source = "modelPath", target = "modelPath", qualifiedByName = "mapModelPath")
     @Mapping(source = "creationDate", target = "creationDate", qualifiedByName = "formatLocalDateTime")
     @Mapping(source = "startDate", target = "startDate", qualifiedByName = "formatLocalDateTime")
     @Mapping(source = "endDate", target = "endDate", qualifiedByName = "formatLocalDateTime")

@@ -36,7 +36,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class UploadInstancesService {
 
-    private static final String INSTANCES_OBJECT_PATH_FORMAT = "instances-%s.json";
+    private static final String INSTANCES_OBJECT_PATH_FORMAT = "instances/instances-%s.json";
     private static final String JSON_EXTENSION = "json";
 
     private final MinioStorageService minioStorageService;

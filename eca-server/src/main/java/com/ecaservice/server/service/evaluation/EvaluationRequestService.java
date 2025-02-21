@@ -51,7 +51,7 @@ import static com.ecaservice.server.util.Utils.buildInternalErrorEvaluationResul
 @RequiredArgsConstructor
 public class EvaluationRequestService {
 
-    private static final String CLASSIFIER_PATH_FORMAT = "classifier-%s.model";
+    private static final String CLASSIFIER_PATH_FORMAT = "classifiers/classifier-%s.model";
 
     private final AppProperties appProperties;
     private final ClassifiersProperties classifiersProperties;
