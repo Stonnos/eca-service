@@ -1,0 +1,17 @@
+<div class="container-fluid mb-5">
+  <p-tabView class="evaluation-log-details-tab">
+    <p-tabPanel header="Результаты классификации" leftIcon="pi pi-table" [cache]="false">
+      <ng-template pTemplate="content">
+        <app-evaluation-log-details>
+        </app-evaluation-log-details>
+      </ng-template>
+    </p-tabPanel>
+
+    <p-tabPanel header="ROC кривые" leftIcon="pi pi-chart-bar" [cache]="false">
+      <ng-template pTemplate="content">
+        <app-evaluation-log-roc-curve></app-evaluation-log-roc-curve>
+      </ng-template>
+    </p-tabPanel>
+
+  </p-tabView>
+</div>

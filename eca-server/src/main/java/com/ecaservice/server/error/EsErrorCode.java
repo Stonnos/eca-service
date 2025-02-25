@@ -41,7 +41,22 @@ public enum EsErrorCode implements ErrorDetails {
     /**
      * Ensemble classifier options not allowed
      */
-    ENSEMBLE_CLASSIFIER_OPTIONS_NOT_ALLOWED("EnsembleClassifierOptionsNotAllowed");
+    ENSEMBLE_CLASSIFIER_OPTIONS_NOT_ALLOWED("EnsembleClassifierOptionsNotAllowed"),
+
+    /**
+     * Invalid class index
+     */
+    INVALID_CLASS_INDEX("InvalidClassIndex"),
+
+    /**
+     * Model deleted
+     */
+    MODEL_DELETED("ModelDeleted"),
+
+    /**
+     * Unexpected request status
+     */
+    UNEXPECTED_REQUEST_STATUS("UnexpectedRequestStatus");
 
     /**
      * Error code

@@ -3,7 +3,6 @@ import { RouterModule, Routes } from '@angular/router';
 import { DashboardComponent } from "../dashboard/dashboard.component";
 import { LoginComponent } from "../auth/components/login.component";
 import { ExperimentTabsComponent } from "../experiments-tabs/components/experiment-tabs.component";
-import { EvaluationLogDetailsComponent } from "../evaluation-log-details/components/evaluation-log-details.component";
 import { ExperimentDetailsComponent } from "../experiment-details/components/experiment-details.component";
 import { ExperimentResultsDetailsComponent } from "../experiment-results-details/components/experiment-results-details.component";
 import { UsersListComponent } from "../users/components/users-list.component";
@@ -18,6 +17,7 @@ import { ClassifiersTabsComponent } from "../classifiers-tabs/components/classif
 import { EvaluationResultsHistoryComponent } from "../evaluation-results-history/components/evaluation-results-history.component";
 import { UserProfileTabsComponent } from "../user-profile-tabs/components/user-profile-tabs.component";
 import { InstancesDetailsTabsComponent } from "../instances-details-tabs/components/instances-details-tabs.component";
+import { EvaluationLogDetailsTabsComponent } from '../evaluation-log-details-tabs/components/evaluation-log-details-tabs.component';
 
 const routes: Routes = [
   {
@@ -58,7 +58,7 @@ const routes: Routes = [
       },
       {
         path: 'classifiers/evaluation-results/:id',
-        component: EvaluationLogDetailsComponent
+        component: EvaluationLogDetailsTabsComponent
       },
       {
         path: 'experiments/details/:id',

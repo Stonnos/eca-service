@@ -108,4 +108,13 @@
 |400
 |InvalidConfirmationCode
 |Неправильный код подтверждения
+|400
+|InvalidClassIndex
+|Передан некорректный номер класса
+|400
+|ModelDeleted
+|Модель классификатора была удалена
+|400
+|UnexpectedRequestStatus
+|Невалидный статус заявки
 |===

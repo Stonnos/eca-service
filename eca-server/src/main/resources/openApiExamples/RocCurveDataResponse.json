@@ -1,0 +1,69 @@
+{
+  "rocCurvePoints": [
+    {
+      "specificity": 100,
+      "sensitivity": 100
+    },
+    {
+      "specificity": 85.4167,
+      "sensitivity": 98.5714
+    },
+    {
+      "specificity": 84.7222,
+      "sensitivity": 98.5714
+    },
+    {
+      "specificity": 72.2222,
+      "sensitivity": 98.5714
+    },
+    {
+      "specificity": 71.5278,
+      "sensitivity": 98.5714
+    },
+    {
+      "specificity": 70.8333,
+      "sensitivity": 98.5714
+    },
+    {
+      "specificity": 68.75,
+      "sensitivity": 98.5714
+    },
+    {
+      "specificity": 31.9444,
+      "sensitivity": 94.2857
+    },
+    {
+      "specificity": 7.6389,
+      "sensitivity": 58.5714
+    },
+    {
+      "specificity": 7.6389,
+      "sensitivity": 57.1429
+    },
+    {
+      "specificity": 4.1667,
+      "sensitivity": 38.5714
+    },
+    {
+      "specificity": 3.4722,
+      "sensitivity": 38.5714
+    },
+    {
+      "specificity": 3.4722,
+      "sensitivity": 37.1429
+    },
+    {
+      "specificity": 2.7778,
+      "sensitivity": 37.1429
+    },
+    {
+      "specificity": 2.0833,
+      "sensitivity": 32.8571
+    },
+    {
+      "specificity": 2.0833,
+      "sensitivity": 31.4286
+    }
+  ],
+  "aucValue": 0.8974
+}

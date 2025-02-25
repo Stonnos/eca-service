@@ -81,6 +81,8 @@ app:
   maxPagesNum: 99
   modelDownloadUrlExpirationDays: 7
   shortLifeUrlExpirationMinutes: 5
+  modelCacheTtlSeconds: 180
+  modelCacheSize: 25
 
 ## Queues properties
 queue:

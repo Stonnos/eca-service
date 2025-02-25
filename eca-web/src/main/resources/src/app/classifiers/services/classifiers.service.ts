@@ -5,6 +5,7 @@ import {
   EvaluationLogDetailsDto,
   EvaluationLogDto,
   PageDto,
+  RocCurveDataDto,
   PageRequestDto, RequestStatusStatisticsDto, S3ContentResponseDto
 } from "../../../../../../../target/generated-sources/typescript/eca-web-dto";
 import { Observable } from "rxjs/internal/Observable";
@@ -16,13 +17,25 @@ import { CreateEvaluationRequestDto } from "../../create-classifier/model/create
 import {
   CreateOptimalEvaluationRequestDto
 } from "../../create-optimal-classifier/model/create-optimal-evaluation-request.model";
+import { RocCurveService } from '../../common/services/roc-curve.service';
 
 @Injectable()
-export class ClassifiersService {
+export class ClassifiersService implements RocCurveService {
 
   private serviceUrl = environment.serverUrl + '/evaluation';
 
   public constructor(private http: HttpClient) {
+  }
+
+  public getRocCurveData(evaluationLogId: number, classValueIndex: number): Observable<RocCurveDataDto> {
+    const headers = new HttpHeaders({
+      'Content-type': 'application/json; charset=utf-8'
+    });
+    let params = new HttpParams()
+      .set('evaluationLogId', evaluationLogId.toString())
+      .set('classValueIndex', classValueIndex.toString());
+    const options = { headers: headers, params: params };
+    return this.http.get<RocCurveDataDto>(this.serviceUrl + '/roc-curve', options);
   }
 
   public createEvaluationRequest(evaluationRequestDto: CreateEvaluationRequestDto): Observable<CreateEvaluationResponseDto> {
