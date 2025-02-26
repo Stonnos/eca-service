@@ -83,6 +83,7 @@ app:
   shortLifeUrlExpirationMinutes: 5
   modelCacheTtlSeconds: 180
   modelCacheSize: 25
+  autoDeleteExpiredModels: false
 
 ## Queues properties
 queue:

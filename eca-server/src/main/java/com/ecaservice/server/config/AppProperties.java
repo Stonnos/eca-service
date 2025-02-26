@@ -58,4 +58,9 @@ public class AppProperties {
      * Model cache size
      */
     private Integer modelCacheSize;
+
+    /**
+     * Auto delete expired models
+     */
+    private boolean autoDeleteExpiredModels;
 }

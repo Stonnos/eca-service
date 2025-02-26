@@ -38,6 +38,10 @@ public class ExperimentDataCleaner {
     @Locked(lockName = EXPERIMENTS_CRON_JOB_KEY, waitForLock = false)
     public void removeExperimentsModels() {
         log.info("Starting to remove experiments models.");
+        if (!appProperties.isAutoDeleteExpiredModels()) {
+            log.warn("Experiment model auto removing has been disabled. Skipped...");
+            return;
+        }
         Pageable pageRequest = PageRequest.of(0, appProperties.getPageSize());
         LocalDateTime dateTime = LocalDateTime.now().minusDays(appProperties.getNumberOfDaysForStorage());
         List<Experiment> experiments;
