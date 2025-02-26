@@ -168,6 +168,7 @@ public class TestHelperUtils {
     private static final String EVALUATION_RESULTS_RESPONSE_JSON = "evaluation-results-response.json";
     private static final String CONFUSION_MATRIX_JSON = "confusion-matrix.json";
     private static final long EVALUATION_TIME_MILLIS = 1000L;
+    private static final int EXPERIMENT_NUM_ITS = 5;
 
     /**
      * Creates page request dto.
@@ -273,6 +274,25 @@ public class TestHelperUtils {
                     eca.core.evaluation.EvaluationMethod.CROSS_VALIDATION, TestHelperUtils.NUM_FOLDS,
                     TestHelperUtils.NUM_TESTS, SEED);
             return new EvaluationResults(cart, evaluation);
+        } catch (Exception ex) {
+            throw new IllegalStateException(ex.getMessage());
+        }
+    }
+
+    /**
+     * Builds experiment.
+     *
+     * @return experiment history
+     */
+    public static AbstractExperiment<?> buildExperiment() {
+        try {
+            Instances testInstances = loadInstances();
+            AutomatedKNearestNeighbours automatedKNearestNeighbours
+                    = new AutomatedKNearestNeighbours(testInstances, new KNearestNeighbours());
+            automatedKNearestNeighbours.setEvaluationMethod(EvaluationMethod.TRAINING_DATA);
+            automatedKNearestNeighbours.setNumIterations(EXPERIMENT_NUM_ITS);
+            automatedKNearestNeighbours.beginExperiment();
+            return automatedKNearestNeighbours;
         } catch (Exception ex) {
             throw new IllegalStateException(ex.getMessage());
         }

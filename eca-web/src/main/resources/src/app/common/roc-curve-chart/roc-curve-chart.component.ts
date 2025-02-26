@@ -55,7 +55,7 @@ export class RocCurveChartComponent implements OnInit {
                 borderColor: 'black',
                 data: rocCurveDataDto.rocCurvePoints.map((chartData: RocCurvePointDto) => { return { x: chartData.specificity, y: chartData.sensitivity}}),
                 // Hide points
-                radius: 0,
+               // radius: 0,
                 cubicInterpolationMode: 'monotone'
               }
             ]
@@ -69,6 +69,19 @@ export class RocCurveChartComponent implements OnInit {
 
   private initBarOptions(): void {
     this.barOptions = {
+      tooltips: {
+        callbacks: {
+          title: () => {
+            return null;
+          },
+          label: (data) => {
+            console.log(data);
+            const specificity = 100.0 - data.xLabel;
+            const sensitivity = data.yLabel;
+            return `Специфичность: ${specificity.toFixed(4)}  Чувствительность: ${sensitivity.toFixed(4)}`;
+          }
+        }
+      },
       title: {
         display: true,
         text: 'Данные ROC кривой',
