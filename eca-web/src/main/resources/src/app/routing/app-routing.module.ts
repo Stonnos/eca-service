@@ -4,7 +4,6 @@ import { DashboardComponent } from "../dashboard/dashboard.component";
 import { LoginComponent } from "../auth/components/login.component";
 import { ExperimentTabsComponent } from "../experiments-tabs/components/experiment-tabs.component";
 import { ExperimentDetailsComponent } from "../experiment-details/components/experiment-details.component";
-import { ExperimentResultsDetailsComponent } from "../experiment-results-details/components/experiment-results-details.component";
 import { UsersListComponent } from "../users/components/users-list.component";
 import { ResetPasswordComponent } from "../change-password/components/reset-password/reset-password.component";
 import { InstancesListComponent } from "../instances/components/instances-list.component";
@@ -18,6 +17,7 @@ import { EvaluationResultsHistoryComponent } from "../evaluation-results-history
 import { UserProfileTabsComponent } from "../user-profile-tabs/components/user-profile-tabs.component";
 import { InstancesDetailsTabsComponent } from "../instances-details-tabs/components/instances-details-tabs.component";
 import { EvaluationLogDetailsTabsComponent } from '../evaluation-log-details-tabs/components/evaluation-log-details-tabs.component';
+import { ExperimentResultsDetailsTabsComponent } from '../experiment-results-details-tabs/components/experiment-results-details-tabs.component';
 
 const routes: Routes = [
   {
@@ -66,7 +66,7 @@ const routes: Routes = [
       },
       {
         path: 'experiments/results/details/:id',
-        component: ExperimentResultsDetailsComponent
+        component: ExperimentResultsDetailsTabsComponent
       },
       {
         path: 'experiments/classifiers-configuration/details/:id',

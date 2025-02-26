@@ -27,17 +27,6 @@ export class ClassifiersService implements RocCurveService {
   public constructor(private http: HttpClient) {
   }
 
-  public getRocCurveData(evaluationLogId: number, classValueIndex: number): Observable<RocCurveDataDto> {
-    const headers = new HttpHeaders({
-      'Content-type': 'application/json; charset=utf-8'
-    });
-    let params = new HttpParams()
-      .set('evaluationLogId', evaluationLogId.toString())
-      .set('classValueIndex', classValueIndex.toString());
-    const options = { headers: headers, params: params };
-    return this.http.get<RocCurveDataDto>(this.serviceUrl + '/roc-curve', options);
-  }
-
   public createEvaluationRequest(evaluationRequestDto: CreateEvaluationRequestDto): Observable<CreateEvaluationResponseDto> {
     const headers = new HttpHeaders({
       'Content-type': 'application/json; charset=utf-8'
@@ -87,6 +76,17 @@ export class ClassifiersService implements RocCurveService {
       'Content-type': 'application/json; charset=utf-8'
     });
     return this.http.get<S3ContentResponseDto>(this.serviceUrl + '/model/' + id, { headers: headers });
+  }
+
+  public getRocCurveData(evaluationLogId: number, classValueIndex: number): Observable<RocCurveDataDto> {
+    const headers = new HttpHeaders({
+      'Content-type': 'application/json; charset=utf-8'
+    });
+    let params = new HttpParams()
+      .set('evaluationLogId', evaluationLogId.toString())
+      .set('classValueIndex', classValueIndex.toString());
+    const options = { headers: headers, params: params };
+    return this.http.get<RocCurveDataDto>(this.serviceUrl + '/roc-curve', options);
   }
 
   public downloadContent(url: string): Observable<Blob> {

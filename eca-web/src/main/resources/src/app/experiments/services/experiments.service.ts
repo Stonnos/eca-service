@@ -6,6 +6,7 @@ import {
   ExperimentDto,
   PageDto,
   PageRequestDto,
+  RocCurveDataDto,
   RequestStatusStatisticsDto, ExperimentResultsDetailsDto, ExperimentProgressDto, S3ContentResponseDto, ChartDto
 } from "../../../../../../../target/generated-sources/typescript/eca-web-dto";
 import { saveAs } from 'file-saver/dist/FileSaver';
@@ -14,9 +15,10 @@ import { environment } from "../../../environments/environment";
 import { catchError, finalize, switchMap } from "rxjs/internal/operators";
 import { EMPTY } from "rxjs/internal/observable/empty";
 import { CreateExperimentRequestDto } from "../../create-experiment/model/create-experiment-request.model";
+import { RocCurveService } from '../../common/services/roc-curve.service';
 
 @Injectable()
-export class ExperimentsService {
+export class ExperimentsService implements RocCurveService {
 
   private serviceUrl = environment.serverUrl + '/experiment';
 
@@ -115,5 +117,16 @@ export class ExperimentsService {
       'Content-type': 'application/json; charset=utf-8'
     });
     return this.http.get<ExperimentProgressDto>(this.serviceUrl + '/progress/' + id, { headers: headers });
+  }
+
+  public getRocCurveData(experimentResultsId: number, classValueIndex: number): Observable<RocCurveDataDto> {
+    const headers = new HttpHeaders({
+      'Content-type': 'application/json; charset=utf-8'
+    });
+    let params = new HttpParams()
+      .set('experimentResultsId', experimentResultsId.toString())
+      .set('classValueIndex', classValueIndex.toString());
+    const options = { headers: headers, params: params };
+    return this.http.get<RocCurveDataDto>(this.serviceUrl + '/roc-curve', options);
   }
 }

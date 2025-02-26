@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { UiComponentsModule } from "../ui-components.module";
-import { EvaluationLogRocCurveComponent } from "./components/evaluation-log-roc-curve.component";
+import { ExperimentResultsRocCurveComponent } from "./components/experiment-results-roc-curve.component";
 import { SharedModule } from "../common/shared.module";
 
 @NgModule({
@@ -13,12 +13,12 @@ import { SharedModule } from "../common/shared.module";
     SharedModule
   ],
   declarations: [
-    EvaluationLogRocCurveComponent
+    ExperimentResultsRocCurveComponent
   ],
   exports: [
-    EvaluationLogRocCurveComponent
+    ExperimentResultsRocCurveComponent
   ],
   providers: []
 })
-export class EvaluationLogRocCurveModule {
+export class ExperimentResultsRocCurveModule {
 }
