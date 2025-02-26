@@ -38,7 +38,7 @@ public class ExperimentDataCleaner {
     @Locked(lockName = EXPERIMENTS_CRON_JOB_KEY, waitForLock = false)
     public void removeExperimentsModels() {
         log.info("Starting to remove experiments models.");
-        if (!appProperties.isAutoDeleteExpiredModels()) {
+        if (!appProperties.isAutoRemoveExpiredModels()) {
             log.warn("Experiment model auto removing has been disabled. Skipped...");
             return;
         }

@@ -38,7 +38,7 @@ public class ClassifiersDataCleaner {
     @Locked(lockName = CLASSIFIERS_CRON_JOB_KEY, waitForLock = false)
     public void removeModels() {
         log.info("Starting to remove classifier models.");
-        if (!appProperties.isAutoDeleteExpiredModels()) {
+        if (!appProperties.isAutoRemoveExpiredModels()) {
             log.warn("Evaluation model auto removing has been disabled. Skipped...");
             return;
         }
