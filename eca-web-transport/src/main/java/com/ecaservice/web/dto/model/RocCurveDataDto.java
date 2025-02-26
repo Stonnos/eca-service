@@ -24,6 +24,12 @@ public class RocCurveDataDto {
     private List<RocCurvePointDto> rocCurvePoints;
 
     /**
+     * Optimal point
+     */
+    @Schema(description = "Optimal point")
+    private RocCurvePointDto optimalPoint;
+
+    /**
      * AUC value
      */
     @Schema(description = "AUC value", example = "0.97", minimum = ZERO_VALUE_STRING, maximum = VALUE_1_STRING)

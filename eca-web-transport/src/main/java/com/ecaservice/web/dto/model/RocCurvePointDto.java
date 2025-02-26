@@ -6,6 +6,7 @@ import lombok.Data;
 import java.math.BigDecimal;
 
 import static com.ecaservice.web.dto.util.FieldConstraints.VALUE_100_STRING;
+import static com.ecaservice.web.dto.util.FieldConstraints.VALUE_1_STRING;
 import static com.ecaservice.web.dto.util.FieldConstraints.ZERO_VALUE_STRING;
 
 /**
@@ -27,4 +28,10 @@ public class RocCurvePointDto {
      */
     @Schema(description = "Sensitivity value", example = "59", minimum = ZERO_VALUE_STRING, maximum = VALUE_100_STRING)
     private BigDecimal sensitivity;
+
+    /**
+     * Threshold value
+     */
+    @Schema(description = "Threshold value", example = "0.9", minimum = ZERO_VALUE_STRING, maximum = VALUE_1_STRING)
+    private BigDecimal threshold;
 }

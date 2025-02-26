@@ -65,5 +65,10 @@
       "sensitivity": 31.4286
     }
   ],
+  "optimalPoint": {
+    "specificity": 19.7761,
+    "sensitivity": 67.4000,
+    "threshold": 0.7278
+  },
   "aucValue": 0.8974
 }

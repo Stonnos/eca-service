@@ -55,8 +55,16 @@ export class RocCurveChartComponent implements OnInit {
                 borderColor: 'black',
                 data: rocCurveDataDto.rocCurvePoints.map((chartData: RocCurvePointDto) => { return { x: chartData.specificity, y: chartData.sensitivity}}),
                 // Hide points
-               // radius: 0,
+                //radius: 0,
+                pointRadius: 0, // Set the radius as needed
                 cubicInterpolationMode: 'monotone'
+              },
+              {
+                fill: false,
+                backgroundColor: '#3b7ea5',
+                borderColor: 'black',
+                pointRadius: 7,
+                data: [{ x: rocCurveDataDto.optimalPoint.specificity, y: rocCurveDataDto.optimalPoint.sensitivity }],
               }
             ]
           };
@@ -71,14 +79,19 @@ export class RocCurveChartComponent implements OnInit {
     this.barOptions = {
       tooltips: {
         callbacks: {
-          title: () => {
+          title: (data) => {
+            if (data[0].datasetIndex == 1) {
+              return 'Оптимальный порог';
+            }
             return null;
           },
           label: (data) => {
-            console.log(data);
-            const specificity = 100.0 - data.xLabel;
-            const sensitivity = data.yLabel;
-            return `Специфичность: ${specificity.toFixed(4)}  Чувствительность: ${sensitivity.toFixed(4)}`;
+            if (data.datasetIndex == 1) {
+              const specificity = 100.0 - data.xLabel;
+              const sensitivity = data.yLabel;
+              return `Специфичность: ${specificity.toFixed(4)}  Чувствительность: ${sensitivity.toFixed(4)}  Порог: ${this.rocCurveDataDto.optimalPoint.threshold}`;
+            }
+            return null;
           }
         }
       },
