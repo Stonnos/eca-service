@@ -117,4 +117,7 @@
 |400
 |UnexpectedRequestStatus
 |Невалидный статус заявки
+|400
+|ClassifyInstanceInvalidRequest
+|Некорректные параметры запроса на классификацию примера
 |===
