@@ -34,6 +34,7 @@ import com.ecaservice.server.dto.CreateOptimalEvaluationRequestDto;
 import com.ecaservice.server.model.ClassifierOptionsResult;
 import com.ecaservice.server.model.data.AttributeMetaInfo;
 import com.ecaservice.server.model.data.AttributeType;
+import com.ecaservice.server.model.entity.AttributesInfoEntity;
 import com.ecaservice.server.model.entity.Channel;
 import com.ecaservice.server.model.entity.ClassifierOptionsDatabaseModel;
 import com.ecaservice.server.model.entity.ClassifiersConfiguration;
@@ -57,6 +58,8 @@ import com.ecaservice.server.model.experiment.InitializationParams;
 import com.ecaservice.web.dto.model.ClassifierOptionsDto;
 import com.ecaservice.web.dto.model.ClassifiersConfigurationDto;
 import com.ecaservice.web.dto.model.ClassifiersConfigurationHistoryDto;
+import com.ecaservice.web.dto.model.ClassifyInstanceRequestDto;
+import com.ecaservice.web.dto.model.ClassifyInstanceValueDto;
 import com.ecaservice.web.dto.model.ConfusionMatrixDto;
 import com.ecaservice.web.dto.model.EnumDto;
 import com.ecaservice.web.dto.model.EvaluationResultsDto;
@@ -90,6 +93,8 @@ import lombok.SneakyThrows;
 import lombok.experimental.UtilityClass;
 import org.springframework.amqp.core.MessageProperties;
 import org.springframework.util.DigestUtils;
+import weka.core.Attribute;
+import weka.core.Instance;
 import weka.core.Instances;
 
 import java.io.File;
@@ -102,6 +107,8 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import static com.ecaservice.server.util.ClassifierOptionsHelper.toJsonString;
 import static com.google.common.collect.Lists.newArrayList;
@@ -300,6 +307,57 @@ public class TestHelperUtils {
         } catch (Exception ex) {
             throw new IllegalStateException(ex.getMessage());
         }
+    }
+
+    /**
+     * Creates attributes info entity.
+     *
+     * @param instancesInfo - instances info
+     * @return attributes info entity
+     */
+    public static AttributesInfoEntity createAttributes(InstancesInfo instancesInfo) {
+        Instances instances = loadInstances();
+        AttributesInfoEntity attributesInfoEntity = new AttributesInfoEntity();
+        attributesInfoEntity.setInstancesInfo(instancesInfo);
+        List<AttributeMetaInfo> attributeMetaInfoList = newArrayList();
+        for (int i = 0; i < instances.numAttributes(); i++) {
+            Attribute attribute = instances.attribute(i);
+            AttributeMetaInfo attributeMetaInfo = new AttributeMetaInfo();
+            attributeMetaInfo.setName(attribute.name());
+            if (attribute.isNominal()) {
+                attributeMetaInfo.setType(AttributeType.NOMINAL);
+                List<String> values = IntStream.range(0, attribute.numValues())
+                        .mapToObj(attribute::value)
+                        .toList();
+                attributeMetaInfo.setValues(values);
+            } else {
+                attributeMetaInfo.setType(AttributeType.NUMERIC);
+            }
+            attributeMetaInfoList.add(attributeMetaInfo);
+        }
+        attributesInfoEntity.setAttributes(attributeMetaInfoList);
+        return attributesInfoEntity;
+    }
+
+    /**
+     * Builds classify instance request dto.
+     *
+     * @param modelId              - model id
+     * @param attributesInfoEntity - attributes info entity
+     * @param instance             - instance
+     * @return classify instance request
+     */
+    public static ClassifyInstanceRequestDto buildClassifyInstanceRequestDto(Long modelId,
+                                                                             AttributesInfoEntity attributesInfoEntity,
+                                                                             Instance instance) {
+        var attributeMetaInfoList = attributesInfoEntity.getAttributes()
+                .stream()
+                .filter(attr -> !attr.getName().equals(attributesInfoEntity.getInstancesInfo().getClassName()))
+                .toList();
+        var values = IntStream.range(0, attributeMetaInfoList.size())
+                .mapToObj(i -> new ClassifyInstanceValueDto(i, BigDecimal.valueOf(instance.value(i))))
+                .collect(Collectors.toList());
+        return new ClassifyInstanceRequestDto(modelId, values);
     }
 
     /**

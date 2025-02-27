@@ -13,6 +13,8 @@ import weka.core.Utils;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
+import static com.ecaservice.server.util.FieldConstraints.SCALE;
+
 /**
  * Roc curve helper utility class.
  *
@@ -20,8 +22,6 @@ import java.math.RoundingMode;
  */
 @UtilityClass
 public class RocCurveHelper {
-
-    private static final int SCALE = 4;
     private static final int HUNDRED = 100;
 
     /**

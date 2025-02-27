@@ -56,7 +56,12 @@ public enum EsErrorCode implements ErrorDetails {
     /**
      * Unexpected request status
      */
-    UNEXPECTED_REQUEST_STATUS("UnexpectedRequestStatus");
+    UNEXPECTED_REQUEST_STATUS("UnexpectedRequestStatus"),
+
+    /**
+     * Classify instance invalid request
+     */
+    CLASSIFY_INSTANCE_INVALID_REQUEST("ClassifyInstanceInvalidRequest");
 
     /**
      * Error code
