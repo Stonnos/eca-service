@@ -42,9 +42,9 @@ public class ClassifyEvaluationInstanceService implements ClassifyInstanceServic
                         classifyInstanceRequestDto.getModelId()));
         checkFinishedRequestStatus(evaluationLog);
         checkModelNotDeleted(evaluationLog);
+        classifyInstanceValidator.validate(classifyInstanceRequestDto, evaluationLog.getInstancesInfo());
         Assert.notNull(evaluationLog.getModelPath(),
                 String.format("Evaluation [%d] model math must be not empty", classifyInstanceRequestDto.getModelId()));
-        classifyInstanceValidator.validate(classifyInstanceRequestDto, evaluationLog.getInstancesInfo());
         ClassificationModel classificationModel =
                 modelProvider.loadModel(evaluationLog.getModelPath(), ClassificationModel.class);
         AbstractClassifier classifier = classificationModel.getClassifier();

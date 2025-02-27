@@ -43,7 +43,7 @@ public class ExperimentResultsRocCurveDataProvider implements RocCurveDataProvid
         checkFinishedRequestStatus(experiment);
         checkModelNotDeleted(experiment);
         Assert.notNull(experiment.getModelPath(),
-                String.format("Evaluation [%d] model math must be not empty", modelId));
+                String.format("Experiment [%s] model math must be not empty", experiment.getRequestId()));
         AbstractExperiment<?> abstractExperiment =
                 modelProvider.loadModel(experiment.getModelPath(), AbstractExperiment.class);
         EvaluationResults evaluationResults =

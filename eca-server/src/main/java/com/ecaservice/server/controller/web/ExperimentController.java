@@ -9,12 +9,16 @@ import com.ecaservice.server.model.entity.Experiment;
 import com.ecaservice.server.model.entity.ExperimentProgressEntity;
 import com.ecaservice.server.model.entity.ExperimentResultsEntity;
 import com.ecaservice.server.repository.ExperimentResultsEntityRepository;
+import com.ecaservice.server.service.experiment.ClassifyExperimentResultsInstanceService;
 import com.ecaservice.server.service.experiment.ExperimentDataService;
 import com.ecaservice.server.service.experiment.ExperimentProgressService;
 import com.ecaservice.server.service.experiment.ExperimentRequestWebApiService;
 import com.ecaservice.server.service.experiment.ExperimentResultsRocCurveDataProvider;
 import com.ecaservice.server.service.experiment.ExperimentResultsService;
 import com.ecaservice.web.dto.model.ChartDto;
+import com.ecaservice.web.dto.model.ClassifyInstanceRequestDto;
+import com.ecaservice.web.dto.model.ClassifyInstanceResultDto;
+import com.ecaservice.web.dto.model.CreateEvaluationResponseDto;
 import com.ecaservice.web.dto.model.CreateExperimentResultDto;
 import com.ecaservice.web.dto.model.ExperimentDto;
 import com.ecaservice.web.dto.model.ExperimentErsReportDto;
@@ -78,6 +82,7 @@ public class ExperimentController {
     private final ExperimentProgressService experimentProgressService;
     private final ExperimentRequestWebApiService experimentRequestWebApiService;
     private final ExperimentResultsRocCurveDataProvider experimentResultsRocCurveDataProvider;
+    private final ClassifyExperimentResultsInstanceService classifyExperimentResultsInstanceService;
     private final ExperimentResultsEntityRepository experimentResultsEntityRepository;
 
     /**
@@ -646,5 +651,68 @@ public class ExperimentController {
                 experimentResultsId,
                 classValueIndex);
         return experimentResultsRocCurveDataProvider.getRocCurveData(experimentResultsId, classValueIndex);
+    }
+
+    /**
+     * Classify instance for specified experiment results classifier model.
+     *
+     * @param classifyInstanceRequestDto - classify instance request dto
+     * @return classify instance result
+     */
+    @PreAuthorize("hasAuthority('SCOPE_web')")
+    @Operation(
+            description = "Classify instance for specified experiment results classifier model",
+            summary = "Classify instance for specified experiment results classifier model",
+            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME, scopes = SCOPE_WEB),
+            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(content = {
+                    @Content(examples = {
+                            @ExampleObject(
+                                    name = "ClassifyInstanceRequest",
+                                    ref = "#/components/examples/ClassifyInstanceRequest"
+                            )
+                    })
+            }),
+            responses = {
+                    @ApiResponse(description = "OK", responseCode = "200",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    examples = {
+                                            @ExampleObject(
+                                                    name = "ClassifyInstanceResponse",
+                                                    ref = "#/components/examples/ClassifyInstanceResponse"
+                                            )
+                                    },
+                                    schema = @Schema(implementation = CreateEvaluationResponseDto.class)
+                            )
+                    ),
+                    @ApiResponse(description = "Bad request", responseCode = "400",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    examples = {
+                                            @ExampleObject(
+                                                    name = "DataNotFoundResponse",
+                                                    ref = "#/components/examples/DataNotFoundResponse"
+                                            )
+                                    }
+                            )
+                    ),
+                    @ApiResponse(description = "Not authorized", responseCode = "401",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    examples = {
+                                            @ExampleObject(
+                                                    name = "NotAuthorizedResponse",
+                                                    ref = "#/components/examples/NotAuthorizedResponse"
+                                            )
+                                    }
+                            )
+                    )
+            }
+    )
+    @PostMapping(value = "/classify-instance")
+    public ClassifyInstanceResultDto classifyInstance(
+            @Valid @RequestBody ClassifyInstanceRequestDto classifyInstanceRequestDto) {
+        log.info("Received classify instance request [{}]", classifyInstanceRequestDto);
+        return classifyExperimentResultsInstanceService.classifyInstance(classifyInstanceRequestDto);
     }
 }
