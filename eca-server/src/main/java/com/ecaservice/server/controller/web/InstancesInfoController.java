@@ -2,6 +2,7 @@ package com.ecaservice.server.controller.web;
 
 import com.ecaservice.common.error.model.ValidationErrorDto;
 import com.ecaservice.server.service.InstancesInfoService;
+import com.ecaservice.web.dto.model.AttributeMetaInfoDto;
 import com.ecaservice.web.dto.model.AttributeValueMetaInfoDto;
 import com.ecaservice.web.dto.model.InstancesInfoDto;
 import com.ecaservice.web.dto.model.InstancesInfoPageDto;
@@ -165,5 +166,61 @@ public class InstancesInfoController {
     public List<AttributeValueMetaInfoDto> getClassValues(@PathVariable Long instancesId) {
         log.info("Request instances info {} class values", instancesId);
         return instancesInfoService.getClassValues(instancesId);
+    }
+
+    /**
+     * Gets input attributes for specified instances.
+     *
+     * @param instancesId - instances id
+     * @return input attributes
+     */
+    @PreAuthorize("hasAuthority('SCOPE_web')")
+    @Operation(
+            description = "Gets input attributes for specified instances",
+            summary = "Gets input attributes for specified instances",
+            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME, scopes = SCOPE_WEB),
+            responses = {
+                    @ApiResponse(description = "OK", responseCode = "200",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    examples = {
+                                            @ExampleObject(
+                                                    name = "InputAttributesMetaInfoResponseDto",
+                                                    ref = "#/components/examples/InputAttributesMetaInfoResponseDto"
+                                            )
+                                    },
+                                    array = @ArraySchema(
+                                            schema = @Schema(implementation = AttributeMetaInfoDto.class))
+                            )
+                    ),
+                    @ApiResponse(description = "Not authorized", responseCode = "401",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    examples = {
+                                            @ExampleObject(
+                                                    name = "NotAuthorizedResponse",
+                                                    ref = "#/components/examples/NotAuthorizedResponse"
+                                            )
+                                    }
+                            )
+                    ),
+                    @ApiResponse(description = "Bad request", responseCode = "400",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    examples = {
+                                            @ExampleObject(
+                                                    name = "DataNotFoundResponse",
+                                                    ref = "#/components/examples/DataNotFoundResponse"
+                                            )
+                                    },
+                                    array = @ArraySchema(schema = @Schema(implementation = ValidationErrorDto.class))
+                            )
+                    )
+            }
+    )
+    @GetMapping(value = "/input-attributes/{instancesId}")
+    public List<AttributeMetaInfoDto> getInputAttributes(@PathVariable Long instancesId) {
+        log.info("Request instances info {} input attributes", instancesId);
+        return instancesInfoService.getInputAttributes(instancesId);
     }
 }

@@ -32,6 +32,8 @@ import com.ecaservice.server.dto.CreateEvaluationRequestDto;
 import com.ecaservice.server.dto.CreateExperimentRequestDto;
 import com.ecaservice.server.dto.CreateOptimalEvaluationRequestDto;
 import com.ecaservice.server.model.ClassifierOptionsResult;
+import com.ecaservice.server.model.data.AttributeMetaInfo;
+import com.ecaservice.server.model.data.AttributeType;
 import com.ecaservice.server.model.entity.Channel;
 import com.ecaservice.server.model.entity.ClassifierOptionsDatabaseModel;
 import com.ecaservice.server.model.entity.ClassifiersConfiguration;
@@ -169,6 +171,8 @@ public class TestHelperUtils {
     private static final String CONFUSION_MATRIX_JSON = "confusion-matrix.json";
     private static final long EVALUATION_TIME_MILLIS = 1000L;
     private static final int EXPERIMENT_NUM_ITS = 5;
+    private static final String ATTRIBUTE_NAME = "class";
+    private static final List<String> ATTRIBUTE_VALUES = List.of("val1", "val2", "val3");
 
     /**
      * Creates page request dto.
@@ -1218,6 +1222,19 @@ public class TestHelperUtils {
                 .objectPath(INSTANCES_OBJECT_PATH)
                 .attributes(Collections.singletonList(new AttributeInfo()))
                 .build();
+    }
+
+    /**
+     * Creates attribute meta info.
+     *
+     * @return attribute meta info
+     */
+    public static AttributeMetaInfo createAttributeMetaInfo() {
+        AttributeMetaInfo attributeMetaInfo = new AttributeMetaInfo();
+        attributeMetaInfo.setName(ATTRIBUTE_NAME);
+        attributeMetaInfo.setType(AttributeType.NOMINAL);
+        attributeMetaInfo.setValues(ATTRIBUTE_VALUES);
+        return attributeMetaInfo;
     }
 
     /**

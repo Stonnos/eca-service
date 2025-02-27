@@ -103,6 +103,15 @@ class InstancesInfoServiceTest extends AbstractJpaTest {
     }
 
     @Test
+    void testGetAttributesInfo() {
+        var instancesInfo = saveInstancesInfo();
+        var attributes = instancesInfoService.getInputAttributes(instancesInfo.getId());
+        assertThat(attributes).isNotEmpty();
+        assertThat(attributes).hasSize(ATTRIBUTE_META_INFO_LIST.size() - 1);
+
+    }
+
+    @Test
     void testSaveExistingInstancesInfo() {
         saveInstancesInfo();
         saveInstancesInfo();

@@ -1,0 +1,40 @@
+[
+  {
+    "name": "x1",
+    "type": {
+      "value": "NUMERIC",
+      "description": "Числовой"
+    }
+  },
+  {
+    "name": "x2",
+    "type": {
+      "value": "NUMERIC",
+      "description": "Числовой"
+    }
+  },
+  {
+    "name": "x3",
+    "type": {
+      "value": "NUMERIC",
+      "description": "Числовой"
+    }
+  },
+  {
+    "name": "x4",
+    "type": {
+      "value": "NOMINAL",
+      "description": "Категориальный"
+    },
+    "values": [
+      {
+        "index": 0,
+        "value": "Good"
+      },
+      {
+        "index": 1,
+        "value": "Bad"
+      }
+    ]
+  }
+]

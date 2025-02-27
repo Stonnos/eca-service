@@ -9,6 +9,7 @@ import com.ecaservice.server.model.data.AttributeMetaInfo;
 import com.ecaservice.server.model.entity.InstancesInfo;
 import com.ecaservice.server.repository.AttributesInfoRepository;
 import com.ecaservice.server.repository.InstancesInfoRepository;
+import com.ecaservice.web.dto.model.AttributeMetaInfoDto;
 import com.ecaservice.web.dto.model.AttributeValueMetaInfoDto;
 import com.ecaservice.web.dto.model.InstancesInfoDto;
 import com.ecaservice.web.dto.model.PageDto;
@@ -108,5 +109,26 @@ public class InstancesInfoService {
         }).toList();
         log.info("Class values has been fetched for instances [{}]", instancesId);
         return classValuesMetaInfo;
+    }
+
+    /**
+     * Gets input attributes (without class) info list for specified instances.
+     *
+     * @param instancesId - instances id
+     * @return input attributes meta info list
+     */
+    public List<AttributeMetaInfoDto> getInputAttributes(Long instancesId) {
+        log.info("Starting to get instances [{}] input attributes info", instancesId);
+        InstancesInfo instancesInfo = instancesInfoRepository.findById(instancesId)
+                .orElseThrow(() -> new EntityNotFoundException(InstancesInfo.class, instancesId));
+        var attributesInfo = attributesInfoRepository.findByInstancesInfo(instancesInfo)
+                .orElseThrow(() -> new EntityNotFoundException(InstancesInfo.class, instancesInfo.getId()));
+        var attributesMetaInfoList = instancesInfoMapper.mapList(attributesInfo.getAttributes())
+                .stream()
+                .filter(attributeMetaInfoDto -> !attributeMetaInfoDto.getName().equals(instancesInfo.getClassName()))
+                .toList();
+        log.info("[{}] input attributes info has been fetched for instances [{}]", attributesMetaInfoList.size(),
+                instancesId);
+        return attributesMetaInfoList;
     }
 }

@@ -1,7 +1,9 @@
 package com.ecaservice.server.mapping;
 
 import com.ecaservice.server.TestHelperUtils;
+import com.ecaservice.server.model.data.AttributeMetaInfo;
 import com.ecaservice.server.model.entity.InstancesInfo;
+import com.ecaservice.web.dto.model.AttributeMetaInfoDto;
 import com.ecaservice.web.dto.model.InstancesInfoDto;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -48,5 +50,17 @@ class InstancesInfoMapperTest {
         assertThat(instancesMetaDataModel.getNumClasses()).isEqualTo(instancesMetaInfoInfo.getNumClasses());
         assertThat(instancesMetaDataModel.getObjectPath()).isEqualTo(instancesMetaInfoInfo.getObjectPath());
         assertThat(instancesMetaDataModel.getAttributes()).hasSameSizeAs(instancesMetaInfoInfo.getAttributes());
+    }
+
+    @Test
+    void testMapAttributesInfoToDto() {
+        AttributeMetaInfo attributeMetaInfo = TestHelperUtils.createAttributeMetaInfo();
+        AttributeMetaInfoDto attributeMetaInfoDto = instancesInfoMapper.map(attributeMetaInfo);
+        assertThat(attributeMetaInfoDto).isNotNull();
+        assertThat(attributeMetaInfoDto.getName()).isEqualTo(attributeMetaInfo.getName());
+        assertThat(attributeMetaInfoDto.getType().getValue()).isEqualTo(attributeMetaInfo.getType().name());
+        assertThat(attributeMetaInfoDto.getType().getDescription()).isEqualTo(
+                attributeMetaInfo.getType().getDescription());
+        assertThat(attributeMetaInfoDto.getValues()).hasSameSizeAs(attributeMetaInfo.getValues());
     }
 }

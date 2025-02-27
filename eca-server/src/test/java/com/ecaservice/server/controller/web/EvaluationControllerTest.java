@@ -13,6 +13,7 @@ import com.ecaservice.server.model.entity.RequestStatus;
 import com.ecaservice.server.repository.EvaluationLogRepository;
 import com.ecaservice.server.service.evaluation.EvaluationLogDataService;
 import com.ecaservice.server.service.evaluation.EvaluationRequestWebApiService;
+import com.ecaservice.server.service.evaluation.EvaluationRocCurveDataProvider;
 import com.ecaservice.web.dto.model.ChartDataDto;
 import com.ecaservice.web.dto.model.ChartDto;
 import com.ecaservice.web.dto.model.CreateEvaluationResponseDto;
@@ -73,6 +74,8 @@ class EvaluationControllerTest extends PageRequestControllerTest {
     private EvaluationLogDataService evaluationLogDataService;
     @MockBean
     private EvaluationRequestWebApiService evaluationRequestWebApiService;
+    @MockBean
+    private EvaluationRocCurveDataProvider evaluationRocCurveDataProvider;
     @MockBean
     private EvaluationLogRepository evaluationLogRepository;
 
