@@ -1,3 +1,13 @@
+.experiment-results-log-details-tab::ng-deep {
+  .ui-tabview {
+    background-color: inherit;
+  }
+
+  .ui-tabview-nav {
+    background-color: #f5f5f5;
+  }
+}
+
 .details-fieldset::ng-deep {
 
   .ui-fieldset {
