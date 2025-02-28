@@ -1,9 +1,12 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {
-  EvaluationLogDetailsDto, PushRequestDto
+  EvaluationLogDetailsDto,
+  PushRequestDto,
+  AttributeValueMetaInfoDto,
+  AttributeMetaInfoDto
 } from "../../../../../../../target/generated-sources/typescript/eca-web-dto";
 import { ClassifiersService } from "../../classifiers/services/classifiers.service";
-import { MessageService } from "primeng/api";
+import { MessageService, SelectItem } from 'primeng/api';
 import { ActivatedRoute, NavigationEnd, Router, RouterEvent } from "@angular/router";
 import { filter, finalize} from "rxjs/internal/operators";
 import { EvaluationLogFields } from "../../common/util/field-names";
@@ -15,6 +18,9 @@ import { Logger} from "../../common/util/logging";
 import { PushMessageType } from "../../common/util/push-message.type";
 import { PushVariables } from "../../common/util/push-variables";
 import { PushService } from "../../common/push/push.service";
+import { InstancesInfoService } from '../../common/instances-info/services/instances-info.service';
+import { AttributeMetaInfoModel } from '../../classify-instance/model/attribute-meta-info.model';
+import { AttributesInfoMapper } from '../../common/instances-info/services/attributes-info.mapper';
 
 @Component({
   selector: 'app-evaluation-log-details',
@@ -36,6 +42,10 @@ export class EvaluationLogDetailsComponent implements OnInit, OnDestroy, FieldLi
 
   public evaluationLogDetails: EvaluationLogDetailsDto;
 
+  public classValues: SelectItem[] = [];
+
+  public attributeMetaInfoModels: AttributeMetaInfoModel[] = [];
+
   private routeUpdateSubscription: Subscription;
 
   public blink = false;
@@ -43,11 +53,13 @@ export class EvaluationLogDetailsComponent implements OnInit, OnDestroy, FieldLi
   private evaluationUpdatesSubscription: Subscription;
 
   public constructor(private classifiersService: ClassifiersService,
+                     private instancesInfoService: InstancesInfoService,
                      private messageService: MessageService,
                      private route: ActivatedRoute,
                      private router: Router,
                      private pushService: PushService,
-                     private fieldService: FieldService) {
+                     private fieldService: FieldService,
+                     private attributesInfoMapper: AttributesInfoMapper) {
     this.id = this.route.snapshot.params.id;
     this.initEvaluationLogFields();
   }
@@ -76,6 +88,32 @@ export class EvaluationLogDetailsComponent implements OnInit, OnDestroy, FieldLi
           if (!this.finalRequestStatuses.includes(this.evaluationLogDetails.requestStatus.value)) {
             this.subscribeForEvaluationUpdate();
           }
+          this.getClassValues();
+          this.getInputAttributes();
+        },
+        error: (error) => {
+          this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
+        }
+      });
+  }
+
+  public getClassValues(): void {
+    this.instancesInfoService.getClassValues(this.evaluationLogDetails.instancesInfo.id)
+      .subscribe({
+        next: (classValues: AttributeValueMetaInfoDto[]) => {
+          this.classValues = this.attributesInfoMapper.mapValues(classValues);
+        },
+        error: (error) => {
+          this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
+        }
+      });
+  }
+
+  public getInputAttributes(): void {
+    this.instancesInfoService.getInputAttributes(this.evaluationLogDetails.instancesInfo.id)
+      .subscribe({
+        next: (attributeMetaInfoList: AttributeMetaInfoDto[]) => {
+          this.attributeMetaInfoModels = this.attributesInfoMapper.mapAttributes(attributeMetaInfoList);
         },
         error: (error) => {
           this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });

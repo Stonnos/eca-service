@@ -3,7 +3,8 @@ import { Injectable } from '@angular/core';
 import {
   InstancesInfoDto, PageDto,
   PageRequestDto,
-  AttributeValueMetaInfoDto
+  AttributeValueMetaInfoDto,
+  AttributeMetaInfoDto
 } from "../../../../../../../../target/generated-sources/typescript/eca-web-dto";
 import { environment } from "../../../../environments/environment";
 import { Observable } from "rxjs/internal/Observable";
@@ -29,5 +30,12 @@ export class InstancesInfoService implements InstancesInfoPageService {
       'Content-type': 'application/json; charset=utf-8'
     });
     return this.http.get<AttributeValueMetaInfoDto[]>(this.serviceUrl + '/class-values/' + id, { headers: headers });
+  }
+
+  public getInputAttributes(id: number): Observable<AttributeMetaInfoDto[]> {
+    const headers = new HttpHeaders({
+      'Content-type': 'application/json; charset=utf-8'
+    });
+    return this.http.get<AttributeMetaInfoDto[]>(this.serviceUrl + '/input-attributes/' + id, { headers: headers });
   }
 }

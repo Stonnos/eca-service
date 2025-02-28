@@ -16,8 +16,8 @@ import { ClassifiersTabsComponent } from "../classifiers-tabs/components/classif
 import { EvaluationResultsHistoryComponent } from "../evaluation-results-history/components/evaluation-results-history.component";
 import { UserProfileTabsComponent } from "../user-profile-tabs/components/user-profile-tabs.component";
 import { InstancesDetailsTabsComponent } from "../instances-details-tabs/components/instances-details-tabs.component";
-import { EvaluationLogDetailsTabsComponent } from '../evaluation-log-details-tabs/components/evaluation-log-details-tabs.component';
-import { ExperimentResultsDetailsTabsComponent } from '../experiment-results-details-tabs/components/experiment-results-details-tabs.component';
+import { EvaluationLogDetailsComponent } from '../evaluation-log-details/components/evaluation-log-details.component';
+import { ExperimentResultsDetailsComponent } from '../experiment-results-details/components/experiment-results-details.component';
 
 const routes: Routes = [
   {
@@ -58,7 +58,7 @@ const routes: Routes = [
       },
       {
         path: 'classifiers/evaluation-results/:id',
-        component: EvaluationLogDetailsTabsComponent
+        component: EvaluationLogDetailsComponent
       },
       {
         path: 'experiments/details/:id',
@@ -66,7 +66,7 @@ const routes: Routes = [
       },
       {
         path: 'experiments/results/details/:id',
-        component: ExperimentResultsDetailsTabsComponent
+        component: ExperimentResultsDetailsComponent
       },
       {
         path: 'experiments/classifiers-configuration/details/:id',

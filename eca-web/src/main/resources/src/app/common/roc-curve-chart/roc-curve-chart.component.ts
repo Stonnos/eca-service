@@ -55,7 +55,6 @@ export class RocCurveChartComponent implements OnInit {
                 borderColor: 'black',
                 data: rocCurveDataDto.rocCurvePoints.map((chartData: RocCurvePointDto) => { return { x: chartData.specificity, y: chartData.sensitivity}}),
                 // Hide points
-                //radius: 0,
                 pointRadius: 0, // Set the radius as needed
                 cubicInterpolationMode: 'monotone'
               },

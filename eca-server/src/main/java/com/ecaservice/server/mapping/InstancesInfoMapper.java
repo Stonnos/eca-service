@@ -76,14 +76,6 @@ public interface InstancesInfoMapper {
     AttributeMetaInfoDto map(AttributeMetaInfo attributeMetaInfo);
 
     /**
-     * Maps attribute meta info list to dto models list.
-     *
-     * @param attributeMetaInfoList - attribute meta info list
-     * @return attribute meta info dto list
-     */
-    List<AttributeMetaInfoDto> mapList(List<AttributeMetaInfo> attributeMetaInfoList);
-
-    /**
      * Maps attribute values.
      *
      * @param attributeMetaInfo    - attribute meta info

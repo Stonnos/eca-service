@@ -7,6 +7,8 @@ import {
   PageDto,
   PageRequestDto,
   RocCurveDataDto,
+  ClassifyInstanceRequestDto,
+  ClassifyInstanceResultDto,
   RequestStatusStatisticsDto, ExperimentResultsDetailsDto, ExperimentProgressDto, S3ContentResponseDto, ChartDto
 } from "../../../../../../../target/generated-sources/typescript/eca-web-dto";
 import { saveAs } from 'file-saver/dist/FileSaver';
@@ -128,5 +130,12 @@ export class ExperimentsService implements RocCurveService {
       .set('classValueIndex', classValueIndex.toString());
     const options = { headers: headers, params: params };
     return this.http.get<RocCurveDataDto>(this.serviceUrl + '/roc-curve', options);
+  }
+
+  public classifyInstance(classifyInstanceRequestDto: ClassifyInstanceRequestDto): Observable<ClassifyInstanceResultDto> {
+    const headers = new HttpHeaders({
+      'Content-type': 'application/json; charset=utf-8'
+    });
+    return this.http.post<ClassifyInstanceResultDto>(this.serviceUrl + '/classify-instance', classifyInstanceRequestDto, { headers: headers });
   }
 }

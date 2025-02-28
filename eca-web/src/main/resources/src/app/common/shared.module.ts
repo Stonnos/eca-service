@@ -31,6 +31,7 @@ import { NotBlankValidator } from "./validators/not-blank-validator.directive";
 import { InstancesAutocompleteComponent } from "./instances-autocomplete/instances-autocomplete.component";
 import { InstancesInfoService } from "./instances-info/services/instances-info.service";
 import { RocCurveChartComponent } from './roc-curve-chart/roc-curve-chart.component';
+import { AttributesInfoMapper } from './instances-info/services/attributes-info.mapper';
 
 @NgModule({
   imports: [
@@ -83,6 +84,7 @@ import { RocCurveChartComponent } from './roc-curve-chart/roc-curve-chart.compon
     ReportsService,
     ValidationService,
     InstancesInfoService,
+    AttributesInfoMapper,
     ErrorHandler,
     WebAppService,
     WsService,

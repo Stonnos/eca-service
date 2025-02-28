@@ -1,0 +1,119 @@
+<div class="ui-g ui-fluid">
+  <div class="ui-g-4 ui-md-4 ui-g-offset-4">
+    <div class="ui-g-12">
+      <p-fieldset legend="Классификация примера" class="details-fieldset">
+        <form novalidate class="form d-flex flex-column justify-content-center m-auto"
+              (submit)="classify()"
+              (keydown.enter)="classify()">
+          <div *ngFor="let attributeInfo of attributeMetaInfoModels" class="ui-g-12 ui-md-12 mb-2">
+            <div [ngSwitch]="attributeInfo.type.value">
+              <ng-container *ngSwitchCase="'NOMINAL'">
+                <div class="form-group">
+                  <label class="text-bold control-label">{{ attributeInfo.name }}</label>
+                  <p-dropdown
+                    required
+                    name="{{ attributeInfo.name }}"
+                    [options]="attributeInfo.values"
+                    placeholder="Выбрать"
+                    [showClear]="true"
+                    [(ngModel)]="attributeInfo.currentValue"
+                    #field="ngModel"
+                    [style]="{'width':'100%'}">
+                  </p-dropdown>
+                  <div class="text-danger error-message" *ngIf="field.invalid && (field.dirty || field.touched || submitted)">
+                    <div *ngFor="let error of getValidationErrors(field)">
+                      <span>{{ error }}</span>
+                    </div>
+                  </div>
+                </div>
+              </ng-container>
+              <ng-container *ngSwitchCase="'DATE'">
+                <label class="text-bold control-label">{{ attributeInfo.name }}</label>
+                <p-calendar [showIcon]="true"
+                            required
+                            name="{{ attributeInfo.name }}"
+                            #field="ngModel"
+                            [showButtonBar]="true"
+                            [showTime]="true"
+                            [showSeconds]="true"
+                            [(ngModel)]="attributeInfo.currentValue">
+                </p-calendar>
+                <div class="text-danger error-message" *ngIf="field.invalid && (field.dirty || field.touched || submitted)">
+                  <div *ngFor="let error of getValidationErrors(field)">
+                    <span>{{ error }}</span>
+                  </div>
+                </div>
+              </ng-container>
+
+              <ng-container *ngSwitchCase="'NUMERIC'">
+                <label class="text-bold control-label">{{ attributeInfo.name }}</label>
+                <input type="number"
+                       required
+                       pInputText
+                       step="any"
+                       name="{{ attributeInfo.name }}"
+                       #field="ngModel"
+                       [(ngModel)]="attributeInfo.currentValue"
+                       placeholder="Введите любое число"/>
+                <div class="text-danger error-message" *ngIf="field.invalid && (field.dirty || field.touched || submitted)">
+                  <div *ngFor="let error of getValidationErrors(field)">
+                    <span>{{ error }}</span>
+                  </div>
+                </div>
+              </ng-container>
+
+              <ng-container *ngSwitchDefault>
+              </ng-container>
+            </div>
+          </div>
+
+          <div class="ui-g-12 mt-2">
+            <div class="ui-g-6">
+              <button
+                pButton
+                type="submit"
+                [disabled]="loading"
+                class="classify-button w-100 ml-2">
+                <span class="button-text" *ngIf="!loading">Классифицировать</span>
+                <p-progressSpinner
+                  *ngIf="loading"
+                  class="classify-progress-spinner"
+                  strokeWidth="4"
+                  animationDuration=".5s">
+                </p-progressSpinner>
+              </button>
+            </div>
+            <div class="ui-g-6">
+              <button
+                pButton
+                type="button"
+                [disabled]="loading"
+                class="classify-button w-100 mr-2"
+                (click)="reset()">
+                <span class="button-text">Сбросить</span>
+              </button>
+            </div>
+          </div>
+
+        </form>
+      </p-fieldset>
+    </div>
+  </div>
+
+  <div class="ui-g-4 ui-md-4 ui-g-offset-4 mt-2">
+    <p-fieldset legend="Значение класса {{ instancesInfoDto?.className }}" class="details-fieldset">
+      <div class="ui-g-6 text-left text-bold text-wrap">
+        Значение класса:
+      </div>
+      <div class="ui-g-6 text-left text-wrap">
+        {{ classifyInstanceResultDto?.classValue || '-' }}
+      </div>
+      <div class="ui-g-6 text-left text-bold text-wrap">
+        Вероятность класса:
+      </div>
+      <div class="ui-g-6 text-left text-wrap">
+        {{ classifyInstanceResultDto?.probability || '-' }}
+      </div>
+    </p-fieldset>
+  </div>
+</div>

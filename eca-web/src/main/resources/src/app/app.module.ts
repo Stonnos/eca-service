@@ -56,10 +56,7 @@ import { UserProfileNotificationOptionsModule } from "./user-profile-notificatio
 import { InstancesDetailsTabsModule } from "./instances-details-tabs/instances-details-tabs.module";
 import { InstancesStatisticsModule } from "./instances-statistics/instances-statistics.module";
 import { ConfusionMatrixModule } from './confusion-matrix/confusion-matrix.module';
-import { EvaluationLogDetailsTabsModule } from './evaluation-log-details-tabs/evaluation-log-details-tabs.module';
-import { EvaluationLogRocCurveModule } from './evaluation-log-roc-curve/evaluation-log-roc-curve.module';
-import { ExperimentResultsRocCurveModule } from './experiment-results-roc-curve/experiment-results-roc-curve.module';
-import { ExperimentResultsDetailsTabsModule } from './experiment-results-details-tabs/experiment-results-details-tabs.module';
+import { ClassifyInstanceModule } from './classify-instance/classify-instance.module';
 
 export function eventSubscribe(eventHandler: EventHandler) {
   return () => eventHandler.eventSubscribe();
@@ -123,10 +120,7 @@ export function eventSubscribe(eventHandler: EventHandler) {
     UserProfileNotificationOptionsModule,
     InstancesStatisticsModule,
     InstancesDetailsTabsModule,
-    EvaluationLogDetailsTabsModule,
-    EvaluationLogRocCurveModule,
-    ExperimentResultsRocCurveModule,
-    ExperimentResultsDetailsTabsModule
+    ClassifyInstanceModule
   ],
   providers: [
     CookieService,

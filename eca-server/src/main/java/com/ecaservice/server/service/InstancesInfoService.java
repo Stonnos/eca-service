@@ -123,8 +123,13 @@ public class InstancesInfoService {
                 .orElseThrow(() -> new EntityNotFoundException(InstancesInfo.class, instancesId));
         var attributesInfo = attributesInfoRepository.findByInstancesInfo(instancesInfo)
                 .orElseThrow(() -> new EntityNotFoundException(InstancesInfo.class, instancesInfo.getId()));
-        var attributesMetaInfoList = instancesInfoMapper.mapList(attributesInfo.getAttributes())
-                .stream()
+        var attributesMetaInfoList = IntStream.range(0, attributesInfo.getAttributes().size())
+                .mapToObj(i -> {
+                    AttributeMetaInfoDto attributeMetaInfoDto =
+                            instancesInfoMapper.map(attributesInfo.getAttributes().get(i));
+                    attributeMetaInfoDto.setIndex(i);
+                    return attributeMetaInfoDto;
+                })
                 .filter(attributeMetaInfoDto -> !attributeMetaInfoDto.getName().equals(instancesInfo.getClassName()))
                 .toList();
         log.info("[{}] input attributes info has been fetched for instances [{}]", attributesMetaInfoList.size(),
