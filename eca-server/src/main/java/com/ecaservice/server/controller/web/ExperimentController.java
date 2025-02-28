@@ -682,7 +682,7 @@ public class ExperimentController {
                                                     ref = "#/components/examples/ClassifyInstanceResponse"
                                             )
                                     },
-                                    schema = @Schema(implementation = CreateEvaluationResponseDto.class)
+                                    schema = @Schema(implementation = ClassifyInstanceResultDto.class)
                             )
                     ),
                     @ApiResponse(description = "Bad request", responseCode = "400",

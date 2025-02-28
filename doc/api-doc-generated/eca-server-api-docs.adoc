@@ -815,7 +815,7 @@ a|
 |OK
 |*application/json*
 |
-<<CreateEvaluationResponseDto>>
+<<ClassifyInstanceResultDto>>
 
 
 
@@ -2652,7 +2652,7 @@ a|
 |OK
 |*application/json*
 |
-<<CreateEvaluationResponseDto>>
+<<ClassifyInstanceResultDto>>
 
 
 
@@ -8110,26 +8110,17 @@ __string__
 
 * DECISION_TREE
 |===
-=== CreateEvaluationResponseDto
+=== ClassifyInstanceResultDto
 :table-caption: Table
-.Create evaluation response model
+.Classify instance result model
 [width=100%]
 |===
 |*Name*|*Description*|*Schema*
-|*id**
-|ID
+|*classIndex**
+|Class index
 a|
 __integer__
-__(int64)__
-
-
-
-
-
-
-*Minimum*: 1*
-
-*Maximum*: 9 223 372 036 854 775 807*
+__(int32)__
 
 
 
@@ -8138,15 +8129,41 @@ __(int64)__
 
 
 
-|*requestId**
-|Request id
+
+
+
+
+
+
+
+|*classValue**
+|Class value
 a|
 __string__
 
 
 
 
-*Max. length*: 36
+
+
+
+
+
+
+
+
+
+
+
+|*probability**
+|True positive rate
+a|
+__number__
+
+
+
+
+
 
 
 
@@ -11502,6 +11519,54 @@ __(int64)__
 *Minimum*: 0*
 
 *Maximum*: 9 223 372 036 854 775 807*
+
+
+
+
+
+
+
+
+|===
+=== CreateEvaluationResponseDto
+:table-caption: Table
+.Create evaluation response model
+[width=100%]
+|===
+|*Name*|*Description*|*Schema*
+|*id**
+|ID
+a|
+__integer__
+__(int64)__
+
+
+
+
+
+
+*Minimum*: 1*
+
+*Maximum*: 9 223 372 036 854 775 807*
+
+
+
+
+
+
+
+
+|*requestId**
+|Request id
+a|
+__string__
+
+
+
+
+*Max. length*: 36
+
+
 
 
 
