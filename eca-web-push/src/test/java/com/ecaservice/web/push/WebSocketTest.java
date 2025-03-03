@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.web.server.LocalServerPort;
+import org.springframework.http.HttpHeaders;
 import org.springframework.lang.Nullable;
 import org.springframework.messaging.converter.MappingJackson2MessageConverter;
 import org.springframework.messaging.simp.stomp.StompCommand;
@@ -22,6 +23,7 @@ import org.springframework.security.oauth2.core.OAuth2TokenIntrospectionClaimNam
 import org.springframework.security.oauth2.server.resource.introspection.OAuth2IntrospectionAuthenticatedPrincipal;
 import org.springframework.security.oauth2.server.resource.introspection.OpaqueTokenIntrospector;
 import org.springframework.test.context.TestPropertySource;
+import org.springframework.web.socket.WebSocketHttpHeaders;
 import org.springframework.web.socket.client.standard.StandardWebSocketClient;
 import org.springframework.web.socket.messaging.WebSocketStompClient;
 
@@ -52,10 +54,11 @@ import static org.mockito.Mockito.when;
 @TestPropertySource("classpath:application.properties")
 public class WebSocketTest {
 
-    private static final String WS_URL_FORMAT = "ws://localhost:%d/socket?access_token=%s";
+    private static final String WS_URL_FORMAT = "ws://localhost:%d/socket";
     private static final int CONNECT_TIMEOUT = 10;
     private static final int POOL_TIMEOUT = 10;
     private static final String SCOPE_WEB = "SCOPE_web";
+    private static final String BEARER_TOKEN_FORMAT = "Bearer %s";
 
     @MockBean
     private OpaqueTokenIntrospector opaqueTokenIntrospector;
@@ -128,14 +131,20 @@ public class WebSocketTest {
     }
 
     private StompSession createSession() throws ExecutionException, InterruptedException, TimeoutException {
+        WebSocketHttpHeaders webSocketHttpHeaders = new WebSocketHttpHeaders();
+        webSocketHttpHeaders.add(HttpHeaders.AUTHORIZATION, getBearerToken());
         return webSocketStompClient
-                .connectAsync(getWsPath(), new StompSessionHandlerAdapter() {
+                .connectAsync(getWsPath(), webSocketHttpHeaders, new StompSessionHandlerAdapter() {
                 })
                 .get(CONNECT_TIMEOUT, SECONDS);
     }
 
     private String getWsPath() {
-        return String.format(WS_URL_FORMAT, port, UUID.randomUUID());
+        return String.format(WS_URL_FORMAT, port);
+    }
+
+    private String getBearerToken() {
+        return String.format(BEARER_TOKEN_FORMAT, UUID.randomUUID());
     }
 
     private void mockTokenIntrospection() {
