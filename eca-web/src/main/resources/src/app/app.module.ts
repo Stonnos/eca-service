@@ -56,6 +56,7 @@ import { UserProfileNotificationOptionsModule } from "./user-profile-notificatio
 import { InstancesDetailsTabsModule } from "./instances-details-tabs/instances-details-tabs.module";
 import { InstancesStatisticsModule } from "./instances-statistics/instances-statistics.module";
 import { ConfusionMatrixModule } from './confusion-matrix/confusion-matrix.module';
+import { ClassifyInstanceModule } from './classify-instance/classify-instance.module';
 
 export function eventSubscribe(eventHandler: EventHandler) {
   return () => eventHandler.eventSubscribe();
@@ -118,7 +119,8 @@ export function eventSubscribe(eventHandler: EventHandler) {
     UserProfileTabsModule,
     UserProfileNotificationOptionsModule,
     InstancesStatisticsModule,
-    InstancesDetailsTabsModule
+    InstancesDetailsTabsModule,
+    ClassifyInstanceModule
   ],
   providers: [
     CookieService,

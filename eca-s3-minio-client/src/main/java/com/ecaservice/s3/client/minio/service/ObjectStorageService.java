@@ -4,6 +4,7 @@ import com.ecaservice.s3.client.minio.databind.FstDeserializer;
 import com.ecaservice.s3.client.minio.databind.FstSerializer;
 import com.ecaservice.s3.client.minio.databind.ObjectDeserializer;
 import com.ecaservice.s3.client.minio.databind.ObjectSerializer;
+import com.ecaservice.s3.client.minio.databind.ZipDeserializerDecorator;
 import com.ecaservice.s3.client.minio.model.GetPresignedUrlObject;
 import com.ecaservice.s3.client.minio.model.UploadObject;
 import io.micrometer.core.annotation.Timed;
@@ -11,6 +12,7 @@ import lombok.Cleanup;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import io.micrometer.tracing.annotation.NewSpan;
+import org.apache.commons.io.FilenameUtils;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StopWatch;
@@ -30,6 +32,8 @@ import static com.ecaservice.s3.client.minio.metrics.MetricConstants.OBJECT_REQU
 @Service
 @RequiredArgsConstructor
 public class ObjectStorageService {
+
+    private static final String ZIP_EXTENSION = "zip";
 
     private final MinioStorageService minioStorageService;
 
@@ -83,7 +87,13 @@ public class ObjectStorageService {
     @NewSpan
     @Timed(value = OBJECT_REQUEST_METRIC)
     public <T> T getObject(String objectPath, Class<T> targetClazz) throws IOException, ClassNotFoundException {
-        return getObject(objectPath, targetClazz, new FstDeserializer<>());
+        String modelExtension = FilenameUtils.getExtension(objectPath);
+        if (ZIP_EXTENSION.equals(modelExtension)) {
+            var zipDeserializerDecorator = new ZipDeserializerDecorator<T>(new FstDeserializer<>());
+            return getObject(objectPath, targetClazz, zipDeserializerDecorator);
+        } else {
+            return getObject(objectPath, targetClazz, new FstDeserializer<>());
+        }
     }
 
     /**

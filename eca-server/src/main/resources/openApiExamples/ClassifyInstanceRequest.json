@@ -1,0 +1,21 @@
+{
+  "modelId": 1,
+  "values": [
+    {
+      "index": 0,
+      "value": 5.1
+    },
+    {
+      "index": 1,
+      "value": 3.5
+    },
+    {
+      "index": 2,
+      "value": 1.4
+    },
+    {
+      "index": 3,
+      "value": 0.2
+    }
+  ]
+}

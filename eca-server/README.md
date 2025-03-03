@@ -65,6 +65,9 @@ ECA server
    * app.maxPagesNum - максимальное число чтраниц доступное для просмотра при постраничной обработке данных
    * app.modelDownloadUrlExpirationDays - время жизни ссылки на скачивание модели эксперимента/классификатора
    * app.shortLifeUrlExpirationMinutes - время короткоживущей ссылки на получение модели эксперимента/классификатора
+   * app.modelCacheTtlSeconds - время жизни кэша для хранения моделей классификаторов
+   * app.modelCacheSize - макс. размер кэша для хранения моделей классификаторов
+   * app.autoRemoveExpiredModels - флаг автоматического удаления моделей с истекшим сроком хранения. По умолчанию удаление выключено.
 6) cache.specs - настройки spring cache
 7) open-api - настройки Swagger
    * open-api.tokenBaseUrl - базовый url - сервера авторизации

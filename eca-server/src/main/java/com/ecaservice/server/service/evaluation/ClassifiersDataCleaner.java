@@ -38,6 +38,10 @@ public class ClassifiersDataCleaner {
     @Locked(lockName = CLASSIFIERS_CRON_JOB_KEY, waitForLock = false)
     public void removeModels() {
         log.info("Starting to remove classifier models.");
+        if (!appProperties.isAutoRemoveExpiredModels()) {
+            log.warn("Evaluation model auto removing has been disabled. Skipped...");
+            return;
+        }
         Pageable pageRequest = PageRequest.of(0, appProperties.getPageSize());
         LocalDateTime dateTime = LocalDateTime.now().minusDays(appProperties.getNumberOfDaysForStorage());
         List<EvaluationLog> evaluationLogs;

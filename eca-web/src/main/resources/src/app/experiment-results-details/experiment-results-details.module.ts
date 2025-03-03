@@ -5,6 +5,7 @@ import { UiComponentsModule } from "../ui-components.module";
 import { EvaluationResultsModule } from "../evaluation-results/evaluation-results.module";
 import { ExperimentResultsDetailsComponent } from "./components/experiment-results-details.component";
 import { SharedModule } from "../common/shared.module";
+import { ClassifyInstanceModule } from '../classify-instance/classify-instance.module';
 
 @NgModule({
   imports: [
@@ -12,7 +13,8 @@ import { SharedModule } from "../common/shared.module";
     FormsModule,
     UiComponentsModule,
     EvaluationResultsModule,
-    SharedModule
+    SharedModule,
+    ClassifyInstanceModule
   ],
   declarations: [
     ExperimentResultsDetailsComponent

@@ -48,4 +48,19 @@ public class AppProperties {
      * Short life url expiration in minutes
      */
     private Integer shortLifeUrlExpirationMinutes;
+
+    /**
+     * Models cache time to live seconds
+     */
+    private Long modelCacheTtlSeconds;
+
+    /**
+     * Model cache size
+     */
+    private Integer modelCacheSize;
+
+    /**
+     * Auto remove expired models
+     */
+    private boolean autoRemoveExpiredModels;
 }

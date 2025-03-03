@@ -742,6 +742,131 @@ a|
 ----
 |===
 
+== Classify instance for specified experiment results classifier model
+
+__POST__ */experiment/classify-instance* - Classify instance for specified experiment results classifier model
+
+*Security requirement*
+
+[cols="^50%,^50%",options="header"]
+|===
+|*Name*|*Scopes*
+|
+<<EcaAuth>>
+a|
+
+* web
+
+|===
+
+*Request body*
+
+[width=100%]
+|===
+|*Content type*|*Required*|*Schema*|*Example*
+|*application/json*
+|true
+|
+<<ClassifyInstanceRequestDto>>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+a|
+[source,json]
+----
+{
+  "modelId" : 1,
+  "values" : [ {
+    "index" : 0,
+    "value" : 5.1
+  }, {
+    "index" : 1,
+    "value" : 3.5
+  }, {
+    "index" : 2,
+    "value" : 1.4
+  }, {
+    "index" : 3,
+    "value" : 0.2
+  } ]
+}
+----
+|===
+
+
+
+*Api responses*
+[width=100%]
+|===
+|*Code*|*Description*|*Content type*|*Schema*|*Example*
+|200
+|OK
+|*application/json*
+|
+<<ClassifyInstanceResultDto>>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+a|
+[source,json]
+----
+{
+  "classIndex" : 0,
+  "classValue" : "Iris-setosa",
+  "probability" : 1.0
+}
+----
+|400
+|Bad request
+|*application/json*
+|-
+a|
+[source,json]
+----
+[ {
+  "fieldName" : null,
+  "code" : "DataNotFound",
+  "errorMessage" : "Entity with search key [1] not found!"
+} ]
+----
+|401
+|Not authorized
+|*application/json*
+|-
+a|
+[source,json]
+----
+{
+  "error" : "unauthorized",
+  "error_description" : "Full authentication is required to access this resource"
+}
+----
+|===
+
 == Uploads new classifier options file for specified configuration
 
 __POST__ */experiment/classifiers-options/upload* - Uploads new classifier options file for specified configuration
@@ -2454,6 +2579,417 @@ a|
 ----
 |===
 
+== Classify instance for specified classifier model
+
+__POST__ */evaluation/classify-instance* - Classify instance for specified classifier model
+
+*Security requirement*
+
+[cols="^50%,^50%",options="header"]
+|===
+|*Name*|*Scopes*
+|
+<<EcaAuth>>
+a|
+
+* web
+
+|===
+
+*Request body*
+
+[width=100%]
+|===
+|*Content type*|*Required*|*Schema*|*Example*
+|*application/json*
+|true
+|
+<<ClassifyInstanceRequestDto>>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+a|
+[source,json]
+----
+{
+  "modelId" : 1,
+  "values" : [ {
+    "index" : 0,
+    "value" : 5.1
+  }, {
+    "index" : 1,
+    "value" : 3.5
+  }, {
+    "index" : 2,
+    "value" : 1.4
+  }, {
+    "index" : 3,
+    "value" : 0.2
+  } ]
+}
+----
+|===
+
+
+
+*Api responses*
+[width=100%]
+|===
+|*Code*|*Description*|*Content type*|*Schema*|*Example*
+|200
+|OK
+|*application/json*
+|
+<<ClassifyInstanceResultDto>>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+a|
+[source,json]
+----
+{
+  "classIndex" : 0,
+  "classValue" : "Iris-setosa",
+  "probability" : 1.0
+}
+----
+|400
+|Bad request
+|*application/json*
+|-
+a|
+[source,json]
+----
+[ {
+  "fieldName" : null,
+  "code" : "DataNotFound",
+  "errorMessage" : "Entity with search key [1] not found!"
+} ]
+----
+|401
+|Not authorized
+|*application/json*
+|-
+a|
+[source,json]
+----
+{
+  "error" : "unauthorized",
+  "error_description" : "Full authentication is required to access this resource"
+}
+----
+|===
+
+== Gets input attributes for specified instances
+
+__GET__ */instances-info/input-attributes/{instancesId}* - Gets input attributes for specified instances
+
+*Security requirement*
+
+[cols="^50%,^50%",options="header"]
+|===
+|*Name*|*Scopes*
+|
+<<EcaAuth>>
+a|
+
+* web
+
+|===
+
+
+*Request parameters*
+[width=100%]
+|===
+|*Name*|*Description*|*Location*|*Schema*
+|*instancesId**
+|-
+|path
+a|
+__integer__
+__(int64)__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|===
+
+*Api responses*
+[width=100%]
+|===
+|*Code*|*Description*|*Content type*|*Schema*|*Example*
+|200
+|OK
+|*application/json*
+|
+__array__
+<<<AttributeMetaInfoDto>>
+>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+a|
+[source,json]
+----
+[ {
+  "name" : "x1",
+  "index" : 0,
+  "type" : {
+    "value" : "NUMERIC",
+    "description" : "Числовой"
+  }
+}, {
+  "name" : "x2",
+  "index" : 1,
+  "type" : {
+    "value" : "NUMERIC",
+    "description" : "Числовой"
+  }
+}, {
+  "name" : "x3",
+  "index" : 2,
+  "type" : {
+    "value" : "NUMERIC",
+    "description" : "Числовой"
+  }
+}, {
+  "name" : "x4",
+  "index" : 3,
+  "type" : {
+    "value" : "NOMINAL",
+    "description" : "Категориальный"
+  },
+  "values" : [ {
+    "index" : 0,
+    "value" : "Good"
+  }, {
+    "index" : 1,
+    "value" : "Bad"
+  } ]
+} ]
+----
+|401
+|Not authorized
+|*application/json*
+|-
+a|
+[source,json]
+----
+{
+  "error" : "unauthorized",
+  "error_description" : "Full authentication is required to access this resource"
+}
+----
+|400
+|Bad request
+|*application/json*
+|
+__array__
+<<<ValidationErrorDto>>
+>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+a|
+[source,json]
+----
+[ {
+  "fieldName" : null,
+  "code" : "DataNotFound",
+  "errorMessage" : "Entity with search key [1] not found!"
+} ]
+----
+|===
+
+== Gets class values info for specified instances
+
+__GET__ */instances-info/class-values/{instancesId}* - Gets class values info for specified instances
+
+*Security requirement*
+
+[cols="^50%,^50%",options="header"]
+|===
+|*Name*|*Scopes*
+|
+<<EcaAuth>>
+a|
+
+* web
+
+|===
+
+
+*Request parameters*
+[width=100%]
+|===
+|*Name*|*Description*|*Location*|*Schema*
+|*instancesId**
+|-
+|path
+a|
+__integer__
+__(int64)__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|===
+
+*Api responses*
+[width=100%]
+|===
+|*Code*|*Description*|*Content type*|*Schema*|*Example*
+|200
+|OK
+|*application/json*
+|
+__array__
+<<<AttributeValueMetaInfoDto>>
+>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+a|
+[source,json]
+----
+[ {
+  "index" : 0,
+  "value" : "Iris-setosa"
+}, {
+  "index" : 1,
+  "value" : "Iris-versicolor"
+}, {
+  "index" : 2,
+  "value" : "Iris-verginica"
+} ]
+----
+|401
+|Not authorized
+|*application/json*
+|-
+a|
+[source,json]
+----
+{
+  "error" : "unauthorized",
+  "error_description" : "Full authentication is required to access this resource"
+}
+----
+|400
+|Bad request
+|*application/json*
+|
+__array__
+<<<ValidationErrorDto>>
+>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+a|
+[source,json]
+----
+[ {
+  "fieldName" : null,
+  "code" : "DataNotFound",
+  "errorMessage" : "Entity with search key [1] not found!"
+} ]
+----
+|===
+
 == Gets experiment filter fields
 
 __GET__ */filter-templates/experiment* - Gets experiment filter fields
@@ -3243,6 +3779,202 @@ a|
   "error" : "unauthorized",
   "error_description" : "Full authentication is required to access this resource"
 }
+----
+|===
+
+== Gets experiment results roc curve data
+
+__GET__ */experiment/roc-curve* - Gets experiment results roc curve data
+
+*Security requirement*
+
+[cols="^50%,^50%",options="header"]
+|===
+|*Name*|*Scopes*
+|
+<<EcaAuth>>
+a|
+
+* web
+
+|===
+
+
+*Request parameters*
+[width=100%]
+|===
+|*Name*|*Description*|*Location*|*Schema*
+|*experimentResultsId**
+|-
+|query
+a|
+__integer__
+__(int64)__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|*classValueIndex**
+|-
+|query
+a|
+__integer__
+__(int32)__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|===
+
+*Api responses*
+[width=100%]
+|===
+|*Code*|*Description*|*Content type*|*Schema*|*Example*
+|200
+|OK
+|*application/json*
+|
+<<RocCurveDataDto>>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+a|
+[source,json]
+----
+{
+  "rocCurvePoints" : [ {
+    "specificity" : 100,
+    "sensitivity" : 100
+  }, {
+    "specificity" : 85.4167,
+    "sensitivity" : 98.5714
+  }, {
+    "specificity" : 84.7222,
+    "sensitivity" : 98.5714
+  }, {
+    "specificity" : 72.2222,
+    "sensitivity" : 98.5714
+  }, {
+    "specificity" : 71.5278,
+    "sensitivity" : 98.5714
+  }, {
+    "specificity" : 70.8333,
+    "sensitivity" : 98.5714
+  }, {
+    "specificity" : 68.75,
+    "sensitivity" : 98.5714
+  }, {
+    "specificity" : 31.9444,
+    "sensitivity" : 94.2857
+  }, {
+    "specificity" : 7.6389,
+    "sensitivity" : 58.5714
+  }, {
+    "specificity" : 7.6389,
+    "sensitivity" : 57.1429
+  }, {
+    "specificity" : 4.1667,
+    "sensitivity" : 38.5714
+  }, {
+    "specificity" : 3.4722,
+    "sensitivity" : 38.5714
+  }, {
+    "specificity" : 3.4722,
+    "sensitivity" : 37.1429
+  }, {
+    "specificity" : 2.7778,
+    "sensitivity" : 37.1429
+  }, {
+    "specificity" : 2.0833,
+    "sensitivity" : 32.8571
+  }, {
+    "specificity" : 2.0833,
+    "sensitivity" : 31.4286
+  } ],
+  "optimalPoint" : {
+    "specificity" : 19.7761,
+    "sensitivity" : 67.4,
+    "threshold" : 0.7278
+  },
+  "aucValue" : 0.8974
+}
+----
+|401
+|Not authorized
+|*application/json*
+|-
+a|
+[source,json]
+----
+{
+  "error" : "unauthorized",
+  "error_description" : "Full authentication is required to access this resource"
+}
+----
+|400
+|Bad request
+|*application/json*
+|
+__array__
+<<<ValidationErrorDto>>
+>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+a|
+[source,json]
+----
+[ {
+  "fieldName" : null,
+  "code" : "DataNotFound",
+  "errorMessage" : "Entity with search key [1] not found!"
+} ]
 ----
 |===
 
@@ -4432,6 +5164,202 @@ a|
   "active" : true,
   "buildIn" : true,
   "classifiersOptionsCount" : 25
+}
+----
+|401
+|Not authorized
+|*application/json*
+|-
+a|
+[source,json]
+----
+{
+  "error" : "unauthorized",
+  "error_description" : "Full authentication is required to access this resource"
+}
+----
+|400
+|Bad request
+|*application/json*
+|
+__array__
+<<<ValidationErrorDto>>
+>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+a|
+[source,json]
+----
+[ {
+  "fieldName" : null,
+  "code" : "DataNotFound",
+  "errorMessage" : "Entity with search key [1] not found!"
+} ]
+----
+|===
+
+== Gets evaluation roc curve data
+
+__GET__ */evaluation/roc-curve* - Gets evaluation roc curve data
+
+*Security requirement*
+
+[cols="^50%,^50%",options="header"]
+|===
+|*Name*|*Scopes*
+|
+<<EcaAuth>>
+a|
+
+* web
+
+|===
+
+
+*Request parameters*
+[width=100%]
+|===
+|*Name*|*Description*|*Location*|*Schema*
+|*evaluationLogId**
+|-
+|query
+a|
+__integer__
+__(int64)__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|*classValueIndex**
+|-
+|query
+a|
+__integer__
+__(int32)__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|===
+
+*Api responses*
+[width=100%]
+|===
+|*Code*|*Description*|*Content type*|*Schema*|*Example*
+|200
+|OK
+|*application/json*
+|
+<<RocCurveDataDto>>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+a|
+[source,json]
+----
+{
+  "rocCurvePoints" : [ {
+    "specificity" : 100,
+    "sensitivity" : 100
+  }, {
+    "specificity" : 85.4167,
+    "sensitivity" : 98.5714
+  }, {
+    "specificity" : 84.7222,
+    "sensitivity" : 98.5714
+  }, {
+    "specificity" : 72.2222,
+    "sensitivity" : 98.5714
+  }, {
+    "specificity" : 71.5278,
+    "sensitivity" : 98.5714
+  }, {
+    "specificity" : 70.8333,
+    "sensitivity" : 98.5714
+  }, {
+    "specificity" : 68.75,
+    "sensitivity" : 98.5714
+  }, {
+    "specificity" : 31.9444,
+    "sensitivity" : 94.2857
+  }, {
+    "specificity" : 7.6389,
+    "sensitivity" : 58.5714
+  }, {
+    "specificity" : 7.6389,
+    "sensitivity" : 57.1429
+  }, {
+    "specificity" : 4.1667,
+    "sensitivity" : 38.5714
+  }, {
+    "specificity" : 3.4722,
+    "sensitivity" : 38.5714
+  }, {
+    "specificity" : 3.4722,
+    "sensitivity" : 37.1429
+  }, {
+    "specificity" : 2.7778,
+    "sensitivity" : 37.1429
+  }, {
+    "specificity" : 2.0833,
+    "sensitivity" : 32.8571
+  }, {
+    "specificity" : 2.0833,
+    "sensitivity" : 31.4286
+  } ],
+  "optimalPoint" : {
+    "specificity" : 19.7761,
+    "sensitivity" : 67.4,
+    "threshold" : 0.7278
+  },
+  "aucValue" : 0.8974
 }
 ----
 |401
@@ -7181,6 +8109,169 @@ __string__
 * STACKING_CV
 
 * DECISION_TREE
+|===
+=== ClassifyInstanceResultDto
+:table-caption: Table
+.Classify instance result model
+[width=100%]
+|===
+|*Name*|*Description*|*Schema*
+|*classIndex**
+|Class index
+a|
+__integer__
+__(int32)__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|*classValue**
+|Class value
+a|
+__string__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|*probability**
+|True positive rate
+a|
+__number__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|===
+=== ClassifyInstanceRequestDto
+:table-caption: Table
+.Classify instance request model
+[width=100%]
+|===
+|*Name*|*Description*|*Schema*
+|*modelId**
+|Model id
+a|
+__integer__
+__(int64)__
+
+
+
+
+
+
+*Minimum*: 1*
+
+*Maximum*: 9 223 372 036 854 775 807*
+
+
+
+
+
+
+
+
+|*values**
+|-
+a|
+__array__
+<<<ClassifyInstanceValueDto>>
+>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|===
+=== ClassifyInstanceValueDto
+:table-caption: Table
+.Classify instance value model
+[width=100%]
+|===
+|*Name*|*Description*|*Schema*
+|*index**
+|Attribute index
+a|
+__integer__
+__(int32)__
+
+
+
+
+
+
+*Minimum*: 0*
+
+*Maximum*: 2 147 483 647*
+
+
+
+
+
+
+
+
+|*value**
+|Attribute value
+a|
+__number__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 |===
 === CreateClassifierOptionsResultDto
 :table-caption: Table
@@ -10627,6 +11718,161 @@ __string__
 
 * CROSS_VALIDATION
 |===
+=== AttributeMetaInfoDto
+:table-caption: Table
+.Attribute meta info model
+[width=100%]
+|===
+|*Name*|*Description*|*Schema*
+|*name*
+|Attribute name
+a|
+__string__
+
+
+
+
+*Max. length*: 255
+
+
+
+
+
+
+
+
+
+
+|*index*
+|Attribute index
+a|
+__integer__
+__(int32)__
+
+
+
+
+
+
+*Minimum*: 0*
+
+*Maximum*: 2 147 483 647*
+
+
+
+
+
+
+
+
+|*type*
+|-
+a|
+<<EnumDto>>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|*dateFormat*
+|Date format for date attribute
+a|
+__string__
+
+
+
+
+*Max. length*: 255
+
+
+
+
+
+
+
+
+
+
+|*values*
+|-
+a|
+__array__
+<<<AttributeValueMetaInfoDto>>
+>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|===
+=== AttributeValueMetaInfoDto
+:table-caption: Table
+.Attribute value meta info model
+[width=100%]
+|===
+|*Name*|*Description*|*Schema*
+|*index*
+|Attribute value index
+a|
+__integer__
+__(int32)__
+
+
+
+
+
+
+*Minimum*: 0*
+
+*Maximum*: 2 147 483 647*
+
+
+
+
+
+
+
+
+|*value*
+|Attribute value
+a|
+__string__
+
+
+
+
+*Max. length*: 255
+
+
+
+
+
+
+
+
+
+
+|===
 === FilterDictionaryDto
 :table-caption: Table
 .Filter dictionary model
@@ -10986,6 +12232,144 @@ __array__
 
 
 
+
+
+
+
+
+
+
+
+|===
+=== RocCurveDataDto
+:table-caption: Table
+.Component RocCurveDataDto
+[width=100%]
+|===
+|*Name*|*Description*|*Schema*
+|*rocCurvePoints*
+|Roc curve data points
+a|
+__array__
+<<<RocCurvePointDto>>
+>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|*optimalPoint*
+|-
+a|
+<<RocCurvePointDto>>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|*aucValue*
+|AUC value
+a|
+__number__
+
+
+
+
+
+
+*Minimum*: 0*
+
+*Maximum*: 1*
+
+
+
+
+
+
+
+
+|===
+=== RocCurvePointDto
+:table-caption: Table
+.Optimal point
+[width=100%]
+|===
+|*Name*|*Description*|*Schema*
+|*specificity*
+|Specificity value
+a|
+__number__
+
+
+
+
+
+
+*Minimum*: 0*
+
+*Maximum*: 100*
+
+
+
+
+
+
+
+
+|*sensitivity*
+|Sensitivity value
+a|
+__number__
+
+
+
+
+
+
+*Minimum*: 0*
+
+*Maximum*: 100*
+
+
+
+
+
+
+
+
+|*threshold*
+|Threshold value
+a|
+__number__
+
+
+
+
+
+
+*Minimum*: 0*
+
+*Maximum*: 1*
 
 
 

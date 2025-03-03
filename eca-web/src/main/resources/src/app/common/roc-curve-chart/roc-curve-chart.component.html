@@ -1,0 +1,29 @@
+<p-progressSpinner
+  class="app-progress-spinner"
+  strokeWidth="4"
+  animationDuration=".5s"
+  *ngIf="loading">
+</p-progressSpinner>
+<div class="ui-g roc-curve-panel">
+  <div class="ui-g-12">
+    <p-chart type="line" height="750px" [data]="dataSet" [options]="barOptions"></p-chart>
+  </div>
+  <div class="ui-g-12 text-center auc-value mt-2">
+    AUC (Площадь под кривой): {{ rocCurveDataDto?.aucValue || '-' }}
+  </div>
+</div>
+<div class="ui-g">
+  <div class="ui-g-6 mx-auto mb-3 mt-2">
+    <label class="text-bold">Выберите класс</label>
+    <p-dropdown
+      required
+      id="classValueIndex"
+      name="classValueIndex"
+      placeholder="Выбрать"
+      [options]="classValues"
+      (onChange)="updateRocCurveData()"
+      [(ngModel)]="selectedClassIndex"
+      [style]="{'width':'100%'}">
+    </p-dropdown>
+  </div>
+</div>

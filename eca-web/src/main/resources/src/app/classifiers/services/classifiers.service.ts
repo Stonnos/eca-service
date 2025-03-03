@@ -5,6 +5,9 @@ import {
   EvaluationLogDetailsDto,
   EvaluationLogDto,
   PageDto,
+  RocCurveDataDto,
+  ClassifyInstanceResultDto,
+  ClassifyInstanceRequestDto,
   PageRequestDto, RequestStatusStatisticsDto, S3ContentResponseDto
 } from "../../../../../../../target/generated-sources/typescript/eca-web-dto";
 import { Observable } from "rxjs/internal/Observable";
@@ -16,9 +19,11 @@ import { CreateEvaluationRequestDto } from "../../create-classifier/model/create
 import {
   CreateOptimalEvaluationRequestDto
 } from "../../create-optimal-classifier/model/create-optimal-evaluation-request.model";
+import { RocCurveService } from '../../common/services/roc-curve.service';
+import { ClassifyInstanceService } from '../../common/services/classify-instance.service';
 
 @Injectable()
-export class ClassifiersService {
+export class ClassifiersService implements RocCurveService, ClassifyInstanceService {
 
   private serviceUrl = environment.serverUrl + '/evaluation';
 
@@ -74,6 +79,24 @@ export class ClassifiersService {
       'Content-type': 'application/json; charset=utf-8'
     });
     return this.http.get<S3ContentResponseDto>(this.serviceUrl + '/model/' + id, { headers: headers });
+  }
+
+  public getRocCurveData(evaluationLogId: number, classValueIndex: number): Observable<RocCurveDataDto> {
+    const headers = new HttpHeaders({
+      'Content-type': 'application/json; charset=utf-8'
+    });
+    let params = new HttpParams()
+      .set('evaluationLogId', evaluationLogId.toString())
+      .set('classValueIndex', classValueIndex.toString());
+    const options = { headers: headers, params: params };
+    return this.http.get<RocCurveDataDto>(this.serviceUrl + '/roc-curve', options);
+  }
+
+  public classifyInstance(classifyInstanceRequestDto: ClassifyInstanceRequestDto): Observable<ClassifyInstanceResultDto> {
+    const headers = new HttpHeaders({
+      'Content-type': 'application/json; charset=utf-8'
+    });
+    return this.http.post<ClassifyInstanceResultDto>(this.serviceUrl + '/classify-instance', classifyInstanceRequestDto, { headers: headers });
   }
 
   public downloadContent(url: string): Observable<Blob> {

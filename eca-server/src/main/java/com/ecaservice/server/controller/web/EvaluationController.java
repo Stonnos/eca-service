@@ -6,9 +6,13 @@ import com.ecaservice.server.dto.CreateEvaluationRequestDto;
 import com.ecaservice.server.dto.CreateOptimalEvaluationRequestDto;
 import com.ecaservice.server.model.entity.EvaluationLog;
 import com.ecaservice.server.repository.EvaluationLogRepository;
+import com.ecaservice.server.service.evaluation.ClassifyEvaluationInstanceService;
 import com.ecaservice.server.service.evaluation.EvaluationLogDataService;
 import com.ecaservice.server.service.evaluation.EvaluationRequestWebApiService;
+import com.ecaservice.server.service.evaluation.EvaluationRocCurveDataProvider;
 import com.ecaservice.web.dto.model.ChartDto;
+import com.ecaservice.web.dto.model.ClassifyInstanceRequestDto;
+import com.ecaservice.web.dto.model.ClassifyInstanceResultDto;
 import com.ecaservice.web.dto.model.CreateEvaluationResponseDto;
 import com.ecaservice.web.dto.model.EvaluationLogDetailsDto;
 import com.ecaservice.web.dto.model.EvaluationLogDto;
@@ -16,6 +20,7 @@ import com.ecaservice.web.dto.model.EvaluationLogsPageDto;
 import com.ecaservice.web.dto.model.PageDto;
 import com.ecaservice.web.dto.model.PageRequestDto;
 import com.ecaservice.web.dto.model.RequestStatusStatisticsDto;
+import com.ecaservice.web.dto.model.RocCurveDataDto;
 import com.ecaservice.web.dto.model.S3ContentResponseDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -26,6 +31,9 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -40,9 +48,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import jakarta.validation.Valid;
-import jakarta.validation.constraints.Max;
-import jakarta.validation.constraints.Min;
 import java.time.LocalDate;
 
 import static com.ecaservice.config.swagger.OpenApi30Configuration.ECA_AUTHENTICATION_SECURITY_SCHEME;
@@ -64,6 +69,8 @@ public class EvaluationController {
 
     private final EvaluationLogDataService evaluationLogDataService;
     private final EvaluationRequestWebApiService evaluationRequestWebApiService;
+    private final EvaluationRocCurveDataProvider evaluationRocCurveDataProvider;
+    private final ClassifyEvaluationInstanceService classifyEvaluationInstanceService;
     private final EvaluationLogRepository evaluationLogRepository;
 
     /**
@@ -461,5 +468,126 @@ public class EvaluationController {
             @Min(VALUE_1) @Max(Long.MAX_VALUE) @PathVariable Long id) {
         log.info("Received request to get classifier model [{}] result content url", id);
         return evaluationLogDataService.getModelContentUrl(id);
+    }
+
+    /**
+     * Gets evaluation roc curve data.
+     *
+     * @param evaluationLogId - evaluation log id
+     * @param classValueIndex - class value index
+     * @return roc curve data
+     */
+    @PreAuthorize("hasAuthority('SCOPE_web')")
+    @Operation(
+            description = "Gets evaluation roc curve data",
+            summary = "Gets evaluation roc curve data",
+            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME, scopes = SCOPE_WEB),
+            responses = {
+                    @ApiResponse(description = "OK", responseCode = "200",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    examples = {
+                                            @ExampleObject(
+                                                    name = "RocCurveDataResponse",
+                                                    ref = "#/components/examples/RocCurveDataResponse"
+                                            )
+                                    },
+                                    schema = @Schema(implementation = RocCurveDataDto.class)
+                            )
+                    ),
+                    @ApiResponse(description = "Not authorized", responseCode = "401",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    examples = {
+                                            @ExampleObject(
+                                                    name = "NotAuthorizedResponse",
+                                                    ref = "#/components/examples/NotAuthorizedResponse"
+                                            )
+                                    }
+                            )
+                    ),
+                    @ApiResponse(description = "Bad request", responseCode = "400",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    examples = {
+                                            @ExampleObject(
+                                                    name = "DataNotFoundResponse",
+                                                    ref = "#/components/examples/DataNotFoundResponse"
+                                            )
+                                    },
+                                    array = @ArraySchema(schema = @Schema(implementation = ValidationErrorDto.class))
+                            )
+                    )
+            }
+    )
+    @GetMapping("/roc-curve")
+    public RocCurveDataDto getRocCurveData(@RequestParam Long evaluationLogId,
+                                           @RequestParam Integer classValueIndex) {
+        log.info("Request to calculate roc curve data for evaluation log [{}], class index [{}]", evaluationLogId,
+                classValueIndex);
+        return evaluationRocCurveDataProvider.getRocCurveData(evaluationLogId, classValueIndex);
+    }
+
+    /**
+     * Classify instance for specified classifier model.
+     *
+     * @param classifyInstanceRequestDto - classify instance request dto
+     * @return classify instance result
+     */
+    @PreAuthorize("hasAuthority('SCOPE_web')")
+    @Operation(
+            description = "Classify instance for specified classifier model",
+            summary = "Classify instance for specified classifier model",
+            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME, scopes = SCOPE_WEB),
+            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(content = {
+                    @Content(examples = {
+                            @ExampleObject(
+                                    name = "ClassifyInstanceRequest",
+                                    ref = "#/components/examples/ClassifyInstanceRequest"
+                            )
+                    })
+            }),
+            responses = {
+                    @ApiResponse(description = "OK", responseCode = "200",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    examples = {
+                                            @ExampleObject(
+                                                    name = "ClassifyInstanceResponse",
+                                                    ref = "#/components/examples/ClassifyInstanceResponse"
+                                            )
+                                    },
+                                    schema = @Schema(implementation = ClassifyInstanceResultDto.class)
+                            )
+                    ),
+                    @ApiResponse(description = "Bad request", responseCode = "400",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    examples = {
+                                            @ExampleObject(
+                                                    name = "DataNotFoundResponse",
+                                                    ref = "#/components/examples/DataNotFoundResponse"
+                                            )
+                                    }
+                            )
+                    ),
+                    @ApiResponse(description = "Not authorized", responseCode = "401",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    examples = {
+                                            @ExampleObject(
+                                                    name = "NotAuthorizedResponse",
+                                                    ref = "#/components/examples/NotAuthorizedResponse"
+                                            )
+                                    }
+                            )
+                    )
+            }
+    )
+    @PostMapping(value = "/classify-instance")
+    public ClassifyInstanceResultDto classifyInstance(
+            @Valid @RequestBody ClassifyInstanceRequestDto classifyInstanceRequestDto) {
+        log.info("Received classify instance request [{}]", classifyInstanceRequestDto);
+        return classifyEvaluationInstanceService.classifyInstance(classifyInstanceRequestDto);
     }
 }

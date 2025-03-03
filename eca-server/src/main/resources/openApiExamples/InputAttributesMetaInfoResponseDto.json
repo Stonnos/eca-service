@@ -1,0 +1,44 @@
+[
+  {
+    "name": "x1",
+    "index": 0,
+    "type": {
+      "value": "NUMERIC",
+      "description": "Числовой"
+    }
+  },
+  {
+    "name": "x2",
+    "index": 1,
+    "type": {
+      "value": "NUMERIC",
+      "description": "Числовой"
+    }
+  },
+  {
+    "name": "x3",
+    "index": 2,
+    "type": {
+      "value": "NUMERIC",
+      "description": "Числовой"
+    }
+  },
+  {
+    "name": "x4",
+    "index": 3,
+    "type": {
+      "value": "NOMINAL",
+      "description": "Категориальный"
+    },
+    "values": [
+      {
+        "index": 0,
+        "value": "Good"
+      },
+      {
+        "index": 1,
+        "value": "Bad"
+      }
+    ]
+  }
+]

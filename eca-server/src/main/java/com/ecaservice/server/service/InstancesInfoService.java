@@ -1,12 +1,16 @@
 package com.ecaservice.server.service;
 
+import com.ecaservice.common.web.exception.EntityNotFoundException;
 import com.ecaservice.core.filter.service.FilterTemplateService;
 import com.ecaservice.core.filter.validation.annotations.ValidPageRequest;
 import com.ecaservice.server.filter.InstancesInfoFilter;
 import com.ecaservice.server.mapping.InstancesInfoMapper;
-import com.ecaservice.server.model.data.InstancesMetaDataModel;
+import com.ecaservice.server.model.data.AttributeMetaInfo;
 import com.ecaservice.server.model.entity.InstancesInfo;
+import com.ecaservice.server.repository.AttributesInfoRepository;
 import com.ecaservice.server.repository.InstancesInfoRepository;
+import com.ecaservice.web.dto.model.AttributeMetaInfoDto;
+import com.ecaservice.web.dto.model.AttributeValueMetaInfoDto;
 import com.ecaservice.web.dto.model.InstancesInfoDto;
 import com.ecaservice.web.dto.model.PageDto;
 import com.ecaservice.web.dto.model.PageRequestDto;
@@ -16,6 +20,9 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
+
+import java.util.List;
+import java.util.stream.IntStream;
 
 import static com.ecaservice.core.filter.util.FilterUtils.buildSort;
 import static com.ecaservice.server.model.entity.FilterTemplateType.INSTANCES_INFO;
@@ -36,6 +43,7 @@ public class InstancesInfoService {
     private final InstancesInfoMapper instancesInfoMapper;
     private final InstancesProvider instancesProvider;
     private final InstancesInfoRepository instancesInfoRepository;
+    private final AttributesInfoRepository attributesInfoRepository;
 
     /**
      * Gets or save new instances info.
@@ -72,5 +80,60 @@ public class InstancesInfoService {
                 instancesInfoPage.getNumberOfElements(), pageRequestDto);
         var instancesInfoDtoList = instancesInfoMapper.map(instancesInfoPage.getContent());
         return PageDto.of(instancesInfoDtoList, pageRequestDto.getPage(), instancesInfoPage.getTotalElements());
+    }
+
+    /**
+     * Gets instances class values.
+     *
+     * @param instancesId - instances id
+     * @return class values
+     */
+    public List<AttributeValueMetaInfoDto> getClassValues(Long instancesId) {
+        log.info("Starting to get instances [{}] class values", instancesId);
+        InstancesInfo instancesInfo = instancesInfoRepository.findById(instancesId)
+                .orElseThrow(() -> new EntityNotFoundException(InstancesInfo.class, instancesId));
+        var attributesInfo = attributesInfoRepository.findByInstancesInfo(instancesInfo)
+                .orElseThrow(() -> new EntityNotFoundException(InstancesInfo.class, instancesInfo.getId()));
+        AttributeMetaInfo classAttributeInfo = attributesInfo.getAttributes()
+                .stream()
+                .filter(attributeMetaInfo -> attributeMetaInfo.getName().equals(instancesInfo.getClassName()))
+                .findFirst()
+                .orElseThrow(() -> new IllegalStateException(
+                        String.format("Can't find class attribute [%s] in attributes list",
+                                instancesInfo.getClassName())));
+        var classValuesMetaInfo = IntStream.range(0, classAttributeInfo.getValues().size()).mapToObj(index -> {
+            AttributeValueMetaInfoDto attributeValueMetaInfoDto = new AttributeValueMetaInfoDto();
+            attributeValueMetaInfoDto.setIndex(index);
+            attributeValueMetaInfoDto.setValue(classAttributeInfo.getValues().get(index));
+            return attributeValueMetaInfoDto;
+        }).toList();
+        log.info("Class values has been fetched for instances [{}]", instancesId);
+        return classValuesMetaInfo;
+    }
+
+    /**
+     * Gets input attributes (without class) info list for specified instances.
+     *
+     * @param instancesId - instances id
+     * @return input attributes meta info list
+     */
+    public List<AttributeMetaInfoDto> getInputAttributes(Long instancesId) {
+        log.info("Starting to get instances [{}] input attributes info", instancesId);
+        InstancesInfo instancesInfo = instancesInfoRepository.findById(instancesId)
+                .orElseThrow(() -> new EntityNotFoundException(InstancesInfo.class, instancesId));
+        var attributesInfo = attributesInfoRepository.findByInstancesInfo(instancesInfo)
+                .orElseThrow(() -> new EntityNotFoundException(InstancesInfo.class, instancesInfo.getId()));
+        var attributesMetaInfoList = IntStream.range(0, attributesInfo.getAttributes().size())
+                .mapToObj(i -> {
+                    AttributeMetaInfoDto attributeMetaInfoDto =
+                            instancesInfoMapper.map(attributesInfo.getAttributes().get(i));
+                    attributeMetaInfoDto.setIndex(i);
+                    return attributeMetaInfoDto;
+                })
+                .filter(attributeMetaInfoDto -> !attributeMetaInfoDto.getName().equals(instancesInfo.getClassName()))
+                .toList();
+        log.info("[{}] input attributes info has been fetched for instances [{}]", attributesMetaInfoList.size(),
+                instancesId);
+        return attributesMetaInfoList;
     }
 }

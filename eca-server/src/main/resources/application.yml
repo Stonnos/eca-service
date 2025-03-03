@@ -75,12 +75,16 @@ app:
   threadPoolSize: 10
   schedulerPoolSize: 3
   numberOfDaysForStorage: 180
+  ## Remove expired models flag
+  autoRemoveExpiredModels: false
   ## Each day at midnight
   removeModelCron: 0 0 0 * * *
   pageSize: 10
   maxPagesNum: 99
   modelDownloadUrlExpirationDays: 7
   shortLifeUrlExpirationMinutes: 5
+  modelCacheTtlSeconds: 180
+  modelCacheSize: 25
 
 ## Queues properties
 queue:

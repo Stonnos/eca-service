@@ -5,6 +5,7 @@ import { UiComponentsModule } from "../ui-components.module";
 import { EvaluationLogDetailsComponent } from "./components/evaluation-log-details.component";
 import { EvaluationResultsModule } from "../evaluation-results/evaluation-results.module";
 import { SharedModule } from "../common/shared.module";
+import { ClassifyInstanceModule } from '../classify-instance/classify-instance.module';
 
 @NgModule({
   imports: [
@@ -12,12 +13,10 @@ import { SharedModule } from "../common/shared.module";
     FormsModule,
     UiComponentsModule,
     SharedModule,
-    EvaluationResultsModule
+    EvaluationResultsModule,
+    ClassifyInstanceModule
   ],
   declarations: [
-    EvaluationLogDetailsComponent
-  ],
-  exports: [
     EvaluationLogDetailsComponent
   ],
   providers: []

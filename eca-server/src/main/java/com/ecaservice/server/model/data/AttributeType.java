@@ -1,24 +1,34 @@
 package com.ecaservice.server.model.data;
 
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+
 /**
  * Attribute type enum.
  *
  * @author Roman Batygin
  */
+@Getter
+@RequiredArgsConstructor
 public enum AttributeType {
 
     /**
      * Numeric type
      */
-    NUMERIC,
+    NUMERIC("Числовой"),
 
     /**
      * Nominal type
      */
-    NOMINAL,
+    NOMINAL("Категориальный"),
 
     /**
      * Date type
      */
-    DATE
+    DATE("Дата и время");
+
+    /**
+     * Attribute description
+     */
+    private final String description;
 }
