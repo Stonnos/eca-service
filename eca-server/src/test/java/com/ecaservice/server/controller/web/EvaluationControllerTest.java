@@ -11,6 +11,7 @@ import com.ecaservice.server.mapping.InstancesInfoMapperImpl;
 import com.ecaservice.server.model.entity.EvaluationLog;
 import com.ecaservice.server.model.entity.RequestStatus;
 import com.ecaservice.server.repository.EvaluationLogRepository;
+import com.ecaservice.server.service.evaluation.ClassifyEvaluationInstanceService;
 import com.ecaservice.server.service.evaluation.EvaluationLogDataService;
 import com.ecaservice.server.service.evaluation.EvaluationRequestWebApiService;
 import com.ecaservice.server.service.evaluation.EvaluationRocCurveDataProvider;
@@ -76,6 +77,8 @@ class EvaluationControllerTest extends PageRequestControllerTest {
     private EvaluationRequestWebApiService evaluationRequestWebApiService;
     @MockBean
     private EvaluationRocCurveDataProvider evaluationRocCurveDataProvider;
+    @MockBean
+    private ClassifyEvaluationInstanceService classifyEvaluationInstanceService;
     @MockBean
     private EvaluationLogRepository evaluationLogRepository;
 

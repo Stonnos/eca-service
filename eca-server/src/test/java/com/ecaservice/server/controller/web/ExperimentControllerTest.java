@@ -13,6 +13,7 @@ import com.ecaservice.server.model.entity.Experiment;
 import com.ecaservice.server.model.entity.ExperimentProgressEntity;
 import com.ecaservice.server.model.entity.ExperimentResultsEntity;
 import com.ecaservice.server.repository.ExperimentResultsEntityRepository;
+import com.ecaservice.server.service.experiment.ClassifyExperimentResultsInstanceService;
 import com.ecaservice.server.service.experiment.ExperimentDataService;
 import com.ecaservice.server.service.experiment.ExperimentProgressService;
 import com.ecaservice.server.service.experiment.ExperimentRequestWebApiService;
@@ -87,6 +88,8 @@ class ExperimentControllerTest extends PageRequestControllerTest {
     private ExperimentDataService experimentDataService;
     @MockBean
     private ExperimentResultsRocCurveDataProvider experimentResultsRocCurveDataProvider;
+    @MockBean
+    private ClassifyExperimentResultsInstanceService classifyExperimentResultsInstanceService;
     @MockBean
     private ExperimentResultsService experimentResultsService;
     @MockBean
