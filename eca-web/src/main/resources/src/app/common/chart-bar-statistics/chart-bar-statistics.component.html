@@ -9,7 +9,7 @@
     <p-panel>
       <p-header>
         <div class="ui-g">
-          <div class="ui-g-4 ui-g-offset-3">
+          <div class="ui-g-5 ui-g-offset-2">
             <label class="filter-label">{{ dateLabelTitle }}</label>
             <p-calendar selectionMode="range"
                         [showIcon]="true"
@@ -18,16 +18,16 @@
                         [(ngModel)]="createdDateRange"
                         [maxDate]="now">
             </p-calendar>
-          </div>
-          <div class="ui-g-2">
             <button
               pButton
+              class="ml-4"
               label="Показать"
               type="button"
               [disabled]="loading"
               (click)="onShow()">
             </button>
           </div>
+
         </div>
       </p-header>
 
