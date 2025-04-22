@@ -34,6 +34,10 @@ minio:
   secretKey: minio-pa66word
   ## Имя бакета
   bucketName: eca-service
+  ## Вкл./выкл. автоматическое создание бакета
+  autoCreateBucket: true
+  ## Таймаут для автоматического создания бакета
+  autoCreateBucketTimeoutMinutes: 10
 ----
 
 Для поддержки метрик добавить конфигурацию

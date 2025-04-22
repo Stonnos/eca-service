@@ -304,14 +304,6 @@ class ExperimentProcessManagerTest extends AbstractEvaluationProcessManagerTest<
         return experimentRepository.save(experiment);
     }
 
-    private boolean hasNoActiveProcess(Experiment experiment) {
-        var activeProcessInstancesCount = runtimeService.createProcessInstanceQuery()
-                .processInstanceBusinessKey(experiment.getRequestId())
-                .active()
-                .count();
-        return activeProcessInstancesCount == 0L;
-    }
-
     @RequiredArgsConstructor
     private abstract class AbstractEmailRequestVerifier implements TestStepVerifier<Experiment> {
 

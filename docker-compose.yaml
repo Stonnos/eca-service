@@ -33,10 +33,12 @@ services:
       - "15672:15672"
       - "5672:5672"
     volumes:
-      - ./rabbitmq/rabbitmq.conf:/etc/rabbitmq/rabbitmq.config
       - rabbit-data:/var/lib/rabbitmq
     environment:
       TZ: ${TIME_ZONE}
+      RABBITMQ_DEFAULT_VHOST: "/"
+      RABBITMQ_DEFAULT_USER: ${RABBIT_USER}
+      RABBITMQ_DEFAULT_PASS: ${RABBIT_PASSWORD}
     networks:
       - default
 
@@ -53,17 +55,6 @@ services:
     volumes:
       - s3-minio-data:/data
     command: ["server", "--console-address", ":9100", "/data"]
-
-  s3-minio-client:
-    build: ./minio/mc/
-    container_name: s3-minio-client
-    depends_on:
-      - s3-minio-storage
-    environment:
-      S3_MINIO_URL: ${S3_MINIO_URL}
-      MINIO_ROOT_USER: ${MINIO_ROOT_USER}
-      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD}
-      BUCKET_NAME: ${BUCKET_NAME}
 
   s3-minio-nginx-proxy:
     container_name: s3-minio-nginx-proxy
