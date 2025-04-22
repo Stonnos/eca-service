@@ -6111,6 +6111,126 @@ a|
 ----
 |===
 
+== Gets evaluation request route path for specified evaluation results
+
+__GET__ */evaluation-results/request-path/{resultId}* - Gets evaluation request route path for specified evaluation results
+
+*Security requirement*
+
+[cols="^50%,^50%",options="header"]
+|===
+|*Name*|*Scopes*
+|
+<<EcaAuth>>
+a|
+
+* web
+
+|===
+
+
+*Request parameters*
+[width=100%]
+|===
+|*Name*|*Description*|*Location*|*Schema*
+|*resultId**
+|-
+|path
+a|
+__string__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|===
+
+*Api responses*
+[width=100%]
+|===
+|*Code*|*Description*|*Content type*|*Schema*|*Example*
+|200
+|OK
+|*application/json*
+|
+<<RoutePathDto>>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+a|
+[source,json]
+----
+{
+  "path" : "/dashboard/classifiers/evaluation-results/168"
+}
+----
+|401
+|Not authorized
+|*application/json*
+|-
+a|
+[source,json]
+----
+{
+  "error" : "unauthorized",
+  "error_description" : "Full authentication is required to access this resource"
+}
+----
+|400
+|Bad request
+|*application/json*
+|
+__array__
+<<<ValidationErrorDto>>
+>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+a|
+[source,json]
+----
+[ {
+  "fieldName" : null,
+  "code" : "DataNotFound",
+  "errorMessage" : "Entity with search key [1] not found!"
+} ]
+----
+|===
+
 == Gets classifiers form templates
 
 __GET__ */classifiers/templates/list* - Gets classifiers form templates
@@ -13806,6 +13926,32 @@ a|
 
 
 
+
+
+
+
+
+
+
+
+
+
+|===
+=== RoutePathDto
+:table-caption: Table
+.Route path model
+[width=100%]
+|===
+|*Name*|*Description*|*Schema*
+|*path*
+|Route path
+a|
+__string__
+
+
+
+
+*Max. length*: 255
 
 
 

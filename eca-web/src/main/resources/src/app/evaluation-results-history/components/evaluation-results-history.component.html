@@ -51,6 +51,7 @@
 
         <ng-template pTemplate="header">
           <tr>
+            <th></th>
             <ng-container *ngFor="let column of columns">
               <th *ngIf="!notSortable(column.name)" [pSortableColumn]="column.name">
                 {{ column.label }}
@@ -62,6 +63,15 @@
         </ng-template>
         <ng-template pTemplate="body" let-item>
           <tr>
+            <td>
+              <button pButton
+                      type="button"
+                      class="ui-button-secondary link-button"
+                      pTooltip="Перейти к заявке"
+                      icon="pi pi-external-link" [disabled]="loading"
+                      (click)="onEvaluationResultsLink($event, item)">
+              </button>
+            </td>
             <td *ngFor="let column of columns">
               <a [routerLink]="" *ngIf="isLink(column.name)"
                  (click)="onSelect($event, item, column.name, infoPanel)">

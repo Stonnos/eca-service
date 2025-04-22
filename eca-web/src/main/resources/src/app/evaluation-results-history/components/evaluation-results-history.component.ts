@@ -2,7 +2,9 @@ import { Component, Injector } from '@angular/core';
 import {
   EvaluationResultsHistoryDto,
   FilterFieldDto,
-  PageDto, PageRequestDto
+  PageDto,
+  PageRequestDto,
+  RoutePathDto
 } from "../../../../../../../target/generated-sources/typescript/eca-web-dto";
 import { BaseListComponent } from "../../common/lists/base-list.component";
 import { MessageService } from "primeng/api";
@@ -16,6 +18,8 @@ import { OverlayPanel } from "primeng/primeng";
 import { EvaluationMethod } from "../../common/model/evaluation-method.enum";
 import { InstancesInfoFilterValueTransformer } from "../../filter/autocomplete/transformer/instances-info-filter-value-transformer";
 import { InstancesInfoAutocompleteHandler } from "../../filter/autocomplete/handler/instances-info-autocomplete-handler";
+import { finalize } from 'rxjs/internal/operators';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-evaluation-results-history',
@@ -31,7 +35,8 @@ export class EvaluationResultsHistoryComponent extends BaseListComponent<Evaluat
 
   public constructor(private injector: Injector,
                      private evaluationResultsHistoryService: EvaluationResultsHistoryService,
-                     private filterService: FilterService) {
+                     private filterService: FilterService,
+                     private router: Router) {
     super(injector.get(MessageService), injector.get(FieldService));
     this.defaultSortField = EvaluationResultsHistoryFields.SAVE_DATE;
     this.notSortableColumns = [EvaluationResultsHistoryFields.EVALUATION_METHOD_DESCRIPTION];
@@ -73,6 +78,24 @@ export class EvaluationResultsHistoryComponent extends BaseListComponent<Evaluat
     } else {
       this.messageService.add({severity: 'error', summary: 'Ошибка', detail: `Can't handle ${column} as link`});
     }
+  }
+
+  public onEvaluationResultsLink(event, evaluationResultsHistoryDto: EvaluationResultsHistoryDto): void {
+    this.loading = true;
+    this.evaluationResultsHistoryService.getEvaluationResultsRequestPath(evaluationResultsHistoryDto.requestId)
+      .pipe(
+        finalize(() => {
+          this.loading = false;
+        })
+      )
+      .subscribe({
+        next: (routePathDto: RoutePathDto) => {
+          this.router.navigate([routePathDto.path]);
+        },
+        error: (error) => {
+          this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
+        }
+      });
   }
 
   private toggleOverlayPanel(event, evaluationResultsHistoryDto: EvaluationResultsHistoryDto, column: string, overlayPanel: OverlayPanel): void {
