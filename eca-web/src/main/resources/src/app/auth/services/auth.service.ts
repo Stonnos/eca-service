@@ -2,7 +2,6 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from "rxjs/internal/Observable";
 import { UserModel } from "../model/user.model";
-import { AuthenticationKeys } from "../model/auth.keys";
 import { environment } from "../../../environments/environment";
 
 @Injectable()
@@ -35,10 +34,6 @@ export class AuthService {
     const params = new URLSearchParams();
     params.append('grant_type', 'refresh_token');
     return this.performTokenRequest(params);
-  }
-
-  public saveLoggedInData(): void {
-    localStorage.setItem(AuthenticationKeys.LOGGED_IN, String(true));
   }
 
   public logoutRequest(): Observable<any> {

@@ -56,7 +56,6 @@ export class AuthInterceptor implements HttpInterceptor {
             return this.injector.get(AuthService)
               .refreshToken().pipe(
                 switchMap(token => {
-                  this.injector.get(AuthService).saveLoggedInData();
                   this.refreshTokenSubject.next(token);
                   Logger.debug('Token has been refreshed');
                   this.eventService.publishEvent(EventType.TOKEN_REFRESHED);
