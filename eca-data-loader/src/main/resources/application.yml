@@ -43,6 +43,7 @@ minio:
   accessKey: minio
   secretKey: minio-pa66word
   bucketName: eca-service
+  autoCreateBucket: true
 
 ## Swagger properties
 open-api:

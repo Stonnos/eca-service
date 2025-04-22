@@ -54,17 +54,6 @@ services:
       - s3-minio-data:/data
     command: ["server", "--console-address", ":9100", "/data"]
 
-  s3-minio-client:
-    build: ./minio/mc/
-    container_name: s3-minio-client
-    depends_on:
-      - s3-minio-storage
-    environment:
-      S3_MINIO_URL: ${S3_MINIO_URL}
-      MINIO_ROOT_USER: ${MINIO_ROOT_USER}
-      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD}
-      BUCKET_NAME: ${BUCKET_NAME}
-
   s3-minio-nginx-proxy:
     container_name: s3-minio-nginx-proxy
     image: nginx:${NGINX_VERSION}

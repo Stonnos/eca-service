@@ -38,6 +38,16 @@ public class MinioClientProperties {
     private String bucketName;
 
     /**
+     * Auto create bucket?
+     */
+    private boolean autoCreateBucket;
+
+    /**
+     * Auto create bucket timeout in minutes
+     */
+    private Integer autoCreateBucketTimeoutMinutes;
+
+    /**
      * Part size for multipart upload
      */
     private long multipartSize = DEFAULT_MULTIPART_SIZE;
