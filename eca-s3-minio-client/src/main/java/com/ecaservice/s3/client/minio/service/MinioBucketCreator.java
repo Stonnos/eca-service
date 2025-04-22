@@ -57,7 +57,6 @@ public class MinioBucketCreator {
             try {
                 if (LocalDateTime.now().isAfter(timeoutTimestamp)) {
                     log.warn("Timeout while bucket [{}] creation", minioClientProperties.getBucketName());
-                    scheduledFuture.cancel(true);
                 } else {
                     BucketExistsArgs bucketExistsArgs = BucketExistsArgs.builder()
                             .bucket(minioClientProperties.getBucketName())
@@ -65,7 +64,6 @@ public class MinioBucketCreator {
                     if (minioClient.bucketExists(bucketExistsArgs)) {
                         log.info("Bucket [{}] already exists. Skip bucket creation",
                                 minioClientProperties.getBucketName());
-                        scheduledFuture.cancel(true);
                     } else {
                         log.info("Attempt to create bucket [{}]", minioClientProperties.getBucketName());
                         MakeBucketArgs makeBucketArgs = MakeBucketArgs.builder()
@@ -73,9 +71,10 @@ public class MinioBucketCreator {
                                 .build();
                         minioClient.makeBucket(makeBucketArgs);
                         log.info("Bucket [{}] has been created", minioClientProperties.getBucketName());
-                        scheduledFuture.cancel(true);
                     }
                 }
+                // Finish scheduled task
+                scheduledFuture.cancel(true);
             } catch (Exception ex) {
                 log.error("Error while create bucket [{}]: {}", minioClientProperties.getBucketName(),
                         ex.getMessage());
