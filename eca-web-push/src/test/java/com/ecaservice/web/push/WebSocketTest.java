@@ -52,7 +52,7 @@ import static org.mockito.Mockito.when;
 @Slf4j
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @TestPropertySource("classpath:application.properties")
-public class WebSocketTest {
+class WebSocketTest {
 
     private static final String WS_URL_FORMAT = "ws://localhost:%d/socket";
     private static final int CONNECT_TIMEOUT = 10;
@@ -74,7 +74,7 @@ public class WebSocketTest {
     private Integer port;
 
     @BeforeEach
-    public void setup() {
+    void setup() {
         mockTokenIntrospection();
         this.blockingQueue.clear();
         this.webSocketStompClient = new WebSocketStompClient(new StandardWebSocketClient());

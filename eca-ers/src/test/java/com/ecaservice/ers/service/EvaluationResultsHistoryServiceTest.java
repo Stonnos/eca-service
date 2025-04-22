@@ -44,7 +44,7 @@ import static org.mockito.Mockito.when;
 @Import({EvaluationResultsHistoryService.class, EvaluationResultsMapperImpl.class, ErsConfig.class,
         ClassificationCostsReportMapperImpl.class, ConfusionMatrixMapperImpl.class, StatisticsReportMapperImpl.class,
         InstancesMapperImpl.class, RocCurveReportMapperImpl.class, EvaluationResultsHistoryCountQueryExecutor.class})
-public class EvaluationResultsHistoryServiceTest extends AbstractJpaTest {
+class EvaluationResultsHistoryServiceTest extends AbstractJpaTest {
 
     private static final int PAGE_NUMBER = 0;
     private static final int PAGE_SIZE = 10;
