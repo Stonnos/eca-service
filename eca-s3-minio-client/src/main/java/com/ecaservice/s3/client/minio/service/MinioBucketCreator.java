@@ -72,8 +72,8 @@ public class MinioBucketCreator {
                                 .bucket(minioClientProperties.getBucketName())
                                 .build();
                         minioClient.makeBucket(makeBucketArgs);
-                        scheduledFuture.cancel(true);
                         log.info("Bucket [{}] has been created", minioClientProperties.getBucketName());
+                        scheduledFuture.cancel(true);
                     }
                 }
             } catch (Exception ex) {
