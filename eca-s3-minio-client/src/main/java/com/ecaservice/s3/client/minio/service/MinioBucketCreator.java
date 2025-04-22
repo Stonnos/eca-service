@@ -11,6 +11,7 @@ import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
@@ -49,23 +50,31 @@ public class MinioBucketCreator {
     }
 
     private Runnable createBucketTask() {
+        LocalDateTime timeoutTimestamp =
+                LocalDateTime.now().plusMinutes(minioClientProperties.getAutoCreateBucketTimeoutMinutes());
         return () -> {
             log.info("Starting task to create bucket [{}]", minioClientProperties.getBucketName());
             try {
-                BucketExistsArgs bucketExistsArgs = BucketExistsArgs.builder()
-                        .bucket(minioClientProperties.getBucketName())
-                        .build();
-                if (minioClient.bucketExists(bucketExistsArgs)) {
-                    log.info("Bucket [{}] already exists. Skip bucket creation", minioClientProperties.getBucketName());
+                if (LocalDateTime.now().isAfter(timeoutTimestamp)) {
+                    log.warn("Timeout while bucket [{}] creation", minioClientProperties.getBucketName());
                     scheduledFuture.cancel(true);
                 } else {
-                    log.info("Attempt to create bucket [{}]", minioClientProperties.getBucketName());
-                    MakeBucketArgs makeBucketArgs = MakeBucketArgs.builder()
+                    BucketExistsArgs bucketExistsArgs = BucketExistsArgs.builder()
                             .bucket(minioClientProperties.getBucketName())
                             .build();
-                    minioClient.makeBucket(makeBucketArgs);
-                    scheduledFuture.cancel(true);
-                    log.info("Bucket [{}] has been created", minioClientProperties.getBucketName());
+                    if (minioClient.bucketExists(bucketExistsArgs)) {
+                        log.info("Bucket [{}] already exists. Skip bucket creation",
+                                minioClientProperties.getBucketName());
+                        scheduledFuture.cancel(true);
+                    } else {
+                        log.info("Attempt to create bucket [{}]", minioClientProperties.getBucketName());
+                        MakeBucketArgs makeBucketArgs = MakeBucketArgs.builder()
+                                .bucket(minioClientProperties.getBucketName())
+                                .build();
+                        minioClient.makeBucket(makeBucketArgs);
+                        scheduledFuture.cancel(true);
+                        log.info("Bucket [{}] has been created", minioClientProperties.getBucketName());
+                    }
                 }
             } catch (Exception ex) {
                 log.error("Error while create bucket [{}]: {}", minioClientProperties.getBucketName(),
