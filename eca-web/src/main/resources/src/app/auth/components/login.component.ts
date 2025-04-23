@@ -1,9 +1,11 @@
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import {
+  UserDto
+} from "../../../../../../../target/generated-sources/typescript/eca-web-dto";
 import { AuthService } from "../services/auth.service";
 import { UserModel } from "../model/user.model";
 import { NgForm } from "@angular/forms";
 import { Router } from "@angular/router";
-import { AuthenticationKeys } from "../model/auth.keys";
 import { finalize } from "rxjs/internal/operators";
 import { BaseForm } from "../../common/form/base-form";
 import { HttpErrorResponse } from "@angular/common/http";
@@ -55,9 +57,15 @@ export class LoginComponent implements BaseForm, OnInit, OnDestroy {
   }
 
   public ngOnInit() {
-    if (localStorage.getItem(AuthenticationKeys.LOGGED_IN)) {
-      this.enter();
-    }
+    this.usersService.getCurrentUser()
+      .subscribe({
+        next: (userDto: UserDto) => {
+          this.enter();
+        },
+        error: (error) => {
+          this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
+        }
+      });
   }
 
   public ngOnDestroy(): void {
@@ -116,7 +124,6 @@ export class LoginComponent implements BaseForm, OnInit, OnDestroy {
       )
       .subscribe({
         next: () => {
-          this.authService.saveLoggedInData();
           this.enter();
         },
         error: (error) => {
@@ -135,7 +142,6 @@ export class LoginComponent implements BaseForm, OnInit, OnDestroy {
       )
       .subscribe({
         next: () => {
-          this.authService.saveLoggedInData();
           this.enter();
         },
         error: (error) => {

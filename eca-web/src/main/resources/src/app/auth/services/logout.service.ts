@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import { AuthenticationKeys } from "../model/auth.keys";
 import { EventService } from "../../common/event/event.service";
 import { EventType } from "../../common/event/event.type";
 
@@ -12,7 +11,6 @@ export class LogoutService {
   }
 
   public logout() {
-    localStorage.removeItem(AuthenticationKeys.LOGGED_IN);
     this.eventService.publishEvent(EventType.LOGOUT);
     this.router.navigate(['/login']);
   }

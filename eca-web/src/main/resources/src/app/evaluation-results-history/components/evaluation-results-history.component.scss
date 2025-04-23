@@ -4,15 +4,10 @@
     width: 175px;
 
     &:first-child {
-      width: 250px;
-      font-weight: bold;
+      width: 50px;
     }
 
-    &:nth-child(2) {
-      width: 250px;
-    }
-
-    &:nth-child(3) {
+    &:nth-child(2), &:nth-child(3), &:nth-child(4) {
       width: 250px;
     }
   }
@@ -21,17 +16,17 @@
     width: 175px;
 
     &:first-child {
-      width: 250px;
+      width: 50px;
     }
 
-    &:nth-child(2) {
-      width: 250px;
-    }
-
-    &:nth-child(3) {
+    &:nth-child(2), &:nth-child(3), &:nth-child(4) {
       width: 250px;
     }
   }
+}
+
+.link-button {
+  border-radius: 50%;
 }
 
 .info-panel::ng-deep {

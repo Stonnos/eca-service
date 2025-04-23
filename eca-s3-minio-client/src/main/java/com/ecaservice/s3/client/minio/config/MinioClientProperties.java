@@ -15,7 +15,12 @@ public class MinioClientProperties {
     /**
      * Default part size is 5MiB in multipart upload
      */
-    public static final int DEFAULT_MULTIPART_SIZE = 5 * 1024 * 1024;
+    private static final int DEFAULT_MULTIPART_SIZE = 5 * 1024 * 1024;
+
+    /**
+     * Default auth create bucket timeout minutes
+     */
+    private static final int DEFAULT_AUTO_CREATE_BUCKET_TIMEOUT_MINUTES = 10;
 
     /**
      * Storage url
@@ -45,7 +50,7 @@ public class MinioClientProperties {
     /**
      * Auto create bucket timeout in minutes
      */
-    private Integer autoCreateBucketTimeoutMinutes;
+    private Integer autoCreateBucketTimeoutMinutes = DEFAULT_AUTO_CREATE_BUCKET_TIMEOUT_MINUTES;
 
     /**
      * Part size for multipart upload
