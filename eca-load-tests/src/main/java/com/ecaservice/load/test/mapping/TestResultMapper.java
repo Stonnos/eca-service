@@ -24,5 +24,6 @@ public interface TestResultMapper {
     @ValueMapping(source = "ERROR", target = "FAILED")
     @ValueMapping(source = "VALIDATION_ERROR", target = "FAILED")
     @ValueMapping(source = "TIMEOUT", target = "FAILED")
+    @ValueMapping(source = "CANCELED", target = "FAILED")
     TestResult map(TechnicalStatus technicalStatus);
 }

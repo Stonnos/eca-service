@@ -1,7 +1,7 @@
 package com.ecaservice.server.model.evaluation;
 
 import com.ecaservice.base.model.ErrorCode;
-import com.ecaservice.server.bpm.model.EvaluationStatus;
+import com.ecaservice.server.model.EvaluationStatus;
 import com.ecaservice.server.model.entity.RequestStatus;
 import eca.core.evaluation.EvaluationResults;
 import lombok.Data;

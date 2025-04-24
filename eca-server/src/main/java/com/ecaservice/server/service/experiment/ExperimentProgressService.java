@@ -74,6 +74,28 @@ public class ExperimentProgressService {
     }
 
     /**
+     * Checks that experiment progress is finished.
+     *
+     * @param experiment - experiment entity
+     * @return finished flag
+     */
+    public boolean isFinished(Experiment experiment) {
+        return experimentProgressRepository.isFinished(experiment);
+    }
+
+    /**
+     * Cancel experiment progress.
+     *
+     * @param experiment - experiment entity
+     */
+    public void cancel(Experiment experiment) {
+        log.info("Cancel experiment [{}] progress", experiment.getRequestId());
+        ExperimentProgressEntity experimentProgressEntity = getExperimentProgress(experiment);
+        experimentProgressEntity.setCanceled(true);
+        experimentProgressRepository.save(experimentProgressEntity);
+    }
+
+    /**
      * Gets experiment progress entity.
      *
      * @param experiment - experiment entity

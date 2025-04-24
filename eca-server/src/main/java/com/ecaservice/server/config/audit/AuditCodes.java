@@ -51,6 +51,11 @@ public class AuditCodes {
     public static final String CREATE_EXPERIMENT_REQUEST = "CREATE_EXPERIMENT_REQUEST";
 
     /**
+     * Cancel experiment request
+     */
+    public static final String CANCEL_EXPERIMENT_REQUEST = "CANCEL_EXPERIMENT_REQUEST";
+
+    /**
      * Creates evaluation request
      */
     public static final String CREATE_EVALUATION_REQUEST = "CREATE_EVALUATION_REQUEST";

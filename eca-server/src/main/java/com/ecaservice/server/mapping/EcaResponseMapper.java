@@ -58,6 +58,7 @@ public interface EcaResponseMapper {
     @ValueMapping(source = "IN_PROGRESS", target = "IN_PROGRESS")
     @ValueMapping(source = "FINISHED", target = "SUCCESS")
     @ValueMapping(source = "TIMEOUT", target = "TIMEOUT")
+    @ValueMapping(source = "CANCELED", target = "CANCELED")
     @ValueMapping(source = "ERROR", target = "ERROR")
     TechnicalStatus map(RequestStatus requestStatus);
 

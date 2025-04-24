@@ -11,3 +11,4 @@ id;event_type;message_template;audit_code_id
 10;SUCCESS;Выгружен отчет [${reportType.description}];GENERATE_EVALUATION_REQUESTS_REPORT
 11;SUCCESS;Создана заявка на построение модели классификатора. Идентификатор заявки [${returnValue.requestId}];CREATE_EVALUATION_REQUEST
 12;SUCCESS;Создана заявка на построение модели классификатора с оптимальными настройками. Идентификатор заявки [${returnValue.requestId}];CREATE_OPTIMAL_EVALUATION_REQUEST
+13;SUCCESS;Прервано построение эксперимента [${experiment.experimentType.description}], идентификатор заявки [${experiment.requestId}];CANCEL_EXPERIMENT_REQUEST

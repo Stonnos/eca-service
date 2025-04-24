@@ -27,4 +27,5 @@
     <include file="../filter-template-changelog.xml" relativeToChangelogFile="true"/>
     <include file="db/changelog/v20-update-filter-templates.xml"/>
     <include file="db/changelog/v21-insert-confirmation-code-template-parameter.xml"/>
+    <include file="db/changelog/v22-insert-cancel-experiment-template.xml"/>
 </databaseChangeLog>

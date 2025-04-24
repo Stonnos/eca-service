@@ -1,9 +1,8 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import {
   ExperimentErsReportDto, ExperimentProgressDto,
   ExperimentResultsDto
 } from "../../../../../../../target/generated-sources/typescript/eca-web-dto";
-import { ExperimentsService } from "../../experiments/services/experiments.service";
 import { MessageService } from "primeng/api";
 import { Router } from "@angular/router";
 import { RouterPaths } from "../../routing/router-paths";
@@ -23,16 +22,18 @@ export class ExperimentErsReportComponent implements OnInit, FieldLink {
   public experimentErsReport: ExperimentErsReportDto;
   @Input()
   public experimentProgress: ExperimentProgressDto;
+  @Input()
+  public loading: boolean = false;
+
+  @Output()
+  public cancelEvent: EventEmitter<any> = new EventEmitter<any>();
 
   public linkColumns: string[] = [ExperimentResultsFields.RESULTS_INDEX, ExperimentResultsFields.CLASSIFIER_DESCRIPTION];
   public experimentResultsColumns: any[] = [];
 
   public selectedExperimentResults: ExperimentResultsDto;
 
-  public loading: boolean = false;
-
-  public constructor(private experimentsService: ExperimentsService,
-                     private messageService: MessageService,
+  public constructor(private messageService: MessageService,
                      private router: Router,
                      private fieldService: FieldService) {
     this.initExperimentResultsColumns();
@@ -61,6 +62,10 @@ export class ExperimentErsReportComponent implements OnInit, FieldLink {
 
   public getColumnValue(column: string, item: ExperimentResultsDto) {
     return this.fieldService.getFieldValue(column, item);
+  }
+
+  public onCancel(event: any): void {
+    this.cancelEvent.emit();
   }
 
   private initExperimentResultsColumns() {

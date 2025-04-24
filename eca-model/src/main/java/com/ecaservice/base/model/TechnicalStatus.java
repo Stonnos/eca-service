@@ -30,5 +30,10 @@ public enum TechnicalStatus {
     /**
      * Validation error status.
      */
-    VALIDATION_ERROR
+    VALIDATION_ERROR,
+
+    /**
+     * Canceled status
+     */
+    CANCELED
 }

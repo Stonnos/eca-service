@@ -6,7 +6,7 @@ import com.ecaservice.base.model.MessageError;
 import com.ecaservice.base.model.TechnicalStatus;
 import com.ecaservice.ers.dto.ClassifierOptionsResponse;
 import com.ecaservice.ers.dto.ClassifierReport;
-import com.ecaservice.server.bpm.model.EvaluationStatus;
+import com.ecaservice.server.model.EvaluationStatus;
 import com.ecaservice.server.model.entity.RequestStatus;
 import com.ecaservice.server.model.evaluation.EvaluationResultsDataModel;
 import com.ecaservice.web.dto.model.EnumDto;

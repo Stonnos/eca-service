@@ -60,6 +60,16 @@ public enum RequestStatus implements DescriptiveEnum {
         public <T, P> T handle(RequestStatusVisitor<T, P> visitor, P parameter) {
             return visitor.caseInProgress(parameter);
         }
+    },
+
+    /**
+     * In progress status
+     */
+    CANCELED(RequestStatusDictionary.CANCELED_STATUS_DESCRIPTION) {
+        @Override
+        public <T, P> T handle(RequestStatusVisitor<T, P> visitor, P parameter) {
+            return visitor.caseCanceled(parameter);
+        }
     };
 
     private final String description;

@@ -198,6 +198,7 @@ processes:
   processEvaluationId: ProcessEvaluationRequest
   createExperimentRequestProcessId: CreateExperimentRequestProcess
   createEvaluationRequestProcessId: CreateEvaluationRequestProcess
+  cancelExperimentProcessId: CancelExperimentProcess
 
 management:
   observations:

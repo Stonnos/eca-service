@@ -56,4 +56,11 @@ public class RequestStatusStatisticsDto {
     @Schema(description = "Total requests count with status ERROR", example = "0", minimum = ZERO_VALUE_STRING,
             maximum = MAX_LONG_VALUE_STRING)
     private long errorRequestsCount;
+
+    /**
+     * Requests count with CANCEL status
+     */
+    @Schema(description = "Total requests count with status CANCEL", example = "0", minimum = ZERO_VALUE_STRING,
+            maximum = MAX_LONG_VALUE_STRING)
+    private long cancelRequestsCount;
 }

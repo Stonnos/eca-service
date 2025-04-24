@@ -5,6 +5,7 @@ id;_label;_value;filter_dictionary_id
 6;Завершена;FINISHED;2
 7;Ошибка;ERROR;2
 8;Таймаут;TIMEOUT;2
+9;Прервана;CANCELED;2
 10;Нейронные сети;NEURAL_NETWORKS;3
 13;Алгоритм AdaBoost;ADA_BOOST;3
 14;Алгоритм Stacking;STACKING;3

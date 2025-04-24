@@ -2,9 +2,10 @@ package com.ecaservice.server.service.experiment;
 
 import com.ecaservice.server.config.ExperimentConfig;
 import com.ecaservice.server.event.model.ExperimentProgressEvent;
-import com.ecaservice.server.exception.experiment.ExperimentException;
-import com.ecaservice.server.model.Cancelable;
+import com.ecaservice.server.model.CancelableTask;
+import com.ecaservice.server.model.EvaluationStatus;
 import com.ecaservice.server.model.entity.Experiment;
+import com.ecaservice.server.model.experiment.ExperimentProcessResult;
 import com.ecaservice.server.model.experiment.InitializationParams;
 import com.ecaservice.server.repository.ExperimentRepository;
 import com.ecaservice.server.service.experiment.visitor.ExperimentInitializationVisitor;
@@ -16,7 +17,6 @@ import io.micrometer.tracing.annotation.NewSpan;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
-import org.springframework.util.CollectionUtils;
 
 import java.time.LocalDateTime;
 
@@ -38,24 +38,26 @@ public class ExperimentProcessorService {
     private final ExperimentConfig experimentConfig;
     private final ExperimentRepository experimentRepository;
     private final ExperimentInitializationVisitor experimentInitializer;
+    private final ExperimentProgressService experimentProgressService;
     private final ApplicationEventPublisher applicationEventPublisher;
 
     /**
      * Processes experiment and returns its history.
      *
      * @param experiment           - experiment {@link Experiment}
-     * @param cancelable           - cancelable interface
+     * @param cancelableTask           - cancelable interface
      * @param initializationParams - experiment initialization params {@link InitializationParams}
      * @return experiment history
      */
     @NewSpan
-    public AbstractExperiment<?> processExperimentHistory(Experiment experiment,
-                                                          Cancelable cancelable,
-                                                          InitializationParams initializationParams) {
+    public ExperimentProcessResult processExperimentHistory(Experiment experiment,
+                                                            CancelableTask cancelableTask,
+                                                            InitializationParams initializationParams) {
         Assert.notNull(initializationParams, "Initialization params is not specified!");
         putMdc(TX_ID, experiment.getRequestId());
         log.info("Starting to initialize experiment [{}]", experiment.getRequestId());
         renewExperimentLockTtl(experiment);
+        ExperimentProcessResult experimentProcessResult = new ExperimentProcessResult();
         AbstractExperiment<?> abstractExperiment =
                 experiment.getExperimentType().handle(experimentInitializer, initializationParams);
         log.info("Experiment has been initialized [{}]", experiment.getRequestId());
@@ -63,7 +65,7 @@ public class ExperimentProcessorService {
         int currentPercent = 0;
 
         log.info("Starting to process experiment [{}].", experiment.getRequestId());
-        while (!cancelable.isCancelled() && iterativeExperiment.hasNext()) {
+        while (!isRequestCanceled(experiment) && !cancelableTask.isCancelled() && iterativeExperiment.hasNext()) {
             try {
                 iterativeExperiment.next();
                 int percent = iterativeExperiment.getPercent();
@@ -77,16 +79,30 @@ public class ExperimentProcessorService {
                 log.warn("Warning for experiment [{}]: {}", experiment.getRequestId(), ex.getMessage());
             }
         }
-        if (cancelable.isCancelled()) {
-            log.warn("Experiment [{}] processing has been cancelled", experiment.getRequestId());
+        setExperimentProcessResult(experiment, cancelableTask, experimentProcessResult, abstractExperiment);
+        return experimentProcessResult;
+    }
+
+    private void setExperimentProcessResult(Experiment experiment,
+                                            CancelableTask cancelableTask,
+                                            ExperimentProcessResult experimentProcessResult,
+                                            AbstractExperiment<?> abstractExperiment) {
+        if (isRequestCanceled(experiment)) {
+            experimentProcessResult.setEvaluationStatus(EvaluationStatus.CANCELED);
+            log.warn("Experiment [{}] request processing has been cancelled", experiment.getRequestId());
+        } else if (cancelableTask.isCancelled()) {
+            experimentProcessResult.setEvaluationStatus(EvaluationStatus.TIMEOUT);
+            log.warn("Experiment [{}] processing has been cancelled by timeout", experiment.getRequestId());
         } else {
+            experimentProcessResult.setEvaluationStatus(EvaluationStatus.SUCCESS);
+            experimentProcessResult.setExperimentHistory(abstractExperiment);
             log.info("Experiment [{}] processing has been finished with {} best models!",
                     experiment.getRequestId(), abstractExperiment.getHistory().size());
         }
-        if (CollectionUtils.isEmpty(abstractExperiment.getHistory())) {
-            throw new ExperimentException("No models has been built!");
-        }
-        return abstractExperiment;
+    }
+
+    private boolean isRequestCanceled(Experiment experiment) {
+        return experimentProgressService.getExperimentProgress(experiment).isCanceled();
     }
 
     private void renewExperimentLockTtl(Experiment experiment) {

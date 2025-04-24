@@ -33,15 +33,26 @@
          [class.text-primary]="experimentErsReport?.ersReportStatus.value == 'EXPERIMENT_NEW'"
          [class.text-info]="experimentErsReport?.ersReportStatus.value == 'EXPERIMENT_IN_PROGRESS'"
          [class.text-danger]="experimentErsReport?.ersReportStatus.value == 'EXPERIMENT_ERROR'"
-         [class.text-warning]="experimentErsReport?.ersReportStatus.value == 'EXPERIMENT_RESULTS_NOT_FOUND'">
+         [class.text-warning]="experimentErsReport?.ersReportStatus.value == 'EXPERIMENT_RESULTS_NOT_FOUND' || experimentErsReport?.ersReportStatus.value == 'EXPERIMENT_CANCELED'">
       {{ experimentErsReport?.ersReportStatus.description }}
     </div>
   </div>
   <div *ngIf="experimentErsReport?.ersReportStatus.value == 'EXPERIMENT_IN_PROGRESS'"
        class="ui-g-12 text-center justify-content-center align-items-center">
-    <p-progressBar
-      [value]="experimentProgress?.progress">
-    </p-progressBar>
+    <div class="ui-g-11">
+      <p-progressBar
+        [value]="experimentProgress?.progress">
+      </p-progressBar>
+    </div>
+    <div class="ui-g-1 justify-content-start align-content-start">
+      <button pButton
+              type="button"
+              class="cancel-button"
+              pTooltip="Прервать построение эксперимента"
+              icon="pi pi-ban" [disabled]="loading || experimentProgress?.finished"
+              (click)="onCancel($event)">
+      </button>
+    </div>
     <div class="mt-1" *ngIf="!experimentProgress?.finished">
       Осталось времени: {{ experimentProgress?.estimatedTimeLeft || 'неизвестно' }}
     </div>

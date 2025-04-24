@@ -1,6 +1,6 @@
 package com.ecaservice.server.service;
 
-import com.ecaservice.server.model.Cancelable;
+import com.ecaservice.server.model.CancelableTask;
 import lombok.RequiredArgsConstructor;
 
 import java.util.concurrent.Callable;
@@ -17,7 +17,7 @@ import java.util.concurrent.TimeoutException;
  * @author Roman Batygin
  */
 @RequiredArgsConstructor
-public class TaskWorker<T> implements Cancelable {
+public class TaskWorker<T> implements CancelableTask {
 
     private final ExecutorService executorService;
 

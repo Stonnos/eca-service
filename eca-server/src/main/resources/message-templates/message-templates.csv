@@ -10,6 +10,7 @@ IN_PROGRESS_EXPERIMENT_PUSH_MESSAGE;Заявка на эксперимент [${
 FINISHED_EXPERIMENT_PUSH_MESSAGE;Эксперимент [${experiment.experimentType.description}] успешно завершен. Идентификатор заявки ${experiment.requestId}
 ERROR_EXPERIMENT_PUSH_MESSAGE;Эксперимент [${experiment.experimentType.description}] завершился с ошибкой. Идентификатор заявки ${experiment.requestId}
 TIMEOUT_EXPERIMENT_PUSH_MESSAGE;Таймаут при обработке заявки на эксперимент [${experiment.experimentType.description}]. Идентификатор заявки ${experiment.requestId}
+CANCEL_EXPERIMENT_PUSH_MESSAGE;Прервано построение эксперимента [${experiment.experimentType.description}]. Идентификатор заявки ${experiment.requestId}
 SET_ACTIVE_CLASSIFIERS_CONFIGURATION_PUSH_MESSAGE;Сделал конфигурацию [${classifiersConfiguration.id}] активной
 RENAME_CLASSIFIERS_CONFIGURATION_PUSH_MESSAGE;Изменил название конфигурации [${classifiersConfiguration.id}] на [${classifiersConfiguration.configurationName}]
 ADD_CLASSIFIERS_CONFIGURATION_OPTIONS_PUSH_MESSAGE;Добавил настройки классификатора [${classifierOptionsDescription}] в конфигурацию [${classifiersConfiguration.id}]. Идентификатор настроек [${classifierOptionsId}]

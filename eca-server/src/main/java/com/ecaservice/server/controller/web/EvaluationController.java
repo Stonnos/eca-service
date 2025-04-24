@@ -521,7 +521,11 @@ public class EvaluationController {
             }
     )
     @GetMapping("/roc-curve")
-    public RocCurveDataDto getRocCurveData(@RequestParam Long evaluationLogId,
+    public RocCurveDataDto getRocCurveData(@Parameter(description = "Evaluation log id", example = "1", required = true)
+                                           @Min(VALUE_1) @Max(Long.MAX_VALUE)
+                                           @RequestParam Long evaluationLogId,
+                                           @Parameter(description = "Class value index", example = "1", required = true)
+                                           @Min(VALUE_1) @Max(Long.MAX_VALUE)
                                            @RequestParam Integer classValueIndex) {
         log.info("Request to calculate roc curve data for evaluation log [{}], class index [{}]", evaluationLogId,
                 classValueIndex);

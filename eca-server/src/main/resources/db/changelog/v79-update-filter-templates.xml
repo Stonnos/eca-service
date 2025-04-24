@@ -62,7 +62,7 @@
                 file="filter-templates/filter-dictionaries.csv"/>
     </changeSet>
 
-    <changeSet author="roman.batygin@mail.ru" id="insert_filter_dictionaries_values_3" context="data">
+    <changeSet author="roman.batygin@mail.ru" id="insert_filter_dictionaries_values_4" context="data">
         <preConditions onFail="MARK_RAN">
             <tableExists tableName="filter_dictionary"/>
             <tableExists tableName="filter_dictionary_value"/>

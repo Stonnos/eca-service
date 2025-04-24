@@ -48,4 +48,12 @@ public interface RequestStatusVisitor<T, P> {
      * @return generic object
      */
     T caseInProgress(P parameter);
+
+    /**
+     * Method executed in case if request status is CANCELED.
+     *
+     * @param parameter input parameter
+     * @return generic object
+     */
+    T caseCanceled(P parameter);
 }

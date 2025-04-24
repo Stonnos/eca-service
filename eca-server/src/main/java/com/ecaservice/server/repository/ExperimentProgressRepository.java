@@ -3,6 +3,8 @@ package com.ecaservice.server.repository;
 import com.ecaservice.server.model.entity.Experiment;
 import com.ecaservice.server.model.entity.ExperimentProgressEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import java.util.Optional;
 
@@ -20,4 +22,13 @@ public interface ExperimentProgressRepository extends JpaRepository<ExperimentPr
      * @return experiment progress entity
      */
     Optional<ExperimentProgressEntity> findByExperiment(Experiment experiment);
+
+    /**
+     * Checks that experiment progress is finished.
+     *
+     * @param experiment - experiment entity
+     * @return finished flag
+     */
+    @Query("select ep.finished from ExperimentProgressEntity ep where ep.experiment = :experiment")
+    boolean isFinished(@Param("experiment") Experiment experiment);
 }

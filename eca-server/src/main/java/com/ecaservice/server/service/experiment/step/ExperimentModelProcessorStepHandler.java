@@ -2,12 +2,16 @@ package com.ecaservice.server.service.experiment.step;
 
 import com.ecaservice.s3.client.minio.exception.ObjectStorageException;
 import com.ecaservice.server.config.ExperimentConfig;
+import com.ecaservice.server.exception.EvaluationCanceledException;
 import com.ecaservice.server.exception.EvaluationTimeoutException;
 import com.ecaservice.server.exception.experiment.ExperimentException;
+import com.ecaservice.server.model.EvaluationStatus;
 import com.ecaservice.server.model.entity.Experiment;
 import com.ecaservice.server.model.entity.ExperimentStep;
 import com.ecaservice.server.model.entity.ExperimentStepEntity;
+import com.ecaservice.server.model.entity.ExperimentStepStatus;
 import com.ecaservice.server.model.experiment.ExperimentContext;
+import com.ecaservice.server.model.experiment.ExperimentProcessResult;
 import com.ecaservice.server.model.experiment.InitializationParams;
 import com.ecaservice.server.repository.ExperimentRepository;
 import com.ecaservice.server.service.TaskWorker;
@@ -20,6 +24,7 @@ import eca.dataminer.AbstractExperiment;
 import io.micrometer.tracing.annotation.NewSpan;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.StopWatch;
 import weka.core.Attribute;
 import weka.core.Instances;
@@ -104,6 +109,11 @@ public class ExperimentModelProcessorStepHandler extends AbstractExperimentStepH
             log.error("Timeout error while process experiment [{}] model: {}",
                     experimentContext.getExperiment().getRequestId(), ex.getMessage());
             experimentStepService.timeout(experimentStepEntity);
+        } catch (EvaluationCanceledException ex) {
+            log.warn("Experiment [{}] request processing has been canceled: {}",
+                    experimentContext.getExperiment().getRequestId(), ex.getMessage());
+            //TODO may be db save
+            experimentStepEntity.setStatus(ExperimentStepStatus.CANCELED);
         } catch (Exception ex) {
             log.error("Error while process experiment [{}] model: {}",
                     experimentContext.getExperiment().getRequestId(), ex.getMessage());
@@ -128,13 +138,20 @@ public class ExperimentModelProcessorStepHandler extends AbstractExperimentStepH
         final InitializationParams initializationParams =
                 new InitializationParams(data, experiment.getEvaluationMethod());
         stopWatch.start(String.format("Experiment [%s] processing", experiment.getRequestId()));
-        TaskWorker<AbstractExperiment<?>> taskWorker = new TaskWorker<>(executorService);
+        TaskWorker<ExperimentProcessResult> taskWorker = new TaskWorker<>(executorService);
         try {
-            Callable<AbstractExperiment<?>> callable = () ->
+            Callable<ExperimentProcessResult> callable = () ->
                     experimentProcessorService.processExperimentHistory(experiment, taskWorker, initializationParams);
-            var abstractExperiment =
+            var experimentProcessResult =
                     taskWorker.performTask(callable, experimentConfig.getEvaluationTimeoutMinutes(), TimeUnit.MINUTES);
-            experimentContext.setExperimentHistory(abstractExperiment);
+            if (EvaluationStatus.CANCELED.equals(experimentProcessResult.getEvaluationStatus())) {
+                throw new EvaluationCanceledException("Experiment request has been canceled");
+            }
+            if (CollectionUtils.isEmpty(experimentProcessResult.getExperimentHistory().getHistory())) {
+                throw new ExperimentException("No models has been built!");
+            }
+            experimentContext.setEvaluationStatus(experimentProcessResult.getEvaluationStatus());
+            experimentContext.setExperimentHistory(experimentProcessResult.getExperimentHistory());
         } catch (TimeoutException ex) {
             taskWorker.cancel();
             log.warn("Experiment evaluation [{}] has been cancelled by timeout",

@@ -29,6 +29,7 @@ import weka.classifiers.AbstractClassifier;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -44,6 +45,13 @@ import static com.ecaservice.server.util.Utils.buildEvaluationResultsDto;
 @Service
 @RequiredArgsConstructor
 public class ExperimentResultsService {
+
+    private static final Map<RequestStatus, ErsReportStatus> ERS_REPORT_STATUS_MAP = Map.of(
+            RequestStatus.NEW, ErsReportStatus.EXPERIMENT_NEW,
+            RequestStatus.IN_PROGRESS, ErsReportStatus.EXPERIMENT_IN_PROGRESS,
+            RequestStatus.CANCELED, ErsReportStatus.EXPERIMENT_CANCELED,
+            RequestStatus.ERROR, ErsReportStatus.EXPERIMENT_ERROR
+    );
 
     private final ErsService ersService;
     private final ClassifierOptionsInfoProcessor classifierOptionsInfoProcessor;
@@ -157,13 +165,9 @@ public class ExperimentResultsService {
 
     private void populateErsReportStatusForNotFinishedExperiment(Experiment experiment,
                                                                  ExperimentErsReportDto experimentErsReportDto) {
-        if (RequestStatus.NEW.equals(experiment.getRequestStatus())) {
-            setErsReportStatus(experimentErsReportDto, ErsReportStatus.EXPERIMENT_NEW);
-        } else if (RequestStatus.IN_PROGRESS.equals(experiment.getRequestStatus())) {
-            setErsReportStatus(experimentErsReportDto, ErsReportStatus.EXPERIMENT_IN_PROGRESS);
-        } else {
-            setErsReportStatus(experimentErsReportDto, ErsReportStatus.EXPERIMENT_ERROR);
-        }
+        ErsReportStatus ersReportStatus =
+                ERS_REPORT_STATUS_MAP.getOrDefault(experiment.getRequestStatus(), ErsReportStatus.EXPERIMENT_ERROR);
+        setErsReportStatus(experimentErsReportDto, ersReportStatus);
     }
 
     private void setErsReportStatus(ExperimentErsReportDto experimentErsReportDto, ErsReportStatus ersReportStatus) {

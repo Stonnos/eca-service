@@ -17,7 +17,7 @@ import { Logger } from "../../common/util/logging";
 import { PushVariables } from "../../common/util/push-variables";
 import { PushService } from "../../common/push/push.service";
 import { PushMessageType } from "../../common/util/push-message.type";
-import { filter } from "rxjs/internal/operators";
+import { filter, finalize } from 'rxjs/internal/operators';
 
 @Component({
   selector: 'app-experiment-details',
@@ -30,7 +30,7 @@ export class ExperimentDetailsComponent implements OnInit, OnDestroy, FieldLink 
 
   private readonly updateProgressInterval = 1000;
 
-  private readonly finalRequestStatuses = ['FINISHED', 'ERROR', 'TIMEOUT'];
+  private readonly finalRequestStatuses = ['FINISHED', 'ERROR', 'TIMEOUT', 'CANCELED'];
 
   public experimentFields: any[] = [];
 
@@ -90,6 +90,23 @@ export class ExperimentDetailsComponent implements OnInit, OnDestroy, FieldLink 
               this.subscribeForExperimentProgressUpdate();
             }
           }
+        },
+        error: (error) => {
+          this.messageService.add({severity: 'error', summary: 'Ошибка', detail: error.message});
+        }
+      });
+  }
+
+  public cancelExperiment(): void {
+    this.experimentsService.cancelExperiment(this.id)
+      .pipe(
+        finalize(() => {
+          this.loading = false;
+        })
+      )
+      .subscribe({
+        next: () => {
+          this.unSubscribeExperimentProgress();
         },
         error: (error) => {
           this.messageService.add({severity: 'error', summary: 'Ошибка', detail: error.message});

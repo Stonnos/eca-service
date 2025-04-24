@@ -3,9 +3,11 @@ package com.ecaservice.server.service.experiment.step;
 import com.ecaservice.s3.client.minio.exception.ObjectStorageException;
 import com.ecaservice.server.TestHelperUtils;
 import com.ecaservice.server.config.ExperimentConfig;
-import com.ecaservice.server.model.Cancelable;
+import com.ecaservice.server.model.CancelableTask;
+import com.ecaservice.server.model.EvaluationStatus;
 import com.ecaservice.server.model.entity.Experiment;
 import com.ecaservice.server.model.entity.ExperimentStepStatus;
+import com.ecaservice.server.model.experiment.ExperimentProcessResult;
 import com.ecaservice.server.model.experiment.InitializationParams;
 import com.ecaservice.server.repository.ExperimentRepository;
 import com.ecaservice.server.service.data.InstancesLoaderService;
@@ -72,8 +74,11 @@ class ExperimentModelProcessorStepHandlerTest extends AbstractStepHandlerTest {
     void testProcessExperimentWithSuccessStatus() {
         when(instancesLoaderService.loadInstances(anyString())).thenReturn(data);
         var experimentHistory = createExperimentHistory(data);
+        ExperimentProcessResult experimentProcessResult = new ExperimentProcessResult();
+        experimentProcessResult.setExperimentHistory(experimentHistory);
+        experimentProcessResult.setEvaluationStatus(EvaluationStatus.SUCCESS);
         when(experimentProcessorService.processExperimentHistory(any(Experiment.class),
-                any(Cancelable.class), any(InitializationParams.class))).thenReturn(experimentHistory);
+                any(CancelableTask.class), any(InitializationParams.class))).thenReturn(experimentProcessResult);
         experimentProgressService.start(getExperimentStepEntity().getExperiment());
         testStep(experimentModelProcessorStepHandler::handle, ExperimentStepStatus.COMPLETED);
         verifyProgressFinished();

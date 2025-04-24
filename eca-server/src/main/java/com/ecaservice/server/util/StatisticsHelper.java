@@ -60,6 +60,12 @@ public class StatisticsHelper {
                         statisticsDto.setInProgressRequestsCount(item.getRequestsCount());
                         return null;
                     }
+
+                    @Override
+                    public Void caseCanceled(RequestStatusStatisticsDto statisticsDto) {
+                        statisticsDto.setCancelRequestsCount(item.getRequestsCount());
+                        return null;
+                    }
                 }, requestStatusStatisticsDto));
         long total = requestStatusStatistics.stream().mapToLong(RequestStatusStatistics::getRequestsCount).sum();
         requestStatusStatisticsDto.setTotalCount(total);
