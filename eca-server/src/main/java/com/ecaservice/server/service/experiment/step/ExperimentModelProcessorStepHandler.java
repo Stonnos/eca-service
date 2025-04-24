@@ -112,7 +112,6 @@ public class ExperimentModelProcessorStepHandler extends AbstractExperimentStepH
         } catch (EvaluationCanceledException ex) {
             log.warn("Experiment [{}] request processing has been canceled: {}",
                     experimentContext.getExperiment().getRequestId(), ex.getMessage());
-            //TODO may be db save
             experimentStepEntity.setStatus(ExperimentStepStatus.CANCELED);
         } catch (Exception ex) {
             log.error("Error while process experiment [{}] model: {}",
