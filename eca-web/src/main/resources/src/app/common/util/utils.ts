@@ -43,7 +43,8 @@ export class Utils {
       .pop();
   }
 
-  public static getFormattedTimeWithZero(time: number): string {
-    return time < 10 ? `0${time}` : time.toString();
+  public static getFormattedTimeString(time: number): string {
+    const dateTime = new Date(time);
+    return dateTime.toISOString().substr(11, 8);
   }
 }

@@ -181,11 +181,7 @@ export class ExperimentDetailsComponent implements OnInit, OnDestroy, FieldLink 
     if (this.experimentDto && this.experimentDto.startDate) {
       const startMillis = new Date(this.experimentDto.startDate).getTime();
       const currentMillis = this.currentDate.getTime();
-      const progressTime = new Date(currentMillis - startMillis);
-      const hours = Utils.getFormattedTimeWithZero(progressTime.getUTCHours());
-      const minutes = Utils.getFormattedTimeWithZero(progressTime.getUTCMinutes());
-      const seconds = Utils.getFormattedTimeWithZero(progressTime.getUTCSeconds());
-      return `${hours}:${minutes}:${seconds}`;
+      return Utils.getFormattedTimeString(currentMillis - startMillis);
     }
     return null;
   }
