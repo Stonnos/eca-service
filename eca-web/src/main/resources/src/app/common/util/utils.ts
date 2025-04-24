@@ -42,4 +42,8 @@ export class Utils {
       .map((parameter: UserNotificationParameterDto) => parameter.value)
       .pop();
   }
+
+  public static getFormattedTimeWithZero(time: number): string {
+    return time < 10 ? `0${time}` : time.toString();
+  }
 }

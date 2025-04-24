@@ -34,7 +34,12 @@
          [class.text-info]="experimentErsReport?.ersReportStatus.value == 'EXPERIMENT_IN_PROGRESS'"
          [class.text-danger]="experimentErsReport?.ersReportStatus.value == 'EXPERIMENT_ERROR'"
          [class.text-warning]="experimentErsReport?.ersReportStatus.value == 'EXPERIMENT_RESULTS_NOT_FOUND' || experimentErsReport?.ersReportStatus.value == 'EXPERIMENT_CANCELED'">
-      {{ experimentErsReport?.ersReportStatus.description }}
+      <div *ngIf="experimentErsReport?.ersReportStatus.value == 'EXPERIMENT_IN_PROGRESS'">
+        {{ experimentErsReport?.ersReportStatus.description }} {{ progressTime }}
+      </div>
+      <div *ngIf="experimentErsReport?.ersReportStatus.value != 'EXPERIMENT_IN_PROGRESS'">
+        {{ experimentErsReport?.ersReportStatus.description }}
+      </div>
     </div>
   </div>
   <div *ngIf="experimentErsReport?.ersReportStatus.value == 'EXPERIMENT_IN_PROGRESS'"

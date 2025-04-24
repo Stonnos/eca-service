@@ -23,6 +23,8 @@ export class ExperimentErsReportComponent implements OnInit, FieldLink {
   @Input()
   public experimentProgress: ExperimentProgressDto;
   @Input()
+  public progressTime: string;
+  @Input()
   public loading: boolean = false;
 
   @Output()
