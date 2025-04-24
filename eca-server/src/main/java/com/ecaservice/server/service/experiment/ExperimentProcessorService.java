@@ -102,7 +102,7 @@ public class ExperimentProcessorService {
     }
 
     private boolean isRequestCanceled(Experiment experiment) {
-        return experimentProgressService.getExperimentProgress(experiment).isCanceled();
+        return experimentProgressService.getExperimentProgressData(experiment).isCanceled();
     }
 
     private void renewExperimentLockTtl(Experiment experiment) {

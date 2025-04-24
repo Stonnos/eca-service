@@ -3,6 +3,7 @@ package com.ecaservice.server.service.experiment.step;
 import com.ecaservice.s3.client.minio.exception.ObjectStorageException;
 import com.ecaservice.server.TestHelperUtils;
 import com.ecaservice.server.config.ExperimentConfig;
+import com.ecaservice.server.mapping.ExperimentProgressMapperImpl;
 import com.ecaservice.server.model.CancelableTask;
 import com.ecaservice.server.model.EvaluationStatus;
 import com.ecaservice.server.model.entity.Experiment;
@@ -34,7 +35,8 @@ import static org.mockito.Mockito.when;
  *
  * @author Roman Batygin
  */
-@Import({ExperimentConfig.class, ExperimentStepService.class, ExperimentProgressService.class})
+@Import({ExperimentConfig.class, ExperimentStepService.class, ExperimentProgressService.class,
+        ExperimentProgressMapperImpl.class})
 class ExperimentModelProcessorStepHandlerTest extends AbstractStepHandlerTest {
 
     private static final int FULL_PROGRESS = 100;

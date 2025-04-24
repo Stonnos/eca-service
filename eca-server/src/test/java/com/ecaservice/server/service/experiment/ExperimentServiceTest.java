@@ -8,6 +8,7 @@ import com.ecaservice.server.config.CrossValidationConfig;
 import com.ecaservice.server.config.ExperimentConfig;
 import com.ecaservice.server.mapping.DateTimeConverter;
 import com.ecaservice.server.mapping.ExperimentMapperImpl;
+import com.ecaservice.server.mapping.ExperimentProgressMapperImpl;
 import com.ecaservice.server.mapping.InstancesInfoMapperImpl;
 import com.ecaservice.server.model.data.InstancesMetaDataModel;
 import com.ecaservice.server.model.entity.Channel;
@@ -52,7 +53,7 @@ import static org.mockito.Mockito.when;
  */
 @Import({ExperimentMapperImpl.class, ExperimentConfig.class, AppProperties.class, CrossValidationConfig.class,
         DateTimeConverter.class, InstancesInfoMapperImpl.class, ExperimentService.class, InstancesProvider.class,
-        ExperimentProgressService.class, InstancesInfoService.class})
+        ExperimentProgressService.class, InstancesInfoService.class, ExperimentProgressMapperImpl.class})
 class ExperimentServiceTest extends AbstractJpaTest {
 
     @Autowired

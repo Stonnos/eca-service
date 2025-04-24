@@ -143,7 +143,8 @@ public class ExperimentService {
     public void cancelExperiment(Experiment experiment) {
         log.info("Starting to cancel experiment [{}]", experiment.getRequestId());
         checkRequestStatus(experiment, RequestStatus.IN_PROGRESS);
-        if (experimentProgressService.isFinished(experiment)) {
+        var experimentProgress = experimentProgressService.getExperimentProgress(experiment);
+        if (experimentProgress.isFinished()) {
             throw new InvalidOperationException(
                     String.format("Can't cancel experiment [%s] Experiment model processing has been finished!",
                             experiment.getRequestId()));

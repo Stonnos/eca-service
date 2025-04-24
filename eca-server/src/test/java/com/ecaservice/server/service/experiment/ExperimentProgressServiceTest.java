@@ -1,6 +1,7 @@
 package com.ecaservice.server.service.experiment;
 
 import com.ecaservice.common.web.exception.EntityNotFoundException;
+import com.ecaservice.server.mapping.ExperimentProgressMapperImpl;
 import com.ecaservice.server.model.entity.Experiment;
 import com.ecaservice.server.model.entity.ExperimentProgressEntity;
 import com.ecaservice.server.model.entity.RequestStatus;
@@ -23,7 +24,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
  *
  * @author Roman Batygin
  */
-@Import(ExperimentProgressService.class)
+@Import({ExperimentProgressService.class, ExperimentProgressMapperImpl.class})
 class ExperimentProgressServiceTest extends AbstractJpaTest {
 
     private static final int FULL_PROGRESS = 100;

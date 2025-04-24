@@ -2,9 +2,11 @@ package com.ecaservice.server.mapping;
 
 import com.ecaservice.server.model.entity.Experiment;
 import com.ecaservice.server.model.entity.ExperimentProgressEntity;
+import com.ecaservice.server.model.experiment.ExperimentProgressData;
 import com.ecaservice.web.dto.model.ExperimentProgressDto;
 import org.mapstruct.AfterMapping;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 
 import java.time.Instant;
@@ -33,6 +35,15 @@ public abstract class ExperimentProgressMapper {
      * @return experiment progress dto
      */
     public abstract ExperimentProgressDto map(ExperimentProgressEntity experimentProgressEntity);
+
+    /**
+     * Maps experiment progress entity to data model
+     *
+     * @param experimentProgressEntity - experiment progress entity
+     * @return experiment progress data
+     */
+    @Mapping(source = "experiment.id", target = "experimentId")
+    public abstract ExperimentProgressData mapToExperimentData(ExperimentProgressEntity experimentProgressEntity);
 
     @AfterMapping
     protected void mapEstimatedTimeLeft(ExperimentProgressEntity experimentProgressEntity,

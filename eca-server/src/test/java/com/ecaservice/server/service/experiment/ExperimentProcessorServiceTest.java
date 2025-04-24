@@ -5,12 +5,11 @@ import com.ecaservice.server.config.ExperimentConfig;
 import com.ecaservice.server.model.EvaluationStatus;
 import com.ecaservice.server.model.MockCancelable;
 import com.ecaservice.server.model.entity.Experiment;
-import com.ecaservice.server.model.entity.ExperimentProgressEntity;
 import com.ecaservice.server.model.experiment.ExperimentProcessResult;
+import com.ecaservice.server.model.experiment.ExperimentProgressData;
 import com.ecaservice.server.model.experiment.InitializationParams;
 import com.ecaservice.server.repository.ExperimentRepository;
 import com.ecaservice.server.service.experiment.visitor.ExperimentInitializationVisitor;
-import eca.dataminer.AbstractExperiment;
 import eca.dataminer.AutomatedKNearestNeighbours;
 import eca.dataminer.ExperimentHistoryMode;
 import eca.metrics.KNearestNeighbours;
@@ -78,8 +77,8 @@ class ExperimentProcessorServiceTest {
         automatedKNearestNeighbours.setNumBestResults(RESULTS_SIZE);
         when(experimentInitializationVisitor.caseKNearestNeighbours(initializationParams))
                 .thenReturn(automatedKNearestNeighbours);
-        when(experimentProgressService.getExperimentProgress(any(Experiment.class))).thenReturn(
-                new ExperimentProgressEntity());
+        when(experimentProgressService.getExperimentProgressData(any(Experiment.class))).thenReturn(
+                new ExperimentProgressData());
         ExperimentProcessResult experimentProcessResult = experimentProcessorService.processExperimentHistory(
                 TestHelperUtils.createExperiment(UUID.randomUUID().toString()), new MockCancelable(),
                 initializationParams);
