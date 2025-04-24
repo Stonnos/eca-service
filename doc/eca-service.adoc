@@ -328,6 +328,7 @@ image::./images/eca-db-schema.png[alt=Схема базы данных eca-serve
 |id                           |bigint           |+|+|+                                     |Идентификатор записи (первичный ключ)
 |progress                     |integer          |-|+|-                                     |Значение прогресс бара в %
 |finished                     |boolean          |-|-|-                                     |Флаг завершения построения эксперимента
+|canceled                     |boolean          |-|-|-                                     |Флаг прерывания построения эксперимента
 |experiment_id                |bigint           |-|+|fk_experiment_progress_experiment_id  |Внешний ключ, ID эксперимента
 |===
 
