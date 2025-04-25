@@ -54,7 +54,7 @@ public class UiPermissionsService {
                 .stream()
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.toList());
-        log.info("Gets ui permissions for user [{}] with roles [{}]", authentication.getName(), authorities);
+        log.info("Gets ui permissions for user [{}] with authorities [{}]", authentication.getName(), authorities);
         var allowedMenuItem = uiPermissionsModel.getMenuItems()
                 .stream()
                 .filter(menuItem -> CollectionUtils.isEmpty(menuItem.getAvailableRoles()) ||
@@ -63,7 +63,7 @@ public class UiPermissionsService {
         var menuItemsList = menuItemMapper.map(allowedMenuItem);
         UiPermissionsDto uiPermissionsDto = new UiPermissionsDto();
         uiPermissionsDto.setMenuItems(menuItemsList);
-        log.info("Got ui permissions {} for user [{}]", uiPermissionsDto, authentication.getName());
+        log.info("Fetched ui permissions {} for user [{}]", uiPermissionsDto, authentication.getName());
         return uiPermissionsDto;
     }
 }
