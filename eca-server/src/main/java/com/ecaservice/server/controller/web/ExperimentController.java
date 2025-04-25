@@ -59,6 +59,7 @@ import java.time.LocalDate;
 
 import static com.ecaservice.config.swagger.OpenApi30Configuration.ECA_AUTHENTICATION_SECURITY_SCHEME;
 import static com.ecaservice.config.swagger.OpenApi30Configuration.SCOPE_WEB;
+import static com.ecaservice.web.dto.util.FieldConstraints.VALUE_0;
 import static com.ecaservice.web.dto.util.FieldConstraints.VALUE_1;
 
 /**
@@ -694,7 +695,7 @@ public class ExperimentController {
             @Min(VALUE_1) @Max(Long.MAX_VALUE)
             @RequestParam Long experimentResultsId,
             @Parameter(description = "Class value index", example = "1", required = true)
-            @Min(VALUE_1) @Max(Long.MAX_VALUE)
+            @Min(VALUE_0) @Max(Long.MAX_VALUE)
             @RequestParam Integer classValueIndex) {
         log.info("Request to calculate roc curve data for experiment results [{}], class index [{}]",
                 experimentResultsId,
