@@ -1845,98 +1845,6 @@ a|
 ----
 |===
 
-== Gets current user menu config for web application
-
-__GET__ */web-config/menu* - Gets current user menu config for web application
-
-*Security requirement*
-
-[cols="^50%,^50%",options="header"]
-|===
-|*Name*|*Scopes*
-|
-<<EcaAuth>>
-a|
-
-* web
-
-|===
-
-
-
-*Api responses*
-[width=100%]
-|===
-|*Code*|*Description*|*Content type*|*Schema*|*Example*
-|200
-|OK
-|*application/json*
-|
-__array__
-<<<MenuItemDto>>
->
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-a|
-[source,json]
-----
-[ {
-  "label" : "Эксперименты",
-  "routerLink" : "/dashboard/experiments",
-  "items" : null
-}, {
-  "label" : "Классификаторы",
-  "routerLink" : "/dashboard/classifiers",
-  "items" : null
-}, {
-  "label" : "Оптимальные настройки классификаторов",
-  "routerLink" : "/dashboard/classifiers-options-requests",
-  "items" : null
-}, {
-  "label" : "Датасеты",
-  "routerLink" : "/dashboard/instances",
-  "items" : null
-}, {
-  "label" : "Пользователи",
-  "routerLink" : "/dashboard/users",
-  "items" : null
-}, {
-  "label" : "Шаблоны email сообщений",
-  "routerLink" : "/dashboard/email-templates",
-  "items" : null
-}, {
-  "label" : "Журнал аудита",
-  "routerLink" : "/dashboard/audit-logs",
-  "items" : null
-} ]
-----
-|401
-|Not authorized
-|*application/json*
-|-
-a|
-[source,json]
-----
-{
-  "error" : "unauthorized",
-  "error_description" : "Full authentication is required to access this resource"
-}
-----
-|===
-
 == Gets current authenticated user info
 
 __GET__ */users/user-info* - Gets current authenticated user info
@@ -2206,6 +2114,98 @@ a|
     "webPushEnabled" : true,
     "emailSupported" : false,
     "webPushSupported" : true
+  } ]
+}
+----
+|401
+|Not authorized
+|*application/json*
+|-
+a|
+[source,json]
+----
+{
+  "error" : "unauthorized",
+  "error_description" : "Full authentication is required to access this resource"
+}
+----
+|===
+
+== Gets current user ui permissions for web application
+
+__GET__ */ui-permissions* - Gets current user ui permissions for web application
+
+*Security requirement*
+
+[cols="^50%,^50%",options="header"]
+|===
+|*Name*|*Scopes*
+|
+<<EcaAuth>>
+a|
+
+* web
+
+|===
+
+
+
+*Api responses*
+[width=100%]
+|===
+|*Code*|*Description*|*Content type*|*Schema*|*Example*
+|200
+|OK
+|*application/json*
+|
+<<UiPermissionsDto>>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+a|
+[source,json]
+----
+{
+  "menuItems" : [ {
+    "label" : "Эксперименты",
+    "routerLink" : "/dashboard/experiments",
+    "items" : null
+  }, {
+    "label" : "Классификаторы",
+    "routerLink" : "/dashboard/classifiers",
+    "items" : null
+  }, {
+    "label" : "Оптимальные настройки классификаторов",
+    "routerLink" : "/dashboard/classifiers-options-requests",
+    "items" : null
+  }, {
+    "label" : "Датасеты",
+    "routerLink" : "/dashboard/instances",
+    "items" : null
+  }, {
+    "label" : "Пользователи",
+    "routerLink" : "/dashboard/users",
+    "items" : null
+  }, {
+    "label" : "Шаблоны email сообщений",
+    "routerLink" : "/dashboard/email-templates",
+    "items" : null
+  }, {
+    "label" : "Журнал аудита",
+    "routerLink" : "/dashboard/audit-logs",
+    "items" : null
   } ]
 }
 ----
@@ -3973,72 +3973,6 @@ __boolean__
 
 
 |===
-=== MenuItemDto
-:table-caption: Table
-.Menu item model
-[width=100%]
-|===
-|*Name*|*Description*|*Schema*
-|*label*
-|Item label
-a|
-__string__
-
-
-
-
-*Max. length*: 255
-
-
-
-
-
-
-
-
-
-
-|*routerLink*
-|Router link
-a|
-__string__
-
-
-
-
-*Max. length*: 255
-
-
-
-
-
-
-
-
-
-
-|*items*
-|Menu items
-a|
-__array__
-<<<MenuItemDto>>
->
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-|===
 === UserProfileNotificationEventOptionsDto
 :table-caption: Table
 .User notification event options
@@ -4209,6 +4143,100 @@ __boolean__
 a|
 __array__
 <<<UserProfileNotificationEventOptionsDto>>
+>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|===
+=== MenuItemDto
+:table-caption: Table
+.Menu item model
+[width=100%]
+|===
+|*Name*|*Description*|*Schema*
+|*label*
+|Item label
+a|
+__string__
+
+
+
+
+*Max. length*: 255
+
+
+
+
+
+
+
+
+
+
+|*routerLink*
+|Router link
+a|
+__string__
+
+
+
+
+*Max. length*: 255
+
+
+
+
+
+
+
+
+
+
+|*items*
+|Menu items
+a|
+__array__
+<<<MenuItemDto>>
+>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|===
+=== UiPermissionsDto
+:table-caption: Table
+.UI permissions model
+[width=100%]
+|===
+|*Name*|*Description*|*Schema*
+|*menuItems*
+|Available menu items
+a|
+__array__
+<<<MenuItemDto>>
 >
 
 
