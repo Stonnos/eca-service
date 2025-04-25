@@ -39,4 +39,10 @@ public class ProcessConfig {
      */
     @NotEmpty
     private String createEvaluationRequestProcessId;
+
+    /**
+     * Cancel experiment process id
+     */
+    @NotEmpty
+    private String cancelExperimentProcessId;
 }

@@ -187,6 +187,9 @@ cache:
     experimentsTotalCountQuery:
       expireAfterWriteSeconds: 1200
       maxSize: 512
+    experimentProgress:
+      expireAfterWriteSeconds: 1200
+      maxSize: 100
 
 auth-server:
   baseUrl: http://localhost:8085/eca-oauth
@@ -198,6 +201,7 @@ processes:
   processEvaluationId: ProcessEvaluationRequest
   createExperimentRequestProcessId: CreateExperimentRequestProcess
   createEvaluationRequestProcessId: CreateEvaluationRequestProcess
+  cancelExperimentProcessId: CancelExperimentProcess
 
 management:
   observations:

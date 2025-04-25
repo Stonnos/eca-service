@@ -129,6 +129,14 @@ class ExperimentResultsServiceTest extends AbstractJpaTest {
     }
 
     @Test
+    void testErsReportWithExperimentResultsCanceledStatus() {
+        Experiment experiment = TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.CANCELED);
+        instancesInfoRepository.save(experiment.getInstancesInfo());
+        experimentRepository.save(experiment);
+        testGetErsReport(experiment, ErsReportStatus.EXPERIMENT_CANCELED);
+    }
+
+    @Test
     void testErsReportWithFetchedStatus() {
         Experiment experiment = TestHelperUtils.createExperiment(UUID.randomUUID().toString(), RequestStatus.FINISHED);
         instancesInfoRepository.save(experiment.getInstancesInfo());

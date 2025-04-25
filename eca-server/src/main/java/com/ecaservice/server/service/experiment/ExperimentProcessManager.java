@@ -61,4 +61,18 @@ public class ExperimentProcessManager {
         log.info("Create experiment [{}] request business process has been finished",
                 experimentRequestModel.getRequestId());
     }
+
+    /**
+     * Cancel experiment.
+     *
+     * @param experiment - experiment entity
+     */
+    @NewSpan
+    public void cancelExperiment(Experiment experiment) {
+        putMdc(TX_ID, experiment.getRequestId());
+        log.info("Starting experiment [{}] cancel business process. Experiment request status [{}], channel [{}]",
+                experiment.getRequestId(), experiment.getRequestStatus(), experiment.getChannel());
+        Map<String, Object> variables = Collections.singletonMap(EXPERIMENT_ID, experiment.getId());
+        processManager.startProcess(processConfig.getCancelExperimentProcessId(), experiment.getRequestId(), variables);
+    }
 }

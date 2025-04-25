@@ -3,6 +3,7 @@
      [class.bg-info]="requestStatus?.value == 'IN_PROGRESS'"
      [class.bg-success]="requestStatus?.value == 'FINISHED'"
      [class.bg-warning]="requestStatus?.value == 'TIMEOUT'"
+     [class.bg-orange]="requestStatus?.value == 'CANCELED'"
      [class.bg-danger]="requestStatus?.value == 'ERROR'">
   {{ requestStatus?.description }}
 </div>

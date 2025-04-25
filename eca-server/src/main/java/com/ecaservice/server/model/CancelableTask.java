@@ -1,11 +1,11 @@
 package com.ecaservice.server.model;
 
 /**
- * Interface for cancelable operation.
+ * Interface for cancelable task.
  *
  * @author Roman Batygin
  */
-public interface Cancelable {
+public interface CancelableTask {
 
     /**
      * Is operation cancelled?

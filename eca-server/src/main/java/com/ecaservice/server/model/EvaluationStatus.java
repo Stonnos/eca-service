@@ -1,4 +1,4 @@
-package com.ecaservice.server.bpm.model;
+package com.ecaservice.server.model;
 
 /**
  * Evaluation status.
@@ -21,6 +21,11 @@ public enum EvaluationStatus {
      * Timeout status
      */
     TIMEOUT,
+
+    /**
+     * Canceled status
+     */
+    CANCELED,
 
     /**
      * Error status

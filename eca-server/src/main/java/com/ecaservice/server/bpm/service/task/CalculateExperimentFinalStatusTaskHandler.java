@@ -69,6 +69,9 @@ public class CalculateExperimentFinalStatusTaskHandler extends AbstractTaskHandl
         if (stepStatuses.stream().anyMatch(ExperimentStepStatus.TIMEOUT::equals)) {
             return RequestStatus.TIMEOUT;
         }
+        if (stepStatuses.stream().anyMatch(ExperimentStepStatus.CANCELED::equals)) {
+            return RequestStatus.CANCELED;
+        }
         if (stepStatuses.stream().anyMatch(EXPERIMENT_STEP_STATUSES_TO_PROCESS::contains)) {
             String error =
                     String.format("Can't calculate experiment [%s] final status. Steps contains one of %s status",

@@ -28,6 +28,11 @@ public enum TaskType {
     PROCESS_EXPERIMENT,
 
     /**
+     * Cancel experiment
+     */
+    CANCEL_EXPERIMENT,
+
+    /**
      * Gets experiment process status
      */
     GET_EXPERIMENT_PROCESS_STATUS,

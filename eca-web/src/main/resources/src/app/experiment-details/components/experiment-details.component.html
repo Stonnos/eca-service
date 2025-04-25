@@ -58,7 +58,10 @@
         <p-fieldset legend="История эксперимента" class="details-fieldset">
           <app-experiment-ers-report
             [experimentErsReport]="experimentErsReport"
-            [experimentProgress]="experimentProgress">
+            [experimentProgress]="experimentProgress"
+            [loading]="loading"
+            [progressTime]="getFormattedExperimentProgressTime()"
+            (cancelEvent)="cancelExperiment()">
           </app-experiment-ers-report>
         </p-fieldset>
       </div>

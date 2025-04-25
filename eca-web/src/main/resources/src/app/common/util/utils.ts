@@ -42,4 +42,9 @@ export class Utils {
       .map((parameter: UserNotificationParameterDto) => parameter.value)
       .pop();
   }
+
+  public static getFormattedTimeString(time: number): string {
+    const dateTime = new Date(time);
+    return dateTime.toISOString().substr(11, 8);
+  }
 }

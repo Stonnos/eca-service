@@ -24,4 +24,9 @@ public class CacheNames {
      * Experiments total count query
      */
     public static final String EXPERIMENTS_TOTAL_COUNT_QUERY = "experimentsTotalCountQuery";
+
+    /**
+     * Experiment progress
+     */
+    public static final String EXPERIMENT_PROGRESS_CACHE = "experimentProgress";
 }

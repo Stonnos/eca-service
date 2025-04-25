@@ -4,5 +4,6 @@
   "inProgressRequestsCount": 1,
   "finishedRequestsCount": 99,
   "timeoutRequestsCount": 0,
-  "errorRequestsCount": 0
+  "errorRequestsCount": 0,
+  "cancelRequestsCount": 0
 }

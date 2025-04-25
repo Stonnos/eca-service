@@ -114,6 +114,12 @@ export class ExperimentsService implements RocCurveService {
     return this.http.post<CreateExperimentResultDto>(this.serviceUrl + '/create', experimentRequest, { headers: headers });
   }
 
+  public cancelExperiment(id: number): Observable<any> {
+    const formData = new FormData();
+    formData.append('id', id.toString());
+    return this.http.post(this.serviceUrl + '/cancel', formData);
+  }
+
   public getExperimentProgress(id: number): Observable<ExperimentProgressDto> {
     const headers = new HttpHeaders({
       'Content-type': 'application/json; charset=utf-8'

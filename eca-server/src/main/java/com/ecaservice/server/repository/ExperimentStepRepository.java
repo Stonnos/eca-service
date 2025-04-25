@@ -48,7 +48,7 @@ public interface ExperimentStepRepository extends JpaRepository<ExperimentStepEn
     @Transactional
     @Modifying
     @Query("update ExperimentStepEntity es set es.status = 'CANCELED', es.completed = :completed " +
-            "where es.experiment = :experiment and es.status = 'READY'")
+            "where es.experiment = :experiment and (es.status = 'READY' or es.status = 'IN_PROGRESS')")
     void cancelSteps(@Param("experiment") Experiment experiment,
                      @Param("completed") LocalDateTime completed);
 }

@@ -111,7 +111,7 @@ public class ExperimentStepProcessor {
                     experimentStepEntity.getStep(), experimentStepEntity.getStatus());
             if (EXPERIMENT_STEP_ERROR_STATUSES.contains(experimentStepEntity.getStatus())) {
                 experimentStepRepository.cancelSteps(experiment, LocalDateTime.now());
-                log.info("All ready steps has been cancelled for experiment [{}]", experiment.getRequestId());
+                log.info("All steps has been cancelled for experiment [{}]", experiment.getRequestId());
             }
             return false;
         } else {

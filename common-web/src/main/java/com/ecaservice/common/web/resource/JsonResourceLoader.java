@@ -34,4 +34,20 @@ public class JsonResourceLoader {
         log.info("Json config has been loaded from file [{}]", file);
         return value;
     }
+
+    /**
+     * Load json from specified resource file.
+     *
+     * @param file  - resource json file
+     * @param clazz - object type class
+     * @return result object
+     */
+    public <T> T load(String file, Class<T> clazz) throws IOException {
+        log.info("Starting to load json config from file [{}]", file);
+        var resource = resolver.getResource(file);
+        @Cleanup var inputStream = resource.getInputStream();
+        T value = objectMapper.readValue(inputStream, clazz);
+        log.info("Json config has been loaded from file [{}]", file);
+        return value;
+    }
 }

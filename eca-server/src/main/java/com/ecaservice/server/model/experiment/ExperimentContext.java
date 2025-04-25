@@ -1,5 +1,6 @@
 package com.ecaservice.server.model.experiment;
 
+import com.ecaservice.server.model.EvaluationStatus;
 import com.ecaservice.server.model.entity.Experiment;
 import eca.dataminer.AbstractExperiment;
 import lombok.Builder;
@@ -29,4 +30,9 @@ public class ExperimentContext {
      * Experiment history
      */
     private AbstractExperiment<?> experimentHistory;
+
+    /**
+     * Experiment evaluation status
+     */
+    private EvaluationStatus evaluationStatus;
 }

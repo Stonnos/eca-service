@@ -1,6 +1,6 @@
 package com.ecaservice.server.bpm.service.task;
 
-import com.ecaservice.server.bpm.model.EvaluationStatus;
+import com.ecaservice.server.model.EvaluationStatus;
 import com.ecaservice.server.bpm.model.TaskType;
 import com.ecaservice.server.event.model.EvaluationErsReportEvent;
 import com.ecaservice.server.mapping.EvaluationResultsModelMapper;

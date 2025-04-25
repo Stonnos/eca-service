@@ -1,5 +1,6 @@
 package com.ecaservice.server.service.experiment;
 
+import com.ecaservice.common.web.exception.InvalidOperationException;
 import com.ecaservice.server.config.CrossValidationConfig;
 import com.ecaservice.server.exception.experiment.ExperimentException;
 import com.ecaservice.server.mapping.ExperimentMapper;
@@ -26,6 +27,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static com.ecaservice.server.config.cache.CacheNames.EXPERIMENTS_TOTAL_COUNT_QUERY;
+import static com.ecaservice.server.util.ValidationUtils.checkRequestStatus;
 
 /**
  * Experiment service.
@@ -39,7 +41,7 @@ import static com.ecaservice.server.config.cache.CacheNames.EXPERIMENTS_TOTAL_CO
 public class ExperimentService {
 
     private static final List<RequestStatus> FINAL_STATUSES =
-            List.of(RequestStatus.FINISHED, RequestStatus.ERROR, RequestStatus.TIMEOUT);
+            List.of(RequestStatus.FINISHED, RequestStatus.ERROR, RequestStatus.TIMEOUT, RequestStatus.CANCELED);
 
     private final ExperimentRepository experimentRepository;
     private final ExperimentStepRepository experimentStepRepository;
@@ -75,7 +77,8 @@ public class ExperimentService {
             log.info("Experiment request [{}] has been created.", experiment.getRequestId());
             return experiment;
         } catch (Exception ex) {
-            log.error("There was an error while create experiment request [{}]: {}", experimentRequestData.getRequestId(),
+            log.error("There was an error while create experiment request [{}]: {}",
+                    experimentRequestData.getRequestId(),
                     ex.getMessage());
             throw new ExperimentException(ex.getMessage());
         }
@@ -130,6 +133,27 @@ public class ExperimentService {
         log.info("Final status [{}] has been set for experiment [{}]", requestStatus, experiment.getRequestId());
     }
 
+    /**
+     * Cancel experiment.
+     *
+     * @param experiment - experiment entity
+     */
+    @NewSpan
+    @Transactional
+    public void cancelExperiment(Experiment experiment) {
+        log.info("Starting to cancel experiment [{}]", experiment.getRequestId());
+        checkRequestStatus(experiment, RequestStatus.IN_PROGRESS);
+        var experimentProgress = experimentProgressService.getExperimentProgress(experiment);
+        if (experimentProgress.isFinished()) {
+            throw new InvalidOperationException(
+                    String.format("Can't cancel experiment [%s] Experiment model processing has been finished!",
+                            experiment.getRequestId()));
+        }
+        experimentProgressService.cancel(experiment);
+        experimentStepRepository.cancelSteps(experiment, LocalDateTime.now());
+        finishExperiment(experiment, RequestStatus.CANCELED);
+    }
+
     private void createAndSaveSteps(Experiment experiment) {
         var steps = Stream.of(ExperimentStep.values())
                 .map(experimentStep -> {
@@ -151,7 +175,7 @@ public class ExperimentService {
         experimentRequestData.getChannel().visit(new ChannelVisitor() {
             @Override
             public void visitWeb() {
-               experiment.setCreatedBy(experimentRequestData.getCreatedBy());
+                experiment.setCreatedBy(experimentRequestData.getCreatedBy());
             }
 
             @Override

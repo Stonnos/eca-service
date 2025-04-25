@@ -52,7 +52,7 @@ import static org.mockito.Mockito.verify;
 @Deployment(resources = {"bpmn/process-experiment.bpmn", "bpmn/finish-experiment.bpmn",
         "bpmn/create-experiment-request-process.bpmn", "bpmn/create-experiment-web-request-process.bpmn",
         "bpmn/create-experiment-message-request-process.bpmn", "bpmn/send-final-experiment-email.bpmn",
-        "bpmn/send-final-experiment-push.bpmn"})
+        "bpmn/send-final-experiment-push.bpmn, bpmn/cancel-experiment.bpmn"})
 class ExperimentProcessManagerTest extends AbstractEvaluationProcessManagerTest<Experiment> {
 
     private static final String PUSH_MESSAGE_TYPE = "EXPERIMENT_STATUS";
@@ -61,6 +61,7 @@ class ExperimentProcessManagerTest extends AbstractEvaluationProcessManagerTest<
     private static final String EVALUATION_REQUEST_STATUS = "requestStatus";
     private static final String NEW_EXPERIMENT_EMAIL_TEMPLATE_CODE = "NEW_EXPERIMENT";
     private static final String IN_PROGRESS_EXPERIMENT_EMAIL_TEMPLATE_CODE = "IN_PROGRESS_EXPERIMENT";
+    private static final String CANCEL_EXPERIMENT_EMAIL_TEMPLATE_CODE = "CANCEL_EXPERIMENT";
     private static final String FINISHED_EXPERIMENT_EMAIL_TEMPLATE_CODE = "FINISHED_EXPERIMENT";
     private static final String ERROR_EXPERIMENT_EMAIL_TEMPLATE_CODE = "ERROR_EXPERIMENT";
     private static final String REPLY_TO = "reply-yo";
@@ -83,6 +84,9 @@ class ExperimentProcessManagerTest extends AbstractEvaluationProcessManagerTest<
 
     @Autowired
     private ExperimentProcessManager experimentProcessManager;
+
+    @Autowired
+    private ExperimentService experimentService;
 
     @Captor
     private ArgumentCaptor<EmailRequest> emailRequestArgumentCaptor;
@@ -269,11 +273,57 @@ class ExperimentProcessManagerTest extends AbstractEvaluationProcessManagerTest<
         );
     }
 
+    @Test
+    void testCancelExperimentWithQueueChannel() {
+        Experiment experiment = createAndSaveExperiment(Channel.QUEUE);
+        experimentService.startExperiment(experiment);
+        testCancelExperiment(experiment);
+
+        captureEcaResponse();
+
+        var actualExperiment = getExperiment(experiment.getRequestId());
+
+        assertThat(emailRequestArgumentCaptor.getAllValues()).hasSize(1);
+        assertThat(pushRequestArgumentCaptor.getAllValues()).hasSize(1);
+
+        verifyTestSteps(actualExperiment,
+                new EvaluationRequestStatusVerifier(RequestStatus.CANCELED),
+                new CancelEmailRequestVerifier(),
+                new PushRequestVerifier(PushType.SYSTEM, RequestStatus.CANCELED, 0),
+                new EcaResponseVerifier(experiment.getCorrelationId(), experiment.getReplyTo(), TechnicalStatus.CANCELED)
+        );
+    }
+
+    @Test
+    void testCancelExperimentWithWebChannel() {
+        Experiment experiment = createAndSaveExperiment(Channel.WEB);
+        experimentService.startExperiment(experiment);
+        testCancelExperiment(experiment);
+
+        var actualExperiment = getExperiment(experiment.getRequestId());
+
+        assertThat(emailRequestArgumentCaptor.getAllValues()).hasSize(1);
+        assertThat(pushRequestArgumentCaptor.getAllValues()).hasSize(2);
+
+        verifyTestSteps(actualExperiment,
+                new EvaluationRequestStatusVerifier(RequestStatus.CANCELED),
+                new CancelEmailRequestVerifier(),
+                new PushRequestVerifier(PushType.SYSTEM, RequestStatus.CANCELED, 0),
+                new PushRequestVerifier(PushType.USER_NOTIFICATION, RequestStatus.CANCELED, 1)
+        );
+    }
+
     private void testProcessExperiment(Experiment experiment) {
         experimentProcessManager.processExperiment(experiment);
         verify(getEmailClient(), atLeastOnce()).sendEmail(emailRequestArgumentCaptor.capture());
         verify(getWebPushClient(), atLeastOnce()).sendPush(pushRequestArgumentCaptor.capture());
         verify(getErsClient(), atLeastOnce()).save(evaluationResultsRequestArgumentCaptor.capture());
+    }
+
+    private void testCancelExperiment(Experiment experiment) {
+        experimentProcessManager.cancelExperiment(experiment);
+        verify(getEmailClient(), atLeastOnce()).sendEmail(emailRequestArgumentCaptor.capture());
+        verify(getWebPushClient(), atLeastOnce()).sendPush(pushRequestArgumentCaptor.capture());
     }
 
     private Experiment getExperiment(String requestId) {
@@ -365,6 +415,13 @@ class ExperimentProcessManagerTest extends AbstractEvaluationProcessManagerTest<
 
         public ErrorEmailRequestVerifier() {
             super(ERROR_EXPERIMENT_EMAIL_TEMPLATE_CODE, 1);
+        }
+    }
+
+    private class CancelEmailRequestVerifier extends AbstractEmailRequestVerifier {
+
+        public CancelEmailRequestVerifier() {
+            super(CANCEL_EXPERIMENT_EMAIL_TEMPLATE_CODE, 0);
         }
     }
 

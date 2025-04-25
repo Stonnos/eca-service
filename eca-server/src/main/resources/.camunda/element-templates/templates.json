@@ -33,6 +33,10 @@
             "value": "PROCESS_EXPERIMENT"
           },
           {
+            "name": "Прервать построение эксперимента",
+            "value": "CANCEL_EXPERIMENT"
+          },
+          {
             "name": "Получить статус построения эксперимента",
             "value": "GET_EXPERIMENT_PROCESS_STATUS"
           },
@@ -215,6 +219,10 @@
           {
             "name": "Сообщение о таймауте при построении эксперимента",
             "value": "TIMEOUT_EXPERIMENT"
+          },
+          {
+            "name": "Сообщение о прерывании построения эксперимента",
+            "value": "CANCEL_EXPERIMENT"
           }
         ],
         "binding": {
@@ -315,6 +323,10 @@
           {
             "name": "Сообщение о таймауте при построении эксперимента",
             "value": "TIMEOUT_EXPERIMENT_PUSH_MESSAGE"
+          },
+          {
+            "name": "Сообщение о прерывании построения эксперимента",
+            "value": "CANCEL_EXPERIMENT_PUSH_MESSAGE"
           },
           {
             "name": "Сообщение о новой заявке на построение модели классификатора",

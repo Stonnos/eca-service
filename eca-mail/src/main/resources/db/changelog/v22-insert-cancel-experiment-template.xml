@@ -1,0 +1,40 @@
+<?xml version="1.1" encoding="utf-8"?>
+<databaseChangeLog
+        logicalFilePath="db/changelog/v22-insert-cancel-experiment-template.xml"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <!-- Insert CANCEL_EXPERIMENT template -->
+    <changeSet id="insert_cancel_experiment_template" author="roman.batygin@mail.ru" context="data">
+        <insert tableName="template">
+            <column name="id" valueComputed="nextval('hibernate_sequence')"/>
+            <column name="created" valueDate="now()"/>
+            <column name="template_code" value="CANCEL_EXPERIMENT"/>
+            <column name="description" value="Сообщение о прерывании построения эксперимента"/>
+            <column name="template_subject" value="Прервано построение эксперимента"/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="insert_cancel_experiment_template_body" author="roman.batygin@mail.ru" context="data">
+        <update tableName="template">
+            <column name="template_body" valueClobFile="templates/cancel-experiment-template.html"/>
+            <where>template_code = 'CANCEL_EXPERIMENT'</where>
+        </update>
+    </changeSet>
+
+    <changeSet id="insert_cancel_experiment_template_experiment_type_param" author="roman.batygin@mail.ru" context="data">
+        <insert tableName="templates_parameters">
+            <column name="template_id" valueComputed="(select id from template where template_code = 'CANCEL_EXPERIMENT')"/>
+            <column name="param_id" valueComputed="(select id from template_parameter where parameter_name = 'experimentType')"/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="insert_cancel_experiment_template_request_id_param" author="roman.batygin@mail.ru" context="data">
+        <insert tableName="templates_parameters">
+            <column name="template_id" valueComputed="(select id from template where template_code = 'CANCEL_EXPERIMENT')"/>
+            <column name="param_id" valueComputed="(select id from template_parameter where parameter_name = 'requestId')"/>
+        </insert>
+    </changeSet>
+
+</databaseChangeLog>

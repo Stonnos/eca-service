@@ -17,6 +17,7 @@ import java.util.UUID;
 
 import static com.ecaservice.common.web.util.LogHelper.TX_ID;
 import static com.ecaservice.common.web.util.LogHelper.putMdc;
+import static com.ecaservice.server.config.audit.AuditCodes.CANCEL_EXPERIMENT_REQUEST;
 import static com.ecaservice.server.config.audit.AuditCodes.CREATE_EXPERIMENT_REQUEST;
 
 /**
@@ -60,5 +61,17 @@ public class ExperimentRequestWebApiService {
                 .id(experiment.getId())
                 .requestId(experiment.getRequestId())
                 .build();
+    }
+
+    /**
+     * Cancel experiment request.
+     *
+     * @param experiment - experiment id
+     */
+    @Audit(value = CANCEL_EXPERIMENT_REQUEST, correlationIdKey = "#experiment.requestId")
+    public void cancelExperiment(Experiment experiment) {
+        log.info("Starting to cancel experiment [{}]", experiment.getRequestId());
+        experimentProcessManager.cancelExperiment(experiment);
+        log.info("Experiment [{}] has been canceled", experiment.getRequestId());
     }
 }

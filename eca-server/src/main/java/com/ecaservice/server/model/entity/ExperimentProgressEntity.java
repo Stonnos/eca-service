@@ -30,6 +30,11 @@ public class ExperimentProgressEntity {
     private boolean finished;
 
     /**
+     * Is experiment processing canceled?
+     */
+    private boolean canceled;
+
+    /**
      * Progress bar value in percentage
      */
     @Column(nullable = false)

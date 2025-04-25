@@ -14,11 +14,12 @@
       <bpmn:outgoing>Flow_1a6l4rx</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:sequenceFlow id="Flow_13q039r" sourceRef="StartEvent_1" targetRef="Activity_0sqdg4p" />
-    <bpmn:exclusiveGateway id="Gateway_1fah1ga" name="Финальный статус заявки" default="Flow_1ssv4ih">
+    <bpmn:exclusiveGateway id="Gateway_1fah1ga" name="Финальный статус заявки" default="Flow_0mqc6is">
       <bpmn:incoming>Flow_1a6l4rx</bpmn:incoming>
       <bpmn:outgoing>Flow_03lbver</bpmn:outgoing>
       <bpmn:outgoing>Flow_1ssv4ih</bpmn:outgoing>
       <bpmn:outgoing>Flow_1ilyssc</bpmn:outgoing>
+      <bpmn:outgoing>Flow_0mqc6is</bpmn:outgoing>
     </bpmn:exclusiveGateway>
     <bpmn:sequenceFlow id="Flow_1a6l4rx" sourceRef="Activity_0sqdg4p" targetRef="Gateway_1fah1ga" />
     <bpmn:serviceTask id="Activity_1sn83gx" name="Завершить работу с заявкой" camunda:modelerTemplate="FinishExperiment" camunda:class="com.ecaservice.server.bpm.listeners.TaskExecutionListener">
@@ -54,7 +55,9 @@
       <bpmn:incoming>Flow_1ssv4ih</bpmn:incoming>
       <bpmn:outgoing>Flow_08sdme0</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:sequenceFlow id="Flow_1ssv4ih" name="Ошибка" sourceRef="Gateway_1fah1ga" targetRef="Activity_16c3u24" />
+    <bpmn:sequenceFlow id="Flow_1ssv4ih" name="Ошибка" sourceRef="Gateway_1fah1ga" targetRef="Activity_16c3u24">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${requestStatus == 'ERROR'}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_1ilyssc" name="Таймаут" sourceRef="Gateway_1fah1ga" targetRef="Activity_1d6eexx">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${requestStatus == 'TIMEOUT'}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
@@ -188,6 +191,7 @@
       <bpmn:incoming>Flow_04dmfag</bpmn:incoming>
       <bpmn:incoming>Flow_026wn7m</bpmn:incoming>
       <bpmn:incoming>Flow_0wl272g</bpmn:incoming>
+      <bpmn:incoming>Flow_0mqc6is</bpmn:incoming>
     </bpmn:endEvent>
     <bpmn:sequenceFlow id="Flow_04dmfag" sourceRef="Activity_1yd18xi" targetRef="Event_1y8brfd" />
     <bpmn:sequenceFlow id="Flow_026wn7m" sourceRef="Gateway_0n4mzng" targetRef="Event_1y8brfd" />
@@ -204,9 +208,14 @@
       <bpmn:outgoing>Flow_0phrxbb</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:sequenceFlow id="Flow_0phrxbb" sourceRef="Activity_0wmkv35" targetRef="Gateway_03omfrd" />
+    <bpmn:sequenceFlow id="Flow_0mqc6is" sourceRef="Gateway_1fah1ga" targetRef="Event_1y8brfd" />
   </bpmn:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="FinishExperiment">
+      <bpmndi:BPMNEdge id="Flow_0phrxbb_di" bpmnElement="Flow_0phrxbb">
+        <di:waypoint x="440" y="800" />
+        <di:waypoint x="395" y="800" />
+      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1fwbboo_di" bpmnElement="Flow_1fwbboo">
         <di:waypoint x="345" y="800" />
         <di:waypoint x="200" y="800" />
@@ -338,9 +347,11 @@
         <di:waypoint x="630" y="88" />
         <di:waypoint x="630" y="150" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0phrxbb_di" bpmnElement="Flow_0phrxbb">
-        <di:waypoint x="440" y="800" />
-        <di:waypoint x="395" y="800" />
+      <bpmndi:BPMNEdge id="Flow_0mqc6is_di" bpmnElement="Flow_0mqc6is">
+        <di:waypoint x="655" y="310" />
+        <di:waypoint x="1150" y="310" />
+        <di:waypoint x="1150" y="1380" />
+        <di:waypoint x="648" y="1380" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
         <dc:Bounds x="612" y="52" width="36" height="36" />

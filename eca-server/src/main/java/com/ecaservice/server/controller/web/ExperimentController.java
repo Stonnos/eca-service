@@ -18,7 +18,6 @@ import com.ecaservice.server.service.experiment.ExperimentResultsService;
 import com.ecaservice.web.dto.model.ChartDto;
 import com.ecaservice.web.dto.model.ClassifyInstanceRequestDto;
 import com.ecaservice.web.dto.model.ClassifyInstanceResultDto;
-import com.ecaservice.web.dto.model.CreateEvaluationResponseDto;
 import com.ecaservice.web.dto.model.CreateExperimentResultDto;
 import com.ecaservice.web.dto.model.ExperimentDto;
 import com.ecaservice.web.dto.model.ExperimentErsReportDto;
@@ -146,6 +145,51 @@ public class ExperimentController {
             @Valid @RequestBody CreateExperimentRequestDto experimentRequestDto) {
         log.info("Received experiment request [{}]", experimentRequestDto);
         return experimentRequestWebApiService.createExperiment(experimentRequestDto);
+    }
+
+    /**
+     * Cancels experiment request.
+     *
+     * @param id - experiment request dto
+     */
+    @PreAuthorize("hasAuthority('SCOPE_web')")
+    @Operation(
+            description = "Cancels experiment request",
+            summary = "Cancels experiment request",
+            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME, scopes = SCOPE_WEB),
+            responses = {
+                    @ApiResponse(description = "OK", responseCode = "200"),
+                    @ApiResponse(description = "Bad request", responseCode = "400",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    examples = {
+                                            @ExampleObject(
+                                                    name = "DataNotFoundResponse",
+                                                    ref = "#/components/examples/DataNotFoundResponse"
+                                            )
+                                    }
+                            )
+                    ),
+                    @ApiResponse(description = "Not authorized", responseCode = "401",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    examples = {
+                                            @ExampleObject(
+                                                    name = "NotAuthorizedResponse",
+                                                    ref = "#/components/examples/NotAuthorizedResponse"
+                                            )
+                                    }
+                            )
+                    )
+            }
+    )
+    @PostMapping(value = "/cancel")
+    public void cancelRequest(@Parameter(description = "Experiment id", example = "1", required = true)
+                              @Min(VALUE_1) @Max(Long.MAX_VALUE)
+                              @RequestParam Long id) {
+        log.info("Received experiment cancel request [{}]", id);
+        Experiment experiment = experimentDataService.getById(id);
+        experimentRequestWebApiService.cancelExperiment(experiment);
     }
 
     /**
@@ -645,8 +689,13 @@ public class ExperimentController {
             }
     )
     @GetMapping("/roc-curve")
-    public RocCurveDataDto getRocCurveData(@RequestParam Long experimentResultsId,
-                                           @RequestParam Integer classValueIndex) {
+    public RocCurveDataDto getRocCurveData(
+            @Parameter(description = "Experiment result id", example = "1", required = true)
+            @Min(VALUE_1) @Max(Long.MAX_VALUE)
+            @RequestParam Long experimentResultsId,
+            @Parameter(description = "Class value index", example = "1", required = true)
+            @Min(VALUE_1) @Max(Long.MAX_VALUE)
+            @RequestParam Integer classValueIndex) {
         log.info("Request to calculate roc curve data for experiment results [{}], class index [{}]",
                 experimentResultsId,
                 classValueIndex);

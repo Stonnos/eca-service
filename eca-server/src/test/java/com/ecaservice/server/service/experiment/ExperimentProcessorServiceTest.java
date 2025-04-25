@@ -2,12 +2,14 @@ package com.ecaservice.server.service.experiment;
 
 import com.ecaservice.server.TestHelperUtils;
 import com.ecaservice.server.config.ExperimentConfig;
+import com.ecaservice.server.model.EvaluationStatus;
 import com.ecaservice.server.model.MockCancelable;
 import com.ecaservice.server.model.entity.Experiment;
+import com.ecaservice.server.model.experiment.ExperimentProcessResult;
+import com.ecaservice.server.model.experiment.ExperimentProgressData;
 import com.ecaservice.server.model.experiment.InitializationParams;
 import com.ecaservice.server.repository.ExperimentRepository;
 import com.ecaservice.server.service.experiment.visitor.ExperimentInitializationVisitor;
-import eca.dataminer.AbstractExperiment;
 import eca.dataminer.AutomatedKNearestNeighbours;
 import eca.dataminer.ExperimentHistoryMode;
 import eca.metrics.KNearestNeighbours;
@@ -24,6 +26,7 @@ import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 /**
@@ -42,6 +45,8 @@ class ExperimentProcessorServiceTest {
     private ExperimentRepository experimentRepository;
     @Mock
     private ApplicationEventPublisher applicationEventPublisher;
+    @Mock
+    private ExperimentProgressService experimentProgressService;
     @Mock
     private ExperimentInitializationVisitor experimentInitializationVisitor;
 
@@ -72,11 +77,15 @@ class ExperimentProcessorServiceTest {
         automatedKNearestNeighbours.setNumBestResults(RESULTS_SIZE);
         when(experimentInitializationVisitor.caseKNearestNeighbours(initializationParams))
                 .thenReturn(automatedKNearestNeighbours);
-        AbstractExperiment<?> experiment = experimentProcessorService.processExperimentHistory(
+        when(experimentProgressService.getExperimentProgressData(any(Experiment.class))).thenReturn(
+                new ExperimentProgressData());
+        ExperimentProcessResult experimentProcessResult = experimentProcessorService.processExperimentHistory(
                 TestHelperUtils.createExperiment(UUID.randomUUID().toString()), new MockCancelable(),
                 initializationParams);
-        assertThat(experiment).isNotNull();
-        assertThat(experiment.getHistory()).hasSize(experimentConfig.getResultSize());
+        assertThat(experimentProcessResult).isNotNull();
+        assertThat(experimentProcessResult.getEvaluationStatus()).isEqualTo(EvaluationStatus.SUCCESS);
+        assertThat(experimentProcessResult.getExperimentHistory().getHistory()).hasSize(
+                experimentConfig.getResultSize());
     }
 
 }

@@ -17,7 +17,7 @@ import { Logger } from "../../common/util/logging";
 import { PushVariables } from "../../common/util/push-variables";
 import { PushService } from "../../common/push/push.service";
 import { PushMessageType } from "../../common/util/push-message.type";
-import { filter } from "rxjs/internal/operators";
+import { filter, finalize } from 'rxjs/internal/operators';
 
 @Component({
   selector: 'app-experiment-details',
@@ -30,7 +30,7 @@ export class ExperimentDetailsComponent implements OnInit, OnDestroy, FieldLink 
 
   private readonly updateProgressInterval = 1000;
 
-  private readonly finalRequestStatuses = ['FINISHED', 'ERROR', 'TIMEOUT'];
+  private readonly finalRequestStatuses = ['FINISHED', 'ERROR', 'TIMEOUT', 'CANCELED'];
 
   public experimentFields: any[] = [];
 
@@ -49,6 +49,11 @@ export class ExperimentDetailsComponent implements OnInit, OnDestroy, FieldLink 
   private experimentProgressSubscription: Subscription;
   private experimentUpdatesSubscription: Subscription;
   private routeUpdateSubscription: Subscription;
+  private experimentProgressTimerSubscription: Subscription;
+
+  private currentDate: Date = new Date();
+
+  private readonly timerInterval = 1000;
 
   public constructor(private experimentsService: ExperimentsService,
                      private messageService: MessageService,
@@ -68,6 +73,7 @@ export class ExperimentDetailsComponent implements OnInit, OnDestroy, FieldLink 
   public ngOnDestroy(): void {
     this.unSubscribeExperimentUpdates();
     this.unSubscribeExperimentProgress();
+    this.stopExperimentProgressTimer();
     this.routeUpdateSubscription.unsubscribe();
   }
 
@@ -88,8 +94,26 @@ export class ExperimentDetailsComponent implements OnInit, OnDestroy, FieldLink 
             if (this.experimentDto.requestStatus.value == RequestStatus.IN_PROGRESS) {
               //Subscribe for experiment progress change
               this.subscribeForExperimentProgressUpdate();
+              this.startExperimentProgressTimer();
             }
           }
+        },
+        error: (error) => {
+          this.messageService.add({severity: 'error', summary: 'Ошибка', detail: error.message});
+        }
+      });
+  }
+
+  public cancelExperiment(): void {
+    this.experimentsService.cancelExperiment(this.id)
+      .pipe(
+        finalize(() => {
+          this.loading = false;
+        })
+      )
+      .subscribe({
+        next: () => {
+          this.unSubscribeExperimentProgress();
         },
         error: (error) => {
           this.messageService.add({severity: 'error', summary: 'Ошибка', detail: error.message});
@@ -153,6 +177,15 @@ export class ExperimentDetailsComponent implements OnInit, OnDestroy, FieldLink 
     return this.blink && field == 'requestStatus.description' && this.experimentDto && this.experimentDto.requestStatus.value == requestStatus;
   }
 
+  public getFormattedExperimentProgressTime(): string {
+    if (this.experimentDto && this.experimentDto.startDate) {
+      const startMillis = new Date(this.experimentDto.startDate).getTime();
+      const currentMillis = this.currentDate.getTime();
+      return Utils.getFormattedTimeString(currentMillis - startMillis);
+    }
+    return null;
+  }
+
   private subscribeForRouteChanges(): void {
     //Subscribe for route changes in current details component
     //Used for route from experiment details to another experiment details via push
@@ -161,6 +194,7 @@ export class ExperimentDetailsComponent implements OnInit, OnDestroy, FieldLink 
     ).subscribe(() => {
       this.unSubscribeExperimentProgress();
       this.unSubscribeExperimentUpdates();
+      this.stopExperimentProgressTimer();
       this.id = this.route.snapshot.params.id;
       this.getExperimentFullData();
     });
@@ -178,6 +212,7 @@ export class ExperimentDetailsComponent implements OnInit, OnDestroy, FieldLink 
                 this.experimentProgress = experimentProgress;
                 if (experimentProgress.finished) {
                   this.unSubscribeExperimentProgress();
+                  this.stopExperimentProgressTimer();
                 }
               },
               error: (error) => {
@@ -217,10 +252,32 @@ export class ExperimentDetailsComponent implements OnInit, OnDestroy, FieldLink 
     }
   }
 
+  private startExperimentProgressTimer(): void {
+    if (!this.experimentProgressTimerSubscription) {
+      Logger.debug(`Start experiment ${this.experimentDto.requestId} progress timer`);
+      this.experimentProgressTimerSubscription = timer(0, this.timerInterval).subscribe({
+        next: () => {
+          this.currentDate = new Date();
+        },
+        error: (error) => {
+          this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
+        }
+      });
+    }
+  }
+
   private handleExperimentPush(pushRequestDto: PushRequestDto): void {
     const requestStatus = pushRequestDto.additionalProperties[PushVariables.EVALUATION_REQUEST_STATUS];
     if (this.finalRequestStatuses.includes(requestStatus)) {
       this.unSubscribeExperimentUpdates();
+    }
+  }
+
+  private stopExperimentProgressTimer(): void {
+    if (this.experimentProgressTimerSubscription) {
+      this.experimentProgressTimerSubscription.unsubscribe();
+      this.experimentProgressTimerSubscription = null;
+      Logger.debug(`Stop experiment ${this.experimentDto.requestId} timer`);
     }
   }
 

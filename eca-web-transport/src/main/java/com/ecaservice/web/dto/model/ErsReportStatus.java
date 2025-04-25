@@ -1,6 +1,7 @@
 package com.ecaservice.web.dto.model;
 
 import com.ecaservice.web.dto.dictionary.ErsReportStatusDictionary;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 /**
@@ -8,6 +9,7 @@ import lombok.RequiredArgsConstructor;
  *
  * @author Roman Batygin
  */
+@Getter
 @RequiredArgsConstructor
 public enum ErsReportStatus {
 
@@ -34,16 +36,12 @@ public enum ErsReportStatus {
     /**
      * Experiment results not found
      */
-    EXPERIMENT_RESULTS_NOT_FOUND(ErsReportStatusDictionary.EXPERIMENT_RESULTS_NOT_FOUND_DESCRIPTION);
-
-    private final String description;
+    EXPERIMENT_RESULTS_NOT_FOUND(ErsReportStatusDictionary.EXPERIMENT_RESULTS_NOT_FOUND_DESCRIPTION),
 
     /**
-     * ERS report status description.
-     *
-     * @return ERS report status status description
+     * Experiment canceled
      */
-    public String getDescription() {
-        return description;
-    }
+    EXPERIMENT_CANCELED(ErsReportStatusDictionary.EXPERIMENT_CANCEL_DESCRIPTION);
+
+    private final String description;
 }

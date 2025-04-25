@@ -2140,6 +2140,90 @@ a|
 ----
 |===
 
+== Cancels experiment request
+
+__POST__ */experiment/cancel* - Cancels experiment request
+
+*Security requirement*
+
+[cols="^50%,^50%",options="header"]
+|===
+|*Name*|*Scopes*
+|
+<<EcaAuth>>
+a|
+
+* web
+
+|===
+
+
+*Request parameters*
+[width=100%]
+|===
+|*Name*|*Description*|*Location*|*Schema*
+|*id**
+|Experiment id
+|query
+a|
+__integer__
+__(int64)__
+
+
+
+
+
+
+*Minimum*: 1*
+
+*Maximum*: 9 223 372 036 854 775 807*
+
+
+
+
+
+
+
+
+|===
+
+*Api responses*
+[width=100%]
+|===
+|*Code*|*Description*|*Content type*|*Schema*|*Example*
+|200
+|OK
+|*-*
+|-
+a|
+-
+|400
+|Bad request
+|*application/json*
+|-
+a|
+[source,json]
+----
+[ {
+  "fieldName" : null,
+  "code" : "DataNotFound",
+  "errorMessage" : "Entity with search key [1] not found!"
+} ]
+----
+|401
+|Not authorized
+|*application/json*
+|-
+a|
+[source,json]
+----
+{
+  "error" : "unauthorized",
+  "error_description" : "Full authentication is required to access this resource"
+}
+----
+|===
+
 == Finds evaluation logs with specified options
 
 __POST__ */evaluation/list* - Finds evaluation logs with specified options
@@ -3805,7 +3889,7 @@ a|
 |===
 |*Name*|*Description*|*Location*|*Schema*
 |*experimentResultsId**
-|-
+|Experiment result id
 |query
 a|
 __integer__
@@ -3816,7 +3900,9 @@ __(int64)__
 
 
 
+*Minimum*: 1*
 
+*Maximum*: 9 223 372 036 854 775 807*
 
 
 
@@ -3826,7 +3912,7 @@ __(int64)__
 
 
 |*classValueIndex**
-|-
+|Class value index
 |query
 a|
 __integer__
@@ -3837,7 +3923,9 @@ __(int32)__
 
 
 
+*Minimum*: 1*
 
+*Maximum*: 9 223 372 036 854 775 807*
 
 
 
@@ -4522,7 +4610,8 @@ a|
   "inProgressRequestsCount" : 1,
   "finishedRequestsCount" : 99,
   "timeoutRequestsCount" : 0,
-  "errorRequestsCount" : 0
+  "errorRequestsCount" : 0,
+  "cancelRequestsCount" : 0
 }
 ----
 |401
@@ -5234,7 +5323,7 @@ a|
 |===
 |*Name*|*Description*|*Location*|*Schema*
 |*evaluationLogId**
-|-
+|Evaluation log id
 |query
 a|
 __integer__
@@ -5245,7 +5334,9 @@ __(int64)__
 
 
 
+*Minimum*: 1*
 
+*Maximum*: 9 223 372 036 854 775 807*
 
 
 
@@ -5255,7 +5346,7 @@ __(int64)__
 
 
 |*classValueIndex**
-|-
+|Class value index
 |query
 a|
 __integer__
@@ -5266,7 +5357,9 @@ __(int32)__
 
 
 
+*Minimum*: 1*
 
+*Maximum*: 9 223 372 036 854 775 807*
 
 
 
@@ -5459,7 +5552,8 @@ a|
   "inProgressRequestsCount" : 1,
   "finishedRequestsCount" : 99,
   "timeoutRequestsCount" : 0,
-  "errorRequestsCount" : 0
+  "errorRequestsCount" : 0,
+  "cancelRequestsCount" : 0
 }
 ----
 |401
@@ -13329,6 +13423,28 @@ __(int64)__
 
 |*errorRequestsCount*
 |Total requests count with status ERROR
+a|
+__integer__
+__(int64)__
+
+
+
+
+
+
+*Minimum*: 0*
+
+*Maximum*: 9 223 372 036 854 775 807*
+
+
+
+
+
+
+
+
+|*cancelRequestsCount*
+|Total requests count with status CANCEL
 a|
 __integer__
 __(int64)__

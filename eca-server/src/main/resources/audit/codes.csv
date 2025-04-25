@@ -11,3 +11,4 @@ CREATE_EXPERIMENT_REQUEST;Создание заявки на экспериме�
 GENERATE_EVALUATION_REQUESTS_REPORT;Выгрузка отчета по заявкам;true;EVALUATION_REQUESTS_ACTIONS
 CREATE_EVALUATION_REQUEST;Создание заявки на построение модели классификатора;true;EVALUATION_REQUESTS_ACTIONS
 CREATE_OPTIMAL_EVALUATION_REQUEST;Создание заявки на построение модели с оптимальными настройками классификатора;true;EVALUATION_REQUESTS_ACTIONS
+CANCEL_EXPERIMENT_REQUEST;Прерывание построения на эксперимента;true;EVALUATION_REQUESTS_ACTIONS

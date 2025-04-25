@@ -47,8 +47,18 @@ public class ValidationUtils {
      * @param evaluationEntity - evaluation entity
      */
     public static void checkFinishedRequestStatus(AbstractEvaluationEntity evaluationEntity) {
-        if (!RequestStatus.FINISHED.equals(evaluationEntity.getRequestStatus())) {
-            String errorMessage = String.format("Request must be in [%s] status", RequestStatus.FINISHED);
+        checkRequestStatus(evaluationEntity, RequestStatus.FINISHED);
+    }
+
+    /**
+     * Checks evaluation request status.
+     *
+     * @param evaluationEntity - evaluation entity
+     * @param requestStatus - request status
+     */
+    public static void checkRequestStatus(AbstractEvaluationEntity evaluationEntity, RequestStatus requestStatus) {
+        if (!requestStatus.equals(evaluationEntity.getRequestStatus())) {
+            String errorMessage = String.format("Request must be in [%s] status", requestStatus);
             throw new UnexpectedRequestStatusException(errorMessage);
         }
     }

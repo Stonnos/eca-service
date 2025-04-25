@@ -4,7 +4,7 @@ import com.ecaservice.classifier.options.adapter.ClassifierOptionsAdapter;
 import com.ecaservice.s3.client.minio.exception.ObjectStorageException;
 import com.ecaservice.s3.client.minio.model.GetPresignedUrlObject;
 import com.ecaservice.s3.client.minio.service.ObjectStorageService;
-import com.ecaservice.server.bpm.model.EvaluationStatus;
+import com.ecaservice.server.model.EvaluationStatus;
 import com.ecaservice.server.config.AppProperties;
 import com.ecaservice.server.config.ClassifiersProperties;
 import com.ecaservice.server.exception.EvaluationTimeoutException;

@@ -2,9 +2,10 @@ import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MenuItem, MessageService } from 'primeng/api';
 import { LogoutService } from "../auth/services/logout.service";
 import {
-  MenuItemDto, PushRequestDto,
+  UiPermissionsDto, PushRequestDto,
   UserDto,
-  UserNotificationStatisticsDto
+  UserNotificationStatisticsDto,
+  MenuItemDto
 } from "../../../../../../target/generated-sources/typescript/eca-web-dto";
 import { HttpErrorResponse } from "@angular/common/http";
 import { UsersService } from "../users/services/users.service";
@@ -54,7 +55,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   public ngOnInit() {
     this.getCurrentUser();
     this.getNotificationsStatistics();
-    this.getMenuItems();
+    this.getUiPermissions();
     this.initUserMenu();
     this.subscribeForUserPushes();
   }
@@ -118,10 +119,10 @@ export class DashboardComponent implements OnInit, OnDestroy {
       });
   }
 
-  private getMenuItems() {
-    this.webAppService.getMenuItems().subscribe({
-      next: (menuItems: MenuItemDto[]) => {
-        this.items = menuItems.map((item: MenuItemDto) => {
+  private getUiPermissions() {
+    this.webAppService.getUiPermissions().subscribe({
+      next: (uiPermissionsDto: UiPermissionsDto) => {
+        this.items = uiPermissionsDto.menuItems.map((item: MenuItemDto) => {
           return { label: item.label, routerLink: [item.routerLink] }
         });
       },
