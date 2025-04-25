@@ -1,9 +1,8 @@
 package com.ecaservice.oauth.controller.web;
 
-import com.ecaservice.oauth.service.MenuConfigService;
-import com.ecaservice.web.dto.model.MenuItemDto;
+import com.ecaservice.oauth.service.UiPermissionsService;
+import com.ecaservice.web.dto.model.UiPermissionsDto;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -18,34 +17,32 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
-
 import static com.ecaservice.config.swagger.OpenApi30Configuration.ECA_AUTHENTICATION_SECURITY_SCHEME;
 import static com.ecaservice.config.swagger.OpenApi30Configuration.SCOPE_WEB;
 
 /**
- * Web config API controller.
+ * UI permissions API controller.
  *
  * @author Roman Batygin
  */
-@Tag(name = "Web config API")
+@Tag(name = "UI permissions API")
 @Slf4j
 @RestController
-@RequestMapping("/web-config")
+@RequestMapping("/ui-permissions")
 @RequiredArgsConstructor
-public class WebConfigController {
+public class UiPermissionsController {
 
-    private final MenuConfigService menuConfigService;
+    private final UiPermissionsService uiPermissionsService;
 
     /**
-     * Gets current user menu config for web application.
+     * Gets current user ui permissions for web application.
      *
      * @return menu items list
      */
     @PreAuthorize("hasAuthority('SCOPE_web')")
     @Operation(
-            description = "Gets current user menu config for web application",
-            summary = "Gets current user menu config for web application",
+            description = "Gets current user ui permissions for web application",
+            summary = "Gets current user ui permissions for web application",
             security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME, scopes = SCOPE_WEB),
             responses = {
                     @ApiResponse(description = "OK", responseCode = "200",
@@ -53,11 +50,11 @@ public class WebConfigController {
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                                     examples = {
                                             @ExampleObject(
-                                                    name = "MenuItemsResponse",
-                                                    ref = "#/components/examples/MenuItemsResponse"
+                                                    name = "UiPermissionsResponse",
+                                                    ref = "#/components/examples/UiPermissionsResponse"
                                             ),
                                     },
-                                    array = @ArraySchema(schema = @Schema(implementation = MenuItemDto.class))
+                                    schema = @Schema(implementation = UiPermissionsDto.class)
                             )
                     ),
                     @ApiResponse(description = "Not authorized", responseCode = "401",
@@ -73,8 +70,8 @@ public class WebConfigController {
                     )
             }
     )
-    @GetMapping(value = "/menu")
-    public List<MenuItemDto> getMenuConfig() {
-        return menuConfigService.getMenuConfig();
+    @GetMapping
+    public UiPermissionsDto getUiPermissions() {
+        return uiPermissionsService.geUIPermissions();
     }
 }
