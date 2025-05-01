@@ -89,7 +89,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <java.version>21</java.version>
         <lombok.version>1.18.32</lombok.version>
-        <logback.version>1.4.11</logback.version>
+        <logback.version>1.5.13</logback.version>
         <slf4j.version>2.0.13</slf4j.version>
         <eca.version>7.0</eca.version>
         <h2.version>2.2.224</h2.version>
