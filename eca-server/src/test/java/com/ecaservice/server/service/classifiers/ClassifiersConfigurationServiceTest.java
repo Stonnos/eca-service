@@ -28,12 +28,15 @@ import com.ecaservice.web.dto.model.PageDto;
 import com.ecaservice.web.dto.model.PageRequestDto;
 import com.ecaservice.web.dto.model.SortFieldRequestDto;
 import com.ecaservice.web.dto.model.UpdateClassifiersConfigurationDto;
+import lombok.Cleanup;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.context.annotation.Import;
 
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Collections;
@@ -46,8 +49,11 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import static com.ecaservice.report.ReportGenerator.generateReport;
 import static com.ecaservice.server.model.entity.BaseEntity_.CREATION_DATE;
+import static com.ecaservice.server.report.ReportTemplates.CLASSIFIERS_CONFIGURATION_TEMPLATE;
 import static com.google.common.collect.Lists.newArrayList;
+import static org.apache.commons.lang3.SystemUtils.USER_DIR;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.anyMap;
@@ -306,7 +312,7 @@ class ClassifiersConfigurationServiceTest extends AbstractJpaTest {
     }
 
     @Test
-    void testGetClassifiersConfigurationReport() {
+    void testGenerateClassifiersConfigurationReport() throws IOException {
         ClassifiersConfiguration configuration = saveConfiguration(true, true);
         ClassifiersConfigurationBean classifiersConfigurationBean =
                 classifiersConfigurationService.getClassifiersConfigurationReport(configuration.getId());
@@ -314,6 +320,8 @@ class ClassifiersConfigurationServiceTest extends AbstractJpaTest {
         assertThat(classifiersConfigurationBean.getConfigurationName()).isEqualTo(configuration.getConfigurationName());
         long expectedCount = classifierOptionsDatabaseModelRepository.countByConfiguration(configuration);
         assertThat(classifiersConfigurationBean.getClassifiersOptionsCount()).isEqualTo(expectedCount);
+
+        testGenerateReport(classifiersConfigurationBean);
     }
 
     @Test
@@ -340,6 +348,12 @@ class ClassifiersConfigurationServiceTest extends AbstractJpaTest {
         assertThat(actualOptionsCopies).hasSameSizeAs(expectedOptionsCopies);
         verifyClassifiersConfigurationHistory(copy, ClassifiersConfigurationActionType.CREATE_CONFIGURATION);
         assertThat(classifiersConfigurationHistoryRepository.count()).isEqualTo(actualOptionsCopies.size() + 1);
+    }
+
+    private void testGenerateReport(ClassifiersConfigurationBean classifiersConfigurationBean) throws IOException {
+        String fileName = String.format("%s/target/classifiers-configuration-report.xlsx", USER_DIR);
+        @Cleanup var outputStream = new FileOutputStream(fileName);
+        generateReport(CLASSIFIERS_CONFIGURATION_TEMPLATE, classifiersConfigurationBean, outputStream);
     }
 
     private ClassifiersConfiguration saveConfiguration(boolean active, boolean buildIn) {

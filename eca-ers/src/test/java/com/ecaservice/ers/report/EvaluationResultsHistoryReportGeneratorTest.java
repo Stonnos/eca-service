@@ -11,21 +11,26 @@ import com.ecaservice.ers.mapping.EvaluationResultsMapperImpl;
 import com.ecaservice.ers.mapping.InstancesMapperImpl;
 import com.ecaservice.ers.mapping.RocCurveReportMapperImpl;
 import com.ecaservice.ers.mapping.StatisticsReportMapperImpl;
+import com.ecaservice.ers.report.model.EvaluationResultsHistoryBean;
 import com.ecaservice.ers.repository.EvaluationResultsInfoRepository;
 import com.ecaservice.ers.repository.InstancesInfoRepository;
 import com.ecaservice.ers.service.EvaluationResultsHistoryCountQueryExecutor;
 import com.ecaservice.ers.service.EvaluationResultsHistoryService;
+import com.ecaservice.report.model.BaseReportBean;
 import com.ecaservice.report.model.FilterBean;
 import com.ecaservice.web.dto.model.FilterRequestDto;
 import com.ecaservice.web.dto.model.MatchMode;
 import com.ecaservice.web.dto.model.PageRequestDto;
 import com.ecaservice.web.dto.model.SortFieldRequestDto;
+import lombok.Cleanup;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.UUID;
@@ -36,7 +41,10 @@ import static com.ecaservice.ers.TestHelperUtils.createFilterDictionaryDto;
 import static com.ecaservice.ers.TestHelperUtils.loadEvaluationResultsHistoryFilterFields;
 import static com.ecaservice.ers.dictionary.FilterDictionaries.CLASSIFIER_NAME;
 import static com.ecaservice.ers.model.EvaluationResultsInfo_.SAVE_DATE;
+import static com.ecaservice.ers.report.ReportTemplates.EVALUATION_RESULTS_HISTORY_TEMPLATE_CODE;
+import static com.ecaservice.report.ReportGenerator.generateReport;
 import static com.google.common.collect.Lists.newArrayList;
+import static org.apache.commons.lang3.SystemUtils.USER_DIR;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
@@ -50,7 +58,7 @@ import static org.mockito.Mockito.when;
         ClassificationCostsReportMapperImpl.class, ConfusionMatrixMapperImpl.class,
         StatisticsReportMapperImpl.class, EvaluationResultsHistoryCountQueryExecutor.class, ErsConfig.class,
         InstancesMapperImpl.class, RocCurveReportMapperImpl.class, EvaluationResultsHistoryReportDataFetcher.class})
-class EvaluationResultsHistoryReportDataFetcherTest extends AbstractJpaTest {
+class EvaluationResultsHistoryReportGeneratorTest extends AbstractJpaTest {
 
     private static final int PAGE_NUMBER = 0;
     private static final int PAGE_SIZE = 10;
@@ -84,7 +92,7 @@ class EvaluationResultsHistoryReportDataFetcherTest extends AbstractJpaTest {
     }
 
     @Test
-    void testFetchEvaluationResultsHistoryReportData() {
+    void testGenerateEvaluationResultsHistoryReportData() throws IOException {
         var instancesInfo = instancesInfoRepository.findAll().iterator().next();
         SortFieldRequestDto sortFieldRequestDto = new SortFieldRequestDto(SAVE_DATE, false);
         PageRequestDto pageRequestDto =
@@ -101,6 +109,8 @@ class EvaluationResultsHistoryReportDataFetcherTest extends AbstractJpaTest {
         assertThat(reportData.getFilters()).hasSize(1);
         FilterBean instancesFilterBean = reportData.getFilters().iterator().next();
         assertThat(instancesFilterBean.getValue1()).isEqualTo(instancesInfo.getRelationName());
+
+        testGenerateReport(reportData);
     }
 
     private void saveEvaluationResultsData() {
@@ -115,5 +125,11 @@ class EvaluationResultsHistoryReportDataFetcherTest extends AbstractJpaTest {
         instancesInfoRepository.save(evaluationResultsInfo1.getInstancesInfo());
         instancesInfoRepository.save(evaluationResultsInfo2.getInstancesInfo());
         evaluationResultsInfoRepository.saveAll(Arrays.asList(evaluationResultsInfo1, evaluationResultsInfo2));
+    }
+
+    private void testGenerateReport(BaseReportBean<EvaluationResultsHistoryBean> baseReportBean) throws IOException {
+        String fileName = String.format("%s/target/evaluation-results-history-report.xlsx", USER_DIR);
+        @Cleanup var outputStream = new FileOutputStream(fileName);
+        generateReport(EVALUATION_RESULTS_HISTORY_TEMPLATE_CODE, baseReportBean, outputStream);
     }
 }

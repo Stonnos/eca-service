@@ -25,21 +25,26 @@ import com.ecaservice.web.dto.model.MatchMode;
 import com.ecaservice.web.dto.model.PageRequestDto;
 import com.ecaservice.web.dto.model.SortFieldRequestDto;
 import com.google.common.collect.ImmutableList;
+import lombok.Cleanup;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
+import static com.ecaservice.report.ReportGenerator.generateReport;
 import static com.ecaservice.server.AssertionUtils.assertBaseReportBean;
 import static com.ecaservice.server.PageRequestUtils.PAGE_NUMBER;
 import static com.ecaservice.server.PageRequestUtils.PAGE_SIZE;
 import static com.google.common.collect.Lists.newArrayList;
+import static org.apache.commons.lang3.SystemUtils.USER_DIR;
 
 /**
  * Unit tests that checks ExperimentsBaseReportDataFetcher functionality {@see ExperimentsBaseReportDataFetcher}.
@@ -49,10 +54,11 @@ import static com.google.common.collect.Lists.newArrayList;
 @Import({ExperimentMapperImpl.class, ExperimentConfig.class, AppProperties.class, CrossValidationConfig.class,
         DateTimeConverter.class, InstancesInfoMapperImpl.class, ExperimentDataService.class,
         ExperimentsBaseReportDataFetcher.class, ExperimentCountQueryExecutor.class})
-class ExperimentsBaseReportDataFetcherTest extends AbstractJpaTest {
+class ExperimentsBaseReportGeneratorTest extends AbstractJpaTest {
 
     private static final List<String> DATE_RANGE_VALUES = ImmutableList.of("2018-01-01", "2018-01-07");
     private static final LocalDateTime CREATION_DATE = LocalDateTime.of(2018, 1, 5, 0, 0, 0);
+    private static final String EXPERIMENTS_REPORT_TEMPLATE_XLSX = "experiments-report-template.xlsx";
 
     @MockBean
     private ObjectStorageService objectStorageService;
@@ -76,7 +82,7 @@ class ExperimentsBaseReportDataFetcherTest extends AbstractJpaTest {
     }
 
     @Test
-    void testFetchExperimentsData() {
+    void testGenerateExperimentsData() throws IOException {
         Experiment experiment = TestHelperUtils.createExperiment(UUID.randomUUID().toString());
         experiment.setCreationDate(CREATION_DATE);
         experiment.setExperimentType(ExperimentType.ADA_BOOST);
@@ -97,5 +103,13 @@ class ExperimentsBaseReportDataFetcherTest extends AbstractJpaTest {
         BaseReportBean<ExperimentBean> baseReportBean =
                 experimentsBaseReportDataFetcher.fetchReportData(pageRequestDto);
         assertBaseReportBean(baseReportBean);
+
+        testGenerateReport(baseReportBean);
+    }
+
+    private void testGenerateReport(BaseReportBean<ExperimentBean> baseReportBean) throws IOException {
+        String fileName = String.format("%s/target/experiments-report.xlsx", USER_DIR);
+        @Cleanup var outputStream = new FileOutputStream(fileName);
+        generateReport(EXPERIMENTS_REPORT_TEMPLATE_XLSX, baseReportBean, outputStream);
     }
 }

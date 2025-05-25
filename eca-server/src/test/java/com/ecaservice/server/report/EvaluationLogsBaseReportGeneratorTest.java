@@ -27,23 +27,27 @@ import com.ecaservice.web.dto.model.MatchMode;
 import com.ecaservice.web.dto.model.PageRequestDto;
 import com.ecaservice.web.dto.model.SortFieldRequestDto;
 import com.google.common.collect.ImmutableList;
+import jakarta.persistence.EntityManager;
+import lombok.Cleanup;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Import;
 
-import jakarta.persistence.EntityManager;
-
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 
+import static com.ecaservice.report.ReportGenerator.generateReport;
 import static com.ecaservice.server.AssertionUtils.assertBaseReportBean;
 import static com.ecaservice.server.PageRequestUtils.PAGE_NUMBER;
 import static com.ecaservice.server.PageRequestUtils.PAGE_SIZE;
 import static com.ecaservice.server.TestHelperUtils.createFilterDictionaryDto;
 import static com.ecaservice.server.service.filter.dictionary.FilterDictionaries.CLASSIFIER_NAME;
 import static com.google.common.collect.Lists.newArrayList;
+import static org.apache.commons.lang3.SystemUtils.USER_DIR;
 import static org.mockito.Mockito.when;
 
 /**
@@ -54,10 +58,11 @@ import static org.mockito.Mockito.when;
 @Import({AppProperties.class, EvaluationLogMapperImpl.class,
         InstancesInfoMapperImpl.class, DateTimeConverter.class, ClassifiersProperties.class,
         EvaluationLogCountQueryExecutor.class})
-class EvaluationLogsBaseReportDataFetcherTest extends AbstractJpaTest {
+class EvaluationLogsBaseReportGeneratorTest extends AbstractJpaTest {
 
     private static final List<String> DATE_RANGE_VALUES = ImmutableList.of("2018-01-01", "2018-01-07");
     private static final LocalDateTime CREATION_DATE = LocalDateTime.of(2018, 1, 5, 0, 0, 0);
+    private static final String EVALUATION_LOGS_REPORT_TEMPLATE_XLSX = "evaluation-logs-report-template.xlsx";
 
     @Mock
     private FilterTemplateService filterTemplateService;
@@ -108,7 +113,7 @@ class EvaluationLogsBaseReportDataFetcherTest extends AbstractJpaTest {
     }
 
     @Test
-    void testFetchEvaluationLogsData() {
+    void testGenerateEvaluationLogsData() throws IOException {
         EvaluationLog evaluationLog = TestHelperUtils.createEvaluationLog();
         evaluationLog.setCreationDate(CREATION_DATE);
         evaluationLog.setRequestStatus(RequestStatus.FINISHED);
@@ -128,5 +133,13 @@ class EvaluationLogsBaseReportDataFetcherTest extends AbstractJpaTest {
         BaseReportBean<EvaluationLogBean> baseReportBean =
                 evaluationLogsBaseReportDataFetcher.fetchReportData(pageRequestDto);
         assertBaseReportBean(baseReportBean);
+
+        testGenerateReport(baseReportBean);
+    }
+
+    private void testGenerateReport(BaseReportBean<EvaluationLogBean> baseReportBean) throws IOException {
+        String fileName = String.format("%s/target/evaluation-logs-report.xlsx", USER_DIR);
+        @Cleanup var outputStream = new FileOutputStream(fileName);
+        generateReport(EVALUATION_LOGS_REPORT_TEMPLATE_XLSX, baseReportBean, outputStream);
     }
 }

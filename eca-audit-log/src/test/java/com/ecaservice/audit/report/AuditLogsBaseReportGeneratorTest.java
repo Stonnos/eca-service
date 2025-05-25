@@ -4,26 +4,34 @@ import com.ecaservice.audit.AbstractJpaTest;
 import com.ecaservice.audit.config.AuditLogProperties;
 import com.ecaservice.audit.entity.AuditLogEntity_;
 import com.ecaservice.audit.mapping.AuditLogMapperImpl;
+import com.ecaservice.audit.report.model.AuditLogBean;
 import com.ecaservice.audit.repository.AuditLogRepository;
 import com.ecaservice.audit.service.AuditLogService;
 import com.ecaservice.core.filter.service.FilterTemplateService;
+import com.ecaservice.report.model.BaseReportBean;
 import com.ecaservice.web.dto.model.FilterRequestDto;
 import com.ecaservice.web.dto.model.MatchMode;
 import com.ecaservice.web.dto.model.PageRequestDto;
 import com.ecaservice.web.dto.model.SortFieldRequestDto;
 import com.google.common.collect.ImmutableList;
+import lombok.Cleanup;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
 import static com.ecaservice.audit.TestHelperUtils.createAuditLog;
+import static com.ecaservice.audit.report.ReportTemplates.AUDIT_LOGS_TEMPLATE;
+import static com.ecaservice.report.ReportGenerator.generateReport;
 import static com.google.common.collect.Lists.newArrayList;
+import static org.apache.commons.lang3.SystemUtils.USER_DIR;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
@@ -33,7 +41,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 @Import({AuditLogsBaseReportDataFetcher.class, AuditLogMapperImpl.class,
         AuditLogService.class, AuditLogProperties.class})
-class AuditLogsBaseReportDataFetcherTest extends AbstractJpaTest {
+class AuditLogsBaseReportGeneratorTest extends AbstractJpaTest {
 
     private static final List<String> DATE_RANGE_VALUES = ImmutableList.of("2018-01-01", "2018-07-07");
     private static final String GROUP_1 = "GROUP1";
@@ -64,7 +72,7 @@ class AuditLogsBaseReportDataFetcherTest extends AbstractJpaTest {
     }
 
     @Test
-    void testFetchAuditLogsData() {
+    void testGenerateAuditLogsData() throws IOException {
         var auditLog = createAuditLog(GROUP_1, CODE_1);
         auditLog.setEventDate(FIRST_DATE);
         var auditLog1 = createAuditLog(GROUP_1, CODE_2);
@@ -87,5 +95,13 @@ class AuditLogsBaseReportDataFetcherTest extends AbstractJpaTest {
         assertThat(baseReportBean.getSearchQuery()).isNull();
         assertThat(baseReportBean.getItems()).isNotNull();
         assertThat(baseReportBean.getItems()).hasSize(EXPECTED_SIZE);
+
+        testGenerateReport(baseReportBean);
+    }
+
+    private void testGenerateReport(BaseReportBean<AuditLogBean> baseReportBean) throws IOException {
+        String fileName = String.format("%s/target/audit-logs-report.xlsx", USER_DIR);
+        @Cleanup var outputStream = new FileOutputStream(fileName);
+        generateReport(AUDIT_LOGS_TEMPLATE, baseReportBean, outputStream);
     }
 }
