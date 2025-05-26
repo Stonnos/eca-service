@@ -14,7 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 /**
- * Evaluation results report data fetcher.
+ * Evaluation results report data processor.
  *
  * @author Roman Batygin
  */
