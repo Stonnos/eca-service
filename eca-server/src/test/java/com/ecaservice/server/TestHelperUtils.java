@@ -42,6 +42,7 @@ import com.ecaservice.server.model.entity.ClassifiersConfigurationActionType;
 import com.ecaservice.server.model.entity.ClassifiersConfigurationHistoryEntity;
 import com.ecaservice.server.model.entity.ErsResponseStatus;
 import com.ecaservice.server.model.entity.EvaluationLog;
+import com.ecaservice.server.model.entity.EvaluationResultsRequestEntity;
 import com.ecaservice.server.model.entity.Experiment;
 import com.ecaservice.server.model.entity.ExperimentResultsEntity;
 import com.ecaservice.server.model.entity.ExperimentResultsRequest;
@@ -1344,6 +1345,23 @@ public class TestHelperUtils {
         classifierOptionsResult.setFound(true);
         classifierOptionsResult.setClassifierOptions(classifierOptions);
         return classifierOptionsResult;
+    }
+
+    /**
+     * Creates evaluation results request entity.
+     *
+     * @param evaluationLog     - evaluation log
+     * @param ersResponseStatus - ers response status
+     * @return evaluation log
+     */
+    public static EvaluationResultsRequestEntity createEvaluationResultsRequestEntity(EvaluationLog evaluationLog,
+                                                                                      ErsResponseStatus ersResponseStatus) {
+        EvaluationResultsRequestEntity evaluationResultsRequestEntity = new EvaluationResultsRequestEntity();
+        evaluationResultsRequestEntity.setRequestDate(LocalDateTime.now().minusDays(1L));
+        evaluationResultsRequestEntity.setRequestId(UUID.randomUUID().toString());
+        evaluationResultsRequestEntity.setResponseStatus(ersResponseStatus);
+        evaluationResultsRequestEntity.setEvaluationLog(evaluationLog);
+        return evaluationResultsRequestEntity;
     }
 
     private static <T> T loadConfig(String path, TypeReference<T> tTypeReference) {
