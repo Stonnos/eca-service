@@ -2,13 +2,18 @@ package com.ecaservice.server.service.ers;
 
 import com.ecaservice.base.model.ErrorCode;
 import com.ecaservice.classifier.options.model.ClassifierOptions;
+import com.ecaservice.common.web.error.WebClientErrorHandler;
+import com.ecaservice.common.web.exception.InternalServiceUnavailableException;
 import com.ecaservice.ers.dto.ClassifierOptionsRequest;
 import com.ecaservice.ers.dto.ClassifierOptionsResponse;
 import com.ecaservice.ers.dto.ClassifierReport;
+import com.ecaservice.ers.dto.ErsErrorCode;
 import com.ecaservice.ers.dto.EvaluationResultsRequest;
 import com.ecaservice.ers.dto.GetEvaluationResultsRequest;
 import com.ecaservice.ers.dto.GetEvaluationResultsResponse;
 import com.ecaservice.server.config.cache.CacheNames;
+import com.ecaservice.server.exception.ErsBadRequestException;
+import com.ecaservice.server.exception.ErsException;
 import com.ecaservice.server.mapping.ClassifierReportMapper;
 import com.ecaservice.server.mapping.ErsResponseStatusMapper;
 import com.ecaservice.server.model.ClassifierOptionsResult;
@@ -53,6 +58,7 @@ public class ErsRequestService {
     private final ClassifierReportMapper classifierReportMapper;
     private final ErsErrorHandler ersErrorHandler;
     private final ErsResponseStatusMapper ersResponseStatusMapper;
+    private final WebClientErrorHandler webClientErrorHandler = new WebClientErrorHandler();
 
     /**
      * Save evaluation results by sending request to ERS service.
@@ -109,12 +115,30 @@ public class ErsRequestService {
     @NewSpan
     @Cacheable(value = CacheNames.EVALUATION_RESULTS_CACHE_NAME)
     public GetEvaluationResultsResponse getEvaluationResults(String requestId) {
-        log.info("Starting to get evaluation results simple response for request id [{}]", requestId);
-        GetEvaluationResultsRequest request = new GetEvaluationResultsRequest();
-        request.setRequestId(requestId);
-        GetEvaluationResultsResponse response = ersClient.getEvaluationResults(request);
-        log.info("Evaluation results simple response with request id [{}] has been fetched", requestId);
-        return response;
+        try {
+            log.info("Starting to get evaluation results simple response for request id [{}]", requestId);
+            GetEvaluationResultsRequest request = new GetEvaluationResultsRequest();
+            request.setRequestId(requestId);
+            GetEvaluationResultsResponse response = ersClient.getEvaluationResults(request);
+            log.info("Evaluation results simple response with request id [{}] has been fetched", requestId);
+            return response;
+        } catch (FeignException.ServiceUnavailable | RetryableException ex) {
+            log.error("Service unavailable error [{}] while get evaluation results [{}]: {}",
+                    ex.getClass().getSimpleName(), requestId, ex.getMessage());
+            throw new InternalServiceUnavailableException(
+                    String.format("Ers unavailable while get evaluation results [%s]", requestId));
+        } catch (FeignException.BadRequest ex) {
+            log.error("Bad request error while get evaluation results [{}]: {}", requestId, ex.getMessage());
+            var errorCode =
+                    webClientErrorHandler.handleBadRequest(requestId, ex.contentUTF8(), ErsErrorCode.class);
+            log.error("Bad request error code [{}] while get evaluation results [{}]", errorCode, requestId);
+            String errorMessage =
+                    String.format("Bad request error while get evaluation results [%s]", requestId);
+            throw new ErsBadRequestException(errorCode, errorMessage);
+        } catch (Exception ex) {
+            log.error("Unknown error while get evaluation results [{}]: {}", requestId, ex.getMessage());
+            throw new ErsException(String.format("Unknown error while get evaluation results [%s]", requestId));
+        }
     }
 
     /**

@@ -1,6 +1,8 @@
 package com.ecaservice.server.service.ers;
 
+import com.ecaservice.common.web.exception.InternalServiceUnavailableException;
 import com.ecaservice.ers.dto.ErsErrorCode;
+import com.ecaservice.server.exception.ErsBadRequestException;
 import com.ecaservice.server.mapping.GetEvaluationResultsMapper;
 import com.ecaservice.server.model.ErsEvaluationRequestData;
 import com.ecaservice.server.model.entity.ExperimentResultsEntity;
@@ -11,14 +13,10 @@ import com.ecaservice.web.dto.model.EvaluationResultsDto;
 import com.ecaservice.web.dto.model.EvaluationResultsStatus;
 import eca.core.evaluation.EvaluationResults;
 import eca.dataminer.AbstractExperiment;
-import feign.FeignException;
-import feign.RetryableException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import static com.ecaservice.common.web.util.ValidationErrorHelper.hasError;
-import static com.ecaservice.common.web.util.ValidationErrorHelper.retrieveValidationErrors;
 import static com.ecaservice.server.util.Utils.buildEvaluationResultsDto;
 
 /**
@@ -72,30 +70,19 @@ public class ErsService {
             evaluationResultsDto.setEvaluationResultsStatus(new EnumDto(evaluationResultsStatus.name(),
                     evaluationResultsStatus.getDescription()));
             return evaluationResultsDto;
-        } catch (FeignException.ServiceUnavailable | RetryableException ex) {
-            log.error("Service unavailable error while fetching evaluation results for request id [{}]: {}", requestId,
-                    ex.getMessage());
+        } catch (InternalServiceUnavailableException ex) {
             evaluationResultsStatus = EvaluationResultsStatus.ERS_SERVICE_UNAVAILABLE;
-        } catch (FeignException.BadRequest ex) {
-            log.error("Bad request error while fetching evaluation results for request id [{}]: {}", requestId,
-                    ex.getMessage());
+        } catch (ErsBadRequestException ex) {
             evaluationResultsStatus = handleBadRequest(ex);
         } catch (Exception ex) {
-            log.error("Unknown error while fetching evaluation results for request id [{}]: {}", requestId,
-                    ex.getMessage());
             evaluationResultsStatus = EvaluationResultsStatus.ERROR;
         }
         return buildEvaluationResultsDto(evaluationResultsStatus);
     }
 
-    private EvaluationResultsStatus handleBadRequest(FeignException.BadRequest badRequestEx) {
-        try {
-            var validationErrors = retrieveValidationErrors(badRequestEx.contentUTF8());
-            if (hasError(ErsErrorCode.RESULTS_NOT_FOUND.name(), validationErrors)) {
-                return EvaluationResultsStatus.EVALUATION_RESULTS_NOT_FOUND;
-            }
-        } catch (Exception ex) {
-            log.error("Error while parsing bad request response: {}", ex.getMessage());
+    private EvaluationResultsStatus handleBadRequest(ErsBadRequestException badRequestEx) {
+        if (ErsErrorCode.RESULTS_NOT_FOUND.equals(badRequestEx.getErsErrorCode())) {
+            return EvaluationResultsStatus.EVALUATION_RESULTS_NOT_FOUND;
         }
         return EvaluationResultsStatus.ERROR;
     }
