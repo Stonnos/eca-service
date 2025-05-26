@@ -50,6 +50,7 @@ import com.ecaservice.server.model.entity.ExperimentStepEntity;
 import com.ecaservice.server.model.entity.ExperimentStepStatus;
 import com.ecaservice.server.model.entity.InstancesInfo;
 import com.ecaservice.server.model.entity.RequestStatus;
+import com.ecaservice.server.model.evaluation.ConfusionMatrixData;
 import com.ecaservice.server.model.evaluation.EvaluationInputDataModel;
 import com.ecaservice.server.model.evaluation.EvaluationRequestData;
 import com.ecaservice.server.model.evaluation.EvaluationResultsDataModel;
@@ -60,7 +61,6 @@ import com.ecaservice.web.dto.model.ClassifiersConfigurationDto;
 import com.ecaservice.web.dto.model.ClassifiersConfigurationHistoryDto;
 import com.ecaservice.web.dto.model.ClassifyInstanceRequestDto;
 import com.ecaservice.web.dto.model.ClassifyInstanceValueDto;
-import com.ecaservice.web.dto.model.ConfusionMatrixDto;
 import com.ecaservice.web.dto.model.EnumDto;
 import com.ecaservice.web.dto.model.EvaluationResultsDto;
 import com.ecaservice.web.dto.model.EvaluationResultsStatus;
@@ -267,7 +267,7 @@ public class TestHelperUtils {
      *
      * @return confusion matrix
      */
-    public static ConfusionMatrixDto loadConfusionMatrixDto() {
+    public static ConfusionMatrixData loadConfusionMatrixData() {
         return loadConfig(CONFUSION_MATRIX_JSON, new TypeReference<>() {
         });
     }

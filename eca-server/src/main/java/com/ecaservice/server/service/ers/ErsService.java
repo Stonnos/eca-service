@@ -66,8 +66,8 @@ public class ErsService {
         try {
             var evaluationResultsResponse = ersRequestService.getEvaluationResults(requestId);
             var evaluationResultsDto = evaluationResultsMapper.map(evaluationResultsResponse);
-            evaluationResultsDto.setConfusionMatrix(
-                    confusionMatrixService.proceedConfusionMatrix(evaluationResultsResponse));
+            var confusionMatrixData = confusionMatrixService.proceedConfusionMatrix(evaluationResultsResponse);
+            evaluationResultsDto.setConfusionMatrix(evaluationResultsMapper.map(confusionMatrixData));
             evaluationResultsStatus = EvaluationResultsStatus.RESULTS_RECEIVED;
             evaluationResultsDto.setEvaluationResultsStatus(new EnumDto(evaluationResultsStatus.name(),
                     evaluationResultsStatus.getDescription()));

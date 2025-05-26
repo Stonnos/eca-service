@@ -2,9 +2,9 @@ package com.ecaservice.server.service.evaluation;
 
 import com.ecaservice.ers.dto.ClassificationCostsReport;
 import com.ecaservice.ers.dto.GetEvaluationResultsResponse;
-import com.ecaservice.web.dto.model.ConfusionMatrixCellDto;
+import com.ecaservice.server.model.evaluation.ConfusionMatrixCellData;
+import com.ecaservice.server.model.evaluation.ConfusionMatrixData;
 import com.ecaservice.web.dto.model.ConfusionMatrixCellState;
-import com.ecaservice.web.dto.model.ConfusionMatrixDto;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -23,10 +23,10 @@ public class ConfusionMatrixService {
      * Proceed confusion matrix from evaluation results response.
      *
      * @param evaluationResultsResponse - evaluation result response
-     * @return confusion matrix dto
+     * @return confusion matrix data
      */
-    public ConfusionMatrixDto proceedConfusionMatrix(GetEvaluationResultsResponse evaluationResultsResponse) {
-        ConfusionMatrixDto confusionMatrixDto = new ConfusionMatrixDto();
+    public ConfusionMatrixData proceedConfusionMatrix(GetEvaluationResultsResponse evaluationResultsResponse) {
+        ConfusionMatrixData confusionMatrixData = new ConfusionMatrixData();
         List<String> classValues  = evaluationResultsResponse.getClassificationCosts()
                 .stream()
                 .map(ClassificationCostsReport::getClassValue)
@@ -36,17 +36,17 @@ public class ConfusionMatrixService {
         evaluationResultsResponse.getConfusionMatrix().forEach(confusionMatrixReport -> {
             int predictedClassIndex = confusionMatrixReport.getPredictedClassIndex();
             int actualClassIndex = confusionMatrixReport.getActualClassIndex();
-            var confusionMatrixCellDto = confusionMatrixCells.get(actualClassIndex).get(predictedClassIndex);
-            confusionMatrixCellDto.setNumInstances(confusionMatrixReport.getNumInstances().intValue());
+            var confusionMatrixCellData = confusionMatrixCells.get(actualClassIndex).get(predictedClassIndex);
+            confusionMatrixCellData.setNumInstances(confusionMatrixReport.getNumInstances().intValue());
         });
         // Populate confusion matrix cell states
         populateConfusionMatrixCellStates(confusionMatrixCells);
-        confusionMatrixDto.setClassValues(classValues);
-        confusionMatrixDto.setConfusionMatrixCells(confusionMatrixCells);
-        return confusionMatrixDto;
+        confusionMatrixData.setClassValues(classValues);
+        confusionMatrixData.setConfusionMatrixCells(confusionMatrixCells);
+        return confusionMatrixData;
     }
 
-    private void populateConfusionMatrixCellStates(List<List<ConfusionMatrixCellDto>> confusionMatrixCells) {
+    private void populateConfusionMatrixCellStates(List<List<ConfusionMatrixCellData>> confusionMatrixCells) {
         for (int i = 0; i < confusionMatrixCells.size(); i++) {
             boolean hasPredictedAndActualMisMatch = false;
             for (int j = 0; j < confusionMatrixCells.size(); j++) {
@@ -62,17 +62,17 @@ public class ConfusionMatrixService {
         }
     }
 
-    private List<List<ConfusionMatrixCellDto>> createConfusionMatrixCells(int numClasses) {
+    private List<List<ConfusionMatrixCellData>> createConfusionMatrixCells(int numClasses) {
         return Stream.generate(() -> createConfusionMatrixRow(numClasses))
                 .limit(numClasses)
                 .collect(Collectors.toList());
     }
 
-    private List<ConfusionMatrixCellDto> createConfusionMatrixRow(int numClasses) {
+    private List<ConfusionMatrixCellData> createConfusionMatrixRow(int numClasses) {
         return Stream.generate(() -> {
-                    ConfusionMatrixCellDto confusionMatrixCellDto = new ConfusionMatrixCellDto();
-                    confusionMatrixCellDto.setState(ConfusionMatrixCellState.WHITE);
-                    return confusionMatrixCellDto;
+                    ConfusionMatrixCellData confusionMatrixCellData = new ConfusionMatrixCellData();
+                    confusionMatrixCellData.setState(ConfusionMatrixCellState.WHITE);
+                    return confusionMatrixCellData;
                 })
                 .limit(numClasses)
                 .collect(Collectors.toList());
