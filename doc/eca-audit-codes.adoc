@@ -142,6 +142,12 @@
 |CREATE_OPTIMAL_EVALUATION_REQUEST
 |Создание заявки на построение модели с оптимальными настройками классификатора
 |EVALUATION_REQUESTS_ACTIONS
+|GENERATE_EVALUATION_RESULTS_REPORT
+|Выгрузка отчета с результатами классификации для модели
+|EVALUATION_REQUESTS_ACTIONS
+|GENERATE_EXPERIMENT_RESULTS_REPORT
+|Выгрузка отчета с результатами классификации для данных эксперимента
+|EVALUATION_REQUESTS_ACTIONS
 |DOWNLOAD_EVALUATION_RESULTS_HISTORY_REPORT
 |Выгрузка отчета с историей результатов классификации
 |EVALUATION_RESULTS_HISTORY_ACTIONS

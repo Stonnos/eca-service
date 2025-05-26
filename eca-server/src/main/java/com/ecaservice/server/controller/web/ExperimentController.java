@@ -2,12 +2,14 @@ package com.ecaservice.server.controller.web;
 
 import com.ecaservice.common.error.model.ValidationErrorDto;
 import com.ecaservice.common.web.exception.EntityNotFoundException;
+import com.ecaservice.core.audit.annotation.Audit;
 import com.ecaservice.server.dto.CreateExperimentRequestDto;
 import com.ecaservice.server.mapping.ExperimentMapper;
 import com.ecaservice.server.mapping.ExperimentProgressMapper;
 import com.ecaservice.server.model.entity.Experiment;
 import com.ecaservice.server.model.entity.ExperimentProgressEntity;
 import com.ecaservice.server.model.entity.ExperimentResultsEntity;
+import com.ecaservice.server.report.ExperimentResultsReportDataFetcher;
 import com.ecaservice.server.repository.ExperimentResultsEntityRepository;
 import com.ecaservice.server.service.experiment.ClassifyExperimentResultsInstanceService;
 import com.ecaservice.server.service.experiment.ExperimentDataService;
@@ -38,6 +40,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
@@ -55,10 +58,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.io.IOException;
 import java.time.LocalDate;
 
 import static com.ecaservice.config.swagger.OpenApi30Configuration.ECA_AUTHENTICATION_SECURITY_SCHEME;
 import static com.ecaservice.config.swagger.OpenApi30Configuration.SCOPE_WEB;
+import static com.ecaservice.server.config.audit.AuditCodes.GENERATE_EXPERIMENT_RESULTS_REPORT;
+import static com.ecaservice.server.report.ReportTemplates.EVALUATION_RESULTS_TEMPLATE;
+import static com.ecaservice.server.util.ReportHelper.download;
 import static com.ecaservice.web.dto.util.FieldConstraints.VALUE_0;
 import static com.ecaservice.web.dto.util.FieldConstraints.VALUE_1;
 
@@ -83,6 +90,7 @@ public class ExperimentController {
     private final ExperimentRequestWebApiService experimentRequestWebApiService;
     private final ExperimentResultsRocCurveDataProvider experimentResultsRocCurveDataProvider;
     private final ClassifyExperimentResultsInstanceService classifyExperimentResultsInstanceService;
+    private final ExperimentResultsReportDataFetcher experimentResultsReportDataFetcher;
     private final ExperimentResultsEntityRepository experimentResultsEntityRepository;
 
     /**
@@ -764,5 +772,57 @@ public class ExperimentController {
             @Valid @RequestBody ClassifyInstanceRequestDto classifyInstanceRequestDto) {
         log.info("Received classify instance request [{}]", classifyInstanceRequestDto);
         return classifyExperimentResultsInstanceService.classifyInstance(classifyInstanceRequestDto);
+    }
+
+    /**
+     * Downloads experiment results report in xlsx format.
+     *
+     * @param experimentResultsId - experiment results id
+     * @param httpServletResponse - http servlet response
+     * @throws IOException in case of I/O error
+     */
+    @Audit(value = GENERATE_EXPERIMENT_RESULTS_REPORT)
+    @PreAuthorize("hasAuthority('SCOPE_web')")
+    @Operation(
+            description = "Downloads experiment results report in xlsx format",
+            summary = "Downloads experiment results report in xlsx format",
+            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME, scopes = SCOPE_WEB),
+            responses = {
+                    @ApiResponse(description = "OK", responseCode = "200"),
+                    @ApiResponse(description = "Not authorized", responseCode = "401",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    examples = {
+                                            @ExampleObject(
+                                                    name = "NotAuthorizedResponse",
+                                                    ref = "#/components/examples/NotAuthorizedResponse"
+                                            )
+                                    }
+                            )
+                    ),
+                    @ApiResponse(description = "Bad request", responseCode = "400",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    examples = {
+                                            @ExampleObject(
+                                                    name = "DataNotFoundResponse",
+                                                    ref = "#/components/examples/DataNotFoundResponse"
+                                            )
+                                    }
+                            )
+                    )
+            }
+    )
+    @GetMapping(value = "/experiment-results-report/{id}")
+    public void downloadExperimentResultsReport(
+            @Parameter(description = "Experiment result id", example = "1", required = true)
+            @Min(VALUE_1) @Max(Long.MAX_VALUE)
+            @RequestParam Long experimentResultsId,
+            HttpServletResponse httpServletResponse) throws IOException {
+        log.info("Request to download experiment results [{}] report", experimentResultsId);
+        var reportData = experimentResultsReportDataFetcher.getReportData(experimentResultsId);
+        String fileName =
+                String.format("experiment-results-report-%d-%s.xlsx", experimentResultsId, reportData.getRequestId());
+        download(EVALUATION_RESULTS_TEMPLATE, fileName, httpServletResponse, reportData);
     }
 }

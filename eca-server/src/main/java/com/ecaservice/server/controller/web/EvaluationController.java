@@ -2,9 +2,11 @@ package com.ecaservice.server.controller.web;
 
 import com.ecaservice.common.error.model.ValidationErrorDto;
 import com.ecaservice.common.web.exception.EntityNotFoundException;
+import com.ecaservice.core.audit.annotation.Audit;
 import com.ecaservice.server.dto.CreateEvaluationRequestDto;
 import com.ecaservice.server.dto.CreateOptimalEvaluationRequestDto;
 import com.ecaservice.server.model.entity.EvaluationLog;
+import com.ecaservice.server.report.SimpleEvaluationResultsReportDataFetcher;
 import com.ecaservice.server.repository.EvaluationLogRepository;
 import com.ecaservice.server.service.evaluation.ClassifyEvaluationInstanceService;
 import com.ecaservice.server.service.evaluation.EvaluationLogDataService;
@@ -31,6 +33,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
@@ -48,10 +51,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.io.IOException;
 import java.time.LocalDate;
 
 import static com.ecaservice.config.swagger.OpenApi30Configuration.ECA_AUTHENTICATION_SECURITY_SCHEME;
 import static com.ecaservice.config.swagger.OpenApi30Configuration.SCOPE_WEB;
+import static com.ecaservice.server.config.audit.AuditCodes.GENERATE_EVALUATION_RESULTS_REPORT;
+import static com.ecaservice.server.report.ReportTemplates.EVALUATION_RESULTS_TEMPLATE;
+import static com.ecaservice.server.util.ReportHelper.download;
 import static com.ecaservice.web.dto.util.FieldConstraints.VALUE_0;
 import static com.ecaservice.web.dto.util.FieldConstraints.VALUE_1;
 
@@ -72,6 +79,7 @@ public class EvaluationController {
     private final EvaluationRequestWebApiService evaluationRequestWebApiService;
     private final EvaluationRocCurveDataProvider evaluationRocCurveDataProvider;
     private final ClassifyEvaluationInstanceService classifyEvaluationInstanceService;
+    private final SimpleEvaluationResultsReportDataFetcher simpleEvaluationResultsReportDataFetcher;
     private final EvaluationLogRepository evaluationLogRepository;
 
     /**
@@ -594,5 +602,54 @@ public class EvaluationController {
             @Valid @RequestBody ClassifyInstanceRequestDto classifyInstanceRequestDto) {
         log.info("Received classify instance request [{}]", classifyInstanceRequestDto);
         return classifyEvaluationInstanceService.classifyInstance(classifyInstanceRequestDto);
+    }
+
+    /**
+     * Downloads evaluation results report in xlsx format.
+     *
+     * @param id                  - evaluation id
+     * @param httpServletResponse - http servlet response
+     * @throws IOException in case of I/O error
+     */
+    @Audit(value = GENERATE_EVALUATION_RESULTS_REPORT)
+    @PreAuthorize("hasAuthority('SCOPE_web')")
+    @Operation(
+            description = "Downloads evaluation results report in xlsx format",
+            summary = "Downloads evaluation results report in xlsx format",
+            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME, scopes = SCOPE_WEB),
+            responses = {
+                    @ApiResponse(description = "OK", responseCode = "200"),
+                    @ApiResponse(description = "Not authorized", responseCode = "401",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    examples = {
+                                            @ExampleObject(
+                                                    name = "NotAuthorizedResponse",
+                                                    ref = "#/components/examples/NotAuthorizedResponse"
+                                            )
+                                    }
+                            )
+                    ),
+                    @ApiResponse(description = "Bad request", responseCode = "400",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    examples = {
+                                            @ExampleObject(
+                                                    name = "DataNotFoundResponse",
+                                                    ref = "#/components/examples/DataNotFoundResponse"
+                                            )
+                                    }
+                            )
+                    )
+            }
+    )
+    @GetMapping(value = "/evaluation-results-report/{id}")
+    public void downloadEvaluationResultsReport(@Parameter(description = "Evaluation id", required = true)
+                                                @Min(VALUE_1) @Max(Long.MAX_VALUE) @PathVariable Long id,
+                                                HttpServletResponse httpServletResponse) throws IOException {
+        log.info("Request to download evaluation results [{}] report", id);
+        var reportData = simpleEvaluationResultsReportDataFetcher.getReportData(id);
+        String fileName = String.format("evaluation-results-report-%s.xlsx", reportData.getRequestId());
+        download(EVALUATION_RESULTS_TEMPLATE, fileName, httpServletResponse, reportData);
     }
 }

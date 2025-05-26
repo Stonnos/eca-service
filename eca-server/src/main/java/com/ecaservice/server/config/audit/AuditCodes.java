@@ -71,7 +71,17 @@ public class AuditCodes {
     public static final String GENERATE_EVALUATION_REQUESTS_REPORT = "GENERATE_EVALUATION_REQUESTS_REPORT";
 
     /**
-     * Generates classifiers configuration report.
+     * Generates classifiers configuration report
      */
     public static final String GENERATE_CONFIGURATION_REPORT = "GENERATE_CONFIGURATION_REPORT";
+
+    /**
+     * Generate evaluation results report
+     */
+    public static final String GENERATE_EVALUATION_RESULTS_REPORT = "GENERATE_EVALUATION_RESULTS_REPORT";
+
+    /**
+     * Generate experiment results report
+     */
+    public static final String GENERATE_EXPERIMENT_RESULTS_REPORT = "GENERATE_EXPERIMENT_RESULTS_REPORT";
 }
