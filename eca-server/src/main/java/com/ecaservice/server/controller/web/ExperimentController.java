@@ -813,11 +813,11 @@ public class ExperimentController {
                     )
             }
     )
-    @GetMapping(value = "/experiment-results-report/{id}")
+    @GetMapping(value = "/results/report/{experimentResultsId}")
     public void downloadExperimentResultsReport(
             @Parameter(description = "Experiment result id", example = "1", required = true)
             @Min(VALUE_1) @Max(Long.MAX_VALUE)
-            @RequestParam Long experimentResultsId,
+            @PathVariable Long experimentResultsId,
             HttpServletResponse httpServletResponse) throws IOException {
         log.info("Request to download experiment results [{}] report", experimentResultsId);
         var reportData = experimentResultsReportDataFetcher.getReportData(experimentResultsId);

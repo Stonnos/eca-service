@@ -643,7 +643,7 @@ public class EvaluationController {
                     )
             }
     )
-    @GetMapping(value = "/evaluation-results-report/{id}")
+    @GetMapping(value = "/results/report/{id}")
     public void downloadEvaluationResultsReport(@Parameter(description = "Evaluation id", required = true)
                                                 @Min(VALUE_1) @Max(Long.MAX_VALUE) @PathVariable Long id,
                                                 HttpServletResponse httpServletResponse) throws IOException {
