@@ -138,6 +138,11 @@ export class ExperimentsService implements RocCurveService {
     return this.http.get<RocCurveDataDto>(this.serviceUrl + '/roc-curve', options);
   }
 
+  public downloadExperimentResultsReport(experimentResultsId: number): Observable<Blob> {
+    const options = { responseType: 'blob' as 'json' };
+    return this.http.get<Blob>(this.serviceUrl + '/results/report/' + experimentResultsId, options);
+  }
+
   public classifyInstance(classifyInstanceRequestDto: ClassifyInstanceRequestDto): Observable<ClassifyInstanceResultDto> {
     const headers = new HttpHeaders({
       'Content-type': 'application/json; charset=utf-8'

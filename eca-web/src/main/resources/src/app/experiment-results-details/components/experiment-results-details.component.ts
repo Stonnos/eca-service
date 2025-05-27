@@ -17,6 +17,7 @@ import { Utils } from "../../common/util/utils";
 import { AttributeMetaInfoModel } from '../../classify-instance/model/attribute-meta-info.model';
 import { AttributesInfoMapper } from '../../common/instances-info/services/attributes-info.mapper';
 import { InstancesInfoService } from '../../common/instances-info/services/instances-info.service';
+import { saveAs } from 'file-saver/dist/FileSaver';
 
 @Component({
   selector: 'app-experiment-results-details',
@@ -29,6 +30,7 @@ export class ExperimentResultsDetailsComponent implements OnInit, FieldLink {
 
   public experimentFields: any[] = [];
   public loading: boolean = false;
+  private reportLoading: boolean = false;
 
   public experimentResultsDetailsDto: ExperimentResultsDetailsDto;
 
@@ -111,6 +113,24 @@ export class ExperimentResultsDetailsComponent implements OnInit, FieldLink {
       .subscribe({
         next: (attributeMetaInfoList: AttributeMetaInfoDto[]) => {
           this.attributeMetaInfoModels = this.attributesInfoMapper.mapAttributes(attributeMetaInfoList);
+        },
+        error: (error) => {
+          this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
+        }
+      });
+  }
+
+  public downloadExperimentResultsReport(): void {
+    this.reportLoading = true;
+    this.experimentsService.downloadExperimentResultsReport(this.experimentResultsId)
+      .pipe(
+        finalize(() => {
+          this.reportLoading = false;
+        })
+      )
+      .subscribe({
+        next: (blob: Blob) => {
+          saveAs(blob, `experiment-results-report-${this.experimentResultsId}-${this.experimentResultsDetailsDto.experimentDto.requestId}.xlsx`);
         },
         error: (error) => {
           this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
