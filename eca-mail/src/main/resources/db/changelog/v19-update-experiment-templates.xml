@@ -26,7 +26,7 @@
         </update>
     </changeSet>
 
-    <changeSet id="update_finished_experiment_template_body" author="roman.batygin@mail.ru" context="data">
+    <changeSet id="update_finished_experiment_template_body_2" author="roman.batygin@mail.ru" context="data">
         <update tableName="template">
             <column name="template_body" valueClobFile="templates/finished-experiment-template.html"/>
             <where>template_code = 'FINISHED_EXPERIMENT'</where>
