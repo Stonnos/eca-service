@@ -99,6 +99,11 @@ export class ClassifiersService implements RocCurveService, ClassifyInstanceServ
     return this.http.post<ClassifyInstanceResultDto>(this.serviceUrl + '/classify-instance', classifyInstanceRequestDto, { headers: headers });
   }
 
+  public downloadEvaluationResultsReport(id: number): Observable<Blob> {
+    const options = { responseType: 'blob' as 'json' };
+    return this.http.get<Blob>(this.serviceUrl + '/results/report/' + id, options);
+  }
+
   public downloadContent(url: string): Observable<Blob> {
     const options = { responseType: 'blob' as 'json' };
     return this.http.get<Blob>(url, options);

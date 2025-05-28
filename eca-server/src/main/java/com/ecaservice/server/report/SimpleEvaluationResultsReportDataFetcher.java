@@ -1,0 +1,66 @@
+package com.ecaservice.server.report;
+
+import com.ecaservice.common.web.exception.EntityNotFoundException;
+import com.ecaservice.ers.dto.GetEvaluationResultsResponse;
+import com.ecaservice.server.model.entity.ErsResponseStatus;
+import com.ecaservice.server.model.entity.EvaluationLog;
+import com.ecaservice.server.model.entity.EvaluationResultsRequestEntity;
+import com.ecaservice.server.report.model.EvaluationResultsReportBean;
+import com.ecaservice.server.report.model.EvaluationResultsReportInputData;
+import com.ecaservice.server.repository.EvaluationLogRepository;
+import com.ecaservice.server.repository.EvaluationResultsRequestEntityRepository;
+import com.ecaservice.server.service.ers.ErsRequestService;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
+
+import static com.ecaservice.server.util.ValidationUtils.checkFinishedRequestStatus;
+
+/**
+ * Evaluation results report data fetcher.
+ *
+ * @author Roman Batygin
+ */
+@Slf4j
+@Service
+@RequiredArgsConstructor
+public class SimpleEvaluationResultsReportDataFetcher implements EvaluationResultsReportDataFetcher {
+
+    private final EvaluationResultsReportDataProcessor evaluationResultsReportDataProcessor;
+    private final ErsRequestService ersRequestService;
+    private final EvaluationLogRepository evaluationLogRepository;
+    private final EvaluationResultsRequestEntityRepository evaluationResultsRequestEntityRepository;
+
+    /**
+     * Gets evaluation results report data.
+     *
+     * @param id - evaluation log id
+     * @return evaluation results report data
+     */
+    @Override
+    public EvaluationResultsReportBean getReportData(long id) {
+        log.info("Starting to fetch evaluation result report data for evaluation log [{}]", id);
+        EvaluationLog evaluationLog = evaluationLogRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException(EvaluationLog.class, id));
+        checkFinishedRequestStatus(evaluationLog);
+        EvaluationResultsRequestEntity evaluationResultsRequestEntity =
+                evaluationResultsRequestEntityRepository.findByEvaluationLog(evaluationLog);
+        if (evaluationResultsRequestEntity == null ||
+                !ErsResponseStatus.SUCCESS.equals(evaluationResultsRequestEntity.getResponseStatus())) {
+            throw new EntityNotFoundException(EvaluationResultsRequestEntity.class, evaluationLog.getId());
+        } else {
+            GetEvaluationResultsResponse evaluationResultsResponse =
+                    ersRequestService.getEvaluationResults(evaluationResultsRequestEntity.getRequestId());
+            EvaluationResultsReportInputData evaluationResultsReportInputData =
+                    EvaluationResultsReportInputData.builder()
+                            .evaluationEntity(evaluationLog)
+                            .classifierOptions(evaluationLog.getClassifierOptions())
+                            .evaluationResultsResponse(evaluationResultsResponse)
+                            .build();
+            EvaluationResultsReportBean evaluationResultsReportBean =
+                    evaluationResultsReportDataProcessor.processReportData(evaluationResultsReportInputData);
+            log.info("Evaluation result report data has been fetched for evaluation log [{}]", id);
+            return evaluationResultsReportBean;
+        }
+    }
+}

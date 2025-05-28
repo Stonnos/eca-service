@@ -21,6 +21,7 @@ import { PushService } from "../../common/push/push.service";
 import { InstancesInfoService } from '../../common/instances-info/services/instances-info.service';
 import { AttributeMetaInfoModel } from '../../classify-instance/model/attribute-meta-info.model';
 import { AttributesInfoMapper } from '../../common/instances-info/services/attributes-info.mapper';
+import { saveAs } from 'file-saver/dist/FileSaver';
 
 @Component({
   selector: 'app-evaluation-log-details',
@@ -37,6 +38,7 @@ export class EvaluationLogDetailsComponent implements OnInit, OnDestroy, FieldLi
   public loading: boolean = false;
 
   private modelLoading: boolean = false;
+  private reportLoading: boolean = false;
 
   public linkColumns: string[] = [EvaluationLogFields.MODEL_PATH];
 
@@ -156,6 +158,24 @@ export class EvaluationLogDetailsComponent implements OnInit, OnDestroy, FieldLi
       () => this.modelLoading = false,
       (error) => this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message })
     );
+  }
+
+  public downloadEvaluationResultsReport(): void {
+    this.reportLoading = true;
+    this.classifiersService.downloadEvaluationResultsReport(this.id)
+      .pipe(
+        finalize(() => {
+          this.reportLoading = false;
+        })
+      )
+      .subscribe({
+        next: (blob: Blob) => {
+          saveAs(blob, `evaluation-results-report-${this.evaluationLogDetails.requestId}.xlsx`);
+        },
+        error: (error) => {
+          this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
+        }
+      });
   }
 
   public showProgressBar(field: string): boolean {

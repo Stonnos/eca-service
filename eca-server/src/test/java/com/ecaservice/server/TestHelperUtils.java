@@ -42,6 +42,7 @@ import com.ecaservice.server.model.entity.ClassifiersConfigurationActionType;
 import com.ecaservice.server.model.entity.ClassifiersConfigurationHistoryEntity;
 import com.ecaservice.server.model.entity.ErsResponseStatus;
 import com.ecaservice.server.model.entity.EvaluationLog;
+import com.ecaservice.server.model.entity.EvaluationResultsRequestEntity;
 import com.ecaservice.server.model.entity.Experiment;
 import com.ecaservice.server.model.entity.ExperimentResultsEntity;
 import com.ecaservice.server.model.entity.ExperimentResultsRequest;
@@ -50,6 +51,7 @@ import com.ecaservice.server.model.entity.ExperimentStepEntity;
 import com.ecaservice.server.model.entity.ExperimentStepStatus;
 import com.ecaservice.server.model.entity.InstancesInfo;
 import com.ecaservice.server.model.entity.RequestStatus;
+import com.ecaservice.server.model.evaluation.ConfusionMatrixData;
 import com.ecaservice.server.model.evaluation.EvaluationInputDataModel;
 import com.ecaservice.server.model.evaluation.EvaluationRequestData;
 import com.ecaservice.server.model.evaluation.EvaluationResultsDataModel;
@@ -60,7 +62,6 @@ import com.ecaservice.web.dto.model.ClassifiersConfigurationDto;
 import com.ecaservice.web.dto.model.ClassifiersConfigurationHistoryDto;
 import com.ecaservice.web.dto.model.ClassifyInstanceRequestDto;
 import com.ecaservice.web.dto.model.ClassifyInstanceValueDto;
-import com.ecaservice.web.dto.model.ConfusionMatrixDto;
 import com.ecaservice.web.dto.model.EnumDto;
 import com.ecaservice.web.dto.model.EvaluationResultsDto;
 import com.ecaservice.web.dto.model.EvaluationResultsStatus;
@@ -267,7 +268,7 @@ public class TestHelperUtils {
      *
      * @return confusion matrix
      */
-    public static ConfusionMatrixDto loadConfusionMatrixDto() {
+    public static ConfusionMatrixData loadConfusionMatrixData() {
         return loadConfig(CONFUSION_MATRIX_JSON, new TypeReference<>() {
         });
     }
@@ -1344,6 +1345,23 @@ public class TestHelperUtils {
         classifierOptionsResult.setFound(true);
         classifierOptionsResult.setClassifierOptions(classifierOptions);
         return classifierOptionsResult;
+    }
+
+    /**
+     * Creates evaluation results request entity.
+     *
+     * @param evaluationLog     - evaluation log
+     * @param ersResponseStatus - ers response status
+     * @return evaluation log
+     */
+    public static EvaluationResultsRequestEntity createEvaluationResultsRequestEntity(EvaluationLog evaluationLog,
+                                                                                      ErsResponseStatus ersResponseStatus) {
+        EvaluationResultsRequestEntity evaluationResultsRequestEntity = new EvaluationResultsRequestEntity();
+        evaluationResultsRequestEntity.setRequestDate(LocalDateTime.now().minusDays(1L));
+        evaluationResultsRequestEntity.setRequestId(UUID.randomUUID().toString());
+        evaluationResultsRequestEntity.setResponseStatus(ersResponseStatus);
+        evaluationResultsRequestEntity.setEvaluationLog(evaluationLog);
+        return evaluationResultsRequestEntity;
     }
 
     private static <T> T loadConfig(String path, TypeReference<T> tTypeReference) {

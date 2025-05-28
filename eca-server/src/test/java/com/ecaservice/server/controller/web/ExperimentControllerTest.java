@@ -12,6 +12,7 @@ import com.ecaservice.server.mapping.InstancesInfoMapperImpl;
 import com.ecaservice.server.model.entity.Experiment;
 import com.ecaservice.server.model.entity.ExperimentProgressEntity;
 import com.ecaservice.server.model.entity.ExperimentResultsEntity;
+import com.ecaservice.server.report.ExperimentResultsReportDataFetcher;
 import com.ecaservice.server.repository.ExperimentResultsEntityRepository;
 import com.ecaservice.server.service.experiment.ClassifyExperimentResultsInstanceService;
 import com.ecaservice.server.service.experiment.ExperimentDataService;
@@ -98,6 +99,8 @@ class ExperimentControllerTest extends PageRequestControllerTest {
     private ExperimentRequestWebApiService experimentRequestWebApiService;
     @MockBean
     private ExperimentResultsEntityRepository experimentResultsEntityRepository;
+    @MockBean
+    private ExperimentResultsReportDataFetcher experimentResultsReportDataFetcher;
 
     @Autowired
     private ExperimentMapper experimentMapper;

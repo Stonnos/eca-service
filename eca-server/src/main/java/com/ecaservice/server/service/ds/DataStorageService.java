@@ -46,7 +46,7 @@ public class DataStorageService {
             throw new InternalServiceUnavailableException(
                     String.format("Data storage unavailable while export valid instances [%s]", uuid));
         } catch (FeignException.BadRequest ex) {
-            log.error("Bad request error while export valid instances[{}] to central data storage: {}", uuid,
+            log.error("Bad request error while export valid instances [{}] to central data storage: {}", uuid,
                     ex.getMessage());
             var dsErrorCode =
                     webClientErrorHandler.handleBadRequest(uuid, ex.contentUTF8(), DsInternalApiErrorCode.class);

@@ -21,6 +21,11 @@ public class ReportTemplates {
     public static final String CLASSIFIERS_CONFIGURATION_TEMPLATE = "classifiers-configuration-report-template.xlsx";
 
     /**
+     * Evaluation results template
+     */
+    public static final String EVALUATION_RESULTS_TEMPLATE = "evaluation-results-template.xlsx";
+
+    /**
      * Base report templates
      */
     public static final Map<BaseReportType, String> BASE_REPORT_TEMPLATES = Map.of(
