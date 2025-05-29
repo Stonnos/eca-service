@@ -119,5 +119,5 @@ public class EvaluationResultsReportBean {
     /**
      * Confusion matrix cells
      */
-    public List<List<ConfusionMatrixCellData>> confusionMatrixCells;
+    private List<List<ConfusionMatrixCellData>> confusionMatrixCells;
 }
