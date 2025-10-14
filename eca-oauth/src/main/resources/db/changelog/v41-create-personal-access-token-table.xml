@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+        logicalFilePath="db/changelog/v41-create-personal-access-token-table.xml"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="create_personal_access_token_table" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="personal_access_token"/>
+            </not>
+        </preConditions>
+        <createTable tableName="personal_access_token">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="token" type="varchar(255)">
+                <constraints nullable="false" unique="true" uniqueConstraintName="personal_access_token_unique_index"/>
+            </column>
+            <column name="token_name" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="token_type" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created" type="timestamp">
+                <constraints nullable="false"/>
+            </column>
+            <column name="expire_date" type="timestamp">
+                <constraints nullable="false"/>
+            </column>
+            <column name="user_id" type="bigint">
+                <constraints foreignKeyName="fk_personal_access_token_user_id"
+                             referencedTableName="user_entity"
+                             referencedColumnNames="id" nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="add_personal_access_token_token_name_user_id_unique_index" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="personal_access_token_token"/>
+            <columnExists tableName="personal_access_token_token" columnName="token_name"/>
+            <columnExists tableName="personal_access_token_token" columnName="user_id"/>
+        </preConditions>
+        <addUniqueConstraint tableName="personal_access_token_token" columnNames="token_name, user_id"
+                             constraintName="personal_access_token_token_name_user_id_unique_index"/>
+    </changeSet>
+</databaseChangeLog>

@@ -50,4 +50,5 @@
     <include file="db/changelog/v39-added-user-photo-id-column.xml"/>
     <include file="db/changelog/v40-dop-user-profile-options-data-event-table.xml"/>
     <include file="../transactional-outbox-changelog.xml" relativeToChangelogFile="true"/>
+    <include file="db/changelog/v41-create-personal-access-token-table.xml"/>
 </databaseChangeLog>

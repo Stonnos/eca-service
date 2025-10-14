@@ -1,0 +1,12 @@
+{
+  "content": [
+    {
+      "id": 1,
+      "name": "Token",
+      "expireDate": "2026-07-01 14:00:00",
+      "valid": true
+    }
+  ],
+  "page": 0,
+  "totalCount": 1
+}
