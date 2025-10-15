@@ -18,6 +18,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import java.time.LocalDateTime;
 import java.util.Collections;
 
 import static com.ecaservice.oauth.TestHelperUtils.createUserEntity;
@@ -38,6 +39,7 @@ class PersonalAccessTokenServiceTest extends AbstractJpaTest {
     private static final String INVALID_USER = "abc";
     private static final int PAGE = 0;
     private static final int PAGE_SIZE = 10;
+    private static final String INVALID_TOKEN = "invalid_token";
 
     @Autowired
     private UserEntityRepository userEntityRepository;
@@ -110,6 +112,34 @@ class PersonalAccessTokenServiceTest extends AbstractJpaTest {
         assertThat(tokensPage.getContent()).isNotNull();
         assertThat(tokensPage.getContent().size()).isOne();
         assertThat(tokensPage.getContent().getFirst().getId()).isEqualTo(personalAccessTokenDetailsDto.getId());
+    }
+
+    @Test
+    void testTokenIsValid() {
+        var personalAccessTokenDetailsDto = createToken();
+        var tokenInfo = personalAccessTokenService.verifyToken(personalAccessTokenDetailsDto.getToken());
+        assertThat(tokenInfo).isNotNull();
+        assertThat(tokenInfo.isValid()).isTrue();
+    }
+
+    @Test
+    void testTokenIsNotValid() {
+        var tokenInfo = personalAccessTokenService.verifyToken(INVALID_TOKEN);
+        assertThat(tokenInfo).isNotNull();
+        assertThat(tokenInfo.isValid()).isFalse();
+    }
+
+    @Test
+    void testTokenIsExpired() {
+        var personalAccessTokenDetailsDto = createToken();
+        var personalAccessTokenEntity =
+                personalAccessTokenRepository.findById(personalAccessTokenDetailsDto.getId()).orElse(null);
+        assertThat(personalAccessTokenEntity).isNotNull();
+        personalAccessTokenEntity.setExpireDate(LocalDateTime.now().minusMinutes(1L));
+        personalAccessTokenRepository.save(personalAccessTokenEntity);
+        var tokenInfo = personalAccessTokenService.verifyToken(personalAccessTokenDetailsDto.getToken());
+        assertThat(tokenInfo).isNotNull();
+        assertThat(tokenInfo.isValid()).isFalse();
     }
 
     private PersonalAccessTokenDetailsDto createToken() {

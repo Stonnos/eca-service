@@ -2,6 +2,7 @@ package com.ecaservice.oauth2.test.configuration;
 
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import java.util.List;
 
 /**
  * Oauth2 test config.
@@ -20,5 +21,5 @@ public class Oauth2TestConfig {
     /**
      * Scope
      */
-    private String scope = "web";
+    private List<String> scope = List.of("web", "internal-api");
 }

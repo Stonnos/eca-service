@@ -1,5 +1,6 @@
 package com.ecaservice.oauth;
 
+import com.ecaservice.oauth.dto.CreatePersonalAccessTokenDto;
 import com.ecaservice.oauth.dto.CreateUserDto;
 import com.ecaservice.oauth.dto.UpdateUserInfoDto;
 import com.ecaservice.oauth.dto.UpdateUserNotificationEventOptionsDto;
@@ -11,9 +12,11 @@ import com.ecaservice.oauth.entity.RoleEntity;
 import com.ecaservice.oauth.entity.UserEntity;
 import com.ecaservice.oauth.entity.UserNotificationEventOptionsEntity;
 import com.ecaservice.oauth.entity.UserProfileOptionsEntity;
+import com.ecaservice.user.dto.PersonalAccessTokenType;
 import com.ecaservice.user.model.Role;
 import com.ecaservice.user.profile.options.dto.UserNotificationEventType;
 import com.ecaservice.web.dto.model.PageRequestDto;
+import com.ecaservice.web.dto.model.PersonalAccessTokenDto;
 import com.google.common.collect.Sets;
 import lombok.experimental.UtilityClass;
 
@@ -46,6 +49,9 @@ public class TestHelperUtils {
 
     private static final int PAGE_SIZE = 10;
     private static final int PAGE_NUMBER = 0;
+    private static final int EXPIRATION_MONTH = 3;
+    private static final String TOKEN_NAME = "Token";
+    private static final long PTA_VALIDITY_MONTHS = 1L;
 
     /**
      * Creates page request dto.
@@ -115,6 +121,32 @@ public class TestHelperUtils {
         createUserDto.setLastName(lastName);
         createUserDto.setMiddleName(middleName);
         return createUserDto;
+    }
+
+    /**
+     * Creates personal access token dto.
+     *
+     * @return personal access token dto
+     */
+    public static CreatePersonalAccessTokenDto createPersonalAccessTokenDto() {
+        CreatePersonalAccessTokenDto createPersonalAccessTokenDto = new CreatePersonalAccessTokenDto();
+        createPersonalAccessTokenDto.setTokenType(PersonalAccessTokenType.USER_TOKEN);
+        createPersonalAccessTokenDto.setName(TOKEN_NAME);
+        createPersonalAccessTokenDto.setExpirationMonth(EXPIRATION_MONTH);
+        return createPersonalAccessTokenDto;
+    }
+
+    /**
+     * Creates personal access token dto.
+     *
+     * @return personal access token dto
+     */
+    public static PersonalAccessTokenDto createPersonalAccessToken() {
+        PersonalAccessTokenDto personalAccessTokenDto = new PersonalAccessTokenDto();
+        personalAccessTokenDto.setValid(true);
+        personalAccessTokenDto.setName(TOKEN_NAME);
+        personalAccessTokenDto.setExpireDate(LocalDateTime.now().plusMonths(PTA_VALIDITY_MONTHS));
+        return personalAccessTokenDto;
     }
 
     /**
