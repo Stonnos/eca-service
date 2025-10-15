@@ -40,11 +40,51 @@
 
     <changeSet id="add_personal_access_token_token_name_user_id_unique_index" author="roman.batygin@mail.ru" context="schema">
         <preConditions onFail="MARK_RAN">
-            <tableExists tableName="personal_access_token_token"/>
-            <columnExists tableName="personal_access_token_token" columnName="token_name"/>
-            <columnExists tableName="personal_access_token_token" columnName="user_id"/>
+            <tableExists tableName="personal_access_token"/>
+            <columnExists tableName="personal_access_token" columnName="token_name"/>
+            <columnExists tableName="personal_access_token" columnName="user_id"/>
         </preConditions>
-        <addUniqueConstraint tableName="personal_access_token_token" columnNames="token_name, user_id"
+        <addUniqueConstraint tableName="personal_access_token" columnNames="token_name, user_id"
                              constraintName="personal_access_token_token_name_user_id_unique_index"/>
+    </changeSet>
+
+    <changeSet id="insert_default_admin_personal_access_token" author="roman.batygin@mail.ru" context="data">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="personal_access_token"/>
+            <sqlCheck expectedResult="1">
+                select count(*) from user_entity where login = 'admin'
+            </sqlCheck>
+            <sqlCheck expectedResult="0">
+                select count(*) from personal_access_token where token_name = 'eca-token' and user_id = (select id from user_entity where login = 'admin')
+            </sqlCheck>
+        </preConditions>
+        <insert tableName="personal_access_token">
+            <column name="token_name" value="eca-token"/>
+            <column name="token_type" value="USER_TOKEN"/>
+            <column name="token" value="37deecda556c0864ee4834c2df070d77"/>
+            <column name="created" valueDate="now()"/>
+            <column name="expire_date" valueDate="2030-01-01 00:00:00"/>
+            <column name="user_id" valueComputed="(select id from user_entity where login = 'admin')"/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="insert_external_api_personal_access_token" author="roman.batygin@mail.ru" context="data">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="personal_access_token"/>
+            <sqlCheck expectedResult="1">
+                select count(*) from user_entity where login = 'admin'
+            </sqlCheck>
+            <sqlCheck expectedResult="0">
+                select count(*) from personal_access_token where token_name = 'external-api-token' and user_id = (select id from user_entity where login = 'admin')
+            </sqlCheck>
+        </preConditions>
+        <insert tableName="personal_access_token">
+            <column name="token_name" value="external-api-token"/>
+            <column name="token_type" value="APP_TOKEN"/>
+            <column name="token" value="05f85ae996428bfc86c44f0b531792d6"/>
+            <column name="created" valueDate="now()"/>
+            <column name="expire_date" valueDate="2030-01-01 00:00:00"/>
+            <column name="user_id" valueComputed="(select id from user_entity where login = 'admin')"/>
+        </insert>
     </changeSet>
 </databaseChangeLog>
