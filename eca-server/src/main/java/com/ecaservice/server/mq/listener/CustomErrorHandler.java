@@ -6,6 +6,7 @@ import com.ecaservice.server.exception.MessageAuthorizationException;
 import com.ecaservice.server.mq.listener.support.AbstractExceptionTranslator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.amqp.AmqpRejectAndDontRequeueException;
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.core.MessageProperties;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -38,6 +39,8 @@ public class CustomErrorHandler implements ErrorHandler {
             handleError(executionFailedException.getFailedMessage(), (Exception) executionFailedException.getCause());
         } else if (ex instanceof MessageAuthorizationException messageAuthorizationException) {
             handleError(messageAuthorizationException.getFailedMessage(), messageAuthorizationException);
+            throw new AmqpRejectAndDontRequeueException(messageAuthorizationException.getMessage(),
+                    messageAuthorizationException);
         } else {
             log.error("Unknown error while message handling: {}", ex.getCause().getMessage());
         }
