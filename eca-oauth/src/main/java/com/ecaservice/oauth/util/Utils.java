@@ -2,7 +2,6 @@ package com.ecaservice.oauth.util;
 
 import com.ecaservice.oauth.entity.RoleEntity;
 import com.ecaservice.oauth.entity.UserEntity;
-import com.ecaservice.user.model.Role;
 import lombok.experimental.UtilityClass;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.HttpHeaders;

@@ -71,6 +71,7 @@ public interface EcaRequestMapper {
     @ValueMapping(source = "TRAINING_DATA_NOT_FOUND", target = "TRAINING_DATA_NOT_FOUND")
     @ValueMapping(source = "INVALID_FIELD_VALUE", target = "INTERNAL_SERVER_ERROR")
     @ValueMapping(source = "CLASSIFIER_OPTIONS_NOT_FOUND", target = "CLASSIFIER_OPTIONS_NOT_FOUND")
+    @ValueMapping(source = "UNAUTHORIZED", target = "INTERNAL_SERVER_ERROR")
     EvaluationErrorCode map(ErrorCode errorCode);
 
     /**
