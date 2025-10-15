@@ -1,5 +1,8 @@
 package com.ecaservice.server.exception;
 
+import lombok.Getter;
+import org.springframework.amqp.core.Message;
+
 /**
  * Message authorization exception.
  *
@@ -7,7 +10,17 @@ package com.ecaservice.server.exception;
  */
 public class MessageAuthorizationException extends RuntimeException {
 
-    public MessageAuthorizationException(String message) {
+    @Getter
+    private final Message failedMessage;
+
+    /**
+     * Creates exception object.
+     *
+     * @param message       - message text
+     * @param failedMessage - failed amqp message
+     */
+    public MessageAuthorizationException(String message, Message failedMessage) {
         super(message);
+        this.failedMessage = failedMessage;
     }
 }

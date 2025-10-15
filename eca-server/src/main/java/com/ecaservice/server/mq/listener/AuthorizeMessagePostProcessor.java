@@ -32,11 +32,11 @@ public class AuthorizeMessagePostProcessor implements MessagePostProcessor {
         log.debug("Authorize message with correlation id [{}]", message.getMessageProperties().getCorrelationId());
         String token = message.getMessageProperties().getHeader(AUTH_TOKEN_HEADER);
         if (StringUtils.isEmpty(token)) {
-            throw new MessageAuthorizationException("Auth token must be specified!");
+            throw new MessageAuthorizationException("Auth token must be specified!", message);
         }
         var tokenInfo = personalAccessTokensClient.verifyToken(token);
         if (!tokenInfo.isValid()) {
-            throw new MessageAuthorizationException("Got invalid auth token!");
+            throw new MessageAuthorizationException("Got invalid auth token!", message);
         }
         if (PersonalAccessTokenType.USER_TOKEN.equals(tokenInfo.getTokenType())) {
             message.getMessageProperties().setHeader(USER_HEADER, tokenInfo.getUser());
