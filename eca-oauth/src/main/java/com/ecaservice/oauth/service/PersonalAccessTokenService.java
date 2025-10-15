@@ -117,7 +117,7 @@ public class PersonalAccessTokenService {
      * @return personal access token info dto
      */
     public PersonalAccessTokenInfoDto verifyToken(String token) {
-        log.info("Verify personal access token");
+        log.debug("Verify personal access token");
         String md5HashToken = md5Hex(token);
         PersonalAccessTokenInfoDto personalAccessTokenInfoDto = new PersonalAccessTokenInfoDto();
         var personalAccessTokenEntity = personalAccessTokenRepository.findByToken(md5HashToken);
@@ -131,7 +131,7 @@ public class PersonalAccessTokenService {
             boolean valid = personalAccessTokenEntity.getExpireDate().isAfter(LocalDateTime.now());
             personalAccessTokenInfoDto.setValid(valid);
         }
-        log.info("Personal access token validity [{}]", personalAccessTokenInfoDto.isValid());
+        log.debug("Personal access token validity [{}]", personalAccessTokenInfoDto.isValid());
         return personalAccessTokenInfoDto;
     }
 

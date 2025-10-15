@@ -1,6 +1,7 @@
 package com.ecaservice.server.config.rabbit;
 
 import com.ecaservice.rabbit.config.CoreRabbitConfiguration;
+import com.ecaservice.server.mq.listener.AuthorizeMessagePostProcessor;
 import com.ecaservice.server.mq.listener.CustomErrorHandler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.amqp.core.Binding;
@@ -105,10 +106,11 @@ public class RabbitConfiguration implements RabbitListenerConfigurer {
     /**
      * Creates rabbit listener container factory bean.
      *
-     * @param configurer                   - simple rabbit listener container configurer
-     * @param connectionFactory            - connection factory
-     * @param jackson2JsonMessageConverter - jackson 2 message converter
-     * @param customErrorHandler           - custom error handler
+     * @param configurer                    - simple rabbit listener container configurer
+     * @param connectionFactory             - connection factory
+     * @param jackson2JsonMessageConverter  - jackson 2 message converter
+     * @param customErrorHandler            - custom error handler
+     * @param authorizeMessagePostProcessor - authorize message post processor
      * @return rabbit listener container factory bean
      */
     @Bean(ECA_RABBIT_LISTENER_CONTAINER_FACTORY)
@@ -116,10 +118,12 @@ public class RabbitConfiguration implements RabbitListenerConfigurer {
             SimpleRabbitListenerContainerFactoryConfigurer configurer,
             ConnectionFactory connectionFactory,
             Jackson2JsonMessageConverter jackson2JsonMessageConverter,
-            CustomErrorHandler customErrorHandler) {
+            CustomErrorHandler customErrorHandler,
+            AuthorizeMessagePostProcessor authorizeMessagePostProcessor) {
         SimpleRabbitListenerContainerFactory containerFactory = new SimpleRabbitListenerContainerFactory();
         configurer.configure(containerFactory, connectionFactory);
         containerFactory.setMessageConverter(jackson2JsonMessageConverter);
+        containerFactory.setAfterReceivePostProcessors(authorizeMessagePostProcessor);
         containerFactory.setErrorHandler(customErrorHandler);
         containerFactory.setDefaultRequeueRejected(false);
         return containerFactory;

@@ -67,7 +67,7 @@ public class PersonalAccessTokenApiController {
     public PersonalAccessTokenInfoDto verifyToken(
             @Size(min = VALUE_1, max = MAX_LENGTH_255)
             @Parameter(description = "Personal access token", required = true) @RequestParam String token) {
-        log.info("Received request to verify personal access token");
+        log.debug("Received request to verify personal access token");
         return personalAccessTokenService.verifyToken(token);
     }
 }

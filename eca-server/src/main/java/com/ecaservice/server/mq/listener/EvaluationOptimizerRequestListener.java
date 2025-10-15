@@ -17,6 +17,7 @@ import jakarta.validation.Valid;
 import java.util.UUID;
 
 import static com.ecaservice.server.config.rabbit.RabbitConfiguration.ECA_RABBIT_LISTENER_CONTAINER_FACTORY;
+import static com.ecaservice.server.mq.listener.MessageHeaders.USER_HEADER;
 
 /**
  * Rabbit MQ listener for evaluation optimizer request messages.
@@ -46,6 +47,7 @@ public class EvaluationOptimizerRequestListener {
                 inboundMessageProperties.getCorrelationId());
         var evaluationRequestModel =
                 evaluationLogMapper.map(instancesRequest, inboundMessage, crossValidationConfig);
+        evaluationRequestModel.setCreatedBy(inboundMessage.getMessageProperties().getHeader(USER_HEADER));
         evaluationRequestModel.setRequestId(UUID.randomUUID().toString());
         evaluationProcessManager.createAndProcessEvaluationRequest(evaluationRequestModel);
         log.info("Evaluation optimizer request with correlation id [{}] has been processed",

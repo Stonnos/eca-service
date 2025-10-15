@@ -16,6 +16,7 @@ import jakarta.validation.Valid;
 import java.util.UUID;
 
 import static com.ecaservice.server.config.rabbit.RabbitConfiguration.ECA_RABBIT_LISTENER_CONTAINER_FACTORY;
+import static com.ecaservice.server.mq.listener.MessageHeaders.USER_HEADER;
 
 /**
  * Rabbit MQ listener for experiment request messages.
@@ -43,6 +44,7 @@ public class ExperimentRequestListener {
         log.info("Received experiment [{}] request with correlation id [{}]",
                 experimentRequest.getExperimentType(), inboundMessageProperties.getCorrelationId());
         var experimentRequestModel = experimentMapper.map(experimentRequest, inboundMessage);
+        experimentRequestModel.setCreatedBy(inboundMessage.getMessageProperties().getHeader(USER_HEADER));
         experimentRequestModel.setRequestId(UUID.randomUUID().toString());
         experimentProcessManager.createExperimentRequest(experimentRequestModel);
         log.info("Experiment [{}] request with correlation id [{}] has been processed",
