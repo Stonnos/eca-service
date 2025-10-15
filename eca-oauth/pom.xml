@@ -161,7 +161,7 @@
 
         <dependency>
             <groupId>eca.service</groupId>
-            <artifactId>eca-user-model</artifactId>
+            <artifactId>eca-oauth-transport</artifactId>
             <version>${project.version}</version>
         </dependency>
 

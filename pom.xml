@@ -15,7 +15,7 @@
         <module>core-lock</module>
         <module>core-tracing</module>
         <module>eca-model</module>
-        <module>eca-user-model</module>
+        <module>eca-oauth-transport</module>
         <module>eca-mail-transport</module>
         <module>eca-web-push-client</module>
         <module>classifiers-options</module>

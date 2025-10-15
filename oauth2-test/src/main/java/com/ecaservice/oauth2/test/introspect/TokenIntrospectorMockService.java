@@ -16,11 +16,9 @@ import org.springframework.security.oauth2.server.resource.introspection.OpaqueT
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Map;
 
 import static com.ecaservice.oauth2.test.util.TokenUtils.ACCESS_TOKEN;
-import static com.ecaservice.user.model.Role.ROLE_SUPER_ADMIN;
 import static com.google.common.collect.Maps.newHashMap;
 
 /**
@@ -31,6 +29,8 @@ import static com.google.common.collect.Maps.newHashMap;
 @Slf4j
 @RequiredArgsConstructor
 public class TokenIntrospectorMockService implements OpaqueTokenIntrospector {
+
+    private static final String ROLE_SUPER_ADMIN = "ROLE_SUPER_ADMIN";
     private static final String SCOPE_PREFIX = "SCOPE_%s";
 
     private final Oauth2TestConfig oauth2TestConfig;

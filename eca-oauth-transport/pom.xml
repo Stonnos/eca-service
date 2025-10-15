@@ -9,7 +9,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>eca-user-model</artifactId>
+    <artifactId>eca-oauth-transport</artifactId>
     <packaging>jar</packaging>
 
     <properties>
