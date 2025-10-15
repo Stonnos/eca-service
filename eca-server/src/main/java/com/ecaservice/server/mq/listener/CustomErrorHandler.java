@@ -42,7 +42,8 @@ public class CustomErrorHandler implements ErrorHandler {
             throw new AmqpRejectAndDontRequeueException(messageAuthorizationException.getMessage(),
                     messageAuthorizationException);
         } else {
-            log.error("Unknown error while message handling: {}", ex.getCause().getMessage());
+            log.error("Unknown error while message handling: {}", ex.getMessage());
+            throw new AmqpRejectAndDontRequeueException(ex.getMessage(), ex);
         }
     }
 
