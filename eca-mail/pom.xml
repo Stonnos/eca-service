@@ -93,6 +93,12 @@
 
         <dependency>
             <groupId>eca.service</groupId>
+            <artifactId>rabbit-core</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>eca.service</groupId>
             <artifactId>eca-web-transport</artifactId>
             <version>${project.version}</version>
         </dependency>

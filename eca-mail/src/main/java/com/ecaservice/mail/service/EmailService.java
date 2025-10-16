@@ -46,8 +46,8 @@ public class EmailService {
      */
     @Locked(lockName = "saveEmail", key = "#emailRequest.requestId")
     public Email saveEmail(@ValidEmailRequest EmailRequest emailRequest) {
-        log.info("Received email request with uuid [{}], correlation id [{}].", emailRequest.getRequestId(),
-                emailRequest.getCorrelationId());
+        log.info("Received email request with uuid [{}], correlation id [{}], template code [{}].",
+                emailRequest.getRequestId(), emailRequest.getCorrelationId(), emailRequest.getTemplateCode());
         TemplateEntity templateEntity = templateRepository.findByCode(emailRequest.getTemplateCode())
                 .orElseThrow(() -> new EntityNotFoundException(TemplateEntity.class, emailRequest.getTemplateCode()));
         if (emailRepository.existsByUuid(emailRequest.getRequestId())) {
@@ -62,8 +62,8 @@ public class EmailService {
         email.setTxId(emailRequest.getCorrelationId());
         email.setSaveDate(LocalDateTime.now());
         emailRepository.save(email);
-        log.info("Email request with uuid [{}], correlation id [{}] has been saved.", emailRequest.getRequestId(),
-                emailRequest.getCorrelationId());
+        log.info("Email request with uuid [{}], correlation id [{}], template code [{}] has been saved.",
+                emailRequest.getRequestId(), emailRequest.getCorrelationId(), emailRequest.getTemplateCode());
         return email;
     }
 }

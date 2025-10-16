@@ -106,8 +106,8 @@ class ExperimentProcessManagerTest extends AbstractEvaluationProcessManagerTest<
     void testCreateExperimentWebRequest() {
         var experimentRequestModel = createExperimentWebRequestModel();
         experimentProcessManager.createExperimentRequest(experimentRequestModel);
-        verify(getEmailClient(), atLeastOnce()).sendEmail(emailRequestArgumentCaptor.capture());
-        verify(getWebPushClient(), atLeastOnce()).sendPush(pushRequestArgumentCaptor.capture());
+        verify(getEmailRequestSender(), atLeastOnce()).sendEmail(emailRequestArgumentCaptor.capture());
+        verify(getWebPushSender(), atLeastOnce()).sendPush(pushRequestArgumentCaptor.capture());
 
         assertThat(emailRequestArgumentCaptor.getAllValues()).hasSize(1);
         assertThat(pushRequestArgumentCaptor.getAllValues()).hasSize(2);
@@ -127,9 +127,9 @@ class ExperimentProcessManagerTest extends AbstractEvaluationProcessManagerTest<
         var experimentRequestModel = createExperimentWebRequestModel();
         mockGetUserProfileOptions(false);
         experimentProcessManager.createExperimentRequest(experimentRequestModel);
-        verify(getWebPushClient(), atLeastOnce()).sendPush(pushRequestArgumentCaptor.capture());
+        verify(getWebPushSender(), atLeastOnce()).sendPush(pushRequestArgumentCaptor.capture());
 
-        verify(getEmailClient(), never()).sendEmail(any(EmailRequest.class));
+        verify(getEmailRequestSender(), never()).sendEmail(any(EmailRequest.class));
         assertThat(pushRequestArgumentCaptor.getAllValues()).hasSize(1);
 
         var experiment = getExperiment(experimentRequestModel.getRequestId());
@@ -144,8 +144,8 @@ class ExperimentProcessManagerTest extends AbstractEvaluationProcessManagerTest<
     void testCreateExperimentMessageRequest() {
         var experimentRequestModel = createExperimentMessageRequestModel();
         experimentProcessManager.createExperimentRequest(experimentRequestModel);
-        verify(getEmailClient(), atLeastOnce()).sendEmail(emailRequestArgumentCaptor.capture());
-        verify(getWebPushClient(), atLeastOnce()).sendPush(pushRequestArgumentCaptor.capture());
+        verify(getEmailRequestSender(), atLeastOnce()).sendEmail(emailRequestArgumentCaptor.capture());
+        verify(getWebPushSender(), atLeastOnce()).sendPush(pushRequestArgumentCaptor.capture());
         captureEcaResponse();
 
         assertThat(emailRequestArgumentCaptor.getAllValues()).hasSize(1);
@@ -212,12 +212,12 @@ class ExperimentProcessManagerTest extends AbstractEvaluationProcessManagerTest<
         Experiment experiment = createAndSaveExperiment(Channel.WEB);
         mockGetUserProfileOptions(false);
         experimentProcessManager.processExperiment(experiment);
-        verify(getWebPushClient(), atLeastOnce()).sendPush(pushRequestArgumentCaptor.capture());
+        verify(getWebPushSender(), atLeastOnce()).sendPush(pushRequestArgumentCaptor.capture());
         verify(getErsClient(), atLeastOnce()).save(evaluationResultsRequestArgumentCaptor.capture());
 
         var actualExperiment = getExperiment(experiment.getRequestId());
 
-        verify(getEmailClient(), never()).sendEmail(any(EmailRequest.class));
+        verify(getEmailRequestSender(), never()).sendEmail(any(EmailRequest.class));
         assertThat(pushRequestArgumentCaptor.getAllValues()).hasSize(2);
 
         verifyTestSteps(actualExperiment,
@@ -315,15 +315,15 @@ class ExperimentProcessManagerTest extends AbstractEvaluationProcessManagerTest<
 
     private void testProcessExperiment(Experiment experiment) {
         experimentProcessManager.processExperiment(experiment);
-        verify(getEmailClient(), atLeastOnce()).sendEmail(emailRequestArgumentCaptor.capture());
-        verify(getWebPushClient(), atLeastOnce()).sendPush(pushRequestArgumentCaptor.capture());
+        verify(getEmailRequestSender(), atLeastOnce()).sendEmail(emailRequestArgumentCaptor.capture());
+        verify(getWebPushSender(), atLeastOnce()).sendPush(pushRequestArgumentCaptor.capture());
         verify(getErsClient(), atLeastOnce()).save(evaluationResultsRequestArgumentCaptor.capture());
     }
 
     private void testCancelExperiment(Experiment experiment) {
         experimentProcessManager.cancelExperiment(experiment);
-        verify(getEmailClient(), atLeastOnce()).sendEmail(emailRequestArgumentCaptor.capture());
-        verify(getWebPushClient(), atLeastOnce()).sendPush(pushRequestArgumentCaptor.capture());
+        verify(getEmailRequestSender(), atLeastOnce()).sendEmail(emailRequestArgumentCaptor.capture());
+        verify(getWebPushSender(), atLeastOnce()).sendPush(pushRequestArgumentCaptor.capture());
     }
 
     private Experiment getExperiment(String requestId) {
