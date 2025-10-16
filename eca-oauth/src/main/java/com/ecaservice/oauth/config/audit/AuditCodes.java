@@ -94,4 +94,14 @@ public class AuditCodes {
      * User logout
      */
     public static final String LOGOUT = "LOGOUT";
+
+    /**
+     * Create personal access token
+     */
+    public static final String CREATE_PERSONAL_ACCESS_TOKEN = "CREATE_PERSONAL_ACCESS_TOKEN";
+
+    /**
+     * Delete personal access token
+     */
+    public static final String DELETE_PERSONAL_ACCESS_TOKEN = "DELETE_PERSONAL_ACCESS_TOKEN";
 }

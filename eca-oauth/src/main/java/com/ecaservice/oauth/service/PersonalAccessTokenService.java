@@ -1,6 +1,7 @@
 package com.ecaservice.oauth.service;
 
 import com.ecaservice.common.web.exception.EntityNotFoundException;
+import com.ecaservice.core.audit.annotation.Audit;
 import com.ecaservice.oauth.dto.CreatePersonalAccessTokenDto;
 import com.ecaservice.oauth.entity.PersonalAccessTokenEntity;
 import com.ecaservice.oauth.entity.UserEntity;
@@ -24,6 +25,8 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.Base64;
 
+import static com.ecaservice.oauth.config.audit.AuditCodes.CREATE_PERSONAL_ACCESS_TOKEN;
+import static com.ecaservice.oauth.config.audit.AuditCodes.DELETE_PERSONAL_ACCESS_TOKEN;
 import static org.apache.commons.codec.digest.DigestUtils.md5Hex;
 
 /**
@@ -52,6 +55,7 @@ public class PersonalAccessTokenService {
      * @param createPersonalAccessTokenDto - personal access token data
      * @return generated personal access token data
      */
+    @Audit(CREATE_PERSONAL_ACCESS_TOKEN)
     public PersonalAccessTokenDetailsDto createToken(String user,
                                                      CreatePersonalAccessTokenDto createPersonalAccessTokenDto) {
         log.info("Starting to create personal access token [{}] for user [{}]", createPersonalAccessTokenDto.getName(),
@@ -80,6 +84,7 @@ public class PersonalAccessTokenService {
      * @param id - token id
      * @return deleted personal access token entity
      */
+    @Audit(DELETE_PERSONAL_ACCESS_TOKEN)
     public PersonalAccessTokenEntity removeToken(long id) {
         log.info("Starting to delete personal access token [{}]", id);
         var personalAccessTokenEntity = personalAccessTokenRepository.findById(id)
