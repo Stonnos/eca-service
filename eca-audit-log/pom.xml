@@ -81,8 +81,9 @@
         </dependency>
 
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-amqp</artifactId>
+            <groupId>eca.service</groupId>
+            <artifactId>rabbit-core</artifactId>
+            <version>${project.version}</version>
         </dependency>
 
         <dependency>
