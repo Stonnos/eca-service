@@ -58,7 +58,7 @@ Authorization: Bearer YOUR_TOKEN
 
 [source,bash]
 ----
-curl external-api:external_api_secret@eca-service:8080/eca-oauth/oauth/token -d grant_type=client_credentials
+curl external-api:external_api_secret@eca-service:8080/eca-oauth/oauth2/token -d grant_type=client_credentials
 ----
 
 где external-api:external_api_secret - пара clientId и clientSecret

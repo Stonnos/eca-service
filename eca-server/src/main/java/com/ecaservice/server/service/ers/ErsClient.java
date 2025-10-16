@@ -6,6 +6,7 @@ import com.ecaservice.ers.dto.EvaluationResultsRequest;
 import com.ecaservice.ers.dto.EvaluationResultsResponse;
 import com.ecaservice.ers.dto.GetEvaluationResultsRequest;
 import com.ecaservice.ers.dto.GetEvaluationResultsResponse;
+import com.ecaservice.feign.oauth.config.FeignClientOauth2Configuration;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.PostMapping;
 
@@ -14,7 +15,7 @@ import org.springframework.web.bind.annotation.PostMapping;
  *
  * @author Roman Batygin
  */
-@FeignClient(value = "eca-ers", path = "/api")
+@FeignClient(value = "eca-ers", path = "/api", configuration = FeignClientOauth2Configuration.class)
 public interface ErsClient {
 
     /**

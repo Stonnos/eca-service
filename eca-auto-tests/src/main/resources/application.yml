@@ -43,7 +43,7 @@ spring:
           api-client:
             client-id: external-api
             client-secret: external_api_secret
-            scope: data-loader-api
+            scope: data-loader-api, internal-api
             authorization-grant-type: client_credentials
             provider: api-client
         provider:

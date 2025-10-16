@@ -1,6 +1,5 @@
 package com.ecaservice.ers.controller.internal;
 
-import com.ecaservice.common.web.annotation.EnableGlobalExceptionHandler;
 import com.ecaservice.ers.dto.ClassifierOptionsRequest;
 import com.ecaservice.ers.dto.ClassifierOptionsResponse;
 import com.ecaservice.ers.dto.EvaluationMethod;
@@ -10,12 +9,13 @@ import com.ecaservice.ers.dto.GetEvaluationResultsRequest;
 import com.ecaservice.ers.dto.GetEvaluationResultsResponse;
 import com.ecaservice.ers.service.ClassifierOptionsRequestService;
 import com.ecaservice.ers.service.EvaluationResultsService;
+import com.ecaservice.oauth2.test.controller.AbstractControllerTest;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -36,10 +36,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  *
  * @author Roman Batygin
  */
-@EnableGlobalExceptionHandler
 @WebMvcTest(controllers = EvaluationResultsApiController.class)
-@AutoConfigureMockMvc(addFilters = false)
-class EvaluationResultsApiControllerTest {
+class EvaluationResultsApiControllerTest extends AbstractControllerTest {
 
     private static final String BASE_URL = "/api";
     private static final String SAVE_EVALUATION_RESULTS_REQUEST_URL = BASE_URL + "/save";
@@ -57,16 +55,35 @@ class EvaluationResultsApiControllerTest {
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     @Test
+    void testSaveEvaluationResultsReportUnauthorized() throws Exception {
+        EvaluationResultsRequest request = buildEvaluationResultsReport(UUID.randomUUID().toString());
+        mockMvc.perform(post(SAVE_EVALUATION_RESULTS_REQUEST_URL)
+                        .content(objectMapper.writeValueAsString(request))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
     void testSaveEvaluationResultsReport() throws Exception {
         EvaluationResultsRequest request = buildEvaluationResultsReport(UUID.randomUUID().toString());
         EvaluationResultsResponse response = buildEvaluationResultsResponse(request.getRequestId());
         when(evaluationResultsService.saveEvaluationResults(request)).thenReturn(response);
         mockMvc.perform(post(SAVE_EVALUATION_RESULTS_REQUEST_URL)
-                .content(objectMapper.writeValueAsString(request))
-                .contentType(MediaType.APPLICATION_JSON))
+                        .header(HttpHeaders.AUTHORIZATION, getBearerToken())
+                        .content(objectMapper.writeValueAsString(request))
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(content().json(objectMapper.writeValueAsString(response)));
+    }
+
+    @Test
+    void testGetEvaluationResultsReportUnauthorized() throws Exception {
+        GetEvaluationResultsRequest request = buildGetEvaluationResultsRequest(UUID.randomUUID().toString());
+        mockMvc.perform(post(GET_EVALUATION_RESULTS_REQUEST_URL)
+                        .content(objectMapper.writeValueAsString(request))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isUnauthorized());
     }
 
     @Test
@@ -75,11 +92,21 @@ class EvaluationResultsApiControllerTest {
         GetEvaluationResultsResponse response = buildGetEvaluationResultsResponse(request.getRequestId());
         when(evaluationResultsService.getEvaluationResultsResponse(request)).thenReturn(response);
         mockMvc.perform(post(GET_EVALUATION_RESULTS_REQUEST_URL)
-                .content(objectMapper.writeValueAsString(request))
-                .contentType(MediaType.APPLICATION_JSON))
+                        .header(HttpHeaders.AUTHORIZATION, getBearerToken())
+                        .content(objectMapper.writeValueAsString(request))
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(content().json(objectMapper.writeValueAsString(response)));
+    }
+
+    @Test
+    void testFindOptimalClassifierOptionsUnauthorized() throws Exception {
+        ClassifierOptionsRequest request = createClassifierOptionsRequest(EvaluationMethod.CROSS_VALIDATION);
+        mockMvc.perform(post(OPTIMAL_CLASSIFIER_OPTIONS_REQUEST_URL)
+                        .content(objectMapper.writeValueAsString(request))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isUnauthorized());
     }
 
     @Test
@@ -89,8 +116,9 @@ class EvaluationResultsApiControllerTest {
         response.setRequestId(request.getRequestId());
         when(classifierOptionsRequestService.findClassifierOptions(request)).thenReturn(response);
         mockMvc.perform(post(OPTIMAL_CLASSIFIER_OPTIONS_REQUEST_URL)
-                .content(objectMapper.writeValueAsString(request))
-                .contentType(MediaType.APPLICATION_JSON))
+                        .header(HttpHeaders.AUTHORIZATION, getBearerToken())
+                        .content(objectMapper.writeValueAsString(request))
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(content().json(objectMapper.writeValueAsString(response)));

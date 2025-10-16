@@ -1,5 +1,6 @@
 package com.ecaservice.user.profile.options.client.service;
 
+import com.ecaservice.feign.oauth.config.FeignClientOauth2Configuration;
 import com.ecaservice.user.profile.options.dto.UserProfileOptionsDto;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -10,7 +11,8 @@ import org.springframework.web.bind.annotation.RequestParam;
  *
  * @author Roman Batygin
  */
-@FeignClient(value = "eca-oauth", contextId = "userProfileOptions", path = "/api/internal/user/options")
+@FeignClient(value = "eca-oauth", contextId = "userProfileOptions", path = "/api/internal/user/options",
+        configuration = FeignClientOauth2Configuration.class)
 public interface UserProfileOptionsFeignClient {
 
     /**

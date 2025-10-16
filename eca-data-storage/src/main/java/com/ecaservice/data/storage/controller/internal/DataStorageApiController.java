@@ -12,20 +12,20 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import jakarta.validation.constraints.Pattern;
-import jakarta.validation.constraints.Size;
-
 import static com.ecaservice.config.swagger.OpenApi30Configuration.ECA_AUTHENTICATION_SECURITY_SCHEME;
-import static com.ecaservice.config.swagger.OpenApi30Configuration.SCOPE_WEB;
+import static com.ecaservice.config.swagger.OpenApi30Configuration.SCOPE_INTERNAL_API;
 import static com.ecaservice.web.dto.util.FieldConstraints.UUID_MAX_SIZE;
 import static com.ecaservice.web.dto.util.FieldConstraints.UUID_PATTERN;
 import static com.ecaservice.web.dto.util.FieldConstraints.VALUE_1;
@@ -50,10 +50,11 @@ public class DataStorageApiController {
      *
      * @param uuid - instances uuid
      */
+    @PreAuthorize("hasAuthority('SCOPE_internal-api')")
     @Operation(
             description = "Exports valid instances with selected attributes and assigned class attribute to central data storage",
             summary = "Exports valid instances with selected attributes and assigned class attribute to central data storage",
-            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME, scopes = SCOPE_WEB),
+            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME, scopes = SCOPE_INTERNAL_API),
             responses = {
                     @ApiResponse(description = "OK", responseCode = "200",
                             content = @Content(

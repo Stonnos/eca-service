@@ -59,7 +59,6 @@ app:
     tokenInCookieClientIds:
       - eca_web
     whitelistUrls:
-      - /api/internal/user/options/**
       - /reset-password/**
 
 mail:
