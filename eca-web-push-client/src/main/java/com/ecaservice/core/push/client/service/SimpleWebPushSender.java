@@ -1,16 +1,18 @@
 package com.ecaservice.core.push.client.service;
 
+import com.ecaservice.core.push.client.config.EcaWebPushClientProperties;
 import com.ecaservice.core.redelivery.annotation.Retry;
 import com.ecaservice.core.redelivery.annotation.Retryable;
 import com.ecaservice.web.push.dto.AbstractPushRequest;
 import io.micrometer.tracing.annotation.NewSpan;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import static com.ecaservice.common.web.util.LogHelper.TX_ID;
 import static com.ecaservice.common.web.util.LogHelper.putMdc;
-import static com.ecaservice.core.redelivery.config.RedeliveryCoreAutoConfiguration.FEIGN_EXCEPTION_STRATEGY;
+import static com.ecaservice.core.push.client.config.rabbit.AuditRabbitConfiguration.WEB_PUSH_RABBIT_TEMPLATE;
 
 /**
  * Simple web push sender service.
@@ -20,21 +22,33 @@ import static com.ecaservice.core.redelivery.config.RedeliveryCoreAutoConfigurat
 @Slf4j
 @Service
 @Retryable
-@RequiredArgsConstructor
 public class SimpleWebPushSender implements WebPushSender {
 
-    private final WebPushClient webPushClient;
+    private final EcaWebPushClientProperties ecaWebPushClientProperties;
+    private final RabbitTemplate rabbitTemplate;
+
+    /**
+     * Constructor with parameters.
+     *
+     * @param ecaWebPushClientProperties - eca web push client properties
+     * @param rabbitTemplate             - rabbit template
+     */
+    public SimpleWebPushSender(EcaWebPushClientProperties ecaWebPushClientProperties,
+                               @Qualifier(WEB_PUSH_RABBIT_TEMPLATE) RabbitTemplate rabbitTemplate) {
+        this.ecaWebPushClientProperties = ecaWebPushClientProperties;
+        this.rabbitTemplate = rabbitTemplate;
+    }
 
     @Override
     @NewSpan
-    @Retry(value = "webPushRequest", exceptionStrategy = FEIGN_EXCEPTION_STRATEGY,
-            requestIdKey = "#pushRequest.requestId")
+    @Retry(value = "webPushRequest", requestIdKey = "#pushRequest.requestId")
     public void sendPush(AbstractPushRequest pushRequest) {
         putMdc(TX_ID, pushRequest.getCorrelationId());
-        log.info("Starting to send push request [{}], type [{}], message type [{}]", pushRequest.getRequestId(),
-                pushRequest.getPushType(), pushRequest.getMessageType());
-        webPushClient.sendPush(pushRequest);
-        log.info("Push request [{}], type [{}], message type [{}] has been sent", pushRequest.getRequestId(),
-                pushRequest.getPushType(), pushRequest.getMessageType());
+        String queueName = ecaWebPushClientProperties.getRabbit().getQueueName();
+        log.info("Starting to send push request [{}], type [{}], message type [{}] to queue [{}]",
+                pushRequest.getRequestId(), pushRequest.getPushType(), pushRequest.getMessageType(), queueName);
+        rabbitTemplate.convertAndSend(queueName, pushRequest);
+        log.info("Push request [{}], type [{}], message type [{}] has been sent to queue [{}]",
+                pushRequest.getRequestId(), pushRequest.getPushType(), pushRequest.getMessageType(), queueName);
     }
 }
