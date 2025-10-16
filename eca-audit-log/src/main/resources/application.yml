@@ -38,7 +38,7 @@ eureka:
 
 audit:
   rabbit:
-    enabled: false
+    enabled: true
     queueName: queue-audit-events
 
 lock:
@@ -63,12 +63,6 @@ springdoc:
       client-id: swagger
       client-secret: swagger_secret
     disable-swagger-default-url: true
-
-resource:
-  server:
-    security:
-      whitelistUrls:
-        - /api/audit/event/**
 
 auth-server:
   baseUrl: http://localhost:8085/eca-oauth
