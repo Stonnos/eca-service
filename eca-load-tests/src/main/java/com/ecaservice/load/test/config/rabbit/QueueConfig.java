@@ -21,4 +21,9 @@ public class QueueConfig {
      * Response queue name
      */
     private String replyToQueue;
+
+    /**
+     * Authentication token
+     */
+    private String authToken;
 }

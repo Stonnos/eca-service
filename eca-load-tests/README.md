@@ -47,6 +47,7 @@
 4) queue - настройки очередей rabbit mq
    * queue.evaluationRequestQueue - очередь запросов на построение классификаторов
    * queue.replyToQueue - очередь ответов от eca - server
+   * queue.authToken - personal access token для авторизации сообщений
 
 Инструкция по развертыванию
 ----------------------------------------

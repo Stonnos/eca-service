@@ -19,6 +19,8 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class RabbitSender {
 
+    private static final String AUTH_TOKEN_HEADER = "auth-token";
+
     private final QueueConfig queueConfig;
     private final RabbitTemplate rabbitTemplate;
 
@@ -33,6 +35,7 @@ public class RabbitSender {
         rabbitTemplate.convertAndSend(queueConfig.getEvaluationRequestQueue(), evaluationRequest, message -> {
             message.getMessageProperties().setCorrelationId(correlationId);
             message.getMessageProperties().setReplyTo(queueConfig.getEvaluationResponseQueue());
+            message.getMessageProperties().setHeader(AUTH_TOKEN_HEADER, queueConfig.getAuthToken());
             return message;
         });
         log.debug("Evaluation request [{}] has been to rabbit mq", correlationId);
@@ -49,6 +52,7 @@ public class RabbitSender {
         rabbitTemplate.convertAndSend(queueConfig.getOptimalEvaluationRequestQueue(), instancesRequest, message -> {
             message.getMessageProperties().setCorrelationId(correlationId);
             message.getMessageProperties().setReplyTo(queueConfig.getEvaluationResponseQueue());
+            message.getMessageProperties().setHeader(AUTH_TOKEN_HEADER, queueConfig.getAuthToken());
             return message;
         });
         log.debug("Optimal classifier evaluation request [{}] has been to rabbit mq", correlationId);
@@ -65,6 +69,7 @@ public class RabbitSender {
         rabbitTemplate.convertAndSend(queueConfig.getExperimentRequestQueue(), experimentRequest, message -> {
             message.getMessageProperties().setCorrelationId(correlationId);
             message.getMessageProperties().setReplyTo(queueConfig.getExperimentResponseQueue());
+            message.getMessageProperties().setHeader(AUTH_TOKEN_HEADER, queueConfig.getAuthToken());
             return message;
         });
         log.debug("Experiment request [{}] has been to rabbit mq", correlationId);

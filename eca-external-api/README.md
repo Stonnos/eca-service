@@ -31,6 +31,7 @@ ECA external API
    * queue.optimalEvaluationRequestQueue - очередь для запросов на построение классификаторов с использованием оптимальных параметров
    * queue.evaluationResponseQueue - очередь ответов от eca - server на построение классификаторов
    * queue.experimentResponseQueue - очередь ответов от eca - server на построение экспериментов
+   * queue.authToken - personal access token для авторизации сообщений
 4) open-api - настройки Swagger
    * open-api.tokenBaseUrl - базовый url - сервера авторизации
    * open-api.projectVersion - версия API
