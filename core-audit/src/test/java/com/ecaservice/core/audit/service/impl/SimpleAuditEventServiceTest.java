@@ -9,8 +9,7 @@ import com.ecaservice.core.audit.model.AuditContextParams;
 import com.ecaservice.core.audit.repository.AuditCodeRepository;
 import com.ecaservice.core.audit.repository.AuditEventTemplateRepository;
 import com.ecaservice.core.audit.repository.AuditGroupRepository;
-import com.ecaservice.core.audit.service.AuditEventHttpSender;
-import com.ecaservice.core.audit.service.AuditEventSender;
+import com.ecaservice.core.audit.service.AuditEventRabbitSender;
 import com.ecaservice.core.audit.service.store.DatabaseAuditEventTemplateStore;
 import com.ecaservice.core.audit.service.template.AuditTemplateProcessorService;
 import org.junit.jupiter.api.Test;
@@ -50,7 +49,7 @@ class SimpleAuditEventServiceTest extends AbstractJpaTest {
     private AuditGroupRepository auditGroupRepository;
 
     @MockBean
-    private AuditEventHttpSender auditEventSender;
+    private AuditEventRabbitSender auditEventSender;
     @MockBean
     private AuditTemplateProcessorService auditTemplateProcessorService;
 

@@ -30,11 +30,6 @@ public class AuditProperties {
     private Integer threadPoolSize = DEFAULT_THREAD_POOL_SIZE;
 
     /**
-     * Sender properties
-     */
-    private SenderProperties sender = new SenderProperties();
-
-    /**
      * Rabbitmq properties
      */
     private RabbitProperties rabbit = new RabbitProperties();
@@ -51,18 +46,5 @@ public class AuditProperties {
          * Queue name to sent audit events
          */
         private String queueName = DEFAULT_QUEUE_NAME;
-    }
-
-    /**
-     * Sender properties.
-     */
-    @Data
-    public static class SenderProperties {
-
-        /**
-         * Sender type
-         */
-        private SenderType type = SenderType.WEB;
-
     }
 }

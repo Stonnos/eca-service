@@ -44,20 +44,6 @@
             <artifactId>spring-boot-devtools</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-starter-openfeign</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>eca.service</groupId>
-            <artifactId>feign-metrics</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>eca.service</groupId>
-            <artifactId>core-lock</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
             <groupId>eca.service</groupId>
             <artifactId>core-redelivery</artifactId>
             <version>${project.version}</version>
@@ -78,7 +64,6 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-amqp</artifactId>
-            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>eca.service</groupId>
