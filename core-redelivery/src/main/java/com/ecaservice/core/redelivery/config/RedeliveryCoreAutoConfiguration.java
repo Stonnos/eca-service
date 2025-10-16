@@ -9,11 +9,13 @@ import com.ecaservice.core.redelivery.error.DefaultExceptionStrategy;
 import com.ecaservice.core.redelivery.error.ExceptionStrategy;
 import com.ecaservice.core.redelivery.error.FeignExceptionStrategy;
 import com.ecaservice.core.redelivery.repository.RetryRequestRepository;
-import com.ecaservice.core.redelivery.strategy.DefaultRetryStrategy;
 import com.ecaservice.core.redelivery.strategy.AbstractRetryStrategy;
+import com.ecaservice.core.redelivery.strategy.DefaultRetryStrategy;
 import com.ecaservice.core.redelivery.strategy.function.RetryDegreeFunction;
+import com.ecaservice.feign.oauth.config.FeignClientOauth2Configuration;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -107,8 +109,10 @@ public class RedeliveryCoreAutoConfiguration {
      *
      * @return feign exception strategy bean
      */
+    @ConditionalOnClass(value = FeignClientOauth2Configuration.class)
     @Bean(FEIGN_EXCEPTION_STRATEGY)
     public ExceptionStrategy feignExceptionStrategy() {
+        log.info("Feign exception strategy has been initialized for redelivery");
         return new FeignExceptionStrategy();
     }
 

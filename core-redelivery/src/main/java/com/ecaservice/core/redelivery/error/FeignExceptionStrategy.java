@@ -2,6 +2,7 @@ package com.ecaservice.core.redelivery.error;
 
 import feign.FeignException;
 import feign.RetryableException;
+import org.springframework.security.oauth2.client.ClientAuthorizationException;
 
 import java.util.stream.Stream;
 
@@ -14,7 +15,9 @@ public class FeignExceptionStrategy implements ExceptionStrategy {
 
     private final Class<?>[] notFatalExceptions = new Class<?>[] {
             FeignException.ServiceUnavailable.class,
-            RetryableException.class
+            RetryableException.class,
+            FeignException.Unauthorized.class,
+            ClientAuthorizationException.class
     };
 
     @Override
