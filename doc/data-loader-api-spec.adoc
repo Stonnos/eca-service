@@ -70,6 +70,7 @@ curl -X POST "http://localhost:8080/api/external/upload-train-data" -H "accept: 
 
 ==== 3.3. Описание параметров ответа на запрос о загрузке обучающей выборки на сервер
 
+[options="header"]
 |===
 |Название поля/атрибута|Тип|Обязательное|Описание|Комментарий
 |uuid
@@ -92,6 +93,7 @@ link:data/credit.json[credit.json]
 
 ===== 3.5.1 Описание блока InstancesModel
 
+[options="header"]
 |===
 |Название поля/атрибута|Тип|Обязательное|Описание|Комментарий
 |relationName
@@ -118,6 +120,7 @@ link:data/credit.json[credit.json]
 
 ===== 3.5.2 Описание блока AttributeModel
 
+[options="header"]
 |===
 |Название поля/атрибута|Тип|Обязательное|Описание|Комментарий
 |name
@@ -144,6 +147,7 @@ link:data/credit.json[credit.json]
 
 ===== 3.5.3 Описание блока InstanceModel
 
+[options="header"]
 |===
 |Название поля/атрибута|Тип|Обязательное|Описание|Комментарий
 |values
@@ -167,6 +171,7 @@ link:data/credit.json[credit.json]
 
 ==== 3.7. Описание параметров ответа на запрос о загрузке обучающей выборки на сервер
 
+[options="header"]
 |===
 |Название поля/атрибута|Тип|Обязательное|Описание|Комментарий
 |code
