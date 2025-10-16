@@ -12,7 +12,7 @@ import org.springframework.context.annotation.Configuration;
  * @author Roman Batygin
  */
 @Configuration
-public class AuditRabbitConfiguration {
+public class WebPushClientRabbitConfiguration {
 
     public static final String WEB_PUSH_RABBIT_TEMPLATE = "webPushRabbitTemplate";
 

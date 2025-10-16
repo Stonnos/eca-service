@@ -1,16 +1,18 @@
 package com.ecaservice.core.mail.client.service;
 
+import com.ecaservice.core.mail.client.config.EcaMailClientProperties;
 import com.ecaservice.core.redelivery.annotation.Retry;
 import com.ecaservice.core.redelivery.annotation.Retryable;
 import com.ecaservice.notification.dto.EmailRequest;
 import io.micrometer.tracing.annotation.NewSpan;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import static com.ecaservice.common.web.util.LogHelper.TX_ID;
 import static com.ecaservice.common.web.util.LogHelper.putMdc;
-import static com.ecaservice.core.redelivery.config.RedeliveryCoreAutoConfiguration.FEIGN_EXCEPTION_STRATEGY;
+import static com.ecaservice.core.mail.client.config.rabbit.MailClientRabbitConfiguration.MAIL_CLIENT_RABBIT_TEMPLATE;
 
 /**
  * Simple email request sender.
@@ -20,20 +22,35 @@ import static com.ecaservice.core.redelivery.config.RedeliveryCoreAutoConfigurat
 @Slf4j
 @Service
 @Retryable
-@RequiredArgsConstructor
 public class SimpleEmailRequestSender implements EmailRequestSender {
 
-    private final EmailClient emailClient;
+    private final EcaMailClientProperties ecaMailClientProperties;
+    private final RabbitTemplate rabbitTemplate;
+
+    /**
+     * Constructor with parameters.
+     *
+     * @param ecaMailClientProperties - eca mail client properties
+     * @param rabbitTemplate          - rabbit template
+     */
+    public SimpleEmailRequestSender(EcaMailClientProperties ecaMailClientProperties,
+                                    @Qualifier(MAIL_CLIENT_RABBIT_TEMPLATE) RabbitTemplate rabbitTemplate) {
+        this.ecaMailClientProperties = ecaMailClientProperties;
+        this.rabbitTemplate = rabbitTemplate;
+    }
 
     @Override
     @NewSpan
-    @Retry(value = "emailRequest", messageConverter = "emailRequestConverter",
-            exceptionStrategy = FEIGN_EXCEPTION_STRATEGY, requestIdKey = "#emailRequest.requestId")
+    @Retry(value = "emailRequest", messageConverter = "emailRequestConverter", requestIdKey = "#emailRequest.requestId")
     public void sendEmail(EmailRequest emailRequest) {
         putMdc(TX_ID, emailRequest.getCorrelationId());
-        log.info("Starting to sent email request with code [{}]", emailRequest.getTemplateCode());
-        var emailResponse = emailClient.sendEmail(emailRequest);
-        log.info("Email [{}] has been sent with request id [{}]", emailRequest.getTemplateCode(),
-                emailResponse.getRequestId());
+        String queueName = ecaMailClientProperties.getRabbit().getQueueName();
+        log.info("Starting to sent email request [{}], correlation id [{}], code [{}] to queue [{}]",
+                emailRequest.getRequestId(), emailRequest.getCorrelationId(), emailRequest.getTemplateCode(),
+                queueName);
+        rabbitTemplate.convertAndSend(queueName, emailRequest);
+        log.info("Email request [{}], correlation id [{}], code [{}] has been sent to queue [{}]",
+                emailRequest.getRequestId(), emailRequest.getCorrelationId(), emailRequest.getTemplateCode(),
+                queueName);
     }
 }

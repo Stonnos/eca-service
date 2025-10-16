@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 
 import static com.ecaservice.common.web.util.LogHelper.TX_ID;
 import static com.ecaservice.common.web.util.LogHelper.putMdc;
-import static com.ecaservice.core.push.client.config.rabbit.AuditRabbitConfiguration.WEB_PUSH_RABBIT_TEMPLATE;
+import static com.ecaservice.core.push.client.config.rabbit.WebPushClientRabbitConfiguration.WEB_PUSH_RABBIT_TEMPLATE;
 
 /**
  * Simple web push sender service.

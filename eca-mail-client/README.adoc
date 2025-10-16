@@ -23,6 +23,14 @@
 
 [source,yml]
 ----
+spring:
+  ## настройки rabbitmq для отправки уведомлений
+  rabbitmq:
+    host: rabbitmq
+    port: 5672
+    username: guest
+    password: guest
+
 mail:
   client:
     ## Вкл./выкл. отправки email сообщений
@@ -31,6 +39,9 @@ mail:
     async: true
     ## Размер пула потоков для асинхронной отправки email сообщений
     threadPoolSize: 3
+    rabbit:
+      ## Название очереди для отправки email в rabbitmq
+      queueName: queue-email-events
     encrypt:
       ## Вкл./выкл. хранение email сообщений в зашифрованном виде
       enabled: true
