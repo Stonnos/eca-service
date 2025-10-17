@@ -66,11 +66,11 @@ public class GetExperimentDownloadUrlStepHandler extends AbstractExperimentStepH
             experimentStepService.complete(experimentStepEntity);
         } catch (ObjectStorageException ex) {
             log.error("Object storage error while get experiment [{}] download url: {}",
-                    experimentContext.getExperiment().getRequestId(), ex.getMessage());
+                    experimentContext.getExperiment().getRequestId(), ex.getMessage(), ex);
             experimentStepService.failed(experimentStepEntity, ex.getMessage());
         } catch (Exception ex) {
             log.error("Error while get experiment [{}] download url: {}",
-                    experimentContext.getExperiment().getRequestId(), ex.getMessage());
+                    experimentContext.getExperiment().getRequestId(), ex.getMessage(), ex);
             experimentStepService.completeWithError(experimentStepEntity, ex.getMessage());
         }
     }

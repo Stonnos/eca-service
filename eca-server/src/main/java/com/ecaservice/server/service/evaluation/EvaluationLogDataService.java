@@ -264,7 +264,7 @@ public class EvaluationLogDataService {
             log.info("Classifier [{}] model file has been deleted", evaluationLog.getRequestId());
         } catch (Exception ex) {
             log.error("There was an error while remove classifier [{}] model file: {}", evaluationLog.getRequestId(),
-                    ex.getMessage());
+                    ex.getMessage(), ex);
             evaluationLog.setRetryAt(LocalDateTime.now().plusSeconds(classifiersProperties.getRetryIntervalSeconds()));
             evaluationLogRepository.save(evaluationLog);
         }

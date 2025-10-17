@@ -219,7 +219,7 @@ public class ClassifierOptionsController {
             classifierOptionsResultDto.setValidationErrors(validationErrors);
         } catch (Exception ex) {
             log.error("There was an error while save classifier options file [{}] for configuration id [{}]: {}",
-                    classifiersOptionsFile.getOriginalFilename(), configurationId, ex.getMessage());
+                    classifiersOptionsFile.getOriginalFilename(), configurationId, ex.getMessage(), ex);
             var validationErrorDto =
                     buildValidationError(CommonErrorCode.INTERNAL_ERROR, "Unknown error");
             classifierOptionsResultDto.setValidationErrors(Collections.singletonList(validationErrorDto));

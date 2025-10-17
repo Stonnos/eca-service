@@ -117,7 +117,7 @@ public class EvaluationRequestService {
             return evaluationResultsDataModel;
         } catch (ObjectStorageException ex) {
             log.error("S3 object storage error while process evaluation request [{}]: {}",
-                    evaluationLog.getRequestId(), ex.getMessage());
+                    evaluationLog.getRequestId(), ex.getMessage(), ex);
             evaluationLog.setRetryAt(LocalDateTime.now().plusSeconds(classifiersProperties.getRetryIntervalSeconds()));
             evaluationLogRepository.save(evaluationLog);
             return buildEvaluationResultsModel(evaluationLog.getRequestId(), evaluationLog.getRequestStatus(),
@@ -129,7 +129,7 @@ public class EvaluationRequestService {
                     EvaluationStatus.TIMEOUT);
         } catch (Exception ex) {
             log.error("There was an error occurred for evaluation [{}]: {}", evaluationLog.getRequestId(),
-                    ex.getMessage());
+                    ex.getMessage(), ex);
             evaluationLogService.finishEvaluation(evaluationLog, RequestStatus.ERROR);
             return buildInternalErrorEvaluationResultsModel(evaluationLog.getRequestId());
         }

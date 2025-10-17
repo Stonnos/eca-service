@@ -54,7 +54,7 @@ public class RetryAspect {
             log.debug("Around retry method [{}] has been processed", joinPoint.getSignature().getName());
             return result;
         } catch (Exception ex) {
-            log.error("Error while sending request: {}", ex.getMessage());
+            log.error("Error while sending request: {}", ex.getMessage(), ex);
             handleError(retry, joinPoint, request, ex);
             throw ex;
         }
@@ -77,7 +77,7 @@ public class RetryAspect {
             retryRequestCacheService.save(retryRequestModel);
             retryMeterService.trackRetryRequestCacheSize(retryRequestModel.getRequestType());
         } catch (Exception ex) {
-            log.error("Can's save retry request [{}]: {}", retry.value(), ex.getMessage());
+            log.error("Can's save retry request [{}]: {}", retry.value(), ex.getMessage(), ex);
         }
     }
 

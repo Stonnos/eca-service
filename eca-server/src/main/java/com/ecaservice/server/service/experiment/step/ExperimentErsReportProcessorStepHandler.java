@@ -50,7 +50,7 @@ public class ExperimentErsReportProcessorStepHandler extends AbstractExperimentS
             experimentStepService.complete(experimentStepEntity);
         } catch (Exception ex) {
             log.error("Error while sent ers report for experiment [{}]: {}",
-                    experimentContext.getExperiment().getRequestId(), ex.getMessage());
+                    experimentContext.getExperiment().getRequestId(), ex.getMessage(), ex);
             experimentStepService.completeWithError(experimentStepEntity, ex.getMessage());
         }
     }

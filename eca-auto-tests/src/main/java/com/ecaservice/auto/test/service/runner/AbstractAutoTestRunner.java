@@ -126,7 +126,7 @@ public abstract class AbstractAutoTestRunner<E extends BaseEvaluationRequestEnti
             log.info("All auto test [{}] requests has been sent", autoTestsJobEntity.getJobUuid());
         } catch (Exception ex) {
             log.error("There was an error while sending requests for job [{}]: {}", autoTestsJobEntity.getJobUuid(),
-                    ex.getMessage());
+                    ex.getMessage(), ex);
             autoTestJobService.finishWithError(autoTestsJobEntity, ex.getMessage());
         }
     }

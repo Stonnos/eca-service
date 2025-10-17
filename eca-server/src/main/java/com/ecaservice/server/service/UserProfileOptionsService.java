@@ -46,7 +46,7 @@ public class UserProfileOptionsService {
         } catch (Exception ex) {
             log.error(
                     "Error while get user [{}] profile options. Default options model will be used. Error details: {}",
-                    user, ex.getMessage());
+                    user, ex.getMessage(), ex);
         }
         log.info("User [{}] profile options model has been fetched: {}", user, userProfileOptionsModel);
         return userProfileOptionsModel;

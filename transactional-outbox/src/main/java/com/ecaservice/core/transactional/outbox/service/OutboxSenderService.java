@@ -54,7 +54,8 @@ public class OutboxSenderService {
                     outboxMessageEntity.getId());
             outboxMessageService.delete(outboxMessageEntity);
         } catch (Exception ex) {
-            log.error("Error while sent outbox message with id [{}]: {}", outboxMessageEntity.getId(), ex.getMessage());
+            log.error("Error while sent outbox message with id [{}]: {}", outboxMessageEntity.getId(),
+                    ex.getMessage(), ex);
             var exceptionStrategy =
                     applicationContext.getBean(senderAnnotation.exceptionStrategy(), ExceptionStrategy.class);
             if (!exceptionStrategy.notFatal(ex)) {

@@ -42,7 +42,7 @@ public class CustomErrorHandler implements ErrorHandler {
             throw new AmqpRejectAndDontRequeueException(messageAuthorizationException.getMessage(),
                     messageAuthorizationException);
         } else {
-            log.error("Unknown error while message handling: {}", ex.getMessage());
+            log.error("Unknown error while message handling: {}", ex.getMessage(), ex);
             throw new AmqpRejectAndDontRequeueException(ex.getMessage(), ex);
         }
     }
@@ -50,7 +50,7 @@ public class CustomErrorHandler implements ErrorHandler {
     public void handleError(Message failedMessage, Exception ex) {
         MessageProperties messageProperties = failedMessage.getMessageProperties();
         log.error("There was an error while message processing with correlation id [{}]: {}",
-                messageProperties.getCorrelationId(), ex.getMessage());
+                messageProperties.getCorrelationId(), ex.getMessage(), ex);
         EcaResponse errorResponse = translate(ex);
         log.error("Sent error response {} for message with correlation id [{}]",
                 messageProperties.getCorrelationId(), errorResponse);
@@ -59,7 +59,7 @@ public class CustomErrorHandler implements ErrorHandler {
             return outboundMessage;
         });
         log.error("Error response {} has been sent for message with correlation id [{}]",
-                messageProperties.getCorrelationId(), errorResponse);
+                errorResponse, messageProperties.getCorrelationId());
     }
 
     @SuppressWarnings("unchecked")
