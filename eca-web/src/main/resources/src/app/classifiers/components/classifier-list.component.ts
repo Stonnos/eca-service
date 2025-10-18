@@ -184,9 +184,6 @@ export class ClassifierListComponent extends BaseListComponent<EvaluationLogDto>
           this.toggleOverlayPanel(event, evaluationLog, column, overlayPanel);
         }
         break;
-      case EvaluationLogFields.MODEL_PATH:
-        this.downloadModel(evaluationLog);
-        break;
       default:
         this.toggleOverlayPanel(event, evaluationLog, column, overlayPanel);
     }
@@ -394,11 +391,10 @@ export class ClassifierListComponent extends BaseListComponent<EvaluationLogDto>
       { name: EvaluationLogFields.RELATION_NAME, label: "Обучающая выборка", sortBy: EvaluationLogFilterFields.RELATION_NAME },
       { name: EvaluationLogFields.EVALUATION_METHOD_DESCRIPTION, label: "Метод оценки точности"  },
       { name: EvaluationLogFields.CREATED_BY, label: "Пользователь", sortBy: EvaluationLogFilterFields.CREATED_BY },
-      { name: EvaluationLogFields.MODEL_PATH, label: "Модель классификатора" },
       { name: EvaluationLogFields.EVALUATION_TOTAL_TIME, label: "Время построения модели" },
-      { name: EvaluationLogFields.CREATION_DATE, label: "Дата создания заявки", sortBy: EvaluationLogFilterFields.CREATION_DATE },
-      { name: EvaluationLogFields.START_DATE, label: "Дата начала обработки заявки"  },
-      { name: EvaluationLogFields.END_DATE, label: "Дата окончания обработки заявки"  },
+      { name: EvaluationLogFields.CREATION_DATE, label: "Дата создания", sortBy: EvaluationLogFilterFields.CREATION_DATE },
+      { name: EvaluationLogFields.START_DATE, label: "Дата начала обработки"  },
+      { name: EvaluationLogFields.END_DATE, label: "Дата окончания обработки"  },
       { name: EvaluationLogFields.DELETED_DATE, label: "Дата удаления модели" }
     ];
   }

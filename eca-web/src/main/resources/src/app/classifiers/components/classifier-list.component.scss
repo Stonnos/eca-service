@@ -1,31 +1,36 @@
 .evaluations-table::ng-deep {
 
   .ui-table-tbody > tr > td {
-    width: 300px;
+    width: 220px;
 
     &:first-child {
-      width: 330px;
+      width: 50px;
+    }
+
+    &:nth-child(2) {
+      width: 315px;
       font-weight: bold;
     }
 
-    &:nth-child(8) {
-      width: 330px;
-    }
-
-    &:nth-child(9) {
-      width: 360px;
+    &:nth-child(5) {
+      width: 260px;
     }
   }
 
   .ui-table-thead > tr > th {
-    width: 300px;
+    width: 220px;
 
-    &:first-child, &:nth-child(8) {
-      width: 330px;
+    &:first-child {
+      width: 50px;
     }
 
-    &:nth-child(9) {
-      width: 360px;
+    &:nth-child(2) {
+      width: 315px;
+      font-weight: bold;
+    }
+
+    &:nth-child(5) {
+      width: 260px;
     }
   }
 }
@@ -37,6 +42,10 @@
     max-height: 500px;
     overflow-y: scroll;
   }
+}
+
+.link-button {
+  border-radius: 50%;
 }
 
 .classifier-options-menu::ng-deep {

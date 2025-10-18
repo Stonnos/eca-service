@@ -1,26 +1,39 @@
 .experiments-table::ng-deep {
 
   .ui-table-tbody > tr > td {
-    width: 300px;
+    width: 220px;
     &:first-child {
-      width: 330px;
+      width: 50px;
+    }
+
+    &:nth-child(2) {
+      width: 315px;
       font-weight: bold;
     }
 
-    &:nth-child(4) {
-      width: 350px;
+    &:nth-child(5) {
+      width: 260px;
     }
   }
   .ui-table-thead > tr > th {
-    width: 300px;
+    width: 220px;
     &:first-child {
-      width: 330px;
+      width: 50px;
     }
 
-    &:nth-child(4) {
-      width: 350px;
+    &:nth-child(2) {
+      width: 315px;
+      font-weight: bold;
+    }
+
+    &:nth-child(5) {
+      width: 260px;
     }
   }
+}
+
+.link-button {
+  border-radius: 50%;
 }
 
 .info-panel::ng-deep {

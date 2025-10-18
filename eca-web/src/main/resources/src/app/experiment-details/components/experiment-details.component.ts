@@ -309,9 +309,9 @@ export class ExperimentDetailsComponent implements OnInit, OnDestroy, FieldLink 
       { name: ExperimentFields.NUM_CLASSES, label: "Число классов:" },
       { name: ExperimentFields.CLASS_NAME, label: "Атрибут класса:" },
       { name: ExperimentFields.EVALUATION_TOTAL_TIME, label: "Время построения эксперимента:" },
-      { name: ExperimentFields.CREATION_DATE, label: "Дата создания заявки:" },
-      { name: ExperimentFields.START_DATE, label: "Дата начала обработки заявки:" },
-      { name: ExperimentFields.END_DATE, label: "Дата окончания обработки заявки:" },
+      { name: ExperimentFields.CREATION_DATE, label: "Дата создания:" },
+      { name: ExperimentFields.START_DATE, label: "Дата начала обработки:" },
+      { name: ExperimentFields.END_DATE, label: "Дата окончания обработки:" },
       { name: ExperimentFields.MODEL_PATH, label: "Модель эксперимента:" },
       { name: ExperimentFields.DELETED_DATE, label: "Дата удаления модели:" }
     ];
