@@ -23,7 +23,7 @@ spring:
     change-log: classpath:db/liquibase-changelog.xml
   servlet:
     multipart:
-      max-file-size: 10MB
+      max-file-size: 256MB
 
 eureka:
   instance:

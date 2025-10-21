@@ -8,8 +8,8 @@ import { FileUpload } from "primeng/primeng";
 })
 export class UploadTrainingDataComponent implements OnInit {
 
-  //Max file size: 10MB
-  public maxFileSize: number = 10000000;
+  //Max file size: 50MB
+  public maxFileSize: number = 50000000;
   //Files formats
   public accept: string = '.csv,.xlsx,.arff,.json,.txt,.data,.xml';
   public invalidFileSizeMessageSummary: string = 'Недопустимый размер файла,';
