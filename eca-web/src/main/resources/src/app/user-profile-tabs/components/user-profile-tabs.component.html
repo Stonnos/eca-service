@@ -6,9 +6,15 @@
       </ng-template>
     </p-tabPanel>
 
-    <p-tabPanel header="Настройки уведомлений" leftIcon="pi pi-bell notification-icon" [cache]="false">
+    <p-tabPanel header="Настройки уведомлений" leftIcon="pi pi-bell" [cache]="false">
       <ng-template pTemplate="content">
         <app-user-profile-notification-options></app-user-profile-notification-options>
+      </ng-template>
+    </p-tabPanel>
+
+    <p-tabPanel header="Персональные токены доступа" leftIcon="pi pi-key" [cache]="false">
+      <ng-template pTemplate="content">
+        <app-personal-access-tokens></app-personal-access-tokens>
       </ng-template>
     </p-tabPanel>
   </p-tabView>

@@ -1,0 +1,95 @@
+<p-dialog
+  #dialog
+  [(visible)]="visible"
+  header="Создать токен"
+  [style]="{ width: '650px' }"
+  appendTo="body"
+  [modal]="true"
+  [blockScroll]="false"
+  [draggable]="false"
+  [resizable]="false"
+  [closable]="!loading"
+  (onHide)="hide()">
+
+  <form novalidate class="form d-flex flex-column justify-content-center m-auto" (keydown.enter)="submit()">
+    <div class="ui-g ui-fluid">
+      <div class="ui-g-10 mx-auto mb-3">
+        <label class="text-bold control-label">Название токена</label>
+        <input
+          required
+          pInputText
+          id="tokenName"
+          name="tokenName"
+          type="text"
+          placeholder="Введите уникальное название токена"
+          [(ngModel)]="item.name"
+          #tokenName="ngModel"
+          [disabled]="loading"
+          maxlength="30"
+          (focus)="onTokenNameFocus($event)"
+          class="form-control d-block w-100">
+        <div class="text-danger error-message" *ngIf="tokenName.invalid && (tokenName.dirty || tokenName.touched || submitted)">
+          <div *ngIf="tokenName?.errors?.required">
+            Заполните название токена
+          </div>
+        </div>
+        <div class="text-danger error-message" *ngIf="hasDuplicateTokenName && submitted">
+          Токен с таким названием уже существует
+        </div>
+      </div>
+
+      <div class="ui-g-10 mx-auto mb-3">
+        <label class="text-bold control-label">Тип токена</label>
+        <p-dropdown
+          required
+          id="tokenType"
+          name="tokenType"
+          placeholder="Выбрать"
+          [appendTo]="dialog"
+          [options]="tokenTypes"
+          optionLabel="label"
+          [(ngModel)]="item.tokenType"
+          #tokenType="ngModel"
+          [style]="{'width':'100%'}">
+        </p-dropdown>
+        <div class="text-danger error-message" *ngIf="submitted && tokenType.invalid">
+          <div *ngIf="tokenType?.errors?.required">
+            Выберите тип токена
+          </div>
+        </div>
+      </div>
+
+      <div class="ui-g-10 mx-auto mb-3">
+        <label class="text-bold control-label">Срок действия</label>
+        <p-dropdown
+          required
+          id="tokenExpiration"
+          name="tokenExpiration"
+          placeholder="Выбрать"
+          [appendTo]="dialog"
+          [options]="months"
+          optionLabel="label"
+          [(ngModel)]="item.expirationMonth"
+          #tokenExpiration="ngModel"
+          [style]="{'width':'100%'}">
+        </p-dropdown>
+        <div class="text-danger error-message" *ngIf="submitted && tokenExpiration.invalid">
+          <div *ngIf="tokenExpiration?.errors?.required">
+            Выберите срок действия
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
+
+  <p-footer>
+    <button
+      pButton
+      type="button"
+      label="Создать"
+      (click)="submit()"
+      [disabled]="loading"
+      class="create-token-button ml-auto">
+    </button>
+  </p-footer>
+</p-dialog>

@@ -1,0 +1,25 @@
+.personal-access-tokens-table::ng-deep {
+
+  .ui-table-tbody > tr > td {
+    &:first-child, &:nth-child(2) {
+      font-weight: bold;
+    }
+    &:nth-child(3) {
+      width: 60px;
+    }
+  }
+  .ui-table-thead > tr > th {
+    &:nth-child(3) {
+      width: 60px;
+    }
+  }
+}
+
+.delete-button {
+  border-radius: 50%;
+}
+
+.create-token-button {
+  width: 150px;
+}
+
