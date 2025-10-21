@@ -6,7 +6,7 @@
     <parent>
         <groupId>eca.service</groupId>
         <artifactId>eca-service</artifactId>
-        <version>7.0.2</version>
+        <version>7.0.3</version>
     </parent>
 
     <artifactId>transactional-outbox</artifactId>
