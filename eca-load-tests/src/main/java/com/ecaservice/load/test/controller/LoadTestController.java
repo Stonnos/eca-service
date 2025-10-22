@@ -27,6 +27,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 /**
  * Load tests controller.
@@ -41,7 +43,10 @@ import java.io.OutputStream;
 public class LoadTestController {
 
     private static final String ATTACHMENT_FORMAT = "attachment; filename=%s";
-    private static final String LOAD_TEST_REPORT_NAME = "load-test-report%s.xlsx";
+
+    private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
+    private static final String LOAD_TEST_REPORT_NAME = "load-test-report-%s-%s.xlsx";
 
     private final LoadTestService loadTestService;
     private final TestResultsReportDataFetcher testResultsReportDataFetcher;
@@ -101,7 +106,8 @@ public class LoadTestController {
         LoadTestEntity loadTestEntity = loadTestService.getLoadTest(testUuid);
         @Cleanup OutputStream outputStream = httpServletResponse.getOutputStream();
         httpServletResponse.setContentType(MediaType.APPLICATION_OCTET_STREAM_VALUE);
-        String reportName = String.format(LOAD_TEST_REPORT_NAME, loadTestEntity.getTestUuid());
+        String reportName = String.format(LOAD_TEST_REPORT_NAME, loadTestEntity.getTestUuid(),
+                DATE_TIME_FORMATTER.format(LocalDate.now()));
         httpServletResponse.setHeader(HttpHeaders.CONTENT_DISPOSITION, String.format(ATTACHMENT_FORMAT, reportName));
         LoadTestBean loadTestBean = testResultsReportDataFetcher.fetchReportData(loadTestEntity);
         log.info("Load test [{}] report data has been fetched", testUuid);
