@@ -17,6 +17,17 @@
   margin-top: 10px;
 }
 
+.classify-instances-panel {
+  max-height: 500px;
+  overflow-y: scroll;
+}
+
+.error-message {
+  position: relative;
+  margin-top: 1px;
+  font-size: 12px;
+}
+
 .button-text {
   align-items: center;
   justify-content: center;
