@@ -24,6 +24,7 @@ spring:
   servlet:
     multipart:
       max-file-size: 256MB
+      max-request-size: 256MB
 
 eureka:
   instance:

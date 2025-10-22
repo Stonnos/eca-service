@@ -98,7 +98,7 @@ export class CreateEditInstancesComponent extends BaseCreateDialogComponent<Crea
       const errors: ValidationErrorDto[] = error.error;
       if (this.validationService.hasErrorCode(errors, ValidationErrorCode.INVALID_TRAIN_DATA_FILE)) {
         this.messageService.add({ severity: 'error',
-          summary: 'Не удалось добавить датасет. Допускаются файлы только файлы форматов .csv,.xlsx,.arff,.json,.txt,.data,.xml', detail: '' });
+          summary: 'Не удалось добавить датасет. Допускаются файлы только файлы форматов .csv,.xlsx,.arff,.json,.txt,.data,.xml, .zip', detail: '' });
         return;
       } else if (this.validationService.hasErrorCode(errors, ValidationErrorCode.PROCESS_FILE_ERROR)) {
         const validationError = this.validationService.getErrorByCode(errors, ValidationErrorCode.PROCESS_FILE_ERROR);
@@ -108,8 +108,15 @@ export class CreateEditInstancesComponent extends BaseCreateDialogComponent<Crea
         this.messageService.add({ severity: 'error',
           summary: 'Не удалось добавить датасет. Датасет должен содержать хотя бы одну строку с данными', detail: '' });
         return;
+      } else if (this.validationService.hasErrorCode(errors, ValidationErrorCode.MAX_UPLOAD_SIZE_EXCEEDED)) {
+        this.messageService.add({ severity: 'error',
+          summary: 'Не удалось добавить датасет. Превышен максимальный размер файла', detail: '' });
+        return;
+      } else if (this.validationService.hasErrorCode(errors, ValidationErrorCode.DUPLICATE_INSTANCES_NAME)) {
+        this.hasSameTableName = true;
+      } else {
+        this.messageService.add({ severity: 'error', summary: 'Не удалось загрузить датасет', detail: error.message });
       }
-      this.hasSameTableName = this.validationService.hasErrorCode(errors, ValidationErrorCode.DUPLICATE_INSTANCES_NAME);
     } else {
       this.messageService.add({ severity: 'error', summary: 'Не удалось загрузить датасет', detail: error.message });
     }
