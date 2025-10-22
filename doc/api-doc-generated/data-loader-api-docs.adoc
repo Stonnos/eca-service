@@ -190,6 +190,18 @@ a|
 
 __GET__ */api/internal/instances/meta-info/{uuid}* - Gets instances meta info
 
+*Security requirement*
+
+[cols="^50%,^50%",options="header"]
+|===
+|*Name*|*Scopes*
+|
+<<EcaAuth>>
+a|
+
+* internal-api
+
+|===
 
 
 *Request parameters*
