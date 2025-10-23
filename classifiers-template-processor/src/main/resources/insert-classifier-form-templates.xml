@@ -57,7 +57,7 @@
         </sql>
     </changeSet>
 
-    <changeSet author="roman.batygin@mail.ru" id="lib_insert_classifiers_form_fields_4" context="data">
+    <changeSet author="roman.batygin@mail.ru" id="lib_insert_classifiers_form_fields_5" context="data">
         <preConditions onFail="MARK_RAN">
             <tableExists tableName="form_field"/>
         </preConditions>

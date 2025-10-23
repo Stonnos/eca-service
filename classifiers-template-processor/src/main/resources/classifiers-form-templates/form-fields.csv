@@ -35,7 +35,7 @@ id;field_name;description;field_order;field_type;min_value;max_value;max_length;
 
 20;numInNeurons;Количество нейронов во входном слое;0;INTEGER;1;2147483647;NULL;NULL;NULL;NULL;5;NULL;NULL;true;true;true;NULL;NULL;NULL
 21;numOutNeurons;Количество нейронов в выходном слое;1;INTEGER;2;2147483647;NULL;NULL;NULL;NULL;5;NULL;NULL;true;true;true;NULL;NULL;NULL
-22;hiddenLayer;Структура скрытого слоя;2;TEXT;NULL;NULL;255;^([1-9],?)+$;NULL;NULL;5;Неправильный формат скрытого слоя. Пример 8,15,10;Введите числа, разделенные запятой;true;true;false;NULL;NULL;NULL
+22;hiddenLayer;Структура скрытого слоя;2;TEXT;NULL;NULL;255;^([1-9]\d*,?)+$;NULL;NULL;5;Неправильный формат скрытого слоя. Пример 8,15,10;Введите числа, разделенные запятой;true;true;false;NULL;NULL;NULL
 23;numIterations;Число итераций;3;INTEGER;1;2147483647;255;NULL;NULL;1000000;5;NULL;NULL;true;true;false;NULL;NULL;NULL
 24;minError;Допустимая ошибка;4;DECIMAL;0;1;255;NULL;NULL;0.00001;5;NULL;NULL;true;true;false;NULL;NULL;NULL
 25;activationFunctionOptions.activationFunctionType;Активационная функция нейронов скрытого слоя;5;REFERENCE;NULL;NULL;NULL;NULL;3;LOGISTIC;5;NULL;NULL;true;true;false;NULL;NULL;NULL
