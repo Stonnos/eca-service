@@ -3,12 +3,12 @@ import {
   ExperimentDto,
   ExperimentErsReportDto,
   ExperimentProgressDto, PushRequestDto,
+  S3ContentResponseDto
 } from "../../../../../../../target/generated-sources/typescript/eca-web-dto";
 import { MessageService } from "primeng/api";
 import { ActivatedRoute, NavigationEnd, Router, RouterEvent } from "@angular/router";
 import { ExperimentsService } from "../../experiments/services/experiments.service";
 import { ExperimentFields } from "../../common/util/field-names";
-import { FieldLink } from "../../common/model/field-link";
 import { FieldService } from "../../common/services/field.service";
 import { Utils } from "../../common/util/utils";
 import { Subscription, timer } from "rxjs";
@@ -24,7 +24,7 @@ import { filter, finalize } from 'rxjs/internal/operators';
   templateUrl: './experiment-details.component.html',
   styleUrls: ['./experiment-details.component.scss']
 })
-export class ExperimentDetailsComponent implements OnInit, OnDestroy, FieldLink {
+export class ExperimentDetailsComponent implements OnInit, OnDestroy {
 
   private id: number;
 
@@ -41,8 +41,6 @@ export class ExperimentDetailsComponent implements OnInit, OnDestroy, FieldLink 
   public experimentProgress: ExperimentProgressDto;
 
   public loading = false;
-
-  public linkColumns: string[] = [ExperimentFields.MODEL_PATH];
 
   public blink = false;
 
@@ -129,6 +127,20 @@ export class ExperimentDetailsComponent implements OnInit, OnDestroy, FieldLink 
     );
   }
 
+  public copyModelDownloadLink(): void {
+    this.experimentsService.getExperimentResultsContentUrl(this.experimentDto.id)
+      .subscribe({
+        next: (s3ContentResponseDto: S3ContentResponseDto) => {
+          navigator.clipboard.writeText(s3ContentResponseDto.contentUrl);
+          this.messageService.add({ severity: 'success',
+            summary: `Ссылка для скачивния модели эксперимента ${this.experimentDto.requestId} скопирована`, detail: '' });
+        },
+        error: (error) => {
+          this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
+        }
+      });
+  }
+
   public getExperimentErsReport(): void {
     this.experimentsService.getExperimentErsReport(this.id)
       .subscribe({
@@ -141,20 +153,8 @@ export class ExperimentDetailsComponent implements OnInit, OnDestroy, FieldLink 
       });
   }
 
-  public isLink(field: string): boolean {
-    return this.linkColumns.includes(field) && this.hasValue(field);
-  }
-
   public showProgressBar(field: string): boolean {
     return field == ExperimentFields.MODEL_PATH && this.loading;
-  }
-
-  public onLink(field: string) {
-    if (field === ExperimentFields.MODEL_PATH) {
-      this.getExperimentResultsFile();
-    } else {
-      this.messageService.add({severity: 'error', summary: 'Ошибка', detail: `Can't handle ${field} as link`});
-    }
   }
 
   public getExperimentValue(field: string) {

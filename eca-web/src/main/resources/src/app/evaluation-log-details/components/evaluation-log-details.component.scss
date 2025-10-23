@@ -42,6 +42,10 @@
   font-size: 15px;
 }
 
+.link-button {
+  border-radius: 50%;
+}
+
 .app-progress-spinner::ng-deep {
   .ui-progress-spinner {
     position: fixed;
