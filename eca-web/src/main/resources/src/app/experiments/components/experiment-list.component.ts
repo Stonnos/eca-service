@@ -2,7 +2,7 @@ import { Component, Injector, OnDestroy, OnInit } from '@angular/core';
 import {
   CreateExperimentResultDto,
   ExperimentDto, FilterDictionaryDto, FilterDictionaryValueDto, FilterFieldDto, PageDto,
-  PageRequestDto, PushRequestDto, RequestStatusStatisticsDto
+  PageRequestDto, PushRequestDto, RequestStatusStatisticsDto, S3ContentResponseDto
 } from "../../../../../../../target/generated-sources/typescript/eca-web-dto";
 import { ExperimentsService } from "../services/experiments.service";
 import { OverlayPanel } from "primeng/primeng";
@@ -161,6 +161,20 @@ export class ExperimentListComponent extends BaseListComponent<ExperimentDto> im
       () => this.loading = false,
       (error) => this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message })
     );
+  }
+
+  public copyModelDownloadLink(experiment: ExperimentDto): void {
+    this.experimentsService.getExperimentResultsContentUrl(experiment.id)
+      .subscribe({
+        next: (s3ContentResponseDto: S3ContentResponseDto) => {
+          navigator.clipboard.writeText(s3ContentResponseDto.contentUrl);
+          this.messageService.add({ severity: 'success',
+            summary: `Ссылка для скачивния модели эксперимента ${experiment.requestId} скопирована`, detail: '' });
+        },
+        error: (error) => {
+          this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
+        }
+      });
   }
 
   public onCreateExperimentDialogVisibility(visible): void {

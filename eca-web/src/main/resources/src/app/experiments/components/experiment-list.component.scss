@@ -3,7 +3,7 @@
   .ui-table-tbody > tr > td {
     width: 220px;
     &:first-child {
-      width: 50px;
+      width: 100px;
     }
 
     &:nth-child(2) {
@@ -18,7 +18,7 @@
   .ui-table-thead > tr > th {
     width: 220px;
     &:first-child {
-      width: 50px;
+      width: 100px;
     }
 
     &:nth-child(2) {

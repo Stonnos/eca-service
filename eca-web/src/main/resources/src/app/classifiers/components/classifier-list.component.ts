@@ -8,7 +8,8 @@ import {
   FormTemplateGroupDto,
   PageDto,
   PageRequestDto, PushRequestDto,
-  RequestStatusStatisticsDto
+  RequestStatusStatisticsDto,
+  S3ContentResponseDto
 } from "../../../../../../../target/generated-sources/typescript/eca-web-dto";
 import { ClassifiersService } from "../services/classifiers.service";
 import { OverlayPanel } from "primeng/primeng";
@@ -195,6 +196,20 @@ export class ClassifierListComponent extends BaseListComponent<EvaluationLogDto>
       () => this.loading = false,
       (error) => this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message })
     );
+  }
+
+  public copyModelDownloadLink(evaluationLogDto: EvaluationLogDto): void {
+    this.classifiersService.getModelContentUrl(evaluationLogDto.id)
+        .subscribe({
+          next: (s3ContentResponseDto: S3ContentResponseDto) => {
+            navigator.clipboard.writeText(s3ContentResponseDto.contentUrl);
+            this.messageService.add({ severity: 'success',
+              summary: `Ссылка для скачивния модели ${evaluationLogDto.requestId} скопирована`, detail: '' });
+          },
+          error: (error) => {
+            this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
+          }
+        });
   }
 
   public loadCurrentUserToFilter(): void {

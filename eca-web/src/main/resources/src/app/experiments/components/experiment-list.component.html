@@ -91,14 +91,22 @@
             [class.finished-status-blink]="isBlink(item) && item?.requestStatus?.value == 'FINISHED'"
             [class.error-status-blink]="isBlink(item) && item?.requestStatus?.value == 'ERROR'"
             [class.timeout-status-blink]="isBlink(item) && item?.requestStatus?.value == 'TIMEOUT'">
-          <td>
+          <td class="text-center">
             <button *ngIf="item.modelPath" pButton
                     type="button"
-                    class="ui-button-secondary link-button"
+                    class="ui-button-secondary link-button mr-2"
                     pTooltip="Скачать модель"
                     icon="pi pi-download"
                     [disabled]="loading"
                     (click)="downloadExperimentResults(item)">
+            </button>
+            <button *ngIf="item.modelPath" pButton
+                    type="button"
+                    class="ui-button-secondary link-button"
+                    pTooltip="Копировать ссылку для скачивания модели"
+                    icon="pi pi-copy"
+                    [disabled]="loading"
+                    (click)="copyModelDownloadLink(item)">
             </button>
           </td>
           <td *ngFor="let column of columns">
