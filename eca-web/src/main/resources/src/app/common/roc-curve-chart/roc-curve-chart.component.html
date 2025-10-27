@@ -6,7 +6,7 @@
 </p-progressSpinner>
 <div class="ui-g roc-curve-panel">
   <div class="ui-g-12">
-    <p-chart type="line" height="750px" [data]="dataSet" [options]="barOptions"></p-chart>
+    <p-chart type="line" height="750px" [data]="dataSet" [options]="barOptions" [plugins]="plugins"></p-chart>
   </div>
   <div *ngIf="selectedClassIndex >= 0" class="ui-g-12 text-center auc-value mt-2">
     AUC (Площадь под кривой): {{ rocCurveDataDto?.aucValue || '-' }}

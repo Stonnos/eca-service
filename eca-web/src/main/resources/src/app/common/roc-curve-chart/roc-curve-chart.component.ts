@@ -17,6 +17,7 @@ export class RocCurveChartComponent implements OnInit {
 
   public dataSet: any;
   public barOptions: any;
+  public plugins: any[];
 
   @Input()
   public modelId: number;
@@ -40,6 +41,7 @@ export class RocCurveChartComponent implements OnInit {
   }
 
   public ngOnInit(): void {
+    this.initPlugins();
     this.initBarOptions();
     this.updateRocCurveData();
   }
@@ -125,6 +127,18 @@ export class RocCurveChartComponent implements OnInit {
           this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
         }
       });
+  }
+
+  private initPlugins(): void {
+    const canvasBackgroundPlugin = {
+      id: 'canvasBackground',
+      beforeDraw: (chart) => {
+        const ctx = chart.ctx;
+        ctx.fillStyle = "white";
+        ctx.fillRect(0, 0, chart.width, chart.height);
+      }
+    };
+    this.plugins = [canvasBackgroundPlugin];
   }
 
   private initBarOptions(): void {
