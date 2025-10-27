@@ -8,7 +8,7 @@
   <div class="ui-g-12">
     <p-chart type="line" height="750px" [data]="dataSet" [options]="barOptions"></p-chart>
   </div>
-  <div class="ui-g-12 text-center auc-value mt-2">
+  <div *ngIf="selectedClassIndex >= 0" class="ui-g-12 text-center auc-value mt-2">
     AUC (Площадь под кривой): {{ rocCurveDataDto?.aucValue || '-' }}
   </div>
 </div>

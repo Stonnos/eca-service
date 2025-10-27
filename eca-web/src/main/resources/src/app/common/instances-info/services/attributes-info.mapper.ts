@@ -23,8 +23,12 @@ export class AttributesInfoMapper {
   }
 
   public mapValues(classValues: AttributeValueMetaInfoDto[]): SelectItem[] {
-    return classValues.map((attributeValueMetaInfoDto: AttributeValueMetaInfoDto) => {
-      return { label: attributeValueMetaInfoDto.value, value: attributeValueMetaInfoDto.index};
-    });
+    let selectItems: SelectItem[] = [{ label: 'Все', value: -1}];
+    selectItems.push(
+      ...classValues.map((attributeValueMetaInfoDto: AttributeValueMetaInfoDto) => {
+        return { label: attributeValueMetaInfoDto.value, value: attributeValueMetaInfoDto.index};
+      })
+    );
+    return selectItems;
   }
 }

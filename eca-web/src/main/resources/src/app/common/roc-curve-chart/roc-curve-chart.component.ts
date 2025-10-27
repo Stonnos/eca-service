@@ -5,6 +5,8 @@ import {
 import { RocCurveService } from '../services/roc-curve.service';
 import { MessageService, SelectItem } from 'primeng/api';
 import { finalize } from 'rxjs/internal/operators';
+import { forkJoin } from 'rxjs';
+import { Observable } from 'rxjs/internal/Observable';
 
 @Component({
   selector: 'app-roc-curve-chart',
@@ -28,6 +30,12 @@ export class RocCurveChartComponent implements OnInit {
   public loading: boolean = false;
   public rocCurveDataDto: RocCurveDataDto;
 
+  private colors = [
+    "#3366CC", "#DC3912", "#FF9900", "#109618", "#990099", "#3B3EAC", "#0099C6",
+    "#DD4477", "#66AA00", "#B82E2E", "#316395", "#994499", "#22AA99", "#AAAA11",
+    "#6633CC", "#E67300", "#8B0707", "#329262", "#5574A6", "#651067"
+  ];
+
   public constructor(private messageService: MessageService) {
   }
 
@@ -37,6 +45,49 @@ export class RocCurveChartComponent implements OnInit {
   }
 
   public updateRocCurveData(): void {
+    if (this.selectedClassIndex < 0) {
+      this.getRocCurveDataAllClasses();
+    } else {
+      this.getRocCurveDataByClassIndex();
+    }
+  }
+
+  private getRocCurveDataAllClasses(): void {
+    this.loading = true;
+    const observables: Observable<RocCurveDataDto>[] = this.classValues
+      .filter((selectItem: SelectItem) => selectItem.value >= 0)
+      .map((selectItem: SelectItem) => this.rocCurveService.getRocCurveData(this.modelId, selectItem.value));
+    forkJoin(observables)
+      .pipe(
+        finalize(() => {
+          this.loading = false;
+        })
+      )
+      .subscribe({
+        next: (results: RocCurveDataDto[]) => {
+          const datasets = results.map((rocCurveDataDto: RocCurveDataDto, i: number) => {
+            return {
+              label: rocCurveDataDto.classValue,
+              fill: false,
+              backgroundColor: this.colors[i % this.colors.length],
+              borderColor: this.colors[i % this.colors.length],
+              data: rocCurveDataDto.rocCurvePoints.map((chartData: RocCurvePointDto) => { return { x: chartData.specificity, y: chartData.sensitivity}}),
+              // Hide points
+              pointRadius: 0, // Set the radius as needed
+              cubicInterpolationMode: 'monotone'
+            }
+          });
+          this.dataSet = {
+            datasets: datasets
+          };
+        },
+        error: (error) => {
+          this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
+        }
+      });
+  }
+
+  private getRocCurveDataByClassIndex(): void {
     this.loading = true;
     this.rocCurveService.getRocCurveData(this.modelId, this.selectedClassIndex)
       .pipe(
@@ -50,8 +101,9 @@ export class RocCurveChartComponent implements OnInit {
           this.dataSet = {
             datasets: [
               {
+                label: rocCurveDataDto.classValue,
                 fill: false,
-                backgroundColor: '#3b7ea5',
+                backgroundColor: 'black',
                 borderColor: 'black',
                 data: rocCurveDataDto.rocCurvePoints.map((chartData: RocCurvePointDto) => { return { x: chartData.specificity, y: chartData.sensitivity}}),
                 // Hide points
@@ -59,9 +111,10 @@ export class RocCurveChartComponent implements OnInit {
                 cubicInterpolationMode: 'monotone'
               },
               {
+                label: 'Точка оптимального порога',
                 fill: false,
                 backgroundColor: '#3b7ea5',
-                borderColor: 'black',
+                borderColor: '#3b7ea5',
                 pointRadius: 7,
                 data: [{ x: rocCurveDataDto.optimalPoint.specificity, y: rocCurveDataDto.optimalPoint.sensitivity }],
               }
@@ -100,7 +153,7 @@ export class RocCurveChartComponent implements OnInit {
         fontSize: 20
       },
       legend: {
-        display: false
+        display: true
       },
       scales: {
         xAxes: [{
