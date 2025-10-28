@@ -437,6 +437,185 @@ a|
 ----
 |===
 
+== Uploads experiment results attachment
+
+__POST__ */experiment/upload-experiment-results-attachment* - Uploads experiment results attachment
+
+*Security requirement*
+
+[cols="^50%,^50%",options="header"]
+|===
+|*Name*|*Scopes*
+|
+<<EcaAuth>>
+a|
+
+* web
+
+|===
+
+*Request body*
+
+[width=100%]
+|===
+|*Content type*|*Required*|*Schema*|*Example*
+|*multipart/form-data*
+|false
+|
+__object__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+a|
+-
+|===
+
+*Multipart form data fields*
+
+[width=100%]
+|===
+|*Name*|*Description*|*Schema*
+|*attachmentFile**
+|Attachment file
+a|
+__string__
+__(binary)__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|===
+
+*Request parameters*
+[width=100%]
+|===
+|*Name*|*Description*|*Location*|*Schema*
+|*id**
+|Evaluation id
+|query
+a|
+__integer__
+__(int64)__
+
+
+
+
+
+
+*Minimum*: 1*
+
+*Maximum*: 9 223 372 036 854 775 807*
+
+
+
+
+
+
+
+
+|*attachmentType**
+|Attachment type
+|query
+a|
+__string__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+*Values*:
+
+* ROC_CURVE_IMAGE
+|===
+
+*Api responses*
+[width=100%]
+|===
+|*Code*|*Description*|*Content type*|*Schema*|*Example*
+|200
+|OK
+|*-*
+|-
+a|
+-
+|401
+|Not authorized
+|*application/json*
+|-
+a|
+[source,json]
+----
+{
+  "error" : "unauthorized",
+  "error_description" : "Full authentication is required to access this resource"
+}
+----
+|400
+|Bad request
+|*application/json*
+|
+__array__
+<<<ValidationErrorDto>>
+>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+a|
+[source,json]
+----
+[ {
+  "fieldName" : null,
+  "code" : "DataNotFound",
+  "errorMessage" : "Entity with search key [1] not found!"
+} ]
+----
+|===
+
 == Finds experiments with specified options
 
 __POST__ */experiment/list* - Finds experiments with specified options
@@ -2224,6 +2403,185 @@ a|
 ----
 |===
 
+== Uploads evaluation results attachment
+
+__POST__ */evaluation/upload-evaluation-results-attachment* - Uploads evaluation results attachment
+
+*Security requirement*
+
+[cols="^50%,^50%",options="header"]
+|===
+|*Name*|*Scopes*
+|
+<<EcaAuth>>
+a|
+
+* web
+
+|===
+
+*Request body*
+
+[width=100%]
+|===
+|*Content type*|*Required*|*Schema*|*Example*
+|*multipart/form-data*
+|false
+|
+__object__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+a|
+-
+|===
+
+*Multipart form data fields*
+
+[width=100%]
+|===
+|*Name*|*Description*|*Schema*
+|*attachmentFile**
+|Attachment file
+a|
+__string__
+__(binary)__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|===
+
+*Request parameters*
+[width=100%]
+|===
+|*Name*|*Description*|*Location*|*Schema*
+|*id**
+|Evaluation id
+|query
+a|
+__integer__
+__(int64)__
+
+
+
+
+
+
+*Minimum*: 1*
+
+*Maximum*: 9 223 372 036 854 775 807*
+
+
+
+
+
+
+
+
+|*attachmentType**
+|Attachment type
+|query
+a|
+__string__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+*Values*:
+
+* ROC_CURVE_IMAGE
+|===
+
+*Api responses*
+[width=100%]
+|===
+|*Code*|*Description*|*Content type*|*Schema*|*Example*
+|200
+|OK
+|*-*
+|-
+a|
+-
+|401
+|Not authorized
+|*application/json*
+|-
+a|
+[source,json]
+----
+{
+  "error" : "unauthorized",
+  "error_description" : "Full authentication is required to access this resource"
+}
+----
+|400
+|Bad request
+|*application/json*
+|
+__array__
+<<<ValidationErrorDto>>
+>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+a|
+[source,json]
+----
+[ {
+  "fieldName" : null,
+  "code" : "DataNotFound",
+  "errorMessage" : "Entity with search key [1] not found!"
+} ]
+----
+|===
+
 == Finds evaluation logs with specified options
 
 __POST__ */evaluation/list* - Finds evaluation logs with specified options
@@ -3964,6 +4322,8 @@ a|
 [source,json]
 ----
 {
+  "classIndex" : 0,
+  "classValue" : "Iris-setosa",
   "rocCurvePoints" : [ {
     "specificity" : 100,
     "sensitivity" : 100
@@ -5482,6 +5842,8 @@ a|
 [source,json]
 ----
 {
+  "classIndex" : 0,
+  "classValue" : "Iris-setosa",
   "rocCurvePoints" : [ {
     "specificity" : 100,
     "sensitivity" : 100
@@ -12629,6 +12991,45 @@ __array__
 [width=100%]
 |===
 |*Name*|*Description*|*Schema*
+|*classIndex*
+|Class index
+a|
+__integer__
+__(int32)__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|*classValue*
+|Class value
+a|
+__string__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 |*rocCurvePoints*
 |Roc curve data points
 a|
