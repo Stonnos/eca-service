@@ -92,6 +92,7 @@ import eca.trees.CART;
 import lombok.Cleanup;
 import lombok.SneakyThrows;
 import lombok.experimental.UtilityClass;
+import org.apache.commons.io.IOUtils;
 import org.springframework.amqp.core.MessageProperties;
 import org.springframework.util.DigestUtils;
 import weka.core.Attribute;
@@ -125,6 +126,8 @@ public class TestHelperUtils {
     public static final String DATA_RESOURCE_PATH = "data/iris.xlsx";
 
     public static final String JSON_DATA_RESOURCE_PATH = "data/iris.json";
+
+    public static final String ROC_DATA_RESOURCE_PATH = "data/roc.png";
 
     public static final int NUM_FOLDS = 3;
     public static final int NUM_TESTS = 1;
@@ -200,6 +203,18 @@ public class TestHelperUtils {
      */
     public static PageRequestDto createPageRequestDto(Integer page, Integer size) {
         return new PageRequestDto(page, size, Collections.emptyList(), null, newArrayList());
+    }
+
+    /**
+     * Loads roc curve image.
+     *
+     * @return roc curve image bytes
+     */
+    @SneakyThrows
+    public static byte[] loadRocImage() {
+        ClassLoader classLoader = ClassLoader.getSystemClassLoader();
+        @Cleanup var inputStream = classLoader.getResourceAsStream(ROC_DATA_RESOURCE_PATH);
+        return IOUtils.toByteArray(inputStream);
     }
 
     /**

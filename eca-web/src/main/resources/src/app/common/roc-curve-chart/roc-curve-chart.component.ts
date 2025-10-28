@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import {
   RocCurveDataDto, RocCurvePointDto
 } from "../../../../../../../target/generated-sources/typescript/eca-web-dto";
@@ -7,6 +7,9 @@ import { MessageService, SelectItem } from 'primeng/api';
 import { finalize } from 'rxjs/internal/operators';
 import { forkJoin } from 'rxjs';
 import { Observable } from 'rxjs/internal/Observable';
+import { UIChart } from 'primeng/chart';
+import { UploadEvaluationResultsAttachmentService } from '../services/upload-evaluation-results-attachment.service';
+import { EvaluationResultsAttachmentType } from '../model/evaluation-results-attachment-type.enum';
 
 @Component({
   selector: 'app-roc-curve-chart',
@@ -26,7 +29,12 @@ export class RocCurveChartComponent implements OnInit {
   @Input()
   public rocCurveService: RocCurveService;
   @Input()
+  public uploadEvaluationResultsAttachmentService: UploadEvaluationResultsAttachmentService;
+  @Input()
   public selectedClassIndex: number = 0;
+
+  @ViewChild(UIChart, { static: true })
+  private chart: UIChart;
 
   public loading: boolean = false;
   public rocCurveDataDto: RocCurveDataDto;
@@ -52,6 +60,37 @@ export class RocCurveChartComponent implements OnInit {
     } else {
       this.getRocCurveDataByClassIndex();
     }
+  }
+
+  public saveImage(): void {
+    const file = this.createRocImageFile();
+    this.loading = true;
+    this.uploadEvaluationResultsAttachmentService.uploadEvaluationResultsAttachmentService(this.modelId, file, EvaluationResultsAttachmentType.ROC_CURVE_IMAGE)
+      .pipe(
+        finalize(() => {
+          this.loading = false;
+        })
+      )
+      .subscribe({
+        next: () => {
+          this.messageService.add({ severity: 'success', summary: 'Изображение ROC - кривой успешно сохранено для отчета', detail: '' });
+        },
+        error: (error) => {
+          this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
+        }
+      });
+  }
+
+  private createRocImageFile(): File {
+    const base64Image = this.chart.getBase64Image();
+    // Decode Base64
+    const byteString = atob(base64Image.split(',')[1]);
+    const buffer = new ArrayBuffer(byteString.length);
+    const uint8Array = new Uint8Array(buffer);
+    for (let i = 0; i < byteString.length; i++) {
+      uint8Array[i] = byteString.charCodeAt(i);
+    }
+    return new File([buffer], 'roc-image.png', { type: 'image/png' });
   }
 
   private getRocCurveDataAllClasses(): void {

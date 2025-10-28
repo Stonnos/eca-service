@@ -4,16 +4,19 @@ import com.ecaservice.common.web.exception.EntityNotFoundException;
 import com.ecaservice.ers.dto.GetEvaluationResultsResponse;
 import com.ecaservice.server.model.entity.ErsResponseStatus;
 import com.ecaservice.server.model.entity.EvaluationLog;
+import com.ecaservice.server.model.entity.EvaluationResultsAttachmentType;
 import com.ecaservice.server.model.entity.EvaluationResultsRequestEntity;
 import com.ecaservice.server.report.model.EvaluationResultsReportBean;
 import com.ecaservice.server.report.model.EvaluationResultsReportInputData;
 import com.ecaservice.server.repository.EvaluationLogRepository;
 import com.ecaservice.server.repository.EvaluationResultsRequestEntityRepository;
+import com.ecaservice.server.service.EvaluationResultsAttachmentService;
 import com.ecaservice.server.service.ers.ErsRequestService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import static com.ecaservice.server.util.EvaluationResultsAttachmentKeys.EVALUATION_KEY_FORMAT;
 import static com.ecaservice.server.util.ValidationUtils.checkFinishedRequestStatus;
 
 /**
@@ -28,6 +31,7 @@ public class SimpleEvaluationResultsReportDataFetcher implements EvaluationResul
 
     private final EvaluationResultsReportDataProcessor evaluationResultsReportDataProcessor;
     private final ErsRequestService ersRequestService;
+    private final EvaluationResultsAttachmentService evaluationResultsAttachmentService;
     private final EvaluationLogRepository evaluationLogRepository;
     private final EvaluationResultsRequestEntityRepository evaluationResultsRequestEntityRepository;
 
@@ -51,11 +55,15 @@ public class SimpleEvaluationResultsReportDataFetcher implements EvaluationResul
         } else {
             GetEvaluationResultsResponse evaluationResultsResponse =
                     ersRequestService.getEvaluationResults(evaluationResultsRequestEntity.getRequestId());
+            String rocAttachmentKey = String.format(EVALUATION_KEY_FORMAT, evaluationLog.getRequestId());
+            byte[] rocImage = evaluationResultsAttachmentService.getAttachment(rocAttachmentKey,
+                    EvaluationResultsAttachmentType.ROC_CURVE_IMAGE);
             EvaluationResultsReportInputData evaluationResultsReportInputData =
                     EvaluationResultsReportInputData.builder()
                             .evaluationEntity(evaluationLog)
                             .classifierOptions(evaluationLog.getClassifierOptions())
                             .evaluationResultsResponse(evaluationResultsResponse)
+                            .rocImage(rocImage)
                             .build();
             EvaluationResultsReportBean evaluationResultsReportBean =
                     evaluationResultsReportDataProcessor.processReportData(evaluationResultsReportInputData);

@@ -11,6 +11,12 @@
   padding: 2px;
 }
 
+.options-panel {
+  display: flex;
+  text-align: center;
+  align-items: center;
+}
+
 .app-progress-spinner::ng-deep {
   .ui-progress-spinner {
     position: fixed;

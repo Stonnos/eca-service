@@ -18,6 +18,7 @@ import com.ecaservice.server.service.experiment.ClassifyExperimentResultsInstanc
 import com.ecaservice.server.service.experiment.ExperimentDataService;
 import com.ecaservice.server.service.experiment.ExperimentProgressService;
 import com.ecaservice.server.service.experiment.ExperimentRequestWebApiService;
+import com.ecaservice.server.service.experiment.ExperimentResultsAttachmentUploader;
 import com.ecaservice.server.service.experiment.ExperimentResultsRocCurveDataProvider;
 import com.ecaservice.server.service.experiment.ExperimentResultsService;
 import com.ecaservice.web.dto.model.ChartDataDto;
@@ -101,6 +102,8 @@ class ExperimentControllerTest extends PageRequestControllerTest {
     private ExperimentResultsEntityRepository experimentResultsEntityRepository;
     @MockBean
     private ExperimentResultsReportDataFetcher experimentResultsReportDataFetcher;
+    @MockBean
+    private ExperimentResultsAttachmentUploader experimentResultsAttachmentUploader;
 
     @Autowired
     private ExperimentMapper experimentMapper;

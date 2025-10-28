@@ -21,9 +21,11 @@ import {
 } from "../../create-optimal-classifier/model/create-optimal-evaluation-request.model";
 import { RocCurveService } from '../../common/services/roc-curve.service';
 import { ClassifyInstanceService } from '../../common/services/classify-instance.service';
+import { EvaluationResultsAttachmentType } from '../../common/model/evaluation-results-attachment-type.enum';
+import { UploadEvaluationResultsAttachmentService } from '../../common/services/upload-evaluation-results-attachment.service';
 
 @Injectable()
-export class ClassifiersService implements RocCurveService, ClassifyInstanceService {
+export class ClassifiersService implements RocCurveService, ClassifyInstanceService, UploadEvaluationResultsAttachmentService {
 
   private serviceUrl = environment.serverUrl + '/evaluation';
 
@@ -131,5 +133,13 @@ export class ClassifiersService implements RocCurveService, ClassifyInstanceServ
           onErrorCallback(error);
         }
       });
+  }
+
+  public uploadEvaluationResultsAttachmentService(modelId: number, file: File, attachmentType: EvaluationResultsAttachmentType): Observable<any> {
+    const formData = new FormData();
+    formData.append('id', modelId.toString());
+    formData.append('attachmentFile', file, file.name);
+    formData.append('attachmentType', attachmentType.toString());
+    return this.http.post<any>(this.serviceUrl + '/upload-evaluation-results-attachment', formData);
   }
 }

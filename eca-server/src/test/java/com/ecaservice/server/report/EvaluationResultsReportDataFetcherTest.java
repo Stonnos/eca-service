@@ -4,6 +4,7 @@ import com.ecaservice.common.web.exception.EntityNotFoundException;
 import com.ecaservice.server.exception.UnexpectedRequestStatusException;
 import com.ecaservice.server.model.entity.ErsResponseStatus;
 import com.ecaservice.server.model.entity.EvaluationLog;
+import com.ecaservice.server.model.entity.EvaluationResultsAttachmentType;
 import com.ecaservice.server.model.entity.InstancesInfo;
 import com.ecaservice.server.model.entity.RequestStatus;
 import com.ecaservice.server.report.model.EvaluationResultsReportBean;
@@ -12,6 +13,7 @@ import com.ecaservice.server.repository.EvaluationLogRepository;
 import com.ecaservice.server.repository.EvaluationResultsRequestEntityRepository;
 import com.ecaservice.server.repository.InstancesInfoRepository;
 import com.ecaservice.server.service.AbstractJpaTest;
+import com.ecaservice.server.service.EvaluationResultsAttachmentService;
 import com.ecaservice.server.service.ers.ErsRequestService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,6 +44,8 @@ class EvaluationResultsReportDataFetcherTest extends AbstractJpaTest {
     private EvaluationResultsReportDataProcessor evaluationResultsReportDataProcessor;
     @MockBean
     private ErsRequestService ersRequestService;
+    @MockBean
+    private EvaluationResultsAttachmentService evaluationResultsAttachmentService;
 
     @Autowired
     private EvaluationLogRepository evaluationLogRepository;
@@ -77,6 +81,10 @@ class EvaluationResultsReportDataFetcherTest extends AbstractJpaTest {
         );
         var evaluationResultsResponse = loadEvaluationResultsResponse();
         when(ersRequestService.getEvaluationResults(anyString())).thenReturn(evaluationResultsResponse);
+        when(evaluationResultsAttachmentService.getAttachment(anyString(),
+                any(EvaluationResultsAttachmentType.class))).thenReturn(new byte[0]);
+        when(evaluationResultsAttachmentService.getAttachment(anyString(),
+                any(EvaluationResultsAttachmentType.class))).thenReturn(new byte[0]);
         when(evaluationResultsReportDataProcessor.processReportData(any(EvaluationResultsReportInputData.class)))
                 .thenReturn(new EvaluationResultsReportBean());
         EvaluationResultsReportBean reportData =

@@ -75,4 +75,5 @@
     <include file="db/changelog/v87-add-experiment-evaluation-time-column.xml"/>
     <include file="db/changelog/v88-add-gin-indexes.xml"/>
     <include file="db/changelog/v89-add-experiment-progress-canceled-column.xml"/>
+    <include file="db/changelog/v90-create-evaluation-results-attachment-table.xml"/>
 </databaseChangeLog>

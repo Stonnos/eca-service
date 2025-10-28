@@ -413,6 +413,20 @@ image::./images/eca-db-schema.png[alt=Схема базы данных eca-serve
 |classifier_options_request_model_id |bigint           |-|+|fk_classifier_options_request_model_id   |Внешний ключ, ID запроса classifier_options_request_model
 |===
 
+==== Таблица 3.{counter:db-table-id} - 'evaluation_results_attachment' - таблица содержит данные с файлами результатов классификации
+[cols="^20%,^14%,^8%,^8%,^8%,^30%",options="header"]
+|===
+|Название колонки|Тип|Unique|Not NULL|Индекс|Описание
+|id                           |bigint           |+|+|+                         |Идентификатор записи (первичный ключ)
+|attachment_key               |varchar(255)     |+|+|+                         |Ключ файла
+|attachment_type              |varchar(255)     |+|+|+                         |Тип файла
+|file_path                    |varchar(255)     |-|+|-                         |Путь к файлу
+|created_date                 |timestamp        |-|+|-                         |Дата создания
+|updated_date                 |timestamp        |-|+|-                         |Дата обновления
+|===
+
+Таблица содержит уникальный индекс *evaluation_results_attachment_key_attachment_type_unique_idx* на поля *attachment_key, attachment_type*.
+
 Таблицы *databasechangeloglock* и *databasechangeloglock* предназначены для управления миграциями базы данных.
 
 === 3.3 Схема БД eca-oauth
