@@ -12,6 +12,9 @@ import org.springframework.validation.annotation.Validated;
 
 import java.util.List;
 
+import static com.ecaservice.common.web.util.LogHelper.TX_ID;
+import static com.ecaservice.common.web.util.LogHelper.putMdc;
+
 /**
  * Web push message listener.
  *
@@ -34,6 +37,7 @@ public class WebPushEventListener {
     @RabbitListener(queues = "${app.rabbit.queueName}")
     @SuppressWarnings("unchecked")
     public void handlePushEvent(@Valid AbstractPushRequest pushRequest) {
+        putMdc(TX_ID, pushRequest.getCorrelationId());
         log.info("Received push request [{}], correlation id [{}] with type [{}], message code [{}]",
                 pushRequest.getRequestId(), pushRequest.getCorrelationId(), pushRequest.getPushType(),
                 pushRequest.getMessageType());

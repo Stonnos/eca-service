@@ -11,6 +11,9 @@ import org.springframework.stereotype.Component;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestBody;
 
+import static com.ecaservice.common.web.util.LogHelper.TX_ID;
+import static com.ecaservice.common.web.util.LogHelper.putMdc;
+
 /**
  * Email message listener.
  *
@@ -33,6 +36,7 @@ public class EmailEventListener {
      */
     @RabbitListener(queues = "${mail-config.rabbit.queueName}")
     public void handleEmailEvent(@Valid @RequestBody EmailRequest emailRequest) {
+        putMdc(TX_ID, emailRequest.getCorrelationId());
         log.info("Received email request message [{}]", emailRequest.getRequestId());
         emailService.saveEmail(emailRequest);
     }
