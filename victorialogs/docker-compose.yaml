@@ -1,0 +1,36 @@
+services:
+
+  filebeat:
+    image: elastic/filebeat:${FILEBEAT_VERSION}
+    container_name: filebeat
+    volumes:
+      - ./filebeat/filebeat.yml:/usr/share/filebeat/filebeat.yml:ro
+      - /var/lib/docker/containers:/var/lib/docker/containers:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - filebeat-data:/usr/share/filebeat/data:rw
+    command:
+      - "-strict.perms=false"
+    user: root
+    networks:
+      - default
+
+  victorialogs:
+    image: docker.io/victoriametrics/victoria-logs:${VICTORIA_LOGS_VERSION}
+    container_name: victorialogs
+    ports:
+      - "9428:9428"
+    volumes:
+      - victorialogs-data:/victoria-logs-data
+    command:
+      - "-storageDataPath=/victoria-logs-data"
+
+networks:
+  default:
+    name: app-network
+    driver: bridge
+
+volumes:
+  filebeat-data:
+    name: filebeat-data
+  victorialogs-data:
+    name: victorialogs-data
