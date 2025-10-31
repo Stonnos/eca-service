@@ -9,7 +9,7 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock:ro
       - filebeat-data:/usr/share/filebeat/data:rw
     command:
-      - "-strict.perms=false"
+      - "--strict.perms=false"
     user: root
     networks:
       - default
