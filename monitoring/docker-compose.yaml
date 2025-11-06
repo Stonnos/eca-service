@@ -30,7 +30,7 @@ services:
       - grafana-data:/var/lib/grafana
 
   postgres-exporter:
-    image: wrouesnel/postgres_exporter:${POSTGRES_EXPORTER_VERSION}
+    image: quay.io/prometheuscommunity/postgres-exporter:${POSTGRES_EXPORTER_VERSION}
     container_name: postgres-exporter
     ports:
       - "9187:9187"
