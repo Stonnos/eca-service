@@ -73,10 +73,14 @@ services:
     environment:
       TZ: ${TIME_ZONE}
       SPRING_PROFILES_ACTIVE: "docker"
-      JAVA_OPTS: "-Xmx192m"
+      JAVA_OPTS: "-Xmx192m -XX:MaxMetaspaceSize=192m"
       MANAGEMENT_ZIPKIN_TRACING_ENABLED: ${ZIPKIN_ENABLED}
       MANAGEMENT_ZIPKIN_TRACING_ENDPOINT: ${ZIPKIN_URL}
       LOGGING_MODE: ${LOGGING_MODE}
+    deploy:
+      resources:
+        limits:
+          memory: 256M
     networks:
       - default
     labels:
@@ -104,6 +108,10 @@ services:
       MANAGEMENT_ZIPKIN_TRACING_ENABLED: ${ZIPKIN_ENABLED}
       MANAGEMENT_ZIPKIN_TRACING_ENDPOINT: ${ZIPKIN_URL}
       LOGGING_MODE: ${LOGGING_MODE}
+    deploy:
+      resources:
+        limits:
+          memory: 1512m
     networks:
       - default
     depends_on:
@@ -121,7 +129,7 @@ services:
     environment:
       TZ: ${TIME_ZONE}
       SPRING_PROFILES_ACTIVE: "docker"
-      JAVA_OPTS: "-Xmx512m"
+      JAVA_OPTS: "-Xmx384m -XX:MaxMetaspaceSize=256m"
       AUDIT_ENABLED: "true"
       AUDIT_ASYNCEVENTS: ${AUDIT_ASYNC_EVENTS}
       AUDIT_THREADPOOLSIZE: ${AUDIT_THREAD_POOL_SIZE}
@@ -130,6 +138,10 @@ services:
       MANAGEMENT_ZIPKIN_TRACING_ENABLED: ${ZIPKIN_ENABLED}
       MANAGEMENT_ZIPKIN_TRACING_ENDPOINT: ${ZIPKIN_URL}
       LOGGING_MODE: ${LOGGING_MODE}
+    deploy:
+      resources:
+        limits:
+          memory: 512M
     networks:
       - default
     depends_on:
@@ -146,13 +158,17 @@ services:
     environment:
       TZ: ${TIME_ZONE}
       SPRING_PROFILES_ACTIVE: "docker"
-      JAVA_OPTS: "-Xmx384m"
+      JAVA_OPTS: "-Xmx384m -XX:MaxMetaspaceSize=256m"
       OPENAPI_BASEPATH: "/eca-mail"
       MANAGEMENT_ZIPKIN_TRACING_ENABLED: ${ZIPKIN_ENABLED}
       MANAGEMENT_ZIPKIN_TRACING_ENDPOINT: ${ZIPKIN_URL}
       LOGGING_MODE: ${LOGGING_MODE}
     networks:
       - default
+    deploy:
+      resources:
+        limits:
+          memory: 512M
     depends_on:
       - eca-db
       - discovery-server
@@ -167,7 +183,7 @@ services:
     environment:
       TZ: ${TIME_ZONE}
       SPRING_PROFILES_ACTIVE: "docker"
-      JAVA_OPTS: "-Xmx512m"
+      JAVA_OPTS: "-Xmx512m -XX:MaxMetaspaceSize=256m"
       AUDIT_ENABLED: "true"
       AUDIT_ASYNCEVENTS: ${AUDIT_ASYNC_EVENTS}
       AUDIT_THREADPOOLSIZE: ${AUDIT_THREAD_POOL_SIZE}
@@ -178,6 +194,10 @@ services:
       LOGGING_MODE: ${LOGGING_MODE}
     networks:
       - default
+    deploy:
+      resources:
+        limits:
+          memory: 756M
     depends_on:
       - eca-db
       - discovery-server
@@ -192,7 +212,7 @@ services:
     environment:
       TZ: ${TIME_ZONE}
       SPRING_PROFILES_ACTIVE: "docker"
-      JAVA_OPTS: "-Xmx512m"
+      JAVA_OPTS: "-Xmx384m -XX:MaxMetaspaceSize=256m"
       AUDIT_ENABLED: "true"
       AUDIT_ASYNCEVENTS: ${AUDIT_ASYNC_EVENTS}
       AUDIT_THREADPOOLSIZE: ${AUDIT_THREAD_POOL_SIZE}
@@ -203,6 +223,10 @@ services:
       LOGGING_MODE: ${LOGGING_MODE}
     networks:
       - default
+    deploy:
+      resources:
+        limits:
+          memory: 512M
     depends_on:
       - eca-db
       - discovery-server
@@ -216,12 +240,16 @@ services:
     environment:
       TZ: ${TIME_ZONE}
       SPRING_PROFILES_ACTIVE: "docker"
-      JAVA_OPTS: "-Xmx192m"
+      JAVA_OPTS: "-Xmx192m -XX:MaxMetaspaceSize=192m"
       MANAGEMENT_ZIPKIN_TRACING_ENABLED: ${ZIPKIN_ENABLED}
       MANAGEMENT_ZIPKIN_TRACING_ENDPOINT: ${ZIPKIN_URL}
       LOGGING_MODE: ${LOGGING_MODE}
     networks:
       - default
+    deploy:
+      resources:
+        limits:
+          memory: 256M
     depends_on:
       - discovery-server
     labels:
@@ -234,12 +262,16 @@ services:
     environment:
       TZ: ${TIME_ZONE}
       SPRING_PROFILES_ACTIVE: "docker"
-      JAVA_OPTS: "-Xmx256m"
+      JAVA_OPTS: "-Xmx256m -XX:MaxMetaspaceSize=256m"
       MANAGEMENT_ZIPKIN_TRACING_ENABLED: ${ZIPKIN_ENABLED}
       MANAGEMENT_ZIPKIN_TRACING_ENDPOINT: ${ZIPKIN_URL}
       LOGGING_MODE: ${LOGGING_MODE}
     ports:
       - "8080:8080"
+    deploy:
+      resources:
+        limits:
+          memory: 384M
     networks:
       - default
     depends_on:
@@ -255,11 +287,15 @@ services:
     environment:
       TZ: ${TIME_ZONE}
       SPRING_PROFILES_ACTIVE: "docker"
-      JAVA_OPTS: "-Xmx384m"
+      JAVA_OPTS: "-Xmx384m -XX:MaxMetaspaceSize=256m"
       OPENAPI_BASEPATH: "/eca-web-push"
       MANAGEMENT_ZIPKIN_TRACING_ENABLED: ${ZIPKIN_ENABLED}
       MANAGEMENT_ZIPKIN_TRACING_ENDPOINT: ${ZIPKIN_URL}
       LOGGING_MODE: ${LOGGING_MODE}
+    deploy:
+      resources:
+        limits:
+          memory: 512M
     networks:
       - default
     labels:
@@ -273,11 +309,15 @@ services:
     environment:
       TZ: ${TIME_ZONE}
       SPRING_PROFILES_ACTIVE: "docker"
-      JAVA_OPTS: "-Xmx384m"
+      JAVA_OPTS: "-Xmx384m -XX:MaxMetaspaceSize=256m"
       OPENAPI_BASEPATH: "/eca-audit-log"
       MANAGEMENT_ZIPKIN_TRACING_ENABLED: ${ZIPKIN_ENABLED}
       MANAGEMENT_ZIPKIN_TRACING_ENDPOINT: ${ZIPKIN_URL}
       LOGGING_MODE: ${LOGGING_MODE}
+    deploy:
+      resources:
+        limits:
+          memory: 512M
     networks:
       - default
     depends_on:
@@ -294,11 +334,15 @@ services:
     environment:
       TZ: ${TIME_ZONE}
       SPRING_PROFILES_ACTIVE: "docker"
-      JAVA_OPTS: "-Xmx512m"
+      JAVA_OPTS: "-Xmx512m -XX:MaxMetaspaceSize=256m"
       OPENAPI_BASEPATH: "/eca-data-loader"
       MANAGEMENT_ZIPKIN_TRACING_ENABLED: ${ZIPKIN_ENABLED}
       MANAGEMENT_ZIPKIN_TRACING_ENDPOINT: ${ZIPKIN_URL}
       LOGGING_MODE: ${LOGGING_MODE}
+    deploy:
+      resources:
+        limits:
+          memory: 756M
     networks:
       - default
     depends_on:
