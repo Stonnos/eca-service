@@ -2,9 +2,11 @@ package com.ecaservice.server.mq.listener;
 
 import com.ecaservice.base.model.EcaResponse;
 import com.ecaservice.base.model.ErrorCode;
+import com.ecaservice.server.exception.MessageAuthorizationException;
 import com.ecaservice.server.mq.listener.support.AbstractExceptionTranslator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.amqp.AmqpRejectAndDontRequeueException;
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.core.MessageProperties;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -33,33 +35,39 @@ public class CustomErrorHandler implements ErrorHandler {
 
     @Override
     public void handleError(Throwable ex) {
-        if (ex instanceof ListenerExecutionFailedException) {
-            ListenerExecutionFailedException failedException = (ListenerExecutionFailedException) ex;
-            Message failedMessage = failedException.getFailedMessage();
-            MessageProperties messageProperties = failedMessage.getMessageProperties();
-            log.error("There was an error while message processing with correlation id [{}]: {}",
-                    messageProperties.getCorrelationId(), ex.getMessage());
-            EcaResponse errorResponse = translate(failedException);
-            log.error("Sent error response {} for message with correlation id [{}]",
-                    messageProperties.getCorrelationId(), errorResponse);
-            rabbitTemplate.convertAndSend(messageProperties.getReplyTo(), errorResponse, outboundMessage -> {
-                outboundMessage.getMessageProperties().setCorrelationId(messageProperties.getCorrelationId());
-                return outboundMessage;
-            });
-            log.error("Error response {} has been sent for message with correlation id [{}]",
-                    messageProperties.getCorrelationId(), errorResponse);
+        if (ex instanceof ListenerExecutionFailedException executionFailedException) {
+            handleError(executionFailedException.getFailedMessage(), (Exception) executionFailedException.getCause());
+        } else if (ex instanceof MessageAuthorizationException messageAuthorizationException) {
+            handleError(messageAuthorizationException.getFailedMessage(), messageAuthorizationException);
+            throw new AmqpRejectAndDontRequeueException(messageAuthorizationException.getMessage(),
+                    messageAuthorizationException);
         } else {
-            log.error("Unknown error while message handling: {}", ex.getCause().getMessage());
+            log.error("Unknown error while message handling: {}", ex.getMessage(), ex);
+            throw new AmqpRejectAndDontRequeueException(ex.getMessage(), ex);
         }
     }
 
+    public void handleError(Message failedMessage, Exception ex) {
+        MessageProperties messageProperties = failedMessage.getMessageProperties();
+        log.error("There was an error while message processing with correlation id [{}]: {}",
+                messageProperties.getCorrelationId(), ex.getMessage(), ex);
+        EcaResponse errorResponse = translate(ex);
+        log.error("Sent error response {} for message with correlation id [{}]",
+                messageProperties.getCorrelationId(), errorResponse);
+        rabbitTemplate.convertAndSend(messageProperties.getReplyTo(), errorResponse, outboundMessage -> {
+            outboundMessage.getMessageProperties().setCorrelationId(messageProperties.getCorrelationId());
+            return outboundMessage;
+        });
+        log.error("Error response {} has been sent for message with correlation id [{}]",
+                errorResponse, messageProperties.getCorrelationId());
+    }
+
     @SuppressWarnings("unchecked")
-    private EcaResponse translate(ListenerExecutionFailedException ex) {
-        Throwable cause = ex.getCause();
+    private EcaResponse translate(Exception ex) {
         return exceptionTranslators.stream()
-                .filter(t -> t.canTranslate(cause))
+                .filter(t -> t.canTranslate(ex))
                 .findFirst()
-                .map(t -> t.translate(cause))
+                .map(t -> t.translate(ex))
                 .orElse(buildErrorResponse(ErrorCode.INTERNAL_SERVER_ERROR));
     }
 }

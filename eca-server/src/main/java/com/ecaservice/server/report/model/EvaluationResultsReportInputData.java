@@ -28,4 +28,9 @@ public class EvaluationResultsReportInputData {
      * Evaluation results response
      */
     private GetEvaluationResultsResponse evaluationResultsResponse;
+
+    /**
+     * Roc curve image
+     */
+    private byte[] rocImage;
 }

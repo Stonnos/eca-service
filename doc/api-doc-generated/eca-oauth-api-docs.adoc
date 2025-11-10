@@ -1372,6 +1372,261 @@ a|
 ----
 |===
 
+== Gets current user personal access tokens next page for specified page request
+
+__POST__ */personal-access-token/list* - Gets current user personal access tokens next page for specified page request
+
+*Security requirement*
+
+[cols="^50%,^50%",options="header"]
+|===
+|*Name*|*Scopes*
+|
+<<EcaAuth>>
+a|
+
+* web
+
+|===
+
+*Request body*
+
+[width=100%]
+|===
+|*Content type*|*Required*|*Schema*|*Example*
+|*application/json*
+|true
+|
+<<SimplePageRequestDto>>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+a|
+[source,json]
+----
+{
+  "page" : 0,
+  "size" : 25
+}
+----
+|===
+
+
+
+*Api responses*
+[width=100%]
+|===
+|*Code*|*Description*|*Content type*|*Schema*|*Example*
+|200
+|OK
+|*application/json*
+|
+<<PersonalAccessTokensPageDto>>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+a|
+[source,json]
+----
+{
+  "content" : [ {
+    "id" : 1,
+    "name" : "Token",
+    "expireDate" : "2026-07-01 14:00:00",
+    "valid" : true
+  } ],
+  "page" : 0,
+  "totalCount" : 1
+}
+----
+|401
+|Not authorized
+|*application/json*
+|-
+a|
+[source,json]
+----
+{
+  "error" : "unauthorized",
+  "error_description" : "Full authentication is required to access this resource"
+}
+----
+|400
+|Bad request
+|*application/json*
+|
+__array__
+<<<ValidationErrorDto>>
+>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+a|
+[source,json]
+----
+[ {
+  "fieldName" : "page",
+  "code" : "Min",
+  "errorMessage" : "must be greater than or equal to 0"
+}, {
+  "fieldName" : "size",
+  "code" : "Min",
+  "errorMessage" : "must be greater than or equal to 1"
+} ]
+----
+|===
+
+== Creates personal access token for user
+
+__POST__ */personal-access-token/create* - Creates personal access token for user
+
+*Security requirement*
+
+[cols="^50%,^50%",options="header"]
+|===
+|*Name*|*Scopes*
+|
+<<EcaAuth>>
+a|
+
+* web
+
+|===
+
+*Request body*
+
+[width=100%]
+|===
+|*Content type*|*Required*|*Schema*|*Example*
+|*application/json*
+|true
+|
+<<CreatePersonalAccessTokenDto>>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+a|
+[source,json]
+----
+{
+  "name" : "Token",
+  "tokenType" : "USER_TOKEN",
+  "expirationMonth" : 3
+}
+----
+|===
+
+
+
+*Api responses*
+[width=100%]
+|===
+|*Code*|*Description*|*Content type*|*Schema*|*Example*
+|200
+|OK
+|*application/json*
+|
+<<PersonalAccessTokenDetailsDto>>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+a|
+[source,json]
+----
+{
+  "id" : 1,
+  "name" : "Token",
+  "expireDate" : "2026-07-01 14:00:00",
+  "valid" : true,
+  "token" : "6Igz-7_3QGSioGgoFxSe_N_ByhCq1IuQaKJ2i_GBw5TZT_SVtfK44DThXfZ8jj0eXOHazAx23MwfUVpNkX-d2GVdguKlOPEJgXx_xfYAJ-8zOiUiar7H3b39w4RCKrdF"
+}
+----
+|401
+|Not authorized
+|*application/json*
+|-
+a|
+[source,json]
+----
+{
+  "error" : "unauthorized",
+  "error_description" : "Full authentication is required to access this resource"
+}
+----
+|400
+|Bad request
+|*application/json*
+|-
+a|
+[source,json]
+----
+[ {
+  "code" : "DuplicatePersonalAccessTokenName",
+  "errorMessage" : "Duplicate personal access token name"
+} ]
+----
+|===
+
 == Creates change password request
 
 __POST__ */password/change/request* - Creates change password request
@@ -2560,6 +2815,85 @@ a|
 ----
 |===
 
+== Verify personal access token
+
+__GET__ */api/internal/personal-access-token/verify-token* - Verify personal access token
+
+*Security requirement*
+
+[cols="^50%,^50%",options="header"]
+|===
+|*Name*|*Scopes*
+|
+<<EcaAuth>>
+a|
+
+* internal-api
+
+|===
+
+
+*Request parameters*
+[width=100%]
+|===
+|*Name*|*Description*|*Location*|*Schema*
+|*token**
+|Personal access token
+|query
+a|
+__string__
+
+
+*Min. length*: 1
+
+*Max. length*: 255
+
+
+
+
+
+
+
+
+
+
+|===
+
+*Api responses*
+[width=100%]
+|===
+|*Code*|*Description*|*Content type*|*Schema*|*Example*
+|200
+|OK
+|*application/json*
+|
+<<PersonalAccessTokenInfoDto>>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+a|
+[source,json]
+----
+{
+  "user" : "admin",
+  "tokenType" : "USER_TOKEN",
+  "valid" : true
+}
+----
+|===
+
 == Deletes photo for current authenticated user
 
 __DELETE__ */users/delete-photo* - Deletes photo for current authenticated user
@@ -2623,6 +2957,88 @@ __array__
 
 
 
+a|
+[source,json]
+----
+[ {
+  "fieldName" : null,
+  "code" : "DataNotFound",
+  "errorMessage" : "Entity with search key [1] not found!"
+} ]
+----
+|===
+
+== Removes user personal access token
+
+__DELETE__ */personal-access-token/remove/{id}* - Removes user personal access token
+
+*Security requirement*
+
+[cols="^50%,^50%",options="header"]
+|===
+|*Name*|*Scopes*
+|
+<<EcaAuth>>
+a|
+
+* web
+
+|===
+
+
+*Request parameters*
+[width=100%]
+|===
+|*Name*|*Description*|*Location*|*Schema*
+|*id**
+|-
+|path
+a|
+__integer__
+__(int64)__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|===
+
+*Api responses*
+[width=100%]
+|===
+|*Code*|*Description*|*Content type*|*Schema*|*Example*
+|200
+|OK
+|*-*
+|-
+a|
+-
+|401
+|Not authorized
+|*application/json*
+|-
+a|
+[source,json]
+----
+{
+  "error" : "unauthorized",
+  "error_description" : "Full authentication is required to access this resource"
+}
+----
+|400
+|Bad request
+|*application/json*
+|-
 a|
 [source,json]
 ----
@@ -3819,6 +4235,392 @@ __string__
 
 
 |===
+=== PersonalAccessTokenDto
+:table-caption: Table
+.Personal access token
+[width=100%]
+|===
+|*Name*|*Description*|*Schema*
+|*id*
+|ID
+a|
+__integer__
+__(int64)__
+
+
+
+
+
+
+*Minimum*: 1*
+
+*Maximum*: 9 223 372 036 854 775 807*
+
+
+
+
+
+
+
+
+|*name*
+|Token unique name
+a|
+__string__
+
+
+
+
+*Max. length*: 255
+
+
+
+
+
+
+
+
+
+
+|*expireDate*
+|Expire date
+a|
+__string__
+
+
+
+
+*Max. length*: 19
+
+
+
+
+
+
+
+
+
+
+|*valid*
+|Is token valid (not expired)?
+a|
+__boolean__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|===
+=== PersonalAccessTokensPageDto
+:table-caption: Table
+.UPersonal access token page dto
+[width=100%]
+|===
+|*Name*|*Description*|*Schema*
+|*content*
+|-
+a|
+__array__
+<<<PersonalAccessTokenDto>>
+>
+
+
+
+
+
+
+
+
+
+
+*Max. items*: 100
+
+
+
+
+|*page*
+|Page number
+a|
+__integer__
+__(int32)__
+
+
+
+
+
+
+*Minimum*: 0*
+
+*Maximum*: 2 147 483 647*
+
+
+
+
+
+
+
+
+|*totalCount*
+|Total elements count in all pages
+a|
+__integer__
+__(int64)__
+
+
+
+
+
+
+*Minimum*: 0*
+
+*Maximum*: 9 223 372 036 854 775 807*
+
+
+
+
+
+
+
+
+|===
+=== SimplePageRequestDto
+:table-caption: Table
+.Simple page request model
+[width=100%]
+|===
+|*Name*|*Description*|*Schema*
+|*page**
+|Page number
+a|
+__integer__
+__(int32)__
+
+
+
+
+
+
+*Minimum*: 0*
+
+*Maximum*: 2 147 483 647*
+
+
+
+
+
+
+
+
+|*size**
+|Page size
+a|
+__integer__
+__(int32)__
+
+
+
+
+
+
+*Minimum*: 1*
+
+*Maximum*: 100*
+
+
+
+
+
+
+
+
+|===
+=== PersonalAccessTokenDetailsDto
+:table-caption: Table
+.Personal access token details
+[width=100%]
+|===
+|*Name*|*Description*|*Schema*
+|*id*
+|ID
+a|
+__integer__
+__(int64)__
+
+
+
+
+
+
+*Minimum*: 1*
+
+*Maximum*: 9 223 372 036 854 775 807*
+
+
+
+
+
+
+
+
+|*name*
+|Token unique name
+a|
+__string__
+
+
+
+
+*Max. length*: 255
+
+
+
+
+
+
+
+
+
+
+|*expireDate*
+|Expire date
+a|
+__string__
+
+
+
+
+*Max. length*: 19
+
+
+
+
+
+
+
+
+
+
+|*valid*
+|Is token valid (not expired)?
+a|
+__boolean__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|*token*
+|Token value
+a|
+__string__
+
+
+
+
+*Max. length*: 255
+
+
+
+
+
+
+
+
+
+
+|===
+=== CreatePersonalAccessTokenDto
+:table-caption: Table
+.Create personal access token dto
+[width=100%]
+|===
+|*Name*|*Description*|*Schema*
+|*name**
+|Token unique name
+a|
+__string__
+
+
+*Min. length*: 1
+
+*Max. length*: 255
+
+
+
+
+
+
+
+
+
+
+|*tokenType**
+|Token type
+a|
+__string__
+
+
+
+
+*Max. length*: 255
+
+
+
+
+
+
+
+
+
+
+*Values*:
+
+* USER_TOKEN
+
+* APP_TOKEN
+|*expirationMonth**
+|Expiration month
+a|
+__integer__
+__(int32)__
+
+
+
+
+
+
+*Minimum*: 1*
+
+*Maximum*: 2 147 483 647*
+
+
+
+
+
+
+
+
+|===
 === ChangePasswordRequestStatusDto
 :table-caption: Table
 .Change password request status
@@ -4594,6 +5396,75 @@ a|
 __array__
 <<<UserNotificationEventOptionsDto>>
 >
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|===
+=== PersonalAccessTokenInfoDto
+:table-caption: Table
+.User model
+[width=100%]
+|===
+|*Name*|*Description*|*Schema*
+|*user*
+|User login
+a|
+__string__
+
+
+
+
+*Max. length*: 255
+
+
+
+
+
+
+
+
+
+
+|*tokenType*
+|Token type
+a|
+__string__
+
+
+
+
+*Max. length*: 255
+
+
+
+
+
+
+
+
+
+
+*Values*:
+
+* USER_TOKEN
+
+* APP_TOKEN
+|*valid*
+|Token valid?
+a|
+__boolean__
 
 
 

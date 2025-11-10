@@ -8,7 +8,7 @@ import com.ecaservice.oauth.repository.TfaCodeRepository;
 import com.ecaservice.oauth.repository.UserEntityRepository;
 import com.ecaservice.oauth.security.model.TfaCodeAuthenticationRequest;
 import com.ecaservice.oauth.service.AuthenticationJsonSerializer;
-import com.ecaservice.user.model.Role;
+import com.ecaservice.oauth.util.Role;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Import;

@@ -5,7 +5,7 @@
     <parent>
         <artifactId>eca-service</artifactId>
         <groupId>eca.service</groupId>
-        <version>7.0.2</version>
+        <version>7.0.3</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -88,6 +88,12 @@
         <dependency>
             <groupId>eca.service</groupId>
             <artifactId>oauth2-core</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>eca.service</groupId>
+            <artifactId>rabbit-core</artifactId>
             <version>${project.version}</version>
         </dependency>
 

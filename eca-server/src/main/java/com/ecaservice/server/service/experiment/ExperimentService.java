@@ -4,7 +4,6 @@ import com.ecaservice.common.web.exception.InvalidOperationException;
 import com.ecaservice.server.config.CrossValidationConfig;
 import com.ecaservice.server.exception.experiment.ExperimentException;
 import com.ecaservice.server.mapping.ExperimentMapper;
-import com.ecaservice.server.model.entity.ChannelVisitor;
 import com.ecaservice.server.model.entity.Experiment;
 import com.ecaservice.server.model.entity.ExperimentStep;
 import com.ecaservice.server.model.entity.ExperimentStepEntity;
@@ -67,7 +66,6 @@ public class ExperimentService {
             var instancesInfo = instancesInfoService.getOrSaveInstancesInfo(experimentRequestData.getDataUuid());
             experiment.setRelationName(instancesInfo.getRelationName());
             experiment.setInstancesInfo(instancesInfo);
-            setAdditionalProperties(experiment, experimentRequestData);
             experiment.setRequestStatus(RequestStatus.NEW);
             experiment.setRequestId(experimentRequestData.getRequestId());
             experiment.setTrainingDataUuid(experimentRequestData.getDataUuid());
@@ -169,20 +167,5 @@ public class ExperimentService {
         experimentStepRepository.saveAll(steps);
         var stepNames = steps.stream().map(ExperimentStepEntity::getStep).collect(Collectors.toList());
         log.info("{} steps has been saved for experiment [{}]", stepNames, experiment.getRequestId());
-    }
-
-    private void setAdditionalProperties(Experiment experiment, ExperimentRequestData experimentRequestData) {
-        experimentRequestData.getChannel().visit(new ChannelVisitor() {
-            @Override
-            public void visitWeb() {
-                experiment.setCreatedBy(experimentRequestData.getCreatedBy());
-            }
-
-            @Override
-            public void visitQueue() {
-                experiment.setCorrelationId(experimentRequestData.getCorrelationId());
-                experiment.setReplyTo(experimentRequestData.getReplyTo());
-            }
-        });
     }
 }

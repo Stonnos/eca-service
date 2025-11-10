@@ -18,6 +18,13 @@
     <artifactId>core-redelivery</artifactId>
     <version>${project.version}</version>
 </dependency>
+
+<!-- Опциональная зависимость для поддержки feign exception strategy -->
+<dependency>
+    <groupId>eca.service</groupId>
+    <artifactId>feign-oauth2</artifactId>
+    <version>${project.version}</version>
+ </dependency>
 ----
 
 В файле application.yml добавить настройки библиотеки

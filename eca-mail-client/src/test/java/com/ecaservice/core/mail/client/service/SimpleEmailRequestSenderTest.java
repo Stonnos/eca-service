@@ -1,11 +1,12 @@
 package com.ecaservice.core.mail.client.service;
 
-import com.ecaservice.notification.dto.EmailResponse;
+import com.ecaservice.core.mail.client.config.EcaMailClientProperties;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 
 import static com.ecaservice.core.mail.client.TestHelperUtils.createEmailRequest;
 import static org.mockito.Mockito.atLeastOnce;
@@ -20,8 +21,11 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 class SimpleEmailRequestSenderTest {
 
+    private static final String QUEUE_NAME = "queue";
     @Mock
-    private EmailClient emailClient;
+    private RabbitTemplate rabbitTemplate;
+    @Mock
+    private EcaMailClientProperties ecaMailClientProperties;
 
     @InjectMocks
     private SimpleEmailRequestSender simpleEmailRequestSender;
@@ -29,8 +33,10 @@ class SimpleEmailRequestSenderTest {
     @Test
     void testHandleEmailEvent() {
         var emailRequest = createEmailRequest();
-        when(emailClient.sendEmail(emailRequest)).thenReturn(new EmailResponse());
+        EcaMailClientProperties.RabbitProperties properties = new EcaMailClientProperties.RabbitProperties();
+        properties.setQueueName(QUEUE_NAME);
+        when(ecaMailClientProperties.getRabbit()).thenReturn(properties);
         simpleEmailRequestSender.sendEmail(emailRequest);
-        verify(emailClient, atLeastOnce()).sendEmail(emailRequest);
+        verify(rabbitTemplate, atLeastOnce()).convertAndSend(properties.getQueueName(), emailRequest);
     }
 }

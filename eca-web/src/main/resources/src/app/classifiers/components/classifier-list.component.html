@@ -61,6 +61,7 @@
 
         <ng-template pTemplate="header">
           <tr>
+            <th></th>
             <ng-container *ngFor="let column of columns">
               <th *ngIf="!notSortable(column.name)" [pSortableColumn]="column.name">
                 {{ column.label }}
@@ -76,6 +77,24 @@
               [class.finished-status-blink]="isBlink(item) && item?.requestStatus?.value == 'FINISHED'"
               [class.error-status-blink]="isBlink(item) && item?.requestStatus?.value == 'ERROR'"
               [class.timeout-status-blink]="isBlink(item) && item?.requestStatus?.value == 'TIMEOUT'">
+            <td class="text-center">
+              <button *ngIf="item.modelPath" pButton
+                      type="button"
+                      class="ui-button-secondary link-button mr-2"
+                      pTooltip="Скачать модель"
+                      icon="pi pi-download"
+                      [disabled]="loading"
+                      (click)="downloadModel(item)">
+              </button>
+              <button *ngIf="item.modelPath" pButton
+                      type="button"
+                      class="ui-button-secondary link-button"
+                      pTooltip="Копировать ссылку для скачивания модели"
+                      icon="pi pi-copy"
+                      [disabled]="loading"
+                      (click)="copyModelDownloadLink(item)">
+              </button>
+            </td>
             <td *ngFor="let column of columns">
               <a [routerLink]="" *ngIf="isLink(column.name)"
                  (click)="onSelect($event, item, column.name, infoPanel)">

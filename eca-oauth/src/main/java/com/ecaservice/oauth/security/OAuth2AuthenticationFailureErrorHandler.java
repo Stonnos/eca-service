@@ -33,7 +33,7 @@ public class OAuth2AuthenticationFailureErrorHandler implements AuthenticationFa
     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response,
                                         AuthenticationException authenticationException) throws IOException {
         log.error("Authentication request [{}] error: {}", request.getRequestURI(),
-                authenticationException.getMessage());
+                authenticationException.getMessage(), authenticationException);
         ServletServerHttpResponse httpResponse = new ServletServerHttpResponse(response);
         if (authenticationException instanceof OAuth2AuthenticationException) {
             OAuth2Error error = ((OAuth2AuthenticationException) authenticationException).getError();

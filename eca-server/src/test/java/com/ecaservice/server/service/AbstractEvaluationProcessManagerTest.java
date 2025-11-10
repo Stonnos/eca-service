@@ -1,12 +1,12 @@
 package com.ecaservice.server.service;
 
-import com.ecaservice.core.mail.client.service.EmailClient;
-import com.ecaservice.core.push.client.service.WebPushClient;
+import com.ecaservice.core.mail.client.config.rabbit.MailClientRabbitConfiguration;
+import com.ecaservice.core.mail.client.service.EmailRequestSender;
+import com.ecaservice.core.push.client.config.rabbit.WebPushClientRabbitConfiguration;
+import com.ecaservice.core.push.client.service.WebPushSender;
 import com.ecaservice.data.storage.dto.ExportInstancesResponseDto;
 import com.ecaservice.ers.dto.EvaluationResultsRequest;
 import com.ecaservice.ers.dto.EvaluationResultsResponse;
-import com.ecaservice.notification.dto.EmailRequest;
-import com.ecaservice.notification.dto.EmailResponse;
 import com.ecaservice.s3.client.minio.model.GetPresignedUrlObject;
 import com.ecaservice.s3.client.minio.service.ObjectStorageService;
 import com.ecaservice.server.model.data.InstancesMetaDataModel;
@@ -56,14 +56,19 @@ public abstract class AbstractEvaluationProcessManagerTest<T extends AbstractEva
     private static final String TEST_MAIL_RU = "test@mail.ru";
 
     @MockBean
+    private MailClientRabbitConfiguration mailClientRabbitConfiguration;
+    @MockBean
+    private WebPushClientRabbitConfiguration webPushClientRabbitConfiguration;
+
+    @MockBean
     @Getter
     private UserProfileOptionsFeignClient userProfileOptionsFeignClient;
     @MockBean
     @Getter
-    private EmailClient emailClient;
+    private EmailRequestSender emailRequestSender;
     @MockBean
     @Getter
-    private WebPushClient webPushClient;
+    private WebPushSender webPushSender;
     @MockBean
     @Getter
     private ObjectStorageService objectStorageService;
@@ -101,7 +106,6 @@ public abstract class AbstractEvaluationProcessManagerTest<T extends AbstractEva
         mockSentEvaluationResults();
         mockGetUserInfo();
         mockExportValidInstances();
-        mockSentEmail();
         mockGetUserProfileOptions(true);
         before();
     }
@@ -140,10 +144,6 @@ public abstract class AbstractEvaluationProcessManagerTest<T extends AbstractEva
         userInfoDto.setEmail(TEST_MAIL_RU);
         when(userService.getCurrentUser()).thenReturn(CREATED_BY);
         when(usersClient.getUserInfo(CREATED_BY)).thenReturn(userInfoDto);
-    }
-
-    private void mockSentEmail() {
-        when(emailClient.sendEmail(any(EmailRequest.class))).thenReturn(new EmailResponse());
     }
 
     private void mockExportValidInstances() {

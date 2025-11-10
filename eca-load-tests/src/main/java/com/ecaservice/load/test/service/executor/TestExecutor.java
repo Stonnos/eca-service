@@ -106,7 +106,8 @@ public class TestExecutor {
                 log.warn("Worker thread timeout occurred for test [{}]", loadTestEntity.getTestUuid());
             }
         } catch (Exception ex) {
-            log.error("There was an error while execute test [{}]: {}", loadTestEntity.getTestUuid(), ex.getMessage());
+            log.error("There was an error while execute test [{}]: {}", loadTestEntity.getTestUuid(),
+                    ex.getMessage(), ex);
             loadTestService.finishWithError(loadTestEntity, ex.getMessage());
         } finally {
             executor.shutdown();
@@ -136,7 +137,7 @@ public class TestExecutor {
                     log.error("Thread interrupted error: {}", ex.getMessage());
                     Thread.currentThread().interrupt();
                 } catch (Exception ex) {
-                    log.error("Error while sent next evaluation request: {}", ex.getMessage());
+                    log.error("Error while sent next evaluation request: {}", ex.getMessage(), ex);
                 }
             }
             countDownLatch.countDown();
@@ -165,7 +166,7 @@ public class TestExecutor {
             }
         } catch (Exception ex) {
             log.error("There was an error while sending requests for test [{}]: {}", loadTestEntity.getTestUuid(),
-                    ex.getMessage());
+                    ex.getMessage(), ex);
             loadTestService.finishWithError(loadTestEntity, ex.getMessage());
         } finally {
             executor.shutdown();

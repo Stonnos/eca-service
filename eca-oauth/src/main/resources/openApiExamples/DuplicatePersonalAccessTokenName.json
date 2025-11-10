@@ -1,0 +1,6 @@
+[
+  {
+    "code": "DuplicatePersonalAccessTokenName",
+    "errorMessage": "Duplicate personal access token name"
+  }
+]

@@ -3,7 +3,8 @@ import {
   EvaluationLogDetailsDto,
   PushRequestDto,
   AttributeValueMetaInfoDto,
-  AttributeMetaInfoDto
+  AttributeMetaInfoDto,
+  S3ContentResponseDto
 } from "../../../../../../../target/generated-sources/typescript/eca-web-dto";
 import { ClassifiersService } from "../../classifiers/services/classifiers.service";
 import { MessageService, SelectItem } from 'primeng/api';
@@ -12,7 +13,6 @@ import { filter, finalize} from "rxjs/internal/operators";
 import { EvaluationLogFields } from "../../common/util/field-names";
 import { FieldService } from "../../common/services/field.service";
 import { Utils } from "../../common/util/utils";
-import { FieldLink } from "../../common/model/field-link";
 import { Subscription } from "rxjs";
 import { Logger} from "../../common/util/logging";
 import { PushMessageType } from "../../common/util/push-message.type";
@@ -28,7 +28,7 @@ import { saveAs } from 'file-saver/dist/FileSaver';
   templateUrl: './evaluation-log-details.component.html',
   styleUrls: ['./evaluation-log-details.component.scss']
 })
-export class EvaluationLogDetailsComponent implements OnInit, OnDestroy, FieldLink {
+export class EvaluationLogDetailsComponent implements OnInit, OnDestroy {
 
   private readonly finalRequestStatuses = ['FINISHED', 'ERROR', 'TIMEOUT'];
 
@@ -39,8 +39,6 @@ export class EvaluationLogDetailsComponent implements OnInit, OnDestroy, FieldLi
 
   private modelLoading: boolean = false;
   private reportLoading: boolean = false;
-
-  public linkColumns: string[] = [EvaluationLogFields.MODEL_PATH];
 
   public evaluationLogDetails: EvaluationLogDetailsDto;
 
@@ -135,21 +133,9 @@ export class EvaluationLogDetailsComponent implements OnInit, OnDestroy, FieldLi
     return null;
   }
 
-  public isLink(field: string): boolean {
-    return this.linkColumns.includes(field);
-  }
-
   public isRequestStatusBlink(field: string, requestStatus: string): boolean {
     return this.blink && field == 'requestStatus.description' && this.evaluationLogDetails
       && this.evaluationLogDetails.requestStatus.value == requestStatus;
-  }
-
-  public onLink(field: string) {
-    if (field === EvaluationLogFields.MODEL_PATH) {
-      this.downloadModel();
-    } else {
-      this.messageService.add({severity: 'error', summary: 'Ошибка', detail: `Can't handle ${field} as link`});
-    }
   }
 
   public downloadModel(): void {
@@ -158,6 +144,20 @@ export class EvaluationLogDetailsComponent implements OnInit, OnDestroy, FieldLi
       () => this.modelLoading = false,
       (error) => this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message })
     );
+  }
+
+  public copyModelDownloadLink(): void {
+    this.classifiersService.getModelContentUrl(this.evaluationLogDetails.id)
+      .subscribe({
+        next: (s3ContentResponseDto: S3ContentResponseDto) => {
+          navigator.clipboard.writeText(s3ContentResponseDto.contentUrl);
+          this.messageService.add({ severity: 'success',
+            summary: `Ссылка для скачивния модели ${this.evaluationLogDetails.requestId} скопирована`, detail: '' });
+        },
+        error: (error) => {
+          this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
+        }
+      });
   }
 
   public downloadEvaluationResultsReport(): void {
@@ -246,9 +246,9 @@ export class EvaluationLogDetailsComponent implements OnInit, OnDestroy, FieldLi
       { name: EvaluationLogFields.EVALUATION_METHOD_DESCRIPTION, label: "Метод оценки точности:" },
       { name: EvaluationLogFields.PCT_CORRECT, label: "Точность классификатора, %:" },
       { name: EvaluationLogFields.EVALUATION_TOTAL_TIME, label: "Время построения модели:" },
-      { name: EvaluationLogFields.CREATION_DATE, label: "Дата создания заявки:" },
-      { name: EvaluationLogFields.START_DATE, label: "Дата начала обработки заявки:" },
-      { name: EvaluationLogFields.END_DATE, label: "Дата окончания обработки заявки:" },
+      { name: EvaluationLogFields.CREATION_DATE, label: "Дата создания:" },
+      { name: EvaluationLogFields.START_DATE, label: "Дата начала обработки:" },
+      { name: EvaluationLogFields.END_DATE, label: "Дата окончания обработки:" },
       { name: EvaluationLogFields.MODEL_PATH, label: "Модель классификатора:" },
       { name: EvaluationLogFields.DELETED_DATE, label: "Дата удаления модели:" },
     ];

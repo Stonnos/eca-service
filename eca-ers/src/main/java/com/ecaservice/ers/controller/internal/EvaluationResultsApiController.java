@@ -15,16 +15,21 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import jakarta.validation.Valid;
+
+import static com.ecaservice.config.swagger.OpenApi30Configuration.ECA_AUTHENTICATION_SECURITY_SCHEME;
+import static com.ecaservice.config.swagger.OpenApi30Configuration.SCOPE_INTERNAL_API;
 
 /**
  * Evaluation results service controller.
@@ -47,9 +52,11 @@ public class EvaluationResultsApiController {
      * @param evaluationResultsRequest - evaluation result request
      * @return evaluation results response
      */
+    @PreAuthorize("hasAuthority('SCOPE_internal-api')")
     @Operation(
             description = "Saves evaluation results report",
             summary = "Saves evaluation results report",
+            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME, scopes = SCOPE_INTERNAL_API),
             requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(content = {
                     @Content(examples = {
                             @ExampleObject(
@@ -97,9 +104,11 @@ public class EvaluationResultsApiController {
      * @param request - get evaluation result request
      * @return evaluation results response
      */
+    @PreAuthorize("hasAuthority('SCOPE_internal-api')")
     @Operation(
             description = "Gets evaluation results simple report",
             summary = "Gets evaluation results simple report",
+            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME, scopes = SCOPE_INTERNAL_API),
             requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(content = {
                     @Content(examples = {
                             @ExampleObject(
@@ -148,9 +157,11 @@ public class EvaluationResultsApiController {
      * @param classifierOptionsRequest - classifier options request
      * @return classifier options response
      */
+    @PreAuthorize("hasAuthority('SCOPE_internal-api')")
     @Operation(
             description = "Endpoint for searching optimal classifiers options for specified request",
             summary = "Endpoint for searching optimal classifiers options for specified request",
+            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME, scopes = SCOPE_INTERNAL_API),
             requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(content = {
                     @Content(examples = {
                             @ExampleObject(

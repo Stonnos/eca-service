@@ -1065,7 +1065,7 @@ __POST__ */api/internal/instances/export-valid-instances* - Exports valid instan
 <<EcaAuth>>
 a|
 
-* web
+* internal-api
 
 |===
 

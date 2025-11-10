@@ -39,4 +39,10 @@ public class QueueConfig {
      */
     @NotEmpty
     private String evaluationReplyToQueue;
+
+    /**
+     * Authentication token
+     */
+    @NotEmpty
+    private String authToken;
 }

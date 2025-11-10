@@ -16,6 +16,8 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class RabbitSender {
 
+    private static final String AUTH_TOKEN_HEADER = "auth-token";
+
     private final QueueConfig queueConfig;
     private final RabbitTemplate rabbitTemplate;
 
@@ -29,6 +31,7 @@ public class RabbitSender {
         rabbitTemplate.convertAndSend(queueConfig.getEvaluationRequestQueue(), payload, message -> {
             message.getMessageProperties().setCorrelationId(correlationId);
             message.getMessageProperties().setReplyTo(queueConfig.getReplyToQueue());
+            message.getMessageProperties().setHeader(AUTH_TOKEN_HEADER, queueConfig.getAuthToken());
             return message;
         });
     }

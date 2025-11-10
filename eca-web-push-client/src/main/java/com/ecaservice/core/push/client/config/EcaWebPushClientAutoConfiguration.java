@@ -1,10 +1,8 @@
 package com.ecaservice.core.push.client.config;
 
-import com.ecaservice.core.push.client.service.WebPushClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -24,7 +22,6 @@ import static com.ecaservice.common.web.concurrent.ThreadPoolExecutorFactory.cre
 @EnableAsync
 @EnableConfigurationProperties(EcaWebPushClientProperties.class)
 @ComponentScan({"com.ecaservice.core.push.client"})
-@EnableFeignClients(basePackageClasses = WebPushClient.class)
 @ConditionalOnProperty(value = "web-push.client.enabled", havingValue = "true")
 public class EcaWebPushClientAutoConfiguration {
 

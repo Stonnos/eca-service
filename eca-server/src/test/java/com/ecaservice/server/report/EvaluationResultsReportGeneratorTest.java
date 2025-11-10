@@ -38,6 +38,7 @@ import static com.ecaservice.server.TestHelperUtils.createStackingOptions;
 import static com.ecaservice.server.TestHelperUtils.loadClassifiersTemplates;
 import static com.ecaservice.server.TestHelperUtils.loadEnsembleClassifiersTemplates;
 import static com.ecaservice.server.TestHelperUtils.loadEvaluationResultsResponse;
+import static com.ecaservice.server.TestHelperUtils.loadRocImage;
 import static com.ecaservice.server.report.ReportTemplates.EVALUATION_RESULTS_TEMPLATE;
 import static com.ecaservice.server.util.ClassifierOptionsHelper.toJsonString;
 import static org.apache.commons.lang3.SystemUtils.USER_DIR;
@@ -83,11 +84,12 @@ public class EvaluationResultsReportGeneratorTest {
         EvaluationLog evaluationLog = createEvaluationLog();
         var stackingOptions = createStackingOptions();
         evaluationLog.setClassifierOptions(toJsonString(stackingOptions));
-
+        var rocImage = loadRocImage();
         EvaluationResultsReportInputData evaluationResultsReportInputData = EvaluationResultsReportInputData.builder()
                 .evaluationEntity(evaluationLog)
                 .classifierOptions(evaluationLog.getClassifierOptions())
                 .evaluationResultsResponse(evaluationResultsResponse)
+                .rocImage(rocImage)
                 .build();
         EvaluationResultsReportBean evaluationResultsReportBean =
                 evaluationResultsReportDataProcessor.processReportData(evaluationResultsReportInputData);

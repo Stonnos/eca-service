@@ -10,14 +10,19 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import static com.ecaservice.config.swagger.OpenApi30Configuration.ECA_AUTHENTICATION_SECURITY_SCHEME;
+import static com.ecaservice.config.swagger.OpenApi30Configuration.SCOPE_INTERNAL_API;
 
 /**
  * Instances internal API controller.
@@ -39,9 +44,11 @@ public class InstancesInternalApiController {
      * @param uuid - instances uuid
      * @return instances meta info dto
      */
+    @PreAuthorize("hasAuthority('SCOPE_internal-api')")
     @Operation(
             description = "Gets instances meta info",
             summary = "Gets instances meta info",
+            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME, scopes = SCOPE_INTERNAL_API),
             responses = {
                     @ApiResponse(description = "OK", responseCode = "200",
                             content = @Content(

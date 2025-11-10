@@ -27,7 +27,8 @@ spring:
       spec: maximumSize=100, expireAfterWrite=1800s
   servlet:
     multipart:
-      max-file-size: 10MB
+      max-file-size: 50MB
+      max-request-size: 50MB
   cloud:
     openfeign:
       oauth2:
@@ -63,7 +64,7 @@ eca-ds:
   dateFormat: yyyy-MM-dd HH:mm:ss
   batchSize: 100
   reportsPath: reports-config.json
-  supportedDataFileExtensions: csv, arff, xlsx, json, txt, data, xml
+  supportedDataFileExtensions: csv, arff, xlsx, json, txt, data, xml, zip
 
 ## Swagger properties
 open-api:
@@ -84,12 +85,6 @@ springdoc:
       client-id: swagger
       client-secret: swagger_secret
     disable-swagger-default-url: true
-
-resource:
-  server:
-    security:
-      whitelistUrls:
-        - /api/internal/**
 
 auth-server:
   baseUrl: http://localhost:8085/eca-oauth

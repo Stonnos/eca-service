@@ -69,7 +69,7 @@ public class ExperimentResultsTestStepHandler implements AbstractTestStepHandler
             log.info("Experiment [{}] results has been processed", experimentRequestEntity.getRequestId());
         } catch (Exception ex) {
             log.error("There was an error while process experiment results [{}] test step [{}]: {}",
-                    experimentRequestEntity.getRequestId(), experimentResultsStep.getId(), ex.getMessage());
+                    experimentRequestEntity.getRequestId(), experimentResultsStep.getId(), ex.getMessage(), ex);
             testStepService.finishWithError(experimentResultsStep, ex.getMessage());
         }
     }

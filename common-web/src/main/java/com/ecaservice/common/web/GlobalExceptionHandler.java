@@ -36,7 +36,7 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler({IllegalArgumentException.class, IllegalStateException.class})
     public ResponseEntity<List<ValidationErrorDto>> handleBadRequest(Exception ex) {
-        log.error("Bad request error: {}", ex.getMessage());
+        log.error("Bad request error: {}", ex.getMessage(), ex);
         var validationErrorDto = new ValidationErrorDto();
         validationErrorDto.setCode(CommonErrorCode.INVALID_REQUEST_CODE.getCode());
         validationErrorDto.setErrorMessage(ex.getMessage());
@@ -96,7 +96,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public ResponseEntity<List<ValidationErrorDto>> handleHttpMessageNotReadableError(
             HttpMessageNotReadableException ex) {
-        log.error("Http message not readable error: {}", ex.getMessage());
+        log.error("Http message not readable error: {}", ex.getMessage(), ex);
         var response = ExceptionResponseHandler.handleHttpMessageNotReadable(ex);
         log.error("Http message not readable errors response: {}", response);
         return ResponseEntity.badRequest().body(response);
@@ -110,7 +110,7 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(value = BindException.class)
     public ResponseEntity<List<ValidationErrorDto>> handleBindException(BindException ex) {
-        log.error("Bind error: {}", ex.getMessage());
+        log.error("Bind error: {}", ex.getMessage(), ex);
         var response = ExceptionResponseHandler.handleBindException(ex);
         log.error("Bind errors response: {}", response);
         return ResponseEntity.badRequest().body(response);
@@ -125,7 +125,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(value = MethodArgumentTypeMismatchException.class)
     public ResponseEntity<List<ValidationErrorDto>> handleMethodArgumentTypeMismatchException(
             MethodArgumentTypeMismatchException ex) {
-        log.error("Method argument type mismatch error: {}", ex.getMessage());
+        log.error("Method argument type mismatch error: {}", ex.getMessage(), ex);
         var response = ExceptionResponseHandler.handleMethodArgumentTypeMismatchException(ex);
         log.error("Method argument type mismatch errors response: {}", response);
         return ResponseEntity.badRequest().body(response);
@@ -138,7 +138,7 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(MaxUploadSizeExceededException.class)
     public ResponseEntity<List<ValidationErrorDto>> handleError(MaxUploadSizeExceededException ex) {
-        log.error("Max upload size error: {}", ex.getMessage());
+        log.error("Max upload size error: {}", ex.getMessage(), ex);
         var response = ExceptionResponseHandler.handleMaxUploadSizeExceededException(ex);
         log.error("Max upload size error response: {}", response);
         return ResponseEntity.badRequest().body(response);

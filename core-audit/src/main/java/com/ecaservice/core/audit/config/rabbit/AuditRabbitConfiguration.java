@@ -1,10 +1,8 @@
 package com.ecaservice.core.audit.config.rabbit;
 
-import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -15,8 +13,7 @@ import org.springframework.context.annotation.Configuration;
  * @author Roman Batygin
  */
 @Configuration
-@ConditionalOnClass(CachingConnectionFactory.class)
-@ConditionalOnProperty(value = "audit.sender.type", havingValue = "rabbitmq")
+@ConditionalOnProperty(value = "audit.enabled", havingValue = "true")
 public class AuditRabbitConfiguration {
 
     public static final String AUDIT_RABBIT_TEMPLATE = "auditRabbitTemplate";

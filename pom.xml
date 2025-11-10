@@ -6,7 +6,7 @@
 
     <groupId>eca.service</groupId>
     <artifactId>eca-service</artifactId>
-    <version>7.0.2</version>
+    <version>7.0.3</version>
     <modules>
         <module>core-test</module>
         <module>oauth2-test</module>
@@ -15,7 +15,7 @@
         <module>core-lock</module>
         <module>core-tracing</module>
         <module>eca-model</module>
-        <module>eca-user-model</module>
+        <module>eca-oauth-transport</module>
         <module>eca-mail-transport</module>
         <module>eca-web-push-client</module>
         <module>classifiers-options</module>
@@ -91,7 +91,7 @@
         <lombok.version>1.18.32</lombok.version>
         <logback.version>1.4.11</logback.version>
         <slf4j.version>2.0.13</slf4j.version>
-        <eca.version>7.0</eca.version>
+        <eca.version>7.1</eca.version>
         <h2.version>2.2.224</h2.version>
         <postresql.version>42.6.0</postresql.version>
         <liquibase.version>4.27.0</liquibase.version>
@@ -106,7 +106,6 @@
         <swagger-annotations.version>2.2.15</swagger-annotations.version>
         <open-api-webmvc-ui.version>2.2.0</open-api-webmvc-ui.version>
         <guava.version>32.1.1-jre</guava.version>
-        <feign.version>11.10</feign.version>
         <janino.version>3.1.7</janino.version>
         <jacoco-plugin.version>0.8.10</jacoco-plugin.version>
         <jacoco.minCoverage>0.0</jacoco.minCoverage>

@@ -16,3 +16,5 @@ id;event_type;message_template;audit_code_id
 17;SUCCESS;Изменены настроки уведомлений в личном кабинете;UPDATE_USER_PROFILE_NOTIFICATION_OPTIONS
 18;SUCCESS;Успешный вход в систему;LOGIN
 19;SUCCESS;Выход из системы;LOGOUT
+20;SUCCESS;Создание персонального токена доступа с именем ${returnValue.name};CREATE_PERSONAL_ACCESS_TOKEN
+21;SUCCESS;Удаление персонального токена доступа с именем ${returnValue.name};DELETE_PERSONAL_ACCESS_TOKEN

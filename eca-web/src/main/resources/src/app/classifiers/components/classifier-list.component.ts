@@ -8,7 +8,8 @@ import {
   FormTemplateGroupDto,
   PageDto,
   PageRequestDto, PushRequestDto,
-  RequestStatusStatisticsDto
+  RequestStatusStatisticsDto,
+  S3ContentResponseDto
 } from "../../../../../../../target/generated-sources/typescript/eca-web-dto";
 import { ClassifiersService } from "../services/classifiers.service";
 import { OverlayPanel } from "primeng/primeng";
@@ -184,9 +185,6 @@ export class ClassifierListComponent extends BaseListComponent<EvaluationLogDto>
           this.toggleOverlayPanel(event, evaluationLog, column, overlayPanel);
         }
         break;
-      case EvaluationLogFields.MODEL_PATH:
-        this.downloadModel(evaluationLog);
-        break;
       default:
         this.toggleOverlayPanel(event, evaluationLog, column, overlayPanel);
     }
@@ -198,6 +196,20 @@ export class ClassifierListComponent extends BaseListComponent<EvaluationLogDto>
       () => this.loading = false,
       (error) => this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message })
     );
+  }
+
+  public copyModelDownloadLink(evaluationLogDto: EvaluationLogDto): void {
+    this.classifiersService.getModelContentUrl(evaluationLogDto.id)
+        .subscribe({
+          next: (s3ContentResponseDto: S3ContentResponseDto) => {
+            navigator.clipboard.writeText(s3ContentResponseDto.contentUrl);
+            this.messageService.add({ severity: 'success',
+              summary: `Ссылка для скачивния модели ${evaluationLogDto.requestId} скопирована`, detail: '' });
+          },
+          error: (error) => {
+            this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
+          }
+        });
   }
 
   public loadCurrentUserToFilter(): void {
@@ -394,11 +406,10 @@ export class ClassifierListComponent extends BaseListComponent<EvaluationLogDto>
       { name: EvaluationLogFields.RELATION_NAME, label: "Обучающая выборка", sortBy: EvaluationLogFilterFields.RELATION_NAME },
       { name: EvaluationLogFields.EVALUATION_METHOD_DESCRIPTION, label: "Метод оценки точности"  },
       { name: EvaluationLogFields.CREATED_BY, label: "Пользователь", sortBy: EvaluationLogFilterFields.CREATED_BY },
-      { name: EvaluationLogFields.MODEL_PATH, label: "Модель классификатора" },
       { name: EvaluationLogFields.EVALUATION_TOTAL_TIME, label: "Время построения модели" },
-      { name: EvaluationLogFields.CREATION_DATE, label: "Дата создания заявки", sortBy: EvaluationLogFilterFields.CREATION_DATE },
-      { name: EvaluationLogFields.START_DATE, label: "Дата начала обработки заявки"  },
-      { name: EvaluationLogFields.END_DATE, label: "Дата окончания обработки заявки"  },
+      { name: EvaluationLogFields.CREATION_DATE, label: "Дата создания", sortBy: EvaluationLogFilterFields.CREATION_DATE },
+      { name: EvaluationLogFields.START_DATE, label: "Дата начала обработки"  },
+      { name: EvaluationLogFields.END_DATE, label: "Дата окончания обработки"  },
       { name: EvaluationLogFields.DELETED_DATE, label: "Дата удаления модели" }
     ];
   }

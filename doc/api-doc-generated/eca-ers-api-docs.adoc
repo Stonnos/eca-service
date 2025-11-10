@@ -514,6 +514,18 @@ a|
 
 __POST__ */api/save* - Saves evaluation results report
 
+*Security requirement*
+
+[cols="^50%,^50%",options="header"]
+|===
+|*Name*|*Scopes*
+|
+<<EcaAuth>>
+a|
+
+* internal-api
+
+|===
 
 *Request body*
 
@@ -890,6 +902,18 @@ a|
 
 __POST__ */api/results* - Gets evaluation results simple report
 
+*Security requirement*
+
+[cols="^50%,^50%",options="header"]
+|===
+|*Name*|*Scopes*
+|
+<<EcaAuth>>
+a|
+
+* internal-api
+
+|===
 
 *Request body*
 
@@ -1250,6 +1274,18 @@ a|
 
 __POST__ */api/optimal-classifier-options* - Endpoint for searching optimal classifiers options for specified request
 
+*Security requirement*
+
+[cols="^50%,^50%",options="header"]
+|===
+|*Name*|*Scopes*
+|
+<<EcaAuth>>
+a|
+
+* internal-api
+
+|===
 
 *Request body*
 

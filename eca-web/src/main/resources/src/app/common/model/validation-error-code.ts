@@ -25,4 +25,6 @@ export class ValidationErrorCode {
   public static readonly INVALID_CLASSIFIER_OPTIONS_FORMAT: string = 'InvalidClassifierOptionsFormat';
   public static readonly ENSEMBLE_CLASSIFIER_OPTIONS_NOT_ALLOWED: string = 'EnsembleClassifierOptionsNotAllowed';
   public static readonly INTERNAL_ERROR: string = 'InternalError';
+  public static readonly DUPLICATE_PERSONAL_ACCESS_TOKEN_NAME = 'DuplicatePersonalAccessTokenName';
+  public static readonly MAX_UPLOAD_SIZE_EXCEEDED = 'MaxUploadSizeExceeded';
 }

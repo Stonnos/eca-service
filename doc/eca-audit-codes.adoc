@@ -79,6 +79,12 @@
 |LOGOUT
 |Выход из системы
 |USER_PROFILE_ACTIONS
+|CREATE_PERSONAL_ACCESS_TOKEN
+|Создание токена доступа (personal access token)
+|USER_PROFILE_ACTIONS
+|DELETE_PERSONAL_ACCESS_TOKEN
+|Удаление токена доступа (personal access token)
+|USER_PROFILE_ACTIONS
 |SAVE_INSTANCES
 |Сохранение файла с обучающей выборкой в базу данных
 |DATA_STORAGE_ACTIONS

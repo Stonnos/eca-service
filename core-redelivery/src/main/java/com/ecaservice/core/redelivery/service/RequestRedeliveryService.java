@@ -45,7 +45,7 @@ public class RequestRedeliveryService {
             retryService.retry(retryRequest);
         } catch (Exception ex) {
             log.error("Error while sending retry request [{}] request with id [{}]: {}", retryRequest.getRequestType(),
-                    retryRequest.getId(), ex.getMessage());
+                    retryRequest.getId(), ex.getMessage(), ex);
         }
     }
 }

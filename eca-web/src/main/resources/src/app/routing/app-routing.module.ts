@@ -96,7 +96,7 @@ const routes: Routes = [
   },
   {
     path: '',
-    redirectTo: '/login',
+    redirectTo: '/dashboard/experiments',
     pathMatch: 'full'
   }
 ];

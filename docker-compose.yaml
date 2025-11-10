@@ -1,4 +1,3 @@
-version: "3.5"
 services:
 
   eca-db:
@@ -77,8 +76,12 @@ services:
       JAVA_OPTS: "-Xmx192m"
       MANAGEMENT_ZIPKIN_TRACING_ENABLED: ${ZIPKIN_ENABLED}
       MANAGEMENT_ZIPKIN_TRACING_ENDPOINT: ${ZIPKIN_URL}
+      LOGGING_MODE: ${LOGGING_MODE}
     networks:
       - default
+    labels:
+      collect_logs_with_filebeat: "true"
+      decode_log_event_to_json_object: "true"
 
   eca-server:
     image: eca-server
@@ -100,12 +103,16 @@ services:
       OPENAPI_BASEPATH: "/eca-server"
       MANAGEMENT_ZIPKIN_TRACING_ENABLED: ${ZIPKIN_ENABLED}
       MANAGEMENT_ZIPKIN_TRACING_ENDPOINT: ${ZIPKIN_URL}
+      LOGGING_MODE: ${LOGGING_MODE}
     networks:
       - default
     depends_on:
       - eca-db
       - rabbitmq
       - discovery-server
+    labels:
+      collect_logs_with_filebeat: "true"
+      decode_log_event_to_json_object: "true"
 
   eca-oauth:
     image: eca-oauth
@@ -122,11 +129,15 @@ services:
       OPENAPI_BASEPATH: "/eca-oauth"
       MANAGEMENT_ZIPKIN_TRACING_ENABLED: ${ZIPKIN_ENABLED}
       MANAGEMENT_ZIPKIN_TRACING_ENDPOINT: ${ZIPKIN_URL}
+      LOGGING_MODE: ${LOGGING_MODE}
     networks:
       - default
     depends_on:
       - eca-db
       - discovery-server
+    labels:
+      collect_logs_with_filebeat: "true"
+      decode_log_event_to_json_object: "true"
 
   eca-mail:
     image: eca-mail
@@ -139,11 +150,15 @@ services:
       OPENAPI_BASEPATH: "/eca-mail"
       MANAGEMENT_ZIPKIN_TRACING_ENABLED: ${ZIPKIN_ENABLED}
       MANAGEMENT_ZIPKIN_TRACING_ENDPOINT: ${ZIPKIN_URL}
+      LOGGING_MODE: ${LOGGING_MODE}
     networks:
       - default
     depends_on:
       - eca-db
       - discovery-server
+    labels:
+      collect_logs_with_filebeat: "true"
+      decode_log_event_to_json_object: "true"
 
   eca-data-storage:
     image: eca-data-storage
@@ -160,11 +175,15 @@ services:
       OPENAPI_BASEPATH: "/eca-ds"
       MANAGEMENT_ZIPKIN_TRACING_ENABLED: ${ZIPKIN_ENABLED}
       MANAGEMENT_ZIPKIN_TRACING_ENDPOINT: ${ZIPKIN_URL}
+      LOGGING_MODE: ${LOGGING_MODE}
     networks:
       - default
     depends_on:
       - eca-db
       - discovery-server
+    labels:
+      collect_logs_with_filebeat: "true"
+      decode_log_event_to_json_object: "true"
 
   eca-ers:
     image: eca-ers
@@ -181,11 +200,15 @@ services:
       OPENAPI_BASEPATH: "/eca-ers"
       MANAGEMENT_ZIPKIN_TRACING_ENABLED: ${ZIPKIN_ENABLED}
       MANAGEMENT_ZIPKIN_TRACING_ENDPOINT: ${ZIPKIN_URL}
+      LOGGING_MODE: ${LOGGING_MODE}
     networks:
       - default
     depends_on:
       - eca-db
       - discovery-server
+    labels:
+      collect_logs_with_filebeat: "true"
+      decode_log_event_to_json_object: "true"
 
   eca-web:
     image: eca-web
@@ -196,10 +219,14 @@ services:
       JAVA_OPTS: "-Xmx192m"
       MANAGEMENT_ZIPKIN_TRACING_ENABLED: ${ZIPKIN_ENABLED}
       MANAGEMENT_ZIPKIN_TRACING_ENDPOINT: ${ZIPKIN_URL}
+      LOGGING_MODE: ${LOGGING_MODE}
     networks:
       - default
     depends_on:
       - discovery-server
+    labels:
+      collect_logs_with_filebeat: "true"
+      decode_log_event_to_json_object: "true"
 
   api-gateway:
     image: api-gateway
@@ -210,12 +237,16 @@ services:
       JAVA_OPTS: "-Xmx256m"
       MANAGEMENT_ZIPKIN_TRACING_ENABLED: ${ZIPKIN_ENABLED}
       MANAGEMENT_ZIPKIN_TRACING_ENDPOINT: ${ZIPKIN_URL}
+      LOGGING_MODE: ${LOGGING_MODE}
     ports:
       - "8080:8080"
     networks:
       - default
     depends_on:
       - discovery-server
+    labels:
+      collect_logs_with_filebeat: "true"
+      decode_log_event_to_json_object: "true"
 
   eca-web-push:
     image: eca-web-push
@@ -228,8 +259,12 @@ services:
       OPENAPI_BASEPATH: "/eca-web-push"
       MANAGEMENT_ZIPKIN_TRACING_ENABLED: ${ZIPKIN_ENABLED}
       MANAGEMENT_ZIPKIN_TRACING_ENDPOINT: ${ZIPKIN_URL}
+      LOGGING_MODE: ${LOGGING_MODE}
     networks:
       - default
+    labels:
+      collect_logs_with_filebeat: "true"
+      decode_log_event_to_json_object: "true"
 
   eca-audit-log:
     image: eca-audit-log
@@ -242,11 +277,15 @@ services:
       OPENAPI_BASEPATH: "/eca-audit-log"
       MANAGEMENT_ZIPKIN_TRACING_ENABLED: ${ZIPKIN_ENABLED}
       MANAGEMENT_ZIPKIN_TRACING_ENDPOINT: ${ZIPKIN_URL}
+      LOGGING_MODE: ${LOGGING_MODE}
     networks:
       - default
     depends_on:
       - eca-db
       - discovery-server
+    labels:
+      collect_logs_with_filebeat: "true"
+      decode_log_event_to_json_object: "true"
 
   eca-data-loader:
     image: eca-data-loader
@@ -259,11 +298,15 @@ services:
       OPENAPI_BASEPATH: "/eca-data-loader"
       MANAGEMENT_ZIPKIN_TRACING_ENABLED: ${ZIPKIN_ENABLED}
       MANAGEMENT_ZIPKIN_TRACING_ENDPOINT: ${ZIPKIN_URL}
+      LOGGING_MODE: ${LOGGING_MODE}
     networks:
       - default
     depends_on:
       - eca-db
       - discovery-server
+    labels:
+      collect_logs_with_filebeat: "true"
+      decode_log_event_to_json_object: "true"
 
 networks:
   default:

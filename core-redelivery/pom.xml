@@ -5,7 +5,7 @@
     <parent>
         <artifactId>eca-service</artifactId>
         <groupId>eca.service</groupId>
-        <version>7.0.2</version>
+        <version>7.0.3</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -37,11 +37,6 @@
             <artifactId>spring-boot-configuration-processor</artifactId>
         </dependency>
         <dependency>
-            <groupId>io.github.openfeign</groupId>
-            <artifactId>feign-core</artifactId>
-            <version>${feign.version}</version>
-        </dependency>
-        <dependency>
             <groupId>io.micrometer</groupId>
             <artifactId>micrometer-registry-prometheus</artifactId>
         </dependency>
@@ -60,6 +55,12 @@
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>eca.service</groupId>
+            <artifactId>feign-oauth2</artifactId>
+            <version>${project.version}</version>
+            <optional>true</optional>
         </dependency>
     </dependencies>
 

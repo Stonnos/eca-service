@@ -120,7 +120,7 @@ public abstract class AbstractChangeClassifiersConfigurationPushEventHandler<E e
             return userProfileOptionsDto.isWebPushEnabled() && classifiersConfigurationChangeNotificationEventEnabled;
         } catch (Exception ex) {
             log.error("Error while get user [{}] profile options. Disabled web push by default. Error details: {}",
-                    user, ex.getMessage());
+                    user, ex.getMessage(), ex);
             return false;
         }
     }

@@ -6,12 +6,14 @@ import com.ecaservice.core.audit.annotation.Audit;
 import com.ecaservice.server.dto.CreateEvaluationRequestDto;
 import com.ecaservice.server.dto.CreateOptimalEvaluationRequestDto;
 import com.ecaservice.server.model.entity.EvaluationLog;
+import com.ecaservice.server.model.entity.EvaluationResultsAttachmentType;
 import com.ecaservice.server.report.SimpleEvaluationResultsReportDataFetcher;
 import com.ecaservice.server.repository.EvaluationLogRepository;
 import com.ecaservice.server.service.evaluation.ClassifyEvaluationInstanceService;
 import com.ecaservice.server.service.evaluation.EvaluationLogDataService;
 import com.ecaservice.server.service.evaluation.EvaluationRequestWebApiService;
 import com.ecaservice.server.service.evaluation.EvaluationRocCurveDataProvider;
+import com.ecaservice.server.service.evaluation.SimpleEvaluationResultsAttachmentUploader;
 import com.ecaservice.web.dto.model.ChartDto;
 import com.ecaservice.web.dto.model.ClassifyInstanceRequestDto;
 import com.ecaservice.web.dto.model.ClassifyInstanceResultDto;
@@ -50,6 +52,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.time.LocalDate;
@@ -80,6 +83,7 @@ public class EvaluationController {
     private final EvaluationRocCurveDataProvider evaluationRocCurveDataProvider;
     private final ClassifyEvaluationInstanceService classifyEvaluationInstanceService;
     private final SimpleEvaluationResultsReportDataFetcher simpleEvaluationResultsReportDataFetcher;
+    private final SimpleEvaluationResultsAttachmentUploader simpleEvaluationResultsAttachmentUploader;
     private final EvaluationLogRepository evaluationLogRepository;
 
     /**
@@ -651,5 +655,56 @@ public class EvaluationController {
         var reportData = simpleEvaluationResultsReportDataFetcher.getReportData(id);
         String fileName = String.format("evaluation-results-report-%s.xlsx", reportData.getRequestId());
         download(EVALUATION_RESULTS_TEMPLATE, fileName, httpServletResponse, reportData);
+    }
+
+    /**
+     * Uploads evaluation results attachment.
+     *
+     * @param id             - evaluation log id
+     * @param attachmentFile - attachment file
+     * @param attachmentType - attachment type
+     */
+    @PreAuthorize("hasAuthority('SCOPE_web')")
+    @Operation(
+            description = "Uploads evaluation results attachment",
+            summary = "Uploads evaluation results attachment",
+            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME, scopes = SCOPE_WEB),
+            responses = {
+                    @ApiResponse(description = "OK", responseCode = "200"),
+                    @ApiResponse(description = "Not authorized", responseCode = "401",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    examples = {
+                                            @ExampleObject(
+                                                    name = "NotAuthorizedResponse",
+                                                    ref = "#/components/examples/NotAuthorizedResponse"
+                                            ),
+                                    }
+                            )
+                    ),
+                    @ApiResponse(description = "Bad request", responseCode = "400",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    examples = {
+                                            @ExampleObject(
+                                                    name = "DataNotFoundResponse",
+                                                    ref = "#/components/examples/DataNotFoundResponse"
+                                            ),
+                                    },
+                                    array = @ArraySchema(schema = @Schema(implementation = ValidationErrorDto.class))
+                            )
+                    )
+            }
+    )
+    @PostMapping(value = "/upload-evaluation-results-attachment", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public void uploadEvaluationResultsAttachment(
+            @Parameter(description = "Evaluation id", required = true)
+            @Min(VALUE_1) @Max(Long.MAX_VALUE) @RequestParam Long id,
+            @Parameter(description = "Attachment file", required = true) @RequestParam MultipartFile attachmentFile,
+            @Parameter(description = "Attachment type", required = true)
+            @RequestParam EvaluationResultsAttachmentType attachmentType) {
+        log.info("Request to upload evaluation results attachment [{}], type [{}] for evaluation log [{}]",
+                attachmentFile.getOriginalFilename(), attachmentType, id);
+        simpleEvaluationResultsAttachmentUploader.uploadAttachment(id, attachmentFile, attachmentType);
     }
 }

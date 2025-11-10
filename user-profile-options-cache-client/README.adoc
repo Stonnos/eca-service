@@ -30,6 +30,24 @@ spring:
     port: 5672
     username: guest
     password: guest
+  ## настройки для авторизации api
+  cloud:
+    openfeign:
+      oauth2:
+        clientRegistrationId: api-client
+  security:
+    oauth2:
+      client:
+        registration:
+          api-client:
+            client-id: eca_service_tech
+            client-secret: 02#eca_service_tech6
+            scope: internal-api
+            authorization-grant-type: client_credentials
+            provider: api-client
+        provider:
+          api-client:
+            token-uri: http://localhost:8085/oauth2/token
 
 user-profile:
   client:

@@ -2,7 +2,6 @@ package com.ecaservice.web.push.service.handler;
 
 import com.ecaservice.web.dto.model.push.PushRequestDto;
 import com.ecaservice.web.push.config.ws.QueueConfig;
-import com.ecaservice.web.push.controller.api.WebPushController;
 import com.ecaservice.web.push.mapping.NotificationMapperImpl;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -23,7 +22,7 @@ import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.verify;
 
 /**
- * Unit tests for checking {@link WebPushController} functionality.
+ * Unit tests for checking {@link SystemPushNotificationRequestHandler} functionality.
  *
  * @author Roman Batygin
  */

@@ -28,8 +28,10 @@
    * app.pushTokenValidityMinutes - время жизни токена для пуш уведомлений
    * app.encrypt.password - пароль для алгоритма генерации ключа PBKDF2WithHmacSHA1
    * app.encrypt.salt - соль для алгоритма генерации ключа PBKDF2WithHmacSHA1
-3) queues - настройки очередей для веб - сокетов
-    * pushQueue - название очереди для отправки пушей
+   * app.rabbit.enabled - вкл./выкл. обработки пушей из rabbit mq
+   * app.rabbit.queueName - очередь для получения и сохранения пушей
+3) queues - настройки ws очередей для веб - сокетов
+    * pushQueue - название ws очереди для отправки пушей
 4) open-api - настройки Swagger
    * open-api.tokenBaseUrl - базовый url - сервера авторизации
    * open-api.projectVersion - версия API

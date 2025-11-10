@@ -103,7 +103,7 @@ public class ExperimentModelProcessorStepHandler extends AbstractExperimentStepH
             experimentStepService.complete(experimentStepEntity);
         } catch (ObjectStorageException ex) {
             log.error("Object storage error while process experiment [{}]: {}",
-                    experimentContext.getExperiment().getRequestId(), ex.getMessage());
+                    experimentContext.getExperiment().getRequestId(), ex.getMessage(), ex);
             experimentStepService.failed(experimentStepEntity, ex.getMessage());
         } catch (EvaluationTimeoutException ex) {
             log.error("Timeout error while process experiment [{}] model: {}",
@@ -115,7 +115,7 @@ public class ExperimentModelProcessorStepHandler extends AbstractExperimentStepH
             experimentStepEntity.setStatus(ExperimentStepStatus.CANCELED);
         } catch (Exception ex) {
             log.error("Error while process experiment [{}] model: {}",
-                    experimentContext.getExperiment().getRequestId(), ex.getMessage());
+                    experimentContext.getExperiment().getRequestId(), ex.getMessage(), ex);
             experimentStepService.completeWithError(experimentStepEntity, ex.getMessage());
         }
     }

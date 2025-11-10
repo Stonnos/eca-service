@@ -71,7 +71,7 @@ public class UserPushEventListener {
             log.error(
                     "Error while sent user push request [{}, [{}]], correlation id [{}] to ws queue for user [{}]: {}",
                     userPushNotificationRequest.getRequestId(), userPushNotificationRequest.getMessageType(),
-                    userPushNotificationRequest.getCorrelationId(), pushTokenEntity.getUser(), ex.getMessage());
+                    userPushNotificationRequest.getCorrelationId(), pushTokenEntity.getUser(), ex.getMessage(), ex);
         }
     }
 }

@@ -48,7 +48,7 @@ public class InstancesLoader {
             return data;
         } catch (Exception ex) {
             log.error("There was an error while load data from file {}: {}", multipartFileResource.getFile(),
-                    ex.getMessage());
+                    ex.getMessage(), ex);
             throw new FileProcessingException(ex.getMessage());
         }
     }

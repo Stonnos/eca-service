@@ -8,6 +8,8 @@ spring:
   jpa:
     hibernate:
       ddl-auto: validate
+  rabbitmq:
+    host: rabbitmq
   security:
     oauth2:
       client:

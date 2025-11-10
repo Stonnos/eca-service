@@ -71,7 +71,7 @@ public class AutoTestWorkerService {
             log.info("Request with correlation id [{}] has been sent", baseEvaluationRequestEntity.getCorrelationId());
         } catch (Exception ex) {
             log.error("Unknown error while sending request with correlation id [{}]: {}",
-                    baseEvaluationRequestEntity.getCorrelationId(), ex.getMessage());
+                    baseEvaluationRequestEntity.getCorrelationId(), ex.getMessage(), ex);
             evaluationRequestService.finishWithError(baseEvaluationRequestEntity, ex.getMessage());
         }
     }

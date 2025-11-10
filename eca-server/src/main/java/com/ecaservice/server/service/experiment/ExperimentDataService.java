@@ -105,7 +105,7 @@ public class ExperimentDataService {
             log.info("Experiment [{}] model file has been deleted", experiment.getRequestId());
         } catch (Exception ex) {
             log.error("There was an error while remove experiment [{}] model file: {}", experiment.getRequestId(),
-                    ex.getMessage());
+                    ex.getMessage(), ex);
             experiment.setRetryAt(LocalDateTime.now().plusSeconds(experimentConfig.getRetryIntervalSeconds()));
             experimentRepository.save(experiment);
         }

@@ -36,4 +36,9 @@ public class QueueConfig {
      * Experiment response queue name
      */
     private String experimentResponseQueue;
+
+    /**
+     * Authentication token
+     */
+    private String authToken;
 }

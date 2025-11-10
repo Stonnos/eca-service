@@ -3,7 +3,6 @@ package com.ecaservice.server.service.evaluation;
 import com.ecaservice.classifier.options.adapter.ClassifierOptionsAdapter;
 import com.ecaservice.server.config.CrossValidationConfig;
 import com.ecaservice.server.mapping.EvaluationLogMapper;
-import com.ecaservice.server.model.entity.ChannelVisitor;
 import com.ecaservice.server.model.entity.EvaluationLog;
 import com.ecaservice.server.model.entity.RequestStatus;
 import com.ecaservice.server.model.evaluation.EvaluationRequestData;
@@ -56,7 +55,6 @@ public class EvaluationLogService {
         evaluationLog.setClassifierName(evaluationRequestData.getClassifier().getClass().getSimpleName());
         evaluationLog.setRelationName(instancesInfo.getRelationName());
         saveClassifierOptions(evaluationRequestData.getClassifier(), evaluationLog);
-        setAdditionalProperties(evaluationLog, evaluationRequestData);
         evaluationLog.setRequestStatus(RequestStatus.NEW);
         evaluationLog.setRequestId(evaluationRequestData.getRequestId());
         evaluationLog.setChannel(evaluationRequestData.getChannel());
@@ -101,15 +99,5 @@ public class EvaluationLogService {
     private void saveClassifierOptions(AbstractClassifier classifier, EvaluationLog evaluationLog) {
         var classifierOptions = classifierOptionsAdapter.convert(classifier);
         evaluationLog.setClassifierOptions(toJsonString(classifierOptions));
-    }
-
-    private void setAdditionalProperties(EvaluationLog evaluationLog,
-                                         EvaluationRequestData evaluationRequestData) {
-        evaluationRequestData.getChannel().visit(new ChannelVisitor() {
-            @Override
-            public void visitWeb() {
-                evaluationLog.setCreatedBy(evaluationRequestData.getCreatedBy());
-            }
-        });
     }
 }

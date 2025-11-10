@@ -35,7 +35,12 @@ public enum ErrorCode {
     /**
      * Invalid field value
      */
-    INVALID_FIELD_VALUE("Invalid field value");
+    INVALID_FIELD_VALUE("Invalid field value"),
+
+    /**
+     * Unauthorized error
+     */
+    UNAUTHORIZED("Unauthorized");
 
     /**
      * Error message

@@ -14,6 +14,7 @@ import com.ecaservice.server.repository.ExperimentResultsEntityRepository;
 import com.ecaservice.server.repository.ExperimentResultsRequestRepository;
 import com.ecaservice.server.repository.InstancesInfoRepository;
 import com.ecaservice.server.service.AbstractJpaTest;
+import com.ecaservice.server.service.EvaluationResultsAttachmentService;
 import com.ecaservice.server.service.ers.ErsRequestService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,6 +46,8 @@ class ExperimentResultsReportDataFetcherTest extends AbstractJpaTest {
     private EvaluationResultsReportDataProcessor evaluationResultsReportDataProcessor;
     @MockBean
     private ErsRequestService ersRequestService;
+    @MockBean
+    private EvaluationResultsAttachmentService evaluationResultsAttachmentService;
 
     @Autowired
     private ExperimentResultsEntityRepository experimentResultsEntityRepository;

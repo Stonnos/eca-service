@@ -18,9 +18,12 @@ import { catchError, finalize, switchMap } from "rxjs/internal/operators";
 import { EMPTY } from "rxjs/internal/observable/empty";
 import { CreateExperimentRequestDto } from "../../create-experiment/model/create-experiment-request.model";
 import { RocCurveService } from '../../common/services/roc-curve.service';
+import { UploadEvaluationResultsAttachmentService } from '../../common/services/upload-evaluation-results-attachment.service';
+import { EvaluationResultsAttachmentType } from '../../common/model/evaluation-results-attachment-type.enum';
+import { ClassifyInstanceService } from '../../common/services/classify-instance.service';
 
 @Injectable()
-export class ExperimentsService implements RocCurveService {
+export class ExperimentsService implements RocCurveService, ClassifyInstanceService, UploadEvaluationResultsAttachmentService {
 
   private serviceUrl = environment.serverUrl + '/experiment';
 
@@ -148,5 +151,13 @@ export class ExperimentsService implements RocCurveService {
       'Content-type': 'application/json; charset=utf-8'
     });
     return this.http.post<ClassifyInstanceResultDto>(this.serviceUrl + '/classify-instance', classifyInstanceRequestDto, { headers: headers });
+  }
+
+  public uploadEvaluationResultsAttachmentService(modelId: number, file: File, attachmentType: EvaluationResultsAttachmentType): Observable<any> {
+    const formData = new FormData();
+    formData.append('id', modelId.toString());
+    formData.append('attachmentFile', file, file.name);
+    formData.append('attachmentType', attachmentType.toString());
+    return this.http.post<any>(this.serviceUrl + '/upload-experiment-results-attachment', formData);
   }
 }

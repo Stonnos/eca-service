@@ -177,3 +177,9 @@ export class AttributeStatisticsFields {
   public static readonly STD_DEV_VALUE: string = "stdDevValue";
 
 }
+
+export class PersonalAccessTokenFields {
+  public static readonly ID: string = "id";
+  public static readonly NAME: string = "name";
+  public static readonly EXPIRE_DATE: string = "expireDate";
+}

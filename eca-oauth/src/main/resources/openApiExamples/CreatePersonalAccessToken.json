@@ -1,0 +1,5 @@
+{
+  "name": "Token",
+  "tokenType": "USER_TOKEN",
+  "expirationMonth": 3
+}

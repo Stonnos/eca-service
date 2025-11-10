@@ -66,6 +66,7 @@ data-loader:
 queue:
   evaluationRequestQueue: evaluation-request-queue
   replyToQueue: load-tests-response-queue
+  authToken: VEQFiO0F2tL5DNxKIjwNjax70lj0WTWuL91sKbjIiuaTZRuZU4UHFlwcPuuundLp7h6YkbgiJxPwC-sDRiold1CiLSS8wAVGOCqLJ8Ufj7P4zb2v9OtiPryzrX6NNHrN
 
 ## Swagger properties
 open-api:

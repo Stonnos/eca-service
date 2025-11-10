@@ -23,7 +23,8 @@ spring:
     change-log: classpath:db/liquibase-changelog.xml
   servlet:
     multipart:
-      max-file-size: 10MB
+      max-file-size: 256MB
+      max-request-size: 256MB
 
 eureka:
   instance:
@@ -64,12 +65,6 @@ springdoc:
       client-id: external-api
       client-secret: external_api_secret
     disable-swagger-default-url: true
-
-resource:
-  server:
-    security:
-      whitelistUrls:
-        - /api/internal/**
 
 auth-server:
   baseUrl: http://localhost:8085/eca-oauth

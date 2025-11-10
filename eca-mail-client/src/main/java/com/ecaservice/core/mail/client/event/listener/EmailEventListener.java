@@ -4,6 +4,7 @@ import com.ecaservice.core.mail.client.event.listener.handler.AbstractEmailEvent
 import com.ecaservice.core.mail.client.event.model.AbstractEmailEvent;
 import com.ecaservice.core.mail.client.service.EmailRequestSender;
 import com.ecaservice.notification.dto.EmailRequest;
+import io.micrometer.tracing.annotation.NewSpan;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;
@@ -24,6 +25,12 @@ public class EmailEventListener {
     private final EmailRequestSender emailRequestSender;
     private final List<AbstractEmailEventHandler> emailEventHandlers;
 
+    /**
+     * Handles email event.
+     *
+     * @param event - email event
+     */
+    @NewSpan
     @EventListener
     @SuppressWarnings("unchecked")
     public void handleEmailEvent(AbstractEmailEvent event) {

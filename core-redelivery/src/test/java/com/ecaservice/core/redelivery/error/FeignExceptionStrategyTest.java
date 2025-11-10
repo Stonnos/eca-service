@@ -42,7 +42,7 @@ class FeignExceptionStrategyTest {
     @Test
     void testRetryableException() {
         boolean result = feignExceptionStrategy.notFatal(
-                new RetryableException(STATUS, MESSAGE, Request.HttpMethod.GET, null, request));
+                new RetryableException(STATUS, MESSAGE, Request.HttpMethod.GET, null, 0L, request));
         assertThat(result).isTrue();
     }
 

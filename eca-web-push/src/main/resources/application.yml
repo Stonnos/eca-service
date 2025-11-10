@@ -41,12 +41,9 @@ app:
   encrypt:
     password: pa66word!
     salt: s@lt#
-
-resource:
-  server:
-    security:
-      whitelistUrls:
-        - /api/push/**
+  rabbit:
+    enabled: true
+    queueName: queue-push-events
 
 auth-server:
   baseUrl: http://localhost:8085/eca-oauth

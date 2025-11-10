@@ -25,7 +25,7 @@ public class ModelCacheLoader extends CacheLoader<String, Object> {
         try {
             return objectStorageService.getObject(key, Object.class);
         } catch (IOException | ClassNotFoundException ex) {
-            log.error("Error while load model {}: {}", key, ex.getMessage());
+            log.error("Error while load model {}: {}", key, ex.getMessage(), ex);
             throw new IllegalStateException(ex);
         }
     }

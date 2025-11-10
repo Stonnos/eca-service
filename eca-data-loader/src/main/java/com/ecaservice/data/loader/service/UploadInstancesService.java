@@ -82,11 +82,11 @@ public class UploadInstancesService {
             return new UploadInstancesResponseDto(instancesEntity.getUuid(), md5Hash);
         } catch (IOException ex) {
             log.error("There was an error while load data from file {}: {}", instancesFile.getOriginalFilename(),
-                    ex.getMessage());
+                    ex.getMessage(), ex);
             throw new FileProcessingException(ex.getMessage());
         } catch (ObjectStorageException ex) {
             log.error("Object storage error while load data from file {}: {}", instancesFile.getOriginalFilename(),
-                    ex.getMessage());
+                    ex.getMessage(), ex);
             throw new InternalServiceUnavailableException(ex.getMessage());
         }
     }

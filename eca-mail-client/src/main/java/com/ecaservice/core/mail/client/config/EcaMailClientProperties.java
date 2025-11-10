@@ -38,6 +38,25 @@ public class EcaMailClientProperties {
     private EncryptProperties encrypt = new EncryptProperties();
 
     /**
+     * Rabbitmq properties
+     */
+    private RabbitProperties rabbit = new RabbitProperties();
+
+    /**
+     * RabbitMQ properties.
+     */
+    @Data
+    public static class RabbitProperties {
+
+        private static final String DEFAULT_QUEUE_NAME = "queue-email-events";
+
+        /**
+         * Queue name to sent email events
+         */
+        private String queueName = DEFAULT_QUEUE_NAME;
+    }
+
+    /**
      * Encrypt properties.
      */
     @Data

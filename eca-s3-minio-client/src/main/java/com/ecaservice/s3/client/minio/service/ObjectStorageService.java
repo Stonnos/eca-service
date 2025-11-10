@@ -44,6 +44,7 @@ public class ObjectStorageService {
      * @param objectPath - object path in S3
      * @throws IOException in case of I/O error
      */
+    @NewSpan
     public void uploadObject(Serializable object, String objectPath) throws IOException {
         uploadObject(object, objectPath, new FstSerializer());
     }

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+        logicalFilePath="db/changelog/v90-create-evaluation-results-attachment-table.xml"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="create-evaluation-results-attachment-table" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="evaluation_results_attachment"/>
+            </not>
+        </preConditions>
+        <createTable tableName="evaluation_results_attachment">
+            <column name="id" type="bigint">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="attachment_key" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="attachment_type" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="file_path" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_date" type="timestamp">
+                <constraints nullable="false"/>
+            </column>
+            <column name="updated_date" type="timestamp">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <addUniqueConstraint tableName="evaluation_results_attachment"
+                             columnNames="attachment_key, attachment_type"
+                             constraintName="evaluation_results_attachment_key_attachment_type_unique_idx"/>
+    </changeSet>
+
+</databaseChangeLog>

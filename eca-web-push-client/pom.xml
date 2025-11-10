@@ -6,7 +6,7 @@
     <parent>
         <groupId>eca.service</groupId>
         <artifactId>eca-service</artifactId>
-        <version>7.0.2</version>
+        <version>7.0.3</version>
     </parent>
 
     <artifactId>eca-web-push-client</artifactId>
@@ -30,13 +30,8 @@
             <artifactId>spring-boot-configuration-processor</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-starter-openfeign</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>eca.service</groupId>
-            <artifactId>feign-metrics</artifactId>
-            <version>${project.version}</version>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-amqp</artifactId>
         </dependency>
         <dependency>
             <groupId>eca.service</groupId>

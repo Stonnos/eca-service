@@ -120,4 +120,9 @@ public class EvaluationResultsReportBean {
      * Confusion matrix cells
      */
     private List<List<ConfusionMatrixCellData>> confusionMatrixCells;
+
+    /**
+     * Roc curve image
+     */
+    private byte[] rocImage;
 }

@@ -81,7 +81,12 @@ public enum EcaOauthErrorCode implements ErrorDetails {
     /**
      * User lock not allowed
      */
-    USER_LOCK_NOT_ALLOWED("UserLockNotAllowed");
+    USER_LOCK_NOT_ALLOWED("UserLockNotAllowed"),
+
+    /**
+     * Duplicate personal access token name
+     */
+    DUPLICATE_PERSONAL_ACCESS_TOKEN_NAME("DuplicatePersonalAccessTokenName");
 
     /**
      * Error code

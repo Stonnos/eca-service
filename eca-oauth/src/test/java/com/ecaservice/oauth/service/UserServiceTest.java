@@ -21,7 +21,7 @@ import com.ecaservice.oauth.mapping.UserMapperImpl;
 import com.ecaservice.oauth.repository.RoleRepository;
 import com.ecaservice.oauth.repository.UserEntityRepository;
 import com.ecaservice.oauth.repository.UserPhotoRepository;
-import com.ecaservice.user.model.Role;
+import com.ecaservice.oauth.util.Role;
 import com.ecaservice.web.dto.model.PageRequestDto;
 import com.ecaservice.web.dto.model.SortFieldRequestDto;
 import com.ecaservice.web.dto.model.UserDto;

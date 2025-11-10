@@ -16,11 +16,9 @@ import org.springframework.security.oauth2.server.resource.introspection.OpaqueT
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Map;
 
 import static com.ecaservice.oauth2.test.util.TokenUtils.ACCESS_TOKEN;
-import static com.ecaservice.user.model.Role.ROLE_SUPER_ADMIN;
 import static com.google.common.collect.Maps.newHashMap;
 
 /**
@@ -31,6 +29,8 @@ import static com.google.common.collect.Maps.newHashMap;
 @Slf4j
 @RequiredArgsConstructor
 public class TokenIntrospectorMockService implements OpaqueTokenIntrospector {
+
+    private static final String ROLE_SUPER_ADMIN = "ROLE_SUPER_ADMIN";
     private static final String SCOPE_PREFIX = "SCOPE_%s";
 
     private final Oauth2TestConfig oauth2TestConfig;
@@ -45,8 +45,10 @@ public class TokenIntrospectorMockService implements OpaqueTokenIntrospector {
             Map<String, Object> claims = newHashMap();
             Collection<GrantedAuthority> authorities = new ArrayList<>();
             claims.put(OAuth2TokenIntrospectionClaimNames.SUB, oauth2TestConfig.getUsername());
-            claims.put(OAuth2TokenIntrospectionClaimNames.SCOPE, Collections.singletonList(oauth2TestConfig.getScope()));
-            authorities.add(new SimpleGrantedAuthority(String.format(SCOPE_PREFIX, oauth2TestConfig.getScope())));
+            claims.put(OAuth2TokenIntrospectionClaimNames.SCOPE, oauth2TestConfig.getScope());
+            oauth2TestConfig.getScope().forEach(
+                    scope -> authorities.add(new SimpleGrantedAuthority(String.format(SCOPE_PREFIX, scope)))
+            );
             authorities.add(new SimpleGrantedAuthority(ROLE_SUPER_ADMIN));
             return new OAuth2IntrospectionAuthenticatedPrincipal(claims, authorities);
         }

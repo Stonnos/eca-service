@@ -16,6 +16,7 @@ import com.ecaservice.server.service.evaluation.ClassifyEvaluationInstanceServic
 import com.ecaservice.server.service.evaluation.EvaluationLogDataService;
 import com.ecaservice.server.service.evaluation.EvaluationRequestWebApiService;
 import com.ecaservice.server.service.evaluation.EvaluationRocCurveDataProvider;
+import com.ecaservice.server.service.evaluation.SimpleEvaluationResultsAttachmentUploader;
 import com.ecaservice.web.dto.model.ChartDataDto;
 import com.ecaservice.web.dto.model.ChartDto;
 import com.ecaservice.web.dto.model.CreateEvaluationResponseDto;
@@ -82,6 +83,8 @@ class EvaluationControllerTest extends PageRequestControllerTest {
     private ClassifyEvaluationInstanceService classifyEvaluationInstanceService;
     @MockBean
     private SimpleEvaluationResultsReportDataFetcher simpleEvaluationResultsReportDataFetcher;
+    @MockBean
+    private SimpleEvaluationResultsAttachmentUploader simpleEvaluationResultsAttachmentUploader;
     @MockBean
     private EvaluationLogRepository evaluationLogRepository;
 

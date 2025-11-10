@@ -34,6 +34,28 @@ public class AppProperties {
     private EncryptProperties encrypt;
 
     /**
+     * Rabbit properties
+     */
+    private RabbitProperties rabbit = new RabbitProperties();
+
+    /**
+     * RabbitMQ properties.
+     */
+    @Data
+    public static class RabbitProperties {
+
+        /**
+         * Rabbit enabled?
+         */
+        private boolean enabled;
+
+        /**
+         * Queue name to receive audit events
+         */
+        private String queueName;
+    }
+
+    /**
      * Encrypt properties.
      */
     @Data

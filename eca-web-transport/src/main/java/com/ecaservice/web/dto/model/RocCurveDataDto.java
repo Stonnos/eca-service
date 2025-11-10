@@ -18,6 +18,18 @@ import static com.ecaservice.web.dto.util.FieldConstraints.ZERO_VALUE_STRING;
 public class RocCurveDataDto {
 
     /**
+     * Class index
+     */
+    @Schema(description = "Class index", example = "0")
+    private Integer classIndex;
+
+    /**
+     * Class value
+     */
+    @Schema(description = "Class value", example = "classValue")
+    private String classValue;
+
+    /**
      * Roc curve data points
      */
     @Schema(description = "Roc curve data points")

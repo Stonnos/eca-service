@@ -6,7 +6,7 @@
     <parent>
         <groupId>eca.service</groupId>
         <artifactId>eca-service</artifactId>
-        <version>7.0.2</version>
+        <version>7.0.3</version>
     </parent>
 
     <artifactId>user-profile-options-client</artifactId>
@@ -36,6 +36,11 @@
         <dependency>
             <groupId>eca.service</groupId>
             <artifactId>feign-metrics</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>eca.service</groupId>
+            <artifactId>feign-oauth2</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>

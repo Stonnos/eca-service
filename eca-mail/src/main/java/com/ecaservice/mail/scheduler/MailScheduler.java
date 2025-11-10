@@ -54,7 +54,7 @@ public class MailScheduler {
                 email.setSentDate(LocalDateTime.now());
                 metricsService.trackSendingEmailMessageSuccessTotalCounter();
             } catch (Exception ex) {
-                log.error("There was an error while sending email [{}]: {} ", email.getId(), ex.getMessage());
+                log.error("There was an error while sending email [{}]: {} ", email.getId(), ex.getMessage(), ex);
                 metricsService.trackSendingEmailMessageErrorTotalCounter();
                 handleErrorSent(email, ex.getMessage());
             } finally {

@@ -16,3 +16,5 @@ CONFIRM_CHANGE_EMAIL_REQUEST;Подтверждение запроса на из
 UPDATE_USER_PROFILE_NOTIFICATION_OPTIONS;Изменение настроек уведомлений в личном кабинете;true;USER_PROFILE_ACTIONS
 LOGIN;Вход в систему;true;USER_PROFILE_ACTIONS
 LOGOUT;Выход из системы;true;USER_PROFILE_ACTIONS
+CREATE_PERSONAL_ACCESS_TOKEN;Создание персонального токена доступа;true;USER_PROFILE_ACTIONS
+DELETE_PERSONAL_ACCESS_TOKEN;Удаление персонального токена доступа;true;USER_PROFILE_ACTIONS

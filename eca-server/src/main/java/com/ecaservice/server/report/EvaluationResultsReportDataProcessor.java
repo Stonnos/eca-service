@@ -46,6 +46,7 @@ public class EvaluationResultsReportDataProcessor {
         ConfusionMatrixData confusionMatrixData =
                 confusionMatrixService.proceedConfusionMatrix(evaluationResultsResponse);
         evaluationResultsReportBean.setConfusionMatrixCells(confusionMatrixData.getConfusionMatrixCells());
+        evaluationResultsReportBean.setRocImage(inputData.getRocImage());
         log.info("Evaluation results report data has been processed for evaluation [{}], ers results id [{}]",
                 evaluationEntity.getRequestId(), evaluationResultsResponse.getRequestId());
         return evaluationResultsReportBean;

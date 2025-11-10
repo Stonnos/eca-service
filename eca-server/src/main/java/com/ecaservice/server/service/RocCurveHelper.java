@@ -46,6 +46,8 @@ public class RocCurveHelper {
                     return rocCurveDataDto;
                 }).toList();
         RocCurveDataDto rocCurveDataDto = new RocCurveDataDto();
+        rocCurveDataDto.setClassIndex(classIndex);
+        rocCurveDataDto.setClassValue(evaluation.getData().classAttribute().value(classIndex));
         rocCurveDataDto.setAucValue(getROCArea(rocCurveData));
         rocCurveDataDto.setRocCurvePoints(rocCurvePoints);
         rocCurveDataDto.setOptimalPoint(calculateOptimalPoint(rocCurve, rocCurveData));

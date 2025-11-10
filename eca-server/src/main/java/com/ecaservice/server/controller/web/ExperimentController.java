@@ -6,6 +6,7 @@ import com.ecaservice.core.audit.annotation.Audit;
 import com.ecaservice.server.dto.CreateExperimentRequestDto;
 import com.ecaservice.server.mapping.ExperimentMapper;
 import com.ecaservice.server.mapping.ExperimentProgressMapper;
+import com.ecaservice.server.model.entity.EvaluationResultsAttachmentType;
 import com.ecaservice.server.model.entity.Experiment;
 import com.ecaservice.server.model.entity.ExperimentProgressEntity;
 import com.ecaservice.server.model.entity.ExperimentResultsEntity;
@@ -15,6 +16,7 @@ import com.ecaservice.server.service.experiment.ClassifyExperimentResultsInstanc
 import com.ecaservice.server.service.experiment.ExperimentDataService;
 import com.ecaservice.server.service.experiment.ExperimentProgressService;
 import com.ecaservice.server.service.experiment.ExperimentRequestWebApiService;
+import com.ecaservice.server.service.experiment.ExperimentResultsAttachmentUploader;
 import com.ecaservice.server.service.experiment.ExperimentResultsRocCurveDataProvider;
 import com.ecaservice.server.service.experiment.ExperimentResultsService;
 import com.ecaservice.web.dto.model.ChartDto;
@@ -57,6 +59,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.time.LocalDate;
@@ -91,6 +94,7 @@ public class ExperimentController {
     private final ExperimentResultsRocCurveDataProvider experimentResultsRocCurveDataProvider;
     private final ClassifyExperimentResultsInstanceService classifyExperimentResultsInstanceService;
     private final ExperimentResultsReportDataFetcher experimentResultsReportDataFetcher;
+    private final ExperimentResultsAttachmentUploader experimentResultsAttachmentUploader;
     private final ExperimentResultsEntityRepository experimentResultsEntityRepository;
 
     /**
@@ -824,5 +828,56 @@ public class ExperimentController {
         String fileName =
                 String.format("experiment-results-report-%d-%s.xlsx", experimentResultsId, reportData.getRequestId());
         download(EVALUATION_RESULTS_TEMPLATE, fileName, httpServletResponse, reportData);
+    }
+
+    /**
+     * Uploads experiment results attachment.
+     *
+     * @param id             - experiment results id
+     * @param attachmentFile - attachment file
+     * @param attachmentType - attachment type
+     */
+    @PreAuthorize("hasAuthority('SCOPE_web')")
+    @Operation(
+            description = "Uploads experiment results attachment",
+            summary = "Uploads experiment results attachment",
+            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME, scopes = SCOPE_WEB),
+            responses = {
+                    @ApiResponse(description = "OK", responseCode = "200"),
+                    @ApiResponse(description = "Not authorized", responseCode = "401",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    examples = {
+                                            @ExampleObject(
+                                                    name = "NotAuthorizedResponse",
+                                                    ref = "#/components/examples/NotAuthorizedResponse"
+                                            ),
+                                    }
+                            )
+                    ),
+                    @ApiResponse(description = "Bad request", responseCode = "400",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    examples = {
+                                            @ExampleObject(
+                                                    name = "DataNotFoundResponse",
+                                                    ref = "#/components/examples/DataNotFoundResponse"
+                                            ),
+                                    },
+                                    array = @ArraySchema(schema = @Schema(implementation = ValidationErrorDto.class))
+                            )
+                    )
+            }
+    )
+    @PostMapping(value = "/upload-experiment-results-attachment", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public void uploadExperimentResultsAttachment(
+            @Parameter(description = "Evaluation id", required = true)
+            @Min(VALUE_1) @Max(Long.MAX_VALUE) @RequestParam Long id,
+            @Parameter(description = "Attachment file", required = true) @RequestParam MultipartFile attachmentFile,
+            @Parameter(description = "Attachment type", required = true)
+            @RequestParam EvaluationResultsAttachmentType attachmentType) {
+        log.info("Request to upload experiment results attachment [{}], type [{}] for evaluation log [{}]",
+                attachmentFile.getOriginalFilename(), attachmentType, id);
+        experimentResultsAttachmentUploader.uploadAttachment(id, attachmentFile, attachmentType);
     }
 }

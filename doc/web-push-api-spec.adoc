@@ -1,0 +1,164 @@
+= ECA WEB PUSH
+:toc:
+:toc-title: Оглавление
+
+== 1. Описание
+
+В данном документе приведено описание API для отправки уведомлений (пушей) в приложении.
+
+== 2. Описание очередей
+
+Ниже приведено описание очередей:
+
+[options="header"]
+|===
+|Название очереди|Описание
+|queue-push-events
+|Название очереди для отправки пуш уведомления
+|===
+
+== 3. Описание формата сообщений
+
+=== 3.1. Пример сообщения для уведомления пользователя
+
+[source,json]
+----
+{
+  "pushType": "USER_NOTIFICATION",
+  "requestId": "1d2de514-3a87-4620-9b97-c260e24340de",
+  "correlationId": "98a57ab7-6494-4d9d-b793-c807fdf02692",
+  "messageType": "CLASSIFIER_CONFIGURATION_CHANGE",
+  "messageText": "Добавил настройки классификатора [Логистическая регрессия] в конфигурацию [2536]",
+  "initiator": "admin",
+  "receivers": [
+    "user"
+  ],
+  "additionalProperties": {
+    "classifiersConfigurationId": "250"
+  }
+}
+----
+
+=== 3.2. Описание полей сообщения сообщения для уведомления пользователя
+
+[options="header"]
+|===
+|Название поля/атрибута|Тип|Обязательное|Макс. длина|Описание|Комментарий
+|pushType
+|string
+|+
+|255
+|Тип пуша
+|
+|requestId
+|string
+|+
+|255
+|Уникальный идентификатор события
+|
+|correlationId
+|string
+|+
+|255
+|ID корреляции
+|Можно использовать для связи с бизнес процессом
+|messageType
+|string
+|+
+|255
+|Код сообщения
+|
+|messageText
+|string
+|+
+|-
+|Текст сообщения
+|
+|initiator
+|string
+|+
+|255
+|Инициатор сообщения
+|
+|receivers
+|array<string>
+|+
+|1000
+|Список получателей уведомления
+|
+|additionalProperties
+|map<string,string>
+|-
+|50
+|Дополнительные параметры уведомления
+|
+|===
+
+=== 3.3. Пример сообщения для системного уведомления
+
+[source,json]
+----
+{
+  "pushType": "SYSTEM",
+  "requestId": "1d2de514-3a87-4620-9b97-c260e24340de",
+  "correlationId": "98a57ab7-6494-4d9d-b793-c807fdf02692",
+  "messageType": "EXPERIMENT_STATUS",
+  "messageText": "Поступила новая заявка на эксперимент 1cec4e54-0f46-4d70-ad19-a8f9f1a0e33c",
+  "showMessage": true,
+  "additionalProperties": {
+    "id": "1",
+    "requestId": "1cec4e54-0f46-4d70-ad19-a8f9f1a0e33c",
+    "requestStatus": "NEW"
+  }
+}
+
+----
+
+=== 3.4. Описание полей сообщения сообщения для системного уведомления
+
+[options="header"]
+|===
+|Название поля/атрибута|Тип|Обязательное|Макс. длина|Описание|Комментарий
+|pushType
+|string
+|+
+|255
+|Тип пуша
+|
+|requestId
+|string
+|+
+|255
+|Уникальный идентификатор события
+|
+|correlationId
+|string
+|+
+|255
+|ID корреляции
+|Можно использовать для связи с бизнес процессом
+|messageType
+|string
+|+
+|255
+|Код сообщения
+|
+|messageText
+|string
+|+
+|-
+|Текст сообщения
+|
+|showMessage
+|boolean
+|+
+|
+|Показывать всплывающее окно уведомления в приложении
+|
+|additionalProperties
+|map<string,string>
+|-
+|50
+|Дополнительные параметры уведомления
+|
+|===

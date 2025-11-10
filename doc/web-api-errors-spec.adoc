@@ -120,4 +120,7 @@
 |400
 |ClassifyInstanceInvalidRequest
 |Некорректные параметры запроса на классификацию примера
+|400
+|DuplicatePersonalAccessTokenName
+|Personal access token с таким именем уже существует
 |===

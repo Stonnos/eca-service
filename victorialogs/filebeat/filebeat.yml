@@ -1,0 +1,31 @@
+filebeat.autodiscover:
+  providers:
+    - type: docker
+      labels.dedot: true
+      hints.enabled: true
+      templates:
+        - condition:
+            contains:
+              container.labels.collect_logs_with_filebeat: "true"
+          config:
+            - type: container
+              format: docker
+              paths:
+                - "/var/lib/docker/containers/${data.docker.container.id}/*.log"
+              processors:
+                - decode_json_fields:
+                    when.equals:
+                      docker.container.labels.decode_log_event_to_json_object: "true"
+                    fields: ["message"]
+                    target: ""
+                    overwrite_keys: true
+
+output.elasticsearch:
+  hosts: ["http://victorialogs:9428/insert/elasticsearch/"]
+  parameters:
+    _msg_field: "message"
+    _time_field: "@timestamp"
+    _stream_fields: "application_name"
+    ignore_fields: "agent*,docker.container.labels*,ecs.version,log.offset,log.file.path,level_value,input.type,host.name,container.id,container.image.name"
+
+logging.metrics.enabled: false

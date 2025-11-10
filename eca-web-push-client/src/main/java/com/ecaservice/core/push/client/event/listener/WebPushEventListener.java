@@ -5,6 +5,7 @@ import com.ecaservice.core.push.client.event.model.AbstractPushEvent;
 import com.ecaservice.core.push.client.service.WebPushSender;
 import com.ecaservice.core.push.client.validator.PushRequestValidator;
 import com.ecaservice.web.push.dto.AbstractPushRequest;
+import io.micrometer.tracing.annotation.NewSpan;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;
@@ -31,6 +32,7 @@ public class WebPushEventListener {
      *
      * @param pushEvent - push event
      */
+    @NewSpan
     @EventListener
     @SuppressWarnings("unchecked")
     public void handlePushEvent(AbstractPushEvent pushEvent) {

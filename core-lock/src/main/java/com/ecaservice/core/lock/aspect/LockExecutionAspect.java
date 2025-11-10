@@ -87,12 +87,12 @@ public class LockExecutionAspect {
             log.debug("Around locked method [{}] has been processed", joinPoint.getSignature().getName());
             return result;
         } catch (CannotAcquireLockException ex) {
-            log.error("Acquire lock error: {}", ex.getMessage());
+            log.error("Acquire lock error: {}", ex.getMessage(), ex);
             lockMeterService.trackAcquireLockError(locked.lockName());
             throw ex;
         } catch (Exception ex) {
             log.error("There was an error while around method [{}] with Locked: {}",
-                    joinPoint.getSignature().getName(), ex.getMessage());
+                    joinPoint.getSignature().getName(), ex.getMessage(), ex);
             unlock(lockService, locked.lockName(), lockKey);
             throw ex;
         }
@@ -102,8 +102,8 @@ public class LockExecutionAspect {
         try {
             lockService.unlock(key);
             lockMeterService.trackSuccessUnlock(lockName);
-        } catch (CannotUnlockException e) {
-            log.error("There was an error while release lock with key [{}]: {}", key, e.getMessage());
+        } catch (CannotUnlockException ex) {
+            log.error("There was an error while release lock with key [{}]: {}", key, ex.getMessage(), ex);
             lockMeterService.trackUnlockError(lockName);
         }
     }

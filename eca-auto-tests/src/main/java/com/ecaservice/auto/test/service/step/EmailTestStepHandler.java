@@ -51,7 +51,7 @@ public class EmailTestStepHandler implements AbstractTestStepHandler<EmailTestSt
         } catch (Exception ex) {
             log.error("Error while test step [{}] email [{}] handling for experiment request [{}]: {}",
                     emailStepEntity.getId(), emailStepEntity.getEmailType(), experimentRequestEntity.getRequestId(),
-                    ex.getMessage());
+                    ex.getMessage(), ex);
             testStepService.finishWithError(emailStepEntity, ex.getMessage());
         }
     }

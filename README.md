@@ -11,7 +11,6 @@
 * Openjdk 21
 * maven => 3.9.2
 * Rabbit MQ => 3.8.14
-* eca-core 7.0
 * Postgres Database для хранения информации 13.9
 * Docker, Docker-compose
 
@@ -25,11 +24,13 @@
 * core-lock - библиотека для работы с блокирующими операциями
 * core-tracing - общая библиотека для распределенной трассировки
 * eca-model - модуль содержит модель сообщений с классификаторами для передачи через rabbit mq
-* eca-user-model - модуль содержит основные классы для работы с пользовательским контекстом
+* eca-oauth-transport - модуль содержит dto классы для сервиса eca-oauth
 * eca-mail-transport - модуль содержит dto классы для сервиса eca-mail
 * classifiers-options - модуль содержит модельные классы для настроек входных параметров классификаторов
 * eca-ers-transport - модуль содержит dto классы для сервиса ERS
 * eca-ds-transport - модуль содержит dto классы для сервиса Data storage
+* eca-web-push-transport - модуль содержит dto классы для сервиса eca web push
+* eca-data-loader-transport - модуль содержит dto классы для сервиса eca data loader
 * eca-external-api-transport - модуль содержит dto классы для внешнего API
 * eca-audit-transport - модуль содержит dto классы для сервиса журнала аудита
 * user-profile-options-transport - модуль содержит dto классы для настроек профиля пользователя
@@ -62,6 +63,7 @@
 * eca-mail - модуль для отправки почты
 * eca-ers - сервис для хранения и анализа результатов классификации
 * eca-data-storage - модуль для хранения обучающих выборок в виде таблиц БД
+* eca-data-loader - модуль для загрузки обучающих выборок для последующей классификации
 * eca-web-push - модуль для отправки веб - пушей с поддержкой web sockets
 * eca-audit-log - модуль для сбора и хранения событий аудита
 * eca-external-api - предоставляет внешний API (web proxy) для обучения моделей классификаторов

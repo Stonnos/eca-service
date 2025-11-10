@@ -99,7 +99,7 @@ class EvaluationProcessManagerTest extends AbstractEvaluationProcessManagerTest<
     void testCreateEvaluationWebRequest() {
         var evaluationWebRequestModel = createEvaluationWebRequestModel();
         evaluationProcessManager.createAndProcessEvaluationRequest(evaluationWebRequestModel);
-        verify(getWebPushClient(), atLeastOnce()).sendPush(pushRequestArgumentCaptor.capture());
+        verify(getWebPushSender(), atLeastOnce()).sendPush(pushRequestArgumentCaptor.capture());
 
         assertThat(pushRequestArgumentCaptor.getAllValues()).hasSize(1);
 
@@ -117,7 +117,7 @@ class EvaluationProcessManagerTest extends AbstractEvaluationProcessManagerTest<
         mockGetUserProfileOptions(false);
         evaluationProcessManager.createAndProcessEvaluationRequest(evaluationWebRequestModel);
 
-        verify(getWebPushClient(), never()).sendPush(any(AbstractPushRequest.class));
+        verify(getWebPushSender(), never()).sendPush(any(AbstractPushRequest.class));
 
         var evaluationLog = getEvaluationLog(evaluationWebRequestModel.getRequestId());
 
@@ -217,7 +217,7 @@ class EvaluationProcessManagerTest extends AbstractEvaluationProcessManagerTest<
         mockGetOptimalOptions(classifierOptionsResult);
         evaluationProcessManager.createAndProcessEvaluationRequest(evaluationMessageRequestModel);
 
-        verify(getWebPushClient(), atLeastOnce()).sendPush(pushRequestArgumentCaptor.capture());
+        verify(getWebPushSender(), atLeastOnce()).sendPush(pushRequestArgumentCaptor.capture());
 
         var evaluationLog = getEvaluationLog(evaluationMessageRequestModel.getRequestId());
 
@@ -254,7 +254,7 @@ class EvaluationProcessManagerTest extends AbstractEvaluationProcessManagerTest<
 
         var actualEvaluationLog = getEvaluationLog(evaluationLog.getRequestId());
 
-        verify(getWebPushClient(), never()).sendPush(any(AbstractPushRequest.class));
+        verify(getWebPushSender(), never()).sendPush(any(AbstractPushRequest.class));
 
         verifyTestSteps(actualEvaluationLog,
                 new EvaluationRequestStatusVerifier(RequestStatus.FINISHED),
@@ -281,7 +281,7 @@ class EvaluationProcessManagerTest extends AbstractEvaluationProcessManagerTest<
 
     private void testProcessEvaluationRequest(EvaluationLog evaluationLog) {
         evaluationProcessManager.processEvaluationRequest(evaluationLog);
-        verify(getWebPushClient(), atLeastOnce()).sendPush(pushRequestArgumentCaptor.capture());
+        verify(getWebPushSender(), atLeastOnce()).sendPush(pushRequestArgumentCaptor.capture());
     }
 
     private EvaluationLog getEvaluationLog(String requestId) {

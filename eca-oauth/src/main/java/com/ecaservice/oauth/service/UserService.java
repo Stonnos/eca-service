@@ -7,7 +7,6 @@ import com.ecaservice.common.web.exception.InvalidOperationException;
 import com.ecaservice.core.audit.annotation.Audit;
 import com.ecaservice.core.filter.service.FilterTemplateService;
 import com.ecaservice.core.filter.validation.annotations.ValidPageRequest;
-import com.ecaservice.core.transactional.outbox.service.OutboxMessageService;
 import com.ecaservice.oauth.config.AppProperties;
 import com.ecaservice.oauth.dto.CreateUserDto;
 import com.ecaservice.oauth.dto.UpdateUserInfoDto;
@@ -55,8 +54,8 @@ import static com.ecaservice.oauth.config.audit.AuditCodes.UPDATE_PERSONAL_DATA;
 import static com.ecaservice.oauth.config.audit.AuditCodes.UPDATE_PHOTO;
 import static com.ecaservice.oauth.dictionary.FilterDictionaries.USERS_TEMPLATE;
 import static com.ecaservice.oauth.entity.UserEntity_.CREATION_DATE;
+import static com.ecaservice.oauth.util.Role.ROLE_ECA_USER;
 import static com.ecaservice.oauth.util.Utils.isSuperAdmin;
-import static com.ecaservice.user.model.Role.ROLE_ECA_USER;
 
 /**
  * Users management service.

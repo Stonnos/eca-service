@@ -1,0 +1,24 @@
+services:
+
+  tempo:
+    image: grafana/tempo:${TEMPO_VERSION}
+    container_name: tempo
+    command: [ "-config.file=/etc/tempo.yaml" ]
+    volumes:
+      - ./tempo.yaml:/etc/tempo.yaml
+      - tempo-data:/var/tempo
+    ports:
+      - "3200:3200" # Tempo query frontend
+      - "9095:9095" # tempo grpc
+      - "9411:9411" # Zipkin ingest
+    networks:
+      - default
+
+networks:
+  default:
+    name: app-network
+    driver: bridge
+
+volumes:
+  tempo-data:
+    name: tempo-data

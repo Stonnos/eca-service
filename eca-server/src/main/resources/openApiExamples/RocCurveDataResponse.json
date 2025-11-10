@@ -1,4 +1,6 @@
 {
+  "classIndex": 0,
+  "classValue": "Iris-setosa",
   "rocCurvePoints": [
     {
       "specificity": 100,
