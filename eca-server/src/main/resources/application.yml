@@ -70,6 +70,15 @@ eureka:
     registerWithEureka: false
     fetchRegistry: false
 
+camunda:
+  bpm:
+    ## Disabled history
+    history-level: none
+    generic-properties:
+      properties:
+        ## avoid errors related to missing HTTL definitions
+        enforceHistoryTimeToLive: false
+
 ## Application properties
 app:
   threadPoolSize: 10
