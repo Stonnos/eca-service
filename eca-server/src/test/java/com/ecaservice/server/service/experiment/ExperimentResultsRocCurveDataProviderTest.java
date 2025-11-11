@@ -10,15 +10,14 @@ import com.ecaservice.server.model.entity.Experiment;
 import com.ecaservice.server.model.entity.ExperimentResultsEntity;
 import com.ecaservice.server.model.entity.InstancesInfo;
 import com.ecaservice.server.model.entity.RequestStatus;
+import com.ecaservice.server.model.evaluation.AucPredictionsData;
+import com.ecaservice.server.repository.AttributesInfoRepository;
 import com.ecaservice.server.repository.ExperimentRepository;
 import com.ecaservice.server.repository.ExperimentResultsEntityRepository;
 import com.ecaservice.server.repository.InstancesInfoRepository;
 import com.ecaservice.server.service.AbstractJpaTest;
-import com.ecaservice.server.service.ModelCacheLoader;
-import com.ecaservice.server.service.ModelProvider;
 import com.ecaservice.web.dto.model.RocCurveDataDto;
 import eca.core.evaluation.EvaluationResults;
-import eca.dataminer.AbstractExperiment;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -30,10 +29,11 @@ import java.math.RoundingMode;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-import static com.ecaservice.server.TestHelperUtils.buildExperiment;
+import static com.ecaservice.server.TestHelperUtils.createAttributes;
 import static com.ecaservice.server.TestHelperUtils.createExperiment;
 import static com.ecaservice.server.TestHelperUtils.createExperimentResultsEntity;
 import static com.ecaservice.server.TestHelperUtils.createInstancesInfo;
+import static com.ecaservice.server.TestHelperUtils.getEvaluationResults;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
@@ -43,7 +43,7 @@ import static org.mockito.Mockito.when;
  *
  * @author Roman Batygin
  */
-@Import({ExperimentResultsRocCurveDataProvider.class, ModelProvider.class, ModelCacheLoader.class, AppProperties.class})
+@Import({ExperimentResultsRocCurveDataProvider.class, AppProperties.class})
 class ExperimentResultsRocCurveDataProviderTest extends AbstractJpaTest {
 
     private static final int SCALE = 4;
@@ -55,6 +55,8 @@ class ExperimentResultsRocCurveDataProviderTest extends AbstractJpaTest {
     private ExperimentRepository experimentRepository;
     @Autowired
     private InstancesInfoRepository instancesInfoRepository;
+    @Autowired
+    private AttributesInfoRepository attributesInfoRepository;
 
     @Autowired
     private ExperimentResultsRocCurveDataProvider experimentResultsRocCurveDataProvider;
@@ -69,6 +71,7 @@ class ExperimentResultsRocCurveDataProviderTest extends AbstractJpaTest {
     public void deleteAll() {
         experimentResultsEntityRepository.deleteAll();
         experimentRepository.deleteAll();
+        attributesInfoRepository.deleteAll();
         instancesInfoRepository.deleteAll();
     }
 
@@ -76,6 +79,7 @@ class ExperimentResultsRocCurveDataProviderTest extends AbstractJpaTest {
     public void init() {
         InstancesInfo instancesInfo = createInstancesInfo();
         instancesInfoRepository.save(instancesInfo);
+        saveAttributes(instancesInfo);
         experiment = createExperiment(UUID.randomUUID().toString(), RequestStatus.FINISHED, instancesInfo);
         experimentRepository.save(experiment);
         experimentResultsEntity = createExperimentResultsEntity(experiment);
@@ -84,10 +88,9 @@ class ExperimentResultsRocCurveDataProviderTest extends AbstractJpaTest {
 
     @Test
     void testCalculateRocCurveData() throws IOException, ClassNotFoundException {
-        AbstractExperiment<?> abstractExperiment = buildExperiment();
-        EvaluationResults evaluationResults = abstractExperiment.getHistory().getFirst();
-        when(objectStorageService.getObject(experimentResultsEntity.getExperiment().getModelPath(), Object.class))
-                .thenReturn(abstractExperiment);
+        EvaluationResults evaluationResults = getEvaluationResults();
+        when(objectStorageService.getObject(experimentResultsEntity.getAucPredictionsPath(), AucPredictionsData.class))
+                .thenReturn(new AucPredictionsData(evaluationResults.getEvaluation().predictions()));
         RocCurveDataDto rocCurveDataDto =
                 experimentResultsRocCurveDataProvider.getRocCurveData(experimentResultsEntity.getId(), CLASS_INDEX);
         assertThat(rocCurveDataDto).isNotNull();
@@ -132,5 +135,10 @@ class ExperimentResultsRocCurveDataProviderTest extends AbstractJpaTest {
         assertThrows(ModelDeletedException.class,
                 () -> experimentResultsRocCurveDataProvider.getRocCurveData(experimentResultsEntity.getId(),
                         CLASS_INDEX));
+    }
+
+    private void saveAttributes(InstancesInfo instancesInfo) {
+        var attributesInfoEntity = createAttributes(instancesInfo);
+        attributesInfoRepository.save(attributesInfoEntity);
     }
 }

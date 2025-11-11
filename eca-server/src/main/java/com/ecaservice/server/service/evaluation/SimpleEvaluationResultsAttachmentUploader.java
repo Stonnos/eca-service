@@ -21,6 +21,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.Map;
 
 import static com.ecaservice.server.util.EvaluationResultsAttachmentKeys.EVALUATION_KEY_FORMAT;
+import static com.ecaservice.server.util.S3ObjectPaths.EVALUATION_RESULTS_ATTACHMENT_PATH_FORMAT;
 import static com.ecaservice.server.util.ValidationUtils.checkClassIndex;
 import static com.ecaservice.server.util.ValidationUtils.checkFinishedRequestStatus;
 import static com.ecaservice.server.util.ValidationUtils.checkModelNotDeleted;
@@ -35,8 +36,6 @@ import static com.ecaservice.server.util.ValidationUtils.checkModelNotDeleted;
 @RequiredArgsConstructor
 public class SimpleEvaluationResultsAttachmentUploader implements EvaluationResultsAttachmentUploader {
 
-    private static final String FILE_PATH_FORMAT = "evaluation-results-attachments/classifiers/%s/%s";
-
     private static final Map<EvaluationResultsAttachmentType, String> FILE_NAMES = Map.of(
             EvaluationResultsAttachmentType.ROC_CURVE_IMAGE, "roc-curve-image.png"
     );
@@ -50,10 +49,12 @@ public class SimpleEvaluationResultsAttachmentUploader implements EvaluationResu
                 file.getOriginalFilename(), attachmentType, modelId);
         EvaluationLog evaluationLog = evaluationLogRepository.findById(modelId)
                 .orElseThrow(() -> new EntityNotFoundException(EvaluationLog.class, modelId));
+        String filePath = String.format(EVALUATION_RESULTS_ATTACHMENT_PATH_FORMAT, evaluationLog.getRequestId(),
+                FILE_NAMES.get(attachmentType));
         var evaluationAttachmentData = EvaluationAttachmentData.builder()
                 .key(String.format(EVALUATION_KEY_FORMAT, evaluationLog.getRequestId()))
                 .attachmentType(attachmentType)
-                .filePath(String.format(FILE_PATH_FORMAT, evaluationLog.getRequestId(), FILE_NAMES.get(attachmentType)))
+                .filePath(filePath)
                 .build();
         evaluationResultsAttachmentService.saveAttachment(file, evaluationAttachmentData);
         log.info("Evaluation results attachment [{}], type [{}]  has been uploaded for evaluation log [{}]",

@@ -3,10 +3,10 @@ package com.ecaservice.server.service.experiment;
 import com.ecaservice.server.config.ExperimentConfig;
 import eca.core.ModelSerializationHelper;
 import eca.dataminer.AbstractExperiment;
+import io.micrometer.tracing.annotation.NewSpan;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
-import io.micrometer.tracing.annotation.NewSpan;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StopWatch;
 
@@ -15,6 +15,8 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.Serializable;
+import java.util.concurrent.TimeUnit;
 
 import static com.ecaservice.server.util.ZipUtils.createZipArchive;
 
@@ -67,16 +69,40 @@ public class ExperimentModelLocalStorage {
     }
 
     /**
-     * Gets experiment model from local file storage.
+     * Saves experiment data file to local file storage.
      *
-     * @param requestId - experiment request id
-     * @return experiment model input stream
+     * @param fileName - file name
+     * @param data     - some data
      */
-    public InputStream getModelInputStream(String requestId) {
+    @NewSpan
+    public void saveDataFile(String fileName, Serializable data) {
         try {
-            log.info("Starting to get experiment [{}] model from local file storage", requestId);
-            File modelZipFile = getModelZipFile(requestId);
-            return new FileInputStream(modelZipFile);
+            String filePath = String.format("%s/%s", experimentConfig.getExperimentLocalStoragePath(), fileName);
+            log.info("Starting to save experiment data file [{}] to local storage", filePath);
+            StopWatch stopWatch = new StopWatch();
+            File dataFile = new File(filePath);
+            stopWatch.start();
+            ModelSerializationHelper.serialize(dataFile, data);
+            stopWatch.stop();
+            log.info("Experiment data has been saved to file [{}]. Total time {} ms.", filePath,
+                    stopWatch.getTotalTime(TimeUnit.MILLISECONDS));
+            log.info("Experiment data file [{}] has been saved to local storage", filePath);
+        } catch (IOException ex) {
+            throw new IllegalStateException(ex);
+        }
+    }
+
+    /**
+     * Gets experiment details data from local file storage.
+     *
+     * @param fileName - file name
+     * @return experiment data file input stream
+     */
+    public InputStream getDataFileInputStream(String fileName) {
+        try {
+            log.info("Starting to get experiment data [{}] from local file storage", fileName);
+            File file = getDataFile(fileName);
+            return new FileInputStream(file);
         } catch (FileNotFoundException ex) {
             throw new IllegalStateException(ex);
         }
@@ -85,17 +111,16 @@ public class ExperimentModelLocalStorage {
     /**
      * Deletes experiment model from local storage.
      *
-     * @param requestId - experiment request id
+     * @param fileName - experiment request id
      */
     @NewSpan
-    public void deleteModel(String requestId) {
-        File file = getModelZipFile(requestId);
+    public void deleteDataFile(String fileName) {
+        File file = getDataFile(fileName);
         deleteFile(file);
     }
 
-    private File getModelZipFile(String requestId) {
-        return new File(
-                String.format("%s/experiment-%s.zip", experimentConfig.getExperimentLocalStoragePath(), requestId));
+    private File getDataFile(String fileName) {
+        return new File(String.format("%s/%s", experimentConfig.getExperimentLocalStoragePath(), fileName));
     }
 
     private void deleteFile(File file) {

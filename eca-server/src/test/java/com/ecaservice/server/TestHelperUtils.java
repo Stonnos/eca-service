@@ -184,6 +184,7 @@ public class TestHelperUtils {
     private static final int EXPERIMENT_NUM_ITS = 5;
     private static final String ATTRIBUTE_NAME = "class";
     private static final List<String> ATTRIBUTE_VALUES = List.of("val1", "val2", "val3");
+    private static final String AUC_PREDICTIONS_MODEL = "auc-predictions.model";
 
     /**
      * Creates page request dto.
@@ -739,6 +740,7 @@ public class TestHelperUtils {
         evaluationLog.setChannel(Channel.QUEUE);
         evaluationLog.setEvaluationTimeMillis(EVALUATION_TIME_MILLIS);
         evaluationLog.setTrainingDataUuid(UUID.randomUUID().toString());
+        evaluationLog.setAucPredictionsPath(AUC_PREDICTIONS_MODEL);
         return evaluationLog;
     }
 
@@ -1027,6 +1029,7 @@ public class TestHelperUtils {
         experimentResultsEntity.setClassifierName(CART.class.getSimpleName());
         experimentResultsEntity.setClassifierOptions(toJsonString(createDecisionTreeOptions()));
         experimentResultsEntity.setPctCorrect(BigDecimal.TEN);
+        experimentResultsEntity.setAucPredictionsPath(AUC_PREDICTIONS_MODEL);
         return experimentResultsEntity;
     }
 

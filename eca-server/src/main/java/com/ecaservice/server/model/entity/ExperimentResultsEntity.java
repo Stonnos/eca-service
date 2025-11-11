@@ -53,6 +53,12 @@ public class ExperimentResultsEntity {
     private BigDecimal pctCorrect;
 
     /**
+     * Evaluation AUC predictions path in object storage
+     */
+    @Column(name = "auc_predictions_path")
+    private String aucPredictionsPath;
+
+    /**
      * Experiment entity
      */
     @ManyToOne

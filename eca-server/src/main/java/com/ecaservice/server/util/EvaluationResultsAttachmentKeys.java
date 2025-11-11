@@ -13,7 +13,7 @@ public class EvaluationResultsAttachmentKeys {
     /**
      * Experiment results key format
      */
-    public static final String EXPERIMENT_RESULTS_KEY_FORMAT = "experiment-%s:%d";
+    public static final String EXPERIMENT_RESULTS_KEY_FORMAT = "experiment-%s-%d";
 
     /**
      * Evaluation key format

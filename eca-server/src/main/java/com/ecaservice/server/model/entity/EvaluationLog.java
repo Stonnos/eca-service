@@ -39,4 +39,10 @@ public class EvaluationLog extends AbstractEvaluationEntity {
      */
     @Column(name = "classifier_options", columnDefinition = "text", nullable = false)
     private String classifierOptions;
+
+    /**
+     * Evaluation AUC predictions path in object storage
+     */
+    @Column(name = "auc_predictions_path")
+    private String aucPredictionsPath;
 }

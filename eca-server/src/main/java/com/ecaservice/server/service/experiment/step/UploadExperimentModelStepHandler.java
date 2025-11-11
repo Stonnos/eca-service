@@ -16,6 +16,9 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StopWatch;
 
+import static com.ecaservice.server.util.FileKeys.EXPERIMENT_MODEL_ZIP;
+import static com.ecaservice.server.util.S3ObjectPaths.EXPERIMENT_PATH_FORMAT;
+
 /**
  * Step handler to upload experiment model to S3.
  *
@@ -24,8 +27,6 @@ import org.springframework.util.StopWatch;
 @Slf4j
 @Component
 public class UploadExperimentModelStepHandler extends AbstractExperimentStepHandler {
-
-    private static final String EXPERIMENT_PATH_FORMAT = "experiments/experiment-%s.zip";
 
     private final MinioStorageService minioStorageService;
     private final ExperimentStepService experimentStepService;
@@ -60,8 +61,8 @@ public class UploadExperimentModelStepHandler extends AbstractExperimentStepHand
             Experiment experiment = experimentContext.getExperiment();
             StopWatch stopWatch = experimentContext.getStopWatch();
             uploadObject(experiment, stopWatch);
-            experimentModelLocalStorage.deleteModel(experiment.getRequestId());
             experimentStepService.complete(experimentStepEntity);
+            deleteTempModelFile(experiment);
         } catch (ObjectStorageException ex) {
             log.error("Object storage error while upload experiment [{}] model: {}",
                     experimentContext.getExperiment().getRequestId(), ex.getMessage(), ex);
@@ -73,13 +74,19 @@ public class UploadExperimentModelStepHandler extends AbstractExperimentStepHand
         }
     }
 
+    private void deleteTempModelFile(Experiment experiment) {
+        String fileName = String.format(EXPERIMENT_MODEL_ZIP, experiment.getRequestId());
+        experimentModelLocalStorage.deleteDataFile(fileName);
+    }
+
     private void uploadObject(Experiment experiment, StopWatch stopWatch) {
         String experimentPath = String.format(EXPERIMENT_PATH_FORMAT, experiment.getRequestId());
         stopWatch.start(String.format("Uploads experiment history [%s] to S3", experiment.getRequestId()));
+        String fileName = String.format(EXPERIMENT_MODEL_ZIP, experiment.getRequestId());
         minioStorageService.uploadObject(
                 UploadObject.builder()
                         .objectPath(experimentPath)
-                        .inputStream(() -> experimentModelLocalStorage.getModelInputStream(experiment.getRequestId()))
+                        .inputStream(() -> experimentModelLocalStorage.getDataFileInputStream(fileName))
                         .contentType(MediaType.APPLICATION_OCTET_STREAM_VALUE)
                         .build()
         );

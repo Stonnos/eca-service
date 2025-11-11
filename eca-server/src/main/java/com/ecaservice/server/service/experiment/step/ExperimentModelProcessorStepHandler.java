@@ -10,6 +10,7 @@ import com.ecaservice.server.model.entity.Experiment;
 import com.ecaservice.server.model.entity.ExperimentStep;
 import com.ecaservice.server.model.entity.ExperimentStepEntity;
 import com.ecaservice.server.model.entity.ExperimentStepStatus;
+import com.ecaservice.server.model.evaluation.AucPredictionsData;
 import com.ecaservice.server.model.experiment.ExperimentContext;
 import com.ecaservice.server.model.experiment.ExperimentProcessResult;
 import com.ecaservice.server.model.experiment.InitializationParams;
@@ -20,6 +21,7 @@ import com.ecaservice.server.service.experiment.ExperimentModelLocalStorage;
 import com.ecaservice.server.service.experiment.ExperimentProcessorService;
 import com.ecaservice.server.service.experiment.ExperimentProgressService;
 import com.ecaservice.server.service.experiment.ExperimentStepService;
+import eca.core.evaluation.Evaluation;
 import eca.dataminer.AbstractExperiment;
 import io.micrometer.tracing.annotation.NewSpan;
 import lombok.extern.slf4j.Slf4j;
@@ -36,6 +38,9 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+import java.util.stream.IntStream;
+
+import static com.ecaservice.server.util.FileKeys.EXPERIMENT_RESULTS_AUC_PREDICTIONS;
 
 /**
  * Step handler for experiment model processing.
@@ -95,6 +100,7 @@ public class ExperimentModelProcessorStepHandler extends AbstractExperimentStepH
             Instances data = getInstances(experimentContext);
             processExperiment(data, experimentContext);
             saveModelToLocalStorage(experimentStepEntity, experimentContext.getExperimentHistory());
+            saveAucPredictionsToLocalStorage(experimentStepEntity, experimentContext.getExperimentHistory());
             saveMaxPctCorrectValue(experimentContext);
             Experiment experiment = experimentContext.getExperiment();
             experiment.setEvaluationTimeMillis(experimentContext.getStopWatch().lastTaskInfo().getTimeMillis());
@@ -177,5 +183,16 @@ public class ExperimentModelProcessorStepHandler extends AbstractExperimentStepH
                                          AbstractExperiment<?> experimentHistory) throws IOException {
         experimentModelLocalStorage.saveModelAsZip(experimentStepEntity.getExperiment().getRequestId(),
                 experimentHistory);
+    }
+
+    private void saveAucPredictionsToLocalStorage(ExperimentStepEntity experimentStepEntity,
+                                                  AbstractExperiment<?> experimentHistory) {
+        IntStream.range(0, experimentHistory.getHistory().size()).forEach(i -> {
+            String fileName = String.format(EXPERIMENT_RESULTS_AUC_PREDICTIONS,
+                    experimentStepEntity.getExperiment().getRequestId(), i);
+            Evaluation evaluation = experimentHistory.getHistory().get(i).getEvaluation();
+            AucPredictionsData aucPredictionsData = new AucPredictionsData(evaluation.predictions());
+            experimentModelLocalStorage.saveDataFile(fileName, aucPredictionsData);
+        });
     }
 }

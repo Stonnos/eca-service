@@ -1,8 +1,9 @@
 package com.ecaservice.server.service;
 
+import com.ecaservice.server.model.data.AttributeMetaInfo;
+import com.ecaservice.server.model.evaluation.AucPredictionsData;
 import com.ecaservice.web.dto.model.RocCurveDataDto;
 import com.ecaservice.web.dto.model.RocCurvePointDto;
-import eca.core.evaluation.Evaluation;
 import eca.roc.RocCurve;
 import eca.roc.ThresholdModel;
 import lombok.experimental.UtilityClass;
@@ -27,13 +28,17 @@ public class RocCurveHelper {
     /**
      * Calculates roc curve data.
      *
-     * @param evaluation - evaluation object
-     * @param classIndex - class index
+     * @param predictions    - auc predictions
+     * @param classAttribute - class attribute info
+     * @param classIndex     - class index
      * @return roc curve data dto
      */
-    public static RocCurveDataDto calculateRocCurveData(Evaluation evaluation, int classIndex) {
-        RocCurve rocCurve = new RocCurve(evaluation);
-        Instances rocCurveData = rocCurve.getROCCurve(classIndex);
+    public static RocCurveDataDto calculateRocCurveData(AucPredictionsData predictions,
+                                                        AttributeMetaInfo classAttribute,
+                                                        int classIndex) {
+        RocCurve rocCurve = new RocCurve(null);
+        ThresholdCurve curve = new ThresholdCurve();
+        Instances rocCurveData = curve.getCurve(predictions.getPredictions(), classIndex);
         var rocCurvePoints = rocCurveData.stream()
                 .map(instance -> {
                     RocCurvePointDto rocCurveDataDto = new RocCurvePointDto();
@@ -47,7 +52,7 @@ public class RocCurveHelper {
                 }).toList();
         RocCurveDataDto rocCurveDataDto = new RocCurveDataDto();
         rocCurveDataDto.setClassIndex(classIndex);
-        rocCurveDataDto.setClassValue(evaluation.getData().classAttribute().value(classIndex));
+        rocCurveDataDto.setClassValue(classAttribute.getValues().get(classIndex));
         rocCurveDataDto.setAucValue(getROCArea(rocCurveData));
         rocCurveDataDto.setRocCurvePoints(rocCurvePoints);
         rocCurveDataDto.setOptimalPoint(calculateOptimalPoint(rocCurve, rocCurveData));

@@ -286,6 +286,7 @@ image::./images/eca-db-schema.png[alt=Схема базы данных eca-serve
 |reply_to                   |varchar(255)     |-|-|-                                    |Название очереди для отправки ответных сообщений в MQ
 |correlation_id             |varchar(255)     |-|-|-                                    |Значение для корреляции запрос/ответ
 |evaluation_time_millis     |bigint           |-|-|-                                    |Время построения модели в мс.
+|auc_predictions_path       |varchar(255)     |-|-|-                                    |Путь к объекту в S3 с данными для ROC кривых
 |===
 
 ==== Таблица 3.{counter:db-table-id} - 'experiment' - содержит данные о заявках на построение экспрериментов
@@ -361,6 +362,7 @@ image::./images/eca-db-schema.png[alt=Схема базы данных eca-serve
 |classifier_options           |text             |-|+|-                                         |Настройки классификатора в формате json
 |experiment_id                |bigint           |-|+|fk_experiment_results_experiment_id       |Внешний ключ, ID эксперимента
 |pct_correct                  |numeric(19,4)    |-|+|-                                         |Точность классификатора
+|auc_predictions_path         |varchar(255)     |-|-|-                                    |Путь к объекту в S3 с данными для ROC кривых
 |===
 
 ==== Таблица 3.{counter:db-table-id} - 'ers_request' - системная таблица для интеграции с сервисом eca-ers

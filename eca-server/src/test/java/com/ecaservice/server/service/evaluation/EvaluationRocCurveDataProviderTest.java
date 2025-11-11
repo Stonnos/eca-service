@@ -9,6 +9,8 @@ import com.ecaservice.server.exception.UnexpectedRequestStatusException;
 import com.ecaservice.server.model.entity.EvaluationLog;
 import com.ecaservice.server.model.entity.InstancesInfo;
 import com.ecaservice.server.model.entity.RequestStatus;
+import com.ecaservice.server.model.evaluation.AucPredictionsData;
+import com.ecaservice.server.repository.AttributesInfoRepository;
 import com.ecaservice.server.repository.EvaluationLogRepository;
 import com.ecaservice.server.repository.InstancesInfoRepository;
 import com.ecaservice.server.service.AbstractJpaTest;
@@ -29,6 +31,7 @@ import java.math.RoundingMode;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
+import static com.ecaservice.server.TestHelperUtils.createAttributes;
 import static com.ecaservice.server.TestHelperUtils.createEvaluationLog;
 import static com.ecaservice.server.TestHelperUtils.createInstancesInfo;
 import static com.ecaservice.server.TestHelperUtils.getEvaluationResults;
@@ -41,7 +44,7 @@ import static org.mockito.Mockito.when;
  *
  * @author Roman Batygin
  */
-@Import({EvaluationRocCurveDataProvider.class, ModelProvider.class, ModelCacheLoader.class, AppProperties.class})
+@Import({EvaluationRocCurveDataProvider.class, AppProperties.class})
 class EvaluationRocCurveDataProviderTest extends AbstractJpaTest {
 
     private static final int SCALE = 4;
@@ -51,6 +54,8 @@ class EvaluationRocCurveDataProviderTest extends AbstractJpaTest {
     private EvaluationLogRepository evaluationLogRepository;
     @Autowired
     private InstancesInfoRepository instancesInfoRepository;
+    @Autowired
+    private AttributesInfoRepository attributesInfoRepository;
 
     @Autowired
     private EvaluationRocCurveDataProvider evaluationRocCurveDataProvider;
@@ -63,6 +68,7 @@ class EvaluationRocCurveDataProviderTest extends AbstractJpaTest {
     @Override
     public void deleteAll() {
         evaluationLogRepository.deleteAll();
+        attributesInfoRepository.deleteAll();
         instancesInfoRepository.deleteAll();
     }
 
@@ -70,6 +76,7 @@ class EvaluationRocCurveDataProviderTest extends AbstractJpaTest {
     public void init() {
         InstancesInfo instancesInfo = createInstancesInfo();
         instancesInfoRepository.save(instancesInfo);
+        saveAttributes(instancesInfo);
         evaluationLog = createEvaluationLog(UUID.randomUUID().toString(), RequestStatus.FINISHED, instancesInfo);
         evaluationLogRepository.save(evaluationLog);
     }
@@ -77,12 +84,8 @@ class EvaluationRocCurveDataProviderTest extends AbstractJpaTest {
     @Test
     void testCalculateRocCurveData() throws IOException, ClassNotFoundException {
         EvaluationResults evaluationResults = getEvaluationResults();
-        ClassificationModel classificationModel = new ClassificationModel();
-        classificationModel.setClassifier((AbstractClassifier) evaluationResults.getClassifier());
-        classificationModel.setData(evaluationResults.getEvaluation().getData());
-        classificationModel.setEvaluation(evaluationResults.getEvaluation());
-        when(objectStorageService.getObject(evaluationLog.getModelPath(), Object.class))
-                .thenReturn(classificationModel);
+        when(objectStorageService.getObject(evaluationLog.getAucPredictionsPath(), AucPredictionsData.class))
+                .thenReturn(new AucPredictionsData(evaluationResults.getEvaluation().predictions()));
         RocCurveDataDto rocCurveDataDto =
                 evaluationRocCurveDataProvider.getRocCurveData(evaluationLog.getId(), CLASS_INDEX);
         assertThat(rocCurveDataDto).isNotNull();
@@ -125,5 +128,10 @@ class EvaluationRocCurveDataProviderTest extends AbstractJpaTest {
         evaluationLogRepository.save(evaluationLog);
         assertThrows(ModelDeletedException.class,
                 () -> evaluationRocCurveDataProvider.getRocCurveData(evaluationLog.getId(), CLASS_INDEX));
+    }
+
+    private void saveAttributes(InstancesInfo instancesInfo) {
+        var attributesInfoEntity = createAttributes(instancesInfo);
+        attributesInfoRepository.save(attributesInfoEntity);
     }
 }
