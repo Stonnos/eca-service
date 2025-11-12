@@ -25,5 +25,10 @@ public enum ExperimentStep {
     /**
      * Gets experiment download url
      */
-    GET_EXPERIMENT_DOWNLOAD_URL
+    GET_EXPERIMENT_DOWNLOAD_URL,
+
+    /**
+     * Upload experiment AUC predictions data to S3
+     */
+    UPLOAD_AUC_PREDICTIONS
 }

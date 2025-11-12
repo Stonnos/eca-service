@@ -10,6 +10,7 @@ import com.ecaservice.server.config.ClassifiersProperties;
 import com.ecaservice.server.exception.EvaluationTimeoutException;
 import com.ecaservice.server.model.entity.EvaluationLog;
 import com.ecaservice.server.model.entity.RequestStatus;
+import com.ecaservice.server.model.evaluation.AucPredictionsData;
 import com.ecaservice.server.model.evaluation.EvaluationInputDataModel;
 import com.ecaservice.server.model.evaluation.EvaluationRequestData;
 import com.ecaservice.server.model.evaluation.EvaluationResultsDataModel;
@@ -37,6 +38,8 @@ import java.util.concurrent.TimeoutException;
 
 import static com.ecaservice.server.util.ClassifierOptionsHelper.parseOptions;
 import static com.ecaservice.server.util.ClassifierOptionsHelper.toJsonString;
+import static com.ecaservice.server.util.S3ObjectPaths.CLASSIFIER_AUC_PREDICTIONS_PATH_FORMAT;
+import static com.ecaservice.server.util.S3ObjectPaths.CLASSIFIER_PATH_FORMAT;
 import static com.ecaservice.server.util.Utils.buildClassificationModel;
 import static com.ecaservice.server.util.Utils.buildEvaluationResultsModel;
 import static com.ecaservice.server.util.Utils.buildInternalErrorEvaluationResultsModel;
@@ -50,8 +53,6 @@ import static com.ecaservice.server.util.Utils.buildInternalErrorEvaluationResul
 @Service
 @RequiredArgsConstructor
 public class EvaluationRequestService {
-
-    private static final String CLASSIFIER_PATH_FORMAT = "classifiers/classifier-%s.model";
 
     private final AppProperties appProperties;
     private final ClassifiersProperties classifiersProperties;
@@ -154,6 +155,7 @@ public class EvaluationRequestService {
             throws IOException, ExecutionException, InterruptedException {
         var evaluationResults = evaluationModel(classifier, data, evaluationLog);
         uploadModel(evaluationResults, evaluationLog);
+        uploadAucPredictions(evaluationResults, evaluationLog);
         String modelUrl = getModelPresignedUrl(evaluationLog.getModelPath());
         processEvaluationResults(evaluationResults, evaluationLog);
         EvaluationResultsDataModel evaluationResultsDataModel =
@@ -192,6 +194,14 @@ public class EvaluationRequestService {
         ClassificationModel classificationModel = buildClassificationModel(evaluationResults);
         objectStorageService.uploadObject(classificationModel, modelPath);
         evaluationLog.setModelPath(modelPath);
+    }
+
+    private void uploadAucPredictions(EvaluationResults evaluationResults,
+                                      EvaluationLog evaluationLog) throws IOException {
+        String filePath = String.format(CLASSIFIER_AUC_PREDICTIONS_PATH_FORMAT, evaluationLog.getRequestId());
+        AucPredictionsData aucPredictionsData = new AucPredictionsData(evaluationResults.getEvaluation().predictions());
+        objectStorageService.uploadObject(aucPredictionsData, filePath);
+        evaluationLog.setAucPredictionsPath(filePath);
     }
 
     private String getModelPresignedUrl(String modelPath) {

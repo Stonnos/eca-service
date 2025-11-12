@@ -16,6 +16,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.Map;
 
 import static com.ecaservice.server.util.EvaluationResultsAttachmentKeys.EXPERIMENT_RESULTS_KEY_FORMAT;
+import static com.ecaservice.server.util.S3ObjectPaths.EXPERIMENT_RESULTS_ATTACHMENT_PATH_FORMAT;
 
 /**
  * Experiment results attachment uploader.
@@ -26,8 +27,6 @@ import static com.ecaservice.server.util.EvaluationResultsAttachmentKeys.EXPERIM
 @Service
 @RequiredArgsConstructor
 public class ExperimentResultsAttachmentUploader implements EvaluationResultsAttachmentUploader {
-
-    private static final String FILE_PATH_FORMAT = "evaluation-results-attachments/experiments/%s/%s";
 
     private static final Map<EvaluationResultsAttachmentType, String> FILE_NAMES = Map.of(
             EvaluationResultsAttachmentType.ROC_CURVE_IMAGE, "roc-curve-image-%d.png"
@@ -44,11 +43,12 @@ public class ExperimentResultsAttachmentUploader implements EvaluationResultsAtt
                 .orElseThrow(() -> new EntityNotFoundException(ExperimentResultsEntity.class, modelId));
         Experiment experiment = experimentResultsEntity.getExperiment();
         String fileName = String.format(FILE_NAMES.get(attachmentType), experimentResultsEntity.getId());
+        String filePath = String.format(EXPERIMENT_RESULTS_ATTACHMENT_PATH_FORMAT, experiment.getRequestId(), fileName);
         var evaluationAttachmentData = EvaluationAttachmentData.builder()
                 .key(String.format(EXPERIMENT_RESULTS_KEY_FORMAT, experiment.getRequestId(),
                         experimentResultsEntity.getId()))
                 .attachmentType(attachmentType)
-                .filePath(String.format(FILE_PATH_FORMAT, experiment.getRequestId(), fileName))
+                .filePath(filePath)
                 .build();
         evaluationResultsAttachmentService.saveAttachment(file, evaluationAttachmentData);
         log.info("Experiment results [{}] attachment [{}], type [{}] has been uploaded",

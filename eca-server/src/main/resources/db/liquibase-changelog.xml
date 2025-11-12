@@ -76,4 +76,5 @@
     <include file="db/changelog/v88-add-gin-indexes.xml"/>
     <include file="db/changelog/v89-add-experiment-progress-canceled-column.xml"/>
     <include file="db/changelog/v90-create-evaluation-results-attachment-table.xml"/>
+    <include file="db/changelog/v91-add-auc-predictions-path-column.xml"/>
 </databaseChangeLog>
