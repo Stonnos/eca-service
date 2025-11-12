@@ -36,11 +36,11 @@ public class S3ObjectPaths {
      * Classifier AUC predictions path format
      */
     public static final String CLASSIFIER_AUC_PREDICTIONS_PATH_FORMAT =
-            "classifiers-details/%s/auc-predictions/classifier-auc-predictions-%s.model";
+            "classifiers-details/%s/auc-predictions/auc-predictions.model";
 
     /**
-     * Classifier AUC predictions path format
+     * Experiment results AUC predictions path format
      */
     public static final String EXPERIMENT_RESULTS_AUC_PREDICTIONS_PATH_FORMAT =
-            "experiments-details/%s/auc-predictions/experiment-results-auc-predictions-%s-%d.model";
+            "experiments-details/%s/auc-predictions/auc-predictions-%d.model";
 }

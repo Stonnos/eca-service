@@ -92,8 +92,8 @@ public class UploadExperimentAucPredictionsStepHandler extends AbstractExperimen
 
     private void uploadPredictions(ExperimentResultsEntity experimentResultsEntity) {
         String requestId = experimentResultsEntity.getExperiment().getRequestId();
-        String predictionsPath = String.format(EXPERIMENT_RESULTS_AUC_PREDICTIONS_PATH_FORMAT,
-                requestId, requestId, experimentResultsEntity.getId());
+        String predictionsPath = String.format(EXPERIMENT_RESULTS_AUC_PREDICTIONS_PATH_FORMAT, requestId,
+                experimentResultsEntity.getId());
         String fileName =
                 String.format(EXPERIMENT_RESULTS_AUC_PREDICTIONS, requestId, experimentResultsEntity.getResultsIndex());
         minioStorageService.uploadObject(

@@ -198,8 +198,7 @@ public class EvaluationRequestService {
 
     private void uploadAucPredictions(EvaluationResults evaluationResults,
                                       EvaluationLog evaluationLog) throws IOException {
-        String filePath = String.format(CLASSIFIER_AUC_PREDICTIONS_PATH_FORMAT, evaluationLog.getRequestId(),
-                evaluationLog.getRequestId());
+        String filePath = String.format(CLASSIFIER_AUC_PREDICTIONS_PATH_FORMAT, evaluationLog.getRequestId());
         AucPredictionsData aucPredictionsData = new AucPredictionsData(evaluationResults.getEvaluation().predictions());
         objectStorageService.uploadObject(aucPredictionsData, filePath);
         evaluationLog.setAucPredictionsPath(filePath);
