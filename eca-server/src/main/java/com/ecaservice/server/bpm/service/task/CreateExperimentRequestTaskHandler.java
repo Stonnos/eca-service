@@ -3,6 +3,7 @@ package com.ecaservice.server.bpm.service.task;
 import com.ecaservice.server.bpm.model.ExperimentRequestModel;
 import com.ecaservice.server.bpm.model.TaskType;
 import com.ecaservice.server.mapping.ExperimentMapper;
+import com.ecaservice.server.metrics.MetricsService;
 import com.ecaservice.server.service.experiment.ExperimentService;
 import lombok.extern.slf4j.Slf4j;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
@@ -23,18 +24,21 @@ public class CreateExperimentRequestTaskHandler extends AbstractTaskHandler {
 
     private final ExperimentService experimentService;
     private final ExperimentMapper experimentMapper;
+    private final MetricsService metricsService;
 
     /**
      * Constructor with parameters.
      *
      * @param experimentService - experiment service
-     * @param experimentMapper - experiment mapper
+     * @param experimentMapper  - experiment mapper
+     * @param metricsService    - metrics service
      */
     public CreateExperimentRequestTaskHandler(ExperimentService experimentService,
-                                              ExperimentMapper experimentMapper) {
+                                              ExperimentMapper experimentMapper, MetricsService metricsService) {
         super(TaskType.CREATE_EXPERIMENT_REQUEST);
         this.experimentService = experimentService;
         this.experimentMapper = experimentMapper;
+        this.metricsService = metricsService;
     }
 
     @Override
@@ -44,6 +48,7 @@ public class CreateExperimentRequestTaskHandler extends AbstractTaskHandler {
                 getVariable(execution, EVALUATION_REQUEST_DATA, ExperimentRequestModel.class);
         var experimentRequestData = experimentMapper.map(experimentRequestModel);
         var experiment = experimentService.createExperiment(experimentRequestData);
+        metricsService.trackExperimentRequest();
         execution.setVariable(EXPERIMENT_ID, experiment.getId());
         log.info("Experiment [{}] has been created for process", execution.getProcessBusinessKey());
     }
