@@ -1,6 +1,7 @@
 package com.ecaservice.server.bpm.service.task;
 
 import com.ecaservice.server.bpm.model.TaskType;
+import com.ecaservice.server.metrics.MetricsService;
 import com.ecaservice.server.model.entity.RequestStatus;
 import com.ecaservice.server.service.experiment.ExperimentDataService;
 import com.ecaservice.server.service.experiment.ExperimentService;
@@ -24,18 +25,21 @@ public class FinishExperimentTaskHandler extends AbstractTaskHandler {
 
     private final ExperimentDataService experimentDataService;
     private final ExperimentService experimentService;
+    private final MetricsService metricsService;
 
     /**
      * Constructor with parameters.
      *
      * @param experimentDataService - experiment data service
      * @param experimentService     - experiment service
+     * @param metricsService        - metrics service
      */
     public FinishExperimentTaskHandler(ExperimentDataService experimentDataService,
-                                       ExperimentService experimentService) {
+                                       ExperimentService experimentService, MetricsService metricsService) {
         super(TaskType.FINISH_EXPERIMENT);
         this.experimentDataService = experimentDataService;
         this.experimentService = experimentService;
+        this.metricsService = metricsService;
     }
 
     @Override
@@ -45,6 +49,7 @@ public class FinishExperimentTaskHandler extends AbstractTaskHandler {
         var requestStatus = getEnumFromExecution(execution, RequestStatus.class, EVALUATION_REQUEST_STATUS);
         var experiment = experimentDataService.getById(id);
         experimentService.finishExperiment(experiment, requestStatus);
+        metricsService.trackExperimentRequestStatus(requestStatus);
         log.info("Experiment [{}] finish task has been processed", execution.getProcessBusinessKey());
     }
 }

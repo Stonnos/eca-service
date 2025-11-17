@@ -1,0 +1,18 @@
+route:
+  receiver: 'eca-admin'
+  group_wait: 30s
+  group_interval: 1m
+  repeat_interval: 3h
+
+receivers:
+  - name: 'eca-admin'
+    email_configs:
+      - to: 'roman.batygin@mail.ru'
+        smarthost: 'smtp.gmail.com:25'
+        from: 'rbatsw@gmail.com'
+        auth_username: 'rbatsw@gmail.com'
+        auth_password_file: '/etc/alertmanager/email-auth-password.txt'
+    telegram_configs:
+      - bot_token_file: '/etc/alertmanager/bot-token.txt'
+        api_url: 'https://api.telegram.org'
+        chat_id: 1480287278

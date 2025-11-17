@@ -5,6 +5,7 @@ import com.ecaservice.base.model.ErrorCode;
 import com.ecaservice.base.model.MessageError;
 import com.ecaservice.base.model.TechnicalStatus;
 import com.ecaservice.server.TestHelperUtils;
+import com.ecaservice.server.metrics.MetricsService;
 import com.ecaservice.server.mq.listener.support.AbstractExceptionTranslator;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.Test;
@@ -40,6 +41,8 @@ class CustomErrorHandlerTest {
     private RabbitTemplate rabbitTemplate;
     @Mock
     private List<AbstractExceptionTranslator> exceptionTranslators;
+    @Mock
+    private MetricsService metricsService;
     @InjectMocks
     private CustomErrorHandler customErrorHandler;
 

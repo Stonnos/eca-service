@@ -3,6 +3,7 @@ package com.ecaservice.server.mq.listener;
 import com.ecaservice.base.model.EcaResponse;
 import com.ecaservice.base.model.ErrorCode;
 import com.ecaservice.server.exception.MessageAuthorizationException;
+import com.ecaservice.server.metrics.MetricsService;
 import com.ecaservice.server.mq.listener.support.AbstractExceptionTranslator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -32,6 +33,7 @@ public class CustomErrorHandler implements ErrorHandler {
 
     private final RabbitTemplate rabbitTemplate;
     private final List<AbstractExceptionTranslator> exceptionTranslators;
+    private final MetricsService metricsService;
 
     @Override
     public void handleError(Throwable ex) {
@@ -43,6 +45,7 @@ public class CustomErrorHandler implements ErrorHandler {
                     messageAuthorizationException);
         } else {
             log.error("Unknown error while message handling: {}", ex.getMessage(), ex);
+            metricsService.trackEvaluationMqRequestError(ErrorCode.INTERNAL_SERVER_ERROR);
             throw new AmqpRejectAndDontRequeueException(ex.getMessage(), ex);
         }
     }
@@ -52,6 +55,7 @@ public class CustomErrorHandler implements ErrorHandler {
         log.error("There was an error while message processing with correlation id [{}]: {}",
                 messageProperties.getCorrelationId(), ex.getMessage(), ex);
         EcaResponse errorResponse = translate(ex);
+        metricsService.trackEvaluationMqRequestError(errorResponse.getErrors().getFirst().getCode());
         log.error("Sent error response {} for message with correlation id [{}]",
                 messageProperties.getCorrelationId(), errorResponse);
         rabbitTemplate.convertAndSend(messageProperties.getReplyTo(), errorResponse, outboundMessage -> {

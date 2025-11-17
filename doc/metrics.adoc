@@ -349,6 +349,30 @@ a|
 `s3_storage_object_request_seconds_sum{application="eca-server",method="getObject",} 0.014323351`
 
 `s3_storage_object_request_seconds_sum{application="eca-server",method="getObjectPresignedProxyUrl",} 0.00887841`
+|*eca_server_evaluation_mq_request_error_total*
+|Счетчик ошибок обработки сообщений для построения моделей
+a|
+`eca_server_evaluation_mq_request_error_total{error="INTERNAL_SERVER_ERROR"}`
+|*eca_server_evaluation_request_status_total*
+|Счетчик обработанных заявок на построение моделей классификаторов, параметризированный по статусу (status)
+a|
+`eca_server_evaluation_request_status_total{application="eca-server",status="ERROR"}`
+`eca_server_evaluation_request_status_total{application="eca-server",status="SUCCESS"}`
+`eca_server_evaluation_request_status_total{application="eca-server",status="TIMEOUT"}`
+|*eca_server_experiment_request_status_total*
+|Счетчик обработанных заявок на построение эксперимента, параметризированный по статусу (status)
+a|
+`eca_server_experiment_request_status_total{application="eca-server",status="ERROR"}`
+`eca_server_experiment_request_status_total{application="eca-server",status="SUCCESS"}`
+`eca_server_experiment_request_status_total{application="eca-server",status="TIMEOUT"}`
+|*eca_server_evaluation_request_total*
+|Счетчик заявок на построение моделей классификаторов
+a|
+`eca_server_evaluation_request_total{application="eca-server",error="INTERNAL_SERVER_ERROR"}`
+|*eca_server_experiment_request_total*
+|Счетчик заявок на построение эксперимента
+a|
+`eca_server_experiment_request_total{application="eca-server",error="INTERNAL_SERVER_ERROR"}`
 |===
 
 == 3. Метрики Feign http клиента

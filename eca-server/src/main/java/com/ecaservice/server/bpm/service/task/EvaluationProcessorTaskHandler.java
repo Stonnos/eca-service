@@ -1,5 +1,6 @@
 package com.ecaservice.server.bpm.service.task;
 
+import com.ecaservice.server.metrics.MetricsService;
 import com.ecaservice.server.model.EvaluationStatus;
 import com.ecaservice.server.bpm.model.TaskType;
 import com.ecaservice.server.event.model.EvaluationErsReportEvent;
@@ -30,6 +31,7 @@ public class EvaluationProcessorTaskHandler extends AbstractTaskHandler {
     private final EvaluationRequestService evaluationRequestService;
     private final EvaluationResultsModelMapper evaluationResultsModelMapper;
     private final ApplicationEventPublisher applicationEventPublisher;
+    private final MetricsService metricsService;
 
     /**
      * Constructor with parameters.
@@ -38,16 +40,19 @@ public class EvaluationProcessorTaskHandler extends AbstractTaskHandler {
      * @param evaluationRequestService     - evaluation request service
      * @param evaluationResultsModelMapper - evaluation results model mapper
      * @param applicationEventPublisher    - application event publisher
+     * @param metricsService               - metrics service
      */
     public EvaluationProcessorTaskHandler(EvaluationLogDataService evaluationLogDataService,
                                           EvaluationRequestService evaluationRequestService,
                                           EvaluationResultsModelMapper evaluationResultsModelMapper,
-                                          ApplicationEventPublisher applicationEventPublisher) {
+                                          ApplicationEventPublisher applicationEventPublisher,
+                                          MetricsService metricsService) {
         super(TaskType.PROCESS_CLASSIFIER_EVALUATION);
         this.evaluationLogDataService = evaluationLogDataService;
         this.evaluationRequestService = evaluationRequestService;
         this.evaluationResultsModelMapper = evaluationResultsModelMapper;
         this.applicationEventPublisher = applicationEventPublisher;
+        this.metricsService = metricsService;
     }
 
     @Override
@@ -63,6 +68,7 @@ public class EvaluationProcessorTaskHandler extends AbstractTaskHandler {
             applicationEventPublisher.publishEvent(new EvaluationErsReportEvent(this, evaluationResultsDataModel));
         }
         var evaluationResultsModel = evaluationResultsModelMapper.map(evaluationResultsDataModel);
+        metricsService.trackEvaluationRequestStatus(evaluationResultsModel.getRequestStatus());
         execution.setVariable(EVALUATION_RESULTS_DATA, evaluationResultsModel);
         execution.setVariable(EVALUATION_REQUEST_STATUS, evaluationResultsDataModel.getStatus().name());
         execution.setVariable(EVALUATION_STATUS, evaluationResultsDataModel.getEvaluationStatus().name());

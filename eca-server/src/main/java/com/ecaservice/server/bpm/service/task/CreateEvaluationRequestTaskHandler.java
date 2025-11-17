@@ -4,6 +4,7 @@ import com.ecaservice.classifier.options.adapter.ClassifierOptionsAdapter;
 import com.ecaservice.server.bpm.model.EvaluationRequestModel;
 import com.ecaservice.server.bpm.model.TaskType;
 import com.ecaservice.server.mapping.EvaluationLogMapper;
+import com.ecaservice.server.metrics.MetricsService;
 import com.ecaservice.server.service.evaluation.EvaluationRequestService;
 import lombok.extern.slf4j.Slf4j;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
@@ -25,6 +26,7 @@ public class CreateEvaluationRequestTaskHandler extends AbstractTaskHandler {
     private final EvaluationRequestService evaluationRequestService;
     private final EvaluationLogMapper evaluationLogMapper;
     private final ClassifierOptionsAdapter classifierOptionsAdapter;
+    private final MetricsService metricsService;
 
     /**
      * Constructor with parameters.
@@ -32,14 +34,17 @@ public class CreateEvaluationRequestTaskHandler extends AbstractTaskHandler {
      * @param evaluationRequestService - evaluation request service
      * @param evaluationLogMapper      - evaluation log mapper
      * @param classifierOptionsAdapter - classifier options adapter
+     * @param metricsService           - metric service
      */
     public CreateEvaluationRequestTaskHandler(EvaluationRequestService evaluationRequestService,
                                               EvaluationLogMapper evaluationLogMapper,
-                                              ClassifierOptionsAdapter classifierOptionsAdapter) {
+                                              ClassifierOptionsAdapter classifierOptionsAdapter,
+                                              MetricsService metricsService) {
         super(TaskType.CREATE_EVALUATION_REQUEST);
         this.evaluationRequestService = evaluationRequestService;
         this.evaluationLogMapper = evaluationLogMapper;
         this.classifierOptionsAdapter = classifierOptionsAdapter;
+        this.metricsService = metricsService;
     }
 
     @Override
@@ -51,6 +56,7 @@ public class CreateEvaluationRequestTaskHandler extends AbstractTaskHandler {
         evaluationRequestData.setClassifier(
                 classifierOptionsAdapter.convert(evaluationRequestModel.getClassifierOptions()));
         var evaluationLog = evaluationRequestService.createAndSaveEvaluationRequest(evaluationRequestData);
+        metricsService.trackEvaluationRequest();
         execution.setVariable(EVALUATION_LOG_ID, evaluationLog.getId());
         log.info("Evaluation request [{}] has been created for process", execution.getProcessBusinessKey());
     }

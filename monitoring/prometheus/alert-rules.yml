@@ -1,0 +1,243 @@
+groups:
+  - name: eca-admin
+    rules:
+      - alert: ServiceDown
+        expr: up == 0
+        for: 0m
+        labels:
+          severity: critical
+        annotations:
+          summary: 'Service {{ $labels.instance }} is unavailable.'
+          description: '{{ $labels.instance }} has been down.'
+      - alert: PostgreSQLDown
+        expr: pg_up != 1
+        for: 0m
+        labels:
+          severity: critical
+        annotations:
+          summary: 'PostgreSQL {{ $labels.instance }} is unavailable.'
+          description: '{{ $labels.instance }} has been down.'
+      - alert: HeapUsageIncreased
+        expr: sum(jvm_memory_used_bytes{area="heap"}) by (application, instance) / sum(jvm_memory_max_bytes{area="heap"}) by (application, instance) * 100 > 70
+        for: 1m
+        labels:
+          severity: warning
+        annotations:
+          summary: "JVM Instance {{ $labels.instance }} memory usage > 70%"
+          description: "{{ $labels.instance }} has been in status [heap usage > 70%] for more than 1 minute. Current usage ({{ humanize $value }}%)"
+      - alert: HeapUsageTooMuch
+        expr: sum(jvm_memory_used_bytes{area="heap"}) by (application, instance) / sum(jvm_memory_max_bytes{area="heap"}) by (application, instance) * 100 > 85
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "JVM Instance {{ $labels.instance }} memory usage > 80%"
+          description: "{{ $labels.instance }} has been in status [heap usage > 80%] for more than 1 minute. Current usage ({{ humanize $value }}%)"
+      - alert: ProcessCpuUsageIncreased
+        expr: process_cpu_usage * 100 > 50
+        for: 1m
+        labels:
+          severity: warning
+        annotations:
+          summary: "JVM Instance {{ $labels.instance }} cpu usage > 70%"
+          description: "{{ $labels.instance }} has been in status [cpu usage > 70%] for more than 1 minute. CPU current usage ({{ humanize $value }}%)"
+      - alert: ProcessCpuUsageTooMuch
+        expr: process_cpu_usage * 100 > 80
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "JVM Instance {{ $labels.instance }} cpu usage > 80%"
+          description: "{{ $labels.instance }} has been in status [cpu usage > 80%] for more than 1 minute. CPU current usage ({{ humanize $value }}%)"
+      - alert: RabbitMQUnackedMessagesTooMuch
+        expr: sum(rabbitmq_queue_messages_unacked) by (instance, rabbitmq_cluster) > 100
+        for: 1m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Rabbit MQ instance {{ $labels.instance }} unacked messages > 100"
+          description: "{{ $labels.instance }} has been in status [unacked messages > 100] for more than 1 minute. Current unacked messages ({{ humanize $value }})"
+      - alert: SendingEmailMessagesErrorsIncreased
+        expr: increase(eca_mail_sending_message_error_total[1m]) > 0
+        for: 0m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Sending email messages errors increased in instance {{ $labels.instance }}"
+          description: "Sending email messages errors increased in the last minute. Total errors rate ({{ humanize $value }})"
+      - alert: EcaErsRequestErrorsIncreased
+        expr: increase(feign_Client_http_response_code_total{status_group="5xx",host="eca-ers"}[1m]) > 0
+        for: 0m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Ers request errors increased in instance {{ $labels.instance }}"
+          description: "Ers request errors increased in the last minute. Total errors rate ({{ humanize $value }})"
+      - alert: EcaMailRequestErrorsIncreased
+        expr: increase(core_retry_request_cache_size_total{request_type="emailRequest"}[1m]) > 0
+        for: 0m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Eca mail request errors increased in instance {{ $labels.instance }}"
+          description: "Eca mail request errors increased in the last minute. Total errors rate ({{ humanize $value }})"
+      - alert: EcaAuditRequestErrorsIncreased
+        expr: increase(core_retry_request_cache_size_total{request_type="auditRequest"}[1m]) > 0
+        for: 0m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Eca audit request errors increased in instance {{ $labels.instance }}"
+          description: "Eca audit request errors increased in the last minute. Total errors rate ({{ humanize $value }})"
+      - alert: S3RequestErrorsIncreased
+        expr: increase(s3_storage_request_error_total[1m]) > 0
+        for: 0m
+        labels:
+          severity: warning
+        annotations:
+          summary: "S3 request errors increased in instance {{ $labels.instance }}"
+          description: "S3 request errors increased in the last minute. Total errors rate ({{ humanize $value }})"
+      - alert: EcaWebPushRequestErrorsIncreased
+        expr: increase(core_retry_request_cache_size_total{request_type="webPushRequest"}[1m]) > 0
+        for: 0m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Eca web push request errors increased in instance {{ $labels.instance }}"
+          description: "Eca web push request errors increased in the last  minute. Total errors rate ({{ humanize $value }})"
+      - alert: Http500ErrorIncreased
+        expr: increase(http_server_requests_seconds_count{status="500"}[1m]) > 0
+        for: 0m
+        labels:
+          severity: critical
+        annotations:
+          summary: "500 error increased in instance {{ $labels.instance }}"
+          description: "500 error increased in instance {{ $labels.instance }}. Total errors ({{ humanize $value }})"
+      - alert: Http400ErrorIncreased
+        expr: increase(http_server_requests_seconds_count{status="400"}[1m]) > 0
+        for: 0m
+        labels:
+          severity: warning
+        annotations:
+          summary: "400 error increased in instance {{ $labels.instance }}"
+          description: "400 error increased in instance {{ $labels.instance }}. Total errors ({{ humanize $value }})"
+      - alert: ImportDataSet500ErrorIncreased
+        expr: increase(http_server_requests_seconds_count{application="ECA-DATA-STORAGE",status="500",uri="/instances/save"}[1m]) > 0
+        for: 0m
+        labels:
+          severity: critical
+        annotations:
+          summary: "500 error increased in instance {{ $labels.instance }} for import dataset api"
+          description: "500 error increased in instance {{ $labels.instance }} for import dataset api. Total errors ({{ humanize $value }})"
+      - alert: ImportDataSet400ErrorIncreased
+        expr: increase(http_server_requests_seconds_count{application="ECA-DATA-STORAGE",status="400",uri="/instances/save"}[1m]) > 0
+        for: 0m
+        labels:
+          severity: warning
+        annotations:
+          summary: "400 error increased in instance {{ $labels.instance }} for import dataset api"
+          description: "400 error increased in instance {{ $labels.instance }} for import dataset api. Total errors ({{ humanize $value }})"
+      - alert: CreateExperimentWebRequest500ErrorIncreased
+        expr: increase(http_server_requests_seconds_count{application="ECA-SERVER",status="500",uri="/experiment/create"}[1m]) > 0
+        for: 0m
+        labels:
+          severity: critical
+        annotations:
+          summary: "500 error increased in instance {{ $labels.instance }} for create experiment web request"
+          description: "500 error increased in instance {{ $labels.instance }} for create experiment web request. Total errors ({{ humanize $value }})"
+      - alert: CreateExperimentWebRequest400ErrorIncreased
+        expr: increase(http_server_requests_seconds_count{application="ECA-SERVER",status="400",uri="/experiment/create"}[1m]) > 0
+        for: 0m
+        labels:
+          severity: warning
+        annotations:
+          summary: "400 error increased in instance {{ $labels.instance }} for create experiment web request"
+          description: "400 error increased in instance {{ $labels.instance }} for create experiment web request. Total errors ({{ humanize $value }})"
+      - alert: CreateEvaluationWebRequest500ErrorIncreased
+        expr: increase(http_server_requests_seconds_count{application="ECA-SERVER",status="500",uri="/evaluation/create"}[1m]) > 0
+        for: 0m
+        labels:
+          severity: critical
+        annotations:
+          summary: "500 error increased in instance {{ $labels.instance }} for create evaluation web request"
+          description: "500 error increased in instance {{ $labels.instance }} for create evaluation web request. Total errors ({{ humanize $value }})"
+      - alert: CreateEvaluationWebRequest400ErrorIncreased
+        expr: increase(http_server_requests_seconds_count{application="ECA-SERVER",status="400",uri="/evaluation/create"}[1m]) > 0
+        for: 0m
+        labels:
+          severity: warning
+        annotations:
+          summary: "400 error increased in instance {{ $labels.instance }} for create evaluation web request"
+          description: "400 error increased in instance {{ $labels.instance }} for create evaluation web request. Total errors ({{ humanize $value }})"
+      - alert: CreateEvaluationOptimalWebRequest500ErrorIncreased
+        expr: increase(http_server_requests_seconds_count{application="ECA-SERVER",status="500",uri="/evaluation/create-optimal"}[1m]) > 0
+        for: 0m
+        labels:
+          severity: critical
+        annotations:
+          summary: "500 error increased in instance {{ $labels.instance }} for create evaluation optimal web request"
+          description: "500 error increased in instance {{ $labels.instance }} for create evaluation optimal web request. Total errors ({{ humanize $value }})"
+      - alert: CreateEvaluationOptimalWebRequest400ErrorIncreased
+        expr: increase(http_server_requests_seconds_count{application="ECA-SERVER",status="400",uri="/evaluation/create-optimal"}[1m]) > 0
+        for: 0m
+        labels:
+          severity: warning
+        annotations:
+          summary: "400 error increased in instance {{ $labels.instance }} for create evaluation optimal web request"
+          description: "400 error increased in instance {{ $labels.instance }} for create evaluation optimal web request. Total errors ({{ humanize $value }})"
+      - alert: UploadTrainData500ErrorIncreased
+        expr: increase(http_server_requests_seconds_count{application="ECA-DATA-LOADER",status="500",uri="/api/external/upload-train-data"}[1m]) > 0
+        for: 0m
+        labels:
+          severity: critical
+        annotations:
+          summary: "500 error increased in instance {{ $labels.instance }} for upload train dataset"
+          description: "500 error increased in instance {{ $labels.instance }} for upload train dataset. Total errors ({{ humanize $value }})"
+      - alert: UploadTrainData400ErrorIncreased
+        expr: increase(http_server_requests_seconds_count{application="ECA-DATA-LOADER",status="400",uri="/api/external/upload-train-data"}[1m]) > 0
+        for: 0m
+        labels:
+          severity: warning
+        annotations:
+          summary: "400 error increased in instance {{ $labels.instance }} for upload train dataset"
+          description: "400 error increased in instance {{ $labels.instance }} for upload train dataset. Total errors ({{ humanize $value }})"
+      - alert: ExportTrainDataset500ErrorIncreased
+        expr: increase(http_server_requests_seconds_count{application="ECA-DATA-STORAGE",status="500",uri="/api/internal/instances/export-valid-instances"}[1m]) > 0
+        for: 0m
+        labels:
+          severity: critical
+        annotations:
+          summary: "500 error increased in instance {{ $labels.instance }} for export train dataset"
+          description: "500 error increased in instance {{ $labels.instance }} for export train dataset. Total errors ({{ humanize $value }})"
+      - alert: ExportTrainDataset400ErrorIncreased
+        expr: increase(http_server_requests_seconds_count{application="ECA-DATA-STORAGE",status="400",uri="/api/internal/instances/export-valid-instances"}[1m]) > 0
+        for: 0m
+        labels:
+          severity: warning
+        annotations:
+          summary: "400 error increased in instance {{ $labels.instance }} for export train dataset"
+          description: "400 error increased in instance {{ $labels.instance }} for export train dataset. Total errors ({{ humanize $value }})"
+      - alert: EvaluationRequestMQErrorIncreased
+        expr: increase(eca_server_evaluation_mq_request_error_total{error="INTERNAL_SERVER_ERROR"}[1m]) > 0
+        for: 0m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Evaluation MQ error increased in instance {{ $labels.instance }}"
+          description: "Evaluation MQ error increased in instance {{ $labels.instance }}. Total errors ({{ humanize $value }})"
+      - alert: EvaluationRequestProcessingErrorIncreased
+        expr: increase(eca_server_evaluation_request_status_total{status="ERROR"}[1m]) > 0
+        for: 0m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Evaluation request processing error increased in instance {{ $labels.instance }}"
+          description: "Evaluation request processing error increased in instance {{ $labels.instance }}. Total errors ({{ humanize $value }})"
+      - alert: ExperimentRequestProcessingErrorIncreased
+        expr: increase(eca_server_experiment_request_status_total{status="ERROR"}[1m]) > 0
+        for: 0m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Experiment request processing error increased in instance {{ $labels.instance }}"
+          description: "Experiment request processing error increased in instance {{ $labels.instance }}. Total errors ({{ humanize $value }})"
