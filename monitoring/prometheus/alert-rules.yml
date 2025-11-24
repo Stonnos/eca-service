@@ -241,3 +241,11 @@ groups:
         annotations:
           summary: "Experiment request processing error increased in instance {{ $labels.instance }}"
           description: "Experiment request processing error increased in instance {{ $labels.instance }}. Total errors ({{ humanize $value }})"
+      - alert: RabbitListenerFailureMessagesIncreased
+        expr: increase(spring_rabbitmq_listener_seconds_count{result="failure"}[1m]) > 0
+        for: 0m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Rabbit listener messages error increased in instance {{ $labels.instance }}"
+          description: "Rabbit listener messages error increased in instance {{ $labels.instance }}. Total errors ({{ humanize $value }})"
