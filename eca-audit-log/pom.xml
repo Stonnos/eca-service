@@ -214,6 +214,12 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <!-- for $ mvn -Pnative spring-boot:build-image -D maven.test.skip=true-->
+                    <docker>
+                        <host>//./pipe/dockerDesktopLinuxEngine</host>
+                    </docker>
+                </configuration>
             </plugin>
 
             <plugin>

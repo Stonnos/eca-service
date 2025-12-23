@@ -25,6 +25,10 @@ spring:
     cache-names: global-filters, filter-templates, filter-dictionaries, sort-fields
     caffeine:
       spec: maximumSize=100, expireAfterWrite=18000s
+  ## Refresh scope not work with native
+  cloud:
+    refresh:
+      enabled: false
 
 eureka:
   instance:
