@@ -22,10 +22,6 @@ import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.context.annotation.Import;
 
 import java.util.Optional;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 import static com.ecaservice.mail.TestHelperUtils.createTemplateEntity;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -43,7 +39,6 @@ import static org.mockito.Mockito.when;
 class EmailServiceTest extends AbstractJpaTest {
 
     private static final String EMAIL_MESSAGE = "message";
-    private static final int NUM_THREADS = 2;
 
     @MockBean
     private TemplateProcessorService templateProcessorService;
@@ -84,28 +79,6 @@ class EmailServiceTest extends AbstractJpaTest {
         Email email = emailService.saveEmail(emailRequest);
         assertThat(email).isNotNull();
         assertThrows(DuplicateRequestIdException.class, () -> emailService.saveEmail(emailRequest));
-    }
-
-    @Test
-    void testDuplicateRequestIdInMultiThreadEnvironment() throws Exception {
-        var hasDuplicateRequestIdError = new AtomicBoolean();
-        final CountDownLatch finishedLatch = new CountDownLatch(NUM_THREADS);
-        ExecutorService executorService = Executors.newFixedThreadPool(NUM_THREADS);
-        for (int i = 0; i < NUM_THREADS; i++) {
-            executorService.submit(() -> {
-                try {
-                    emailService.saveEmail(emailRequest);
-                } catch (DuplicateRequestIdException ex) {
-                    hasDuplicateRequestIdError.set(true);
-                } finally {
-                    finishedLatch.countDown();
-                }
-            });
-        }
-        finishedLatch.await();
-        executorService.shutdownNow();
-        assertThat(hasDuplicateRequestIdError.get()).isTrue();
-        assertThat(emailRepository.count()).isOne();
     }
 
     private void prepareTestEmailRequest() {

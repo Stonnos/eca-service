@@ -23,10 +23,6 @@ import org.springframework.data.domain.Page;
 
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 import static com.ecaservice.audit.TestHelperUtils.createAuditEventRequest;
 import static com.ecaservice.audit.TestHelperUtils.createAuditLog;
@@ -51,7 +47,6 @@ class AuditLogServiceTest extends AbstractJpaTest {
 
     private static final int PAGE_NUMBER = 0;
     private static final int PAGE_SIZE = 10;
-    private static final int NUM_THREADS = 2;
     private static final String INVALID_FIELD_NAME = "abc.field1.field2";
 
     @Autowired
@@ -86,29 +81,6 @@ class AuditLogServiceTest extends AbstractJpaTest {
         var auditLog = auditLogService.save(auditEventRequest);
         assertThat(auditLog).isNotNull();
         assertThrows(DuplicateEventIdException.class, () -> auditLogService.save(auditEventRequest));
-    }
-
-    @Test
-    void testDuplicateEventIdInMultiThreadEnvironment() throws Exception {
-        var hasDuplicateEventIdError = new AtomicBoolean();
-        var auditEventRequest = createAuditEventRequest();
-        final CountDownLatch finishedLatch = new CountDownLatch(NUM_THREADS);
-        ExecutorService executorService = Executors.newFixedThreadPool(NUM_THREADS);
-        for (int i = 0; i < NUM_THREADS; i++) {
-            executorService.submit(() -> {
-                try {
-                    auditLogService.save(auditEventRequest);
-                } catch (DuplicateEventIdException ex) {
-                    hasDuplicateEventIdError.set(true);
-                } finally {
-                    finishedLatch.countDown();
-                }
-            });
-        }
-        finishedLatch.await();
-        executorService.shutdownNow();
-        assertThat(hasDuplicateEventIdError.get()).isTrue();
-        assertThat(auditLogRepository.count()).isOne();
     }
 
     /**

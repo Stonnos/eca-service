@@ -13,7 +13,6 @@ import com.ecaservice.core.filter.service.FilterTemplateService;
 import com.ecaservice.core.filter.specification.FilterFieldCustomizer;
 import com.ecaservice.core.filter.specification.UuidFilterFieldCustomizer;
 import com.ecaservice.core.filter.validation.annotations.ValidPageRequest;
-import com.ecaservice.core.lock.annotation.Locked;
 import com.ecaservice.web.dto.model.AuditLogDto;
 import com.ecaservice.web.dto.model.PageDto;
 import com.ecaservice.web.dto.model.PageRequestDto;
@@ -66,7 +65,6 @@ public class AuditLogService {
      * @param auditEventRequest - audit event request
      * @return audit log entity
      */
-    @Locked(lockName = "saveAuditEvent", key = "#auditEventRequest.eventId")
     public AuditLogEntity save(AuditEventRequest auditEventRequest) {
         log.info("Starting to save audit event [{}], code [{}] type [{}]", auditEventRequest.getEventId(),
                 auditEventRequest.getCode(), auditEventRequest.getEventType());

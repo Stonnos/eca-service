@@ -2,7 +2,6 @@ package com.ecaservice.mail.service;
 
 import com.ecaservice.common.web.crypto.EncryptorBase64AdapterService;
 import com.ecaservice.common.web.exception.EntityNotFoundException;
-import com.ecaservice.core.lock.annotation.Locked;
 import com.ecaservice.mail.config.MailConfig;
 import com.ecaservice.mail.exception.DuplicateRequestIdException;
 import com.ecaservice.mail.mapping.EmailRequestMapper;
@@ -44,7 +43,6 @@ public class EmailService {
      * @param emailRequest - email request
      * @return email response
      */
-    @Locked(lockName = "saveEmail", key = "#emailRequest.requestId")
     public Email saveEmail(@ValidEmailRequest EmailRequest emailRequest) {
         log.info("Received email request with uuid [{}], correlation id [{}], template code [{}].",
                 emailRequest.getRequestId(), emailRequest.getCorrelationId(), emailRequest.getTemplateCode());

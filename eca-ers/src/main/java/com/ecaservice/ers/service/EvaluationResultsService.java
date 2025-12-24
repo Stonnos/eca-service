@@ -1,6 +1,5 @@
 package com.ecaservice.ers.service;
 
-import com.ecaservice.core.lock.annotation.Locked;
 import com.ecaservice.ers.dto.EvaluationResultsRequest;
 import com.ecaservice.ers.dto.EvaluationResultsResponse;
 import com.ecaservice.ers.dto.GetEvaluationResultsRequest;
@@ -41,7 +40,6 @@ public class EvaluationResultsService {
      * @return evaluation results response
      */
     @CacheEvict(value = EVALUATION_RESULTS_HISTORY_COUNT_QUERY, allEntries = true)
-    @Locked(lockName = "saveEvaluationResults", key = "#evaluationResultsRequest.requestId")
     public EvaluationResultsResponse saveEvaluationResults(EvaluationResultsRequest evaluationResultsRequest) {
         log.info("Starting to save evaluation results report with request id = {}.",
                 evaluationResultsRequest.getRequestId());

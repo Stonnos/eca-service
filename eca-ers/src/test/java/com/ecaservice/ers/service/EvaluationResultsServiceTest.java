@@ -125,26 +125,6 @@ class EvaluationResultsServiceTest extends AbstractJpaTest {
     }
 
     @Test
-    void testDuplicateRequestIdInMultiThreadEnvironment() throws Exception {
-        final String requestId = UUID.randomUUID().toString();
-        final CountDownLatch finishedLatch = new CountDownLatch(NUM_THREADS);
-        ExecutorService executorService = Executors.newFixedThreadPool(NUM_THREADS);
-        for (int i = 0; i < NUM_THREADS; i++) {
-            executorService.submit(() -> {
-                try {
-                    EvaluationResultsRequest request = buildEvaluationResultsReport(requestId);
-                    evaluationResultsService.saveEvaluationResults(request);
-                } finally {
-                    finishedLatch.countDown();
-                }
-            });
-        }
-        finishedLatch.await();
-        executorService.shutdownNow();
-        assertThat(evaluationResultsInfoRepository.count()).isOne();
-    }
-
-    @Test
     void testDataCacheIdInMultiThreadEnvironment() throws Exception {
         final CountDownLatch finishedLatch = new CountDownLatch(NUM_THREADS);
         ExecutorService executorService = Executors.newFixedThreadPool(NUM_THREADS);
