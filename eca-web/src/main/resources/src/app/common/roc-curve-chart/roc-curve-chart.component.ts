@@ -31,7 +31,7 @@ export class RocCurveChartComponent implements OnInit {
   @Input()
   public uploadEvaluationResultsAttachmentService: UploadEvaluationResultsAttachmentService;
   @Input()
-  public selectedClassIndex: number = 0;
+  public selectedClassIndex: number = -1;
 
   @ViewChild(UIChart, { static: true })
   private chart: UIChart;
