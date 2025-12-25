@@ -18,6 +18,7 @@ import { UserProfileTabsComponent } from "../user-profile-tabs/components/user-p
 import { InstancesDetailsTabsComponent } from "../instances-details-tabs/components/instances-details-tabs.component";
 import { EvaluationLogDetailsComponent } from '../evaluation-log-details/components/evaluation-log-details.component';
 import { ExperimentResultsDetailsComponent } from '../experiment-results-details/components/experiment-results-details.component';
+import { EvaluationResultsRequestPathComponent } from '../evaluation-results-request-path/components/evaluation-results-request-path.component';
 
 const routes: Routes = [
   {
@@ -75,7 +76,7 @@ const routes: Routes = [
       {
         path: 'profile',
         component: UserProfileTabsComponent
-      },
+      }
     ]
   },
   {
@@ -93,6 +94,10 @@ const routes: Routes = [
   {
     path: 'access-denied',
     component: AccessDeniedComponent
+  },
+  {
+    path: 'evaluation-results-request-path/:id',
+    component: EvaluationResultsRequestPathComponent
   },
   {
     path: '',

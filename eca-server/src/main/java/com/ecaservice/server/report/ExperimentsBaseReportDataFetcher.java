@@ -18,6 +18,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.stream.Collectors;
+
+import static com.ecaservice.server.util.RoutePaths.EXPERIMENT_DETAILS_PATH;
 
 /**
  * Experiments data fetcher for base report.
@@ -28,6 +31,7 @@ import java.util.List;
 public class ExperimentsBaseReportDataFetcher
         extends AbstractBaseReportDataFetcher<Experiment, ExperimentBean> {
 
+    private final AppProperties appProperties;
     private final ExperimentDataService experimentDataService;
     private final ExperimentMapper experimentMapper;
     private final InstancesInfoRepository instancesInfoRepository;
@@ -49,6 +53,7 @@ public class ExperimentsBaseReportDataFetcher
                                             ExperimentMapper experimentMapper) {
         super(BaseReportType.EXPERIMENTS.name(), FilterTemplateType.EXPERIMENT, appProperties.getMaxPagesNum(),
                 filterTemplateService);
+        this.appProperties = appProperties;
         this.experimentDataService = experimentDataService;
         this.experimentMapper = experimentMapper;
         this.instancesInfoRepository = instancesInfoRepository;
@@ -66,6 +71,19 @@ public class ExperimentsBaseReportDataFetcher
 
     @Override
     protected List<ExperimentBean> convertToBeans(Page<Experiment> page) {
-        return experimentMapper.mapToBeans(page.getContent());
+        return page.getContent()
+                .stream()
+                .map(experiment -> {
+                    String externalDetailsUrl = getExternalDetailsUrl(experiment);
+                    ExperimentBean experimentBean = experimentMapper.mapToBean(experiment);
+                    experimentBean.setExternalDetailsUrl(externalDetailsUrl);
+                    return experimentBean;
+                })
+                .collect(Collectors.toList());
+    }
+
+    private String getExternalDetailsUrl(Experiment experiment) {
+        String path = String.format(EXPERIMENT_DETAILS_PATH, experiment.getId());
+        return String.format("%s%s", appProperties.getWebExternalBaseUrl(), path);
     }
 }

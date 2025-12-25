@@ -33,6 +33,11 @@ public class ErsConfig {
     private Integer maxPagesNum = DEFAULT_MAXIMUM_PAGES_NUM;
 
     /**
+     * Web application external base url
+     */
+    private String webExternalBaseUrl;
+
+    /**
      * Evaluation results sort fields
      */
     @NotEmpty

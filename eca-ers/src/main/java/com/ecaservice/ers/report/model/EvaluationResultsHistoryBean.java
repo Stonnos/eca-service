@@ -92,4 +92,9 @@ public class EvaluationResultsHistoryBean {
      * 95% confidence interval upper bound value
      */
     private BigDecimal confidenceIntervalUpperBound;
+
+    /**
+     * Associated request path url
+     */
+    private String requestPathUrl;
 }

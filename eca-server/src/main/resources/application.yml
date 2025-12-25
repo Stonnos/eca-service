@@ -94,6 +94,7 @@ app:
   shortLifeUrlExpirationMinutes: 5
   modelCacheTtlSeconds: 180
   modelCacheSize: 25
+  webExternalBaseUrl: http://localhost:8080
 
 ## Queues properties
 queue:

@@ -21,6 +21,7 @@ import java.util.stream.Collectors;
 
 import static com.ecaservice.ers.dictionary.FilterDictionaries.CLASSIFIER_NAME;
 import static com.ecaservice.ers.dictionary.FilterDictionaries.EVALUATION_RESULTS_HISTORY_TEMPLATE;
+import static com.ecaservice.ers.util.RoutePaths.EVALUATION_RESULTS_REQUEST_PATH;
 
 /**
  * Evaluation results history data fetcher for base report.
@@ -31,6 +32,7 @@ import static com.ecaservice.ers.dictionary.FilterDictionaries.EVALUATION_RESULT
 public class EvaluationResultsHistoryReportDataFetcher
         extends AbstractBaseReportDataFetcher<EvaluationResultsInfo, EvaluationResultsHistoryBean> {
 
+    private final ErsConfig ersConfig;
     private final EvaluationResultsHistoryService evaluationResultsHistoryService;
     private final EvaluationResultsMapper evaluationResultsMapper;
     private final InstancesInfoRepository instancesInfoRepository;
@@ -52,6 +54,7 @@ public class EvaluationResultsHistoryReportDataFetcher
                                                      InstancesInfoRepository instancesInfoRepository) {
         super("EVALUATION_RESULTS_HISTORY", EVALUATION_RESULTS_HISTORY_TEMPLATE, ersConfig.getMaxPagesNum(),
                 filterTemplateService);
+        this.ersConfig = ersConfig;
         this.evaluationResultsHistoryService = evaluationResultsHistoryService;
         this.evaluationResultsMapper = evaluationResultsMapper;
         this.instancesInfoRepository = instancesInfoRepository;
@@ -74,11 +77,18 @@ public class EvaluationResultsHistoryReportDataFetcher
                 .map(evaluationResultsInfo -> {
                     var evaluationResultsHistoryBean =
                             evaluationResultsMapper.mapToEvaluationResultsHistoryBean(evaluationResultsInfo);
-                    var classifierName =
+                    String classifierName =
                             getDictionaryLabelByCode(CLASSIFIER_NAME, evaluationResultsInfo.getClassifierName());
+                    String requestPathUrl = getRequestPathUrl(evaluationResultsInfo);
                     evaluationResultsHistoryBean.setClassifierName(classifierName);
+                    evaluationResultsHistoryBean.setRequestPathUrl(requestPathUrl);
                     return evaluationResultsHistoryBean;
                 })
                 .collect(Collectors.toList());
+    }
+
+    private String getRequestPathUrl(EvaluationResultsInfo evaluationResultsInfo) {
+        String path = String.format(EVALUATION_RESULTS_REQUEST_PATH, evaluationResultsInfo.getRequestId());
+        return String.format("%s%s", ersConfig.getWebExternalBaseUrl(), path);
     }
 }

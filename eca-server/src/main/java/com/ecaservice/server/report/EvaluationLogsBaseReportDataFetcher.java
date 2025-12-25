@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static com.ecaservice.server.service.filter.dictionary.FilterDictionaries.CLASSIFIER_NAME;
+import static com.ecaservice.server.util.RoutePaths.EVALUATION_RESULTS_DETAILS_PATH;
 
 /**
  * Evaluation logs data fetcher for base report.
@@ -31,6 +32,7 @@ import static com.ecaservice.server.service.filter.dictionary.FilterDictionaries
 public class EvaluationLogsBaseReportDataFetcher extends
         AbstractBaseReportDataFetcher<EvaluationLog, EvaluationLogBean> {
 
+    private final AppProperties appProperties;
     private final EvaluationLogDataService evaluationLogDataService;
     private final EvaluationLogMapper evaluationLogMapper;
     private final InstancesInfoRepository instancesInfoRepository;
@@ -52,6 +54,7 @@ public class EvaluationLogsBaseReportDataFetcher extends
                                                EvaluationLogMapper evaluationLogMapper) {
         super(BaseReportType.EVALUATION_LOGS.name(), FilterTemplateType.EVALUATION_LOG, appProperties.getMaxPagesNum(),
                 filterService);
+        this.appProperties = appProperties;
         this.evaluationLogDataService = evaluationLogDataService;
         this.evaluationLogMapper = evaluationLogMapper;
         this.instancesInfoRepository = instancesInfoRepository;
@@ -77,9 +80,16 @@ public class EvaluationLogsBaseReportDataFetcher extends
                 .map(evaluationLog -> {
                     var evaluationLogBean = evaluationLogMapper.mapToBean(evaluationLog);
                     var classifierName = getDictionaryLabelByCode(CLASSIFIER_NAME, evaluationLog.getClassifierName());
+                    String externalDetailUrl = getExternalDetailsUrl(evaluationLog);
                     evaluationLogBean.setClassifierName(classifierName);
+                    evaluationLogBean.setExternalDetailsUrl(externalDetailUrl);
                     return evaluationLogBean;
                 })
                 .collect(Collectors.toList());
+    }
+
+    private String getExternalDetailsUrl(EvaluationLog evaluationLog) {
+        String path = String.format(EVALUATION_RESULTS_DETAILS_PATH, evaluationLog.getId());
+        return String.format("%s%s", appProperties.getWebExternalBaseUrl(), path);
     }
 }

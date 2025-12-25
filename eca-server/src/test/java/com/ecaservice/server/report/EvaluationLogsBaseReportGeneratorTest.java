@@ -22,6 +22,7 @@ import com.ecaservice.server.service.classifiers.ClassifierOptionsInfoProcessor;
 import com.ecaservice.server.service.ers.ErsService;
 import com.ecaservice.server.service.evaluation.EvaluationLogCountQueryExecutor;
 import com.ecaservice.server.service.evaluation.EvaluationLogDataService;
+import com.ecaservice.web.dto.model.FilterDictionaryValueDto;
 import com.ecaservice.web.dto.model.FilterRequestDto;
 import com.ecaservice.web.dto.model.MatchMode;
 import com.ecaservice.web.dto.model.PageRequestDto;
@@ -63,6 +64,8 @@ class EvaluationLogsBaseReportGeneratorTest extends AbstractJpaTest {
     private static final List<String> DATE_RANGE_VALUES = ImmutableList.of("2018-01-01", "2018-01-07");
     private static final LocalDateTime CREATION_DATE = LocalDateTime.of(2018, 1, 5, 0, 0, 0);
     private static final String EVALUATION_LOGS_REPORT_TEMPLATE_XLSX = "evaluation-logs-report-template.xlsx";
+    private static final String CART_LABEL = "Алгоритм CART";
+    private static final String CART_VALUE = "CART";
 
     @Mock
     private FilterTemplateService filterTemplateService;
@@ -103,7 +106,11 @@ class EvaluationLogsBaseReportGeneratorTest extends AbstractJpaTest {
                 new EvaluationLogsBaseReportDataFetcher(filterTemplateService, appProperties, instancesInfoRepository,
                         evaluationLogDataService,
                         evaluationLogMapper);
-        when(filterTemplateService.getFilterDictionary(CLASSIFIER_NAME)).thenReturn(createFilterDictionaryDto());
+        when(filterTemplateService.getFilterDictionary(CLASSIFIER_NAME)).thenReturn(
+                createFilterDictionaryDto(
+                        List.of(new FilterDictionaryValueDto(CART_LABEL, CART_VALUE))
+                )
+        );
     }
 
     @Override

@@ -3,6 +3,8 @@ package com.ecaservice.server.service.ers.route;
 import com.ecaservice.server.model.entity.EvaluationResultsRequestEntity;
 import org.springframework.stereotype.Component;
 
+import static com.ecaservice.server.util.RoutePaths.EVALUATION_RESULTS_DETAILS_PATH;
+
 /**
  * Evaluation results request path handler.
  *
@@ -18,6 +20,6 @@ public class EvaluationResultsRequestPathHandler
 
     @Override
     public String handlePath(EvaluationResultsRequestEntity ersRequestEntity) {
-        return String.format("/dashboard/classifiers/evaluation-results/%d", ersRequestEntity.getEvaluationLog().getId());
+        return String.format(EVALUATION_RESULTS_DETAILS_PATH, ersRequestEntity.getEvaluationLog().getId());
     }
 }
