@@ -64,4 +64,9 @@ public abstract class EvaluationBean {
      * Model deleted date
      */
     private String deletedDate;
+
+    /**
+     * Evaluation details external url
+     */
+    private String externalDetailsUrl;
 }

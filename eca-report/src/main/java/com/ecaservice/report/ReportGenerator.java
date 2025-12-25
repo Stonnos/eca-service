@@ -5,12 +5,12 @@ import lombok.Cleanup;
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
 import org.jxls.common.Context;
+import org.jxls.transform.poi.PoiTransformer;
 import org.jxls.util.JxlsHelper;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.Collections;
 
 /**
  * Class for reports generation.
@@ -43,7 +43,8 @@ public class ReportGenerator {
         try {
             String templatePath = String.format("%s/%s", REPORTS_DIRECTORY, template);
             @Cleanup InputStream inputStream = ReportGenerator.class.getClassLoader().getResourceAsStream(templatePath);
-            Context context = new Context(Collections.singletonMap(REPORT_VARIABLE, reportBean));
+            Context context = PoiTransformer.createInitialContext();
+            context.putVar(REPORT_VARIABLE, reportBean);
             JxlsHelper.getInstance().processTemplate(inputStream, outputStream, context);
             log.info("Xlsx report [{}] has been processed", template);
         } catch (IOException ex) {

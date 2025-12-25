@@ -125,14 +125,6 @@ public abstract class ExperimentMapper extends AbstractEvaluationMapper {
     @Mapping(source = "deletedDate", target = "deletedDate", qualifiedByName = "formatLocalDateTime")
     public abstract ExperimentBean mapToBean(Experiment experiment);
 
-    /**
-     * Maps experiments entities list to experiments report beans.
-     *
-     * @param experiments - experiment entities list
-     * @return experiments beans list
-     */
-    public abstract List<ExperimentBean> mapToBeans(List<Experiment> experiments);
-
     @AfterMapping
     protected void mapEvaluationMethodOptions(CrossValidationConfig crossValidationConfig,
                                               @MappingTarget Experiment experiment) {

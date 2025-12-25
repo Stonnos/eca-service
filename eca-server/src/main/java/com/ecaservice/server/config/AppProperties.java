@@ -63,4 +63,9 @@ public class AppProperties {
      * Auto remove expired models
      */
     private boolean autoRemoveExpiredModels;
+
+    /**
+     * Web application external base url
+     */
+    private String webExternalBaseUrl;
 }

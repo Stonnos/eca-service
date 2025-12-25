@@ -67,6 +67,7 @@ ECA server
    * app.modelCacheTtlSeconds - время жизни кэша для хранения моделей классификаторов
    * app.modelCacheSize - макс. размер кэша для хранения моделей классификаторов
    * app.autoRemoveExpiredModels - флаг автоматического удаления моделей с истекшим сроком хранения. По умолчанию удаление выключено.
+   * app.webExternalBaseUrl - внешний url веб приложения
 6) cache.specs - настройки spring cache
 7) open-api - настройки Swagger
    * open-api.tokenBaseUrl - базовый url - сервера авторизации
