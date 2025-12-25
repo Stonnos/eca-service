@@ -59,6 +59,7 @@ springdoc:
 ers:
   resultSize: 5
   maxPagesNum: 99
+  webExternalBaseUrl: http://localhost:8080
   evaluationResultsSortFields:
     - field: PCT_CORRECT
       direction: DESC

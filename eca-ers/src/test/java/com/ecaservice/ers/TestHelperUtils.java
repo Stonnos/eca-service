@@ -23,6 +23,7 @@ import com.ecaservice.ers.model.InstancesInfo;
 import com.ecaservice.ers.model.RocCurveInfo;
 import com.ecaservice.ers.model.StatisticsInfo;
 import com.ecaservice.web.dto.model.FilterDictionaryDto;
+import com.ecaservice.web.dto.model.FilterDictionaryValueDto;
 import com.ecaservice.web.dto.model.FilterFieldDto;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -83,9 +84,19 @@ public class TestHelperUtils {
      * @return filter dictionary dto
      */
     public static FilterDictionaryDto createFilterDictionaryDto() {
+        return createFilterDictionaryDto(Collections.emptyList());
+    }
+
+    /**
+     * Creates filter dictionary dto.
+     *
+     * @param values - values
+     * @return filter dictionary dto
+     */
+    public static FilterDictionaryDto createFilterDictionaryDto(List<FilterDictionaryValueDto> values) {
         FilterDictionaryDto filterDictionaryDto = new FilterDictionaryDto();
         filterDictionaryDto.setName(FILTER_NAME);
-        filterDictionaryDto.setValues(Collections.emptyList());
+        filterDictionaryDto.setValues(values);
         return filterDictionaryDto;
     }
 
@@ -342,12 +353,12 @@ public class TestHelperUtils {
     /**
      * Creates evaluation results info.
      *
-     * @param instancesInfo         - instances info
-     * @param classifierName        - classifier name
-     * @param evaluationMethod      - evaluation method
-     * @param pctCorrect            - pct correct
-     * @param maxAucValue           - max AUC value
-     * @param varianceError         - variance error
+     * @param instancesInfo    - instances info
+     * @param classifierName   - classifier name
+     * @param evaluationMethod - evaluation method
+     * @param pctCorrect       - pct correct
+     * @param maxAucValue      - max AUC value
+     * @param varianceError    - variance error
      * @return evaluation results info
      */
     public static EvaluationResultsInfo createEvaluationResultsInfo(InstancesInfo instancesInfo,

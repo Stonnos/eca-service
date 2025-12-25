@@ -66,6 +66,7 @@ import com.ecaservice.web.dto.model.EnumDto;
 import com.ecaservice.web.dto.model.EvaluationResultsDto;
 import com.ecaservice.web.dto.model.EvaluationResultsStatus;
 import com.ecaservice.web.dto.model.FilterDictionaryDto;
+import com.ecaservice.web.dto.model.FilterDictionaryValueDto;
 import com.ecaservice.web.dto.model.FilterFieldDto;
 import com.ecaservice.web.dto.model.FilterFieldType;
 import com.ecaservice.web.dto.model.FormTemplateGroupDto;
@@ -1072,9 +1073,19 @@ public class TestHelperUtils {
      * @return filter dictionary dto
      */
     public static FilterDictionaryDto createFilterDictionaryDto() {
+        return createFilterDictionaryDto(Collections.emptyList());
+    }
+
+    /**
+     * Creates filter dictionary dto.
+     *
+     * @param values - values
+     * @return filter dictionary dto
+     */
+    public static FilterDictionaryDto createFilterDictionaryDto(List<FilterDictionaryValueDto> values) {
         FilterDictionaryDto filterDictionaryDto = new FilterDictionaryDto();
         filterDictionaryDto.setName(FILTER_NAME);
-        filterDictionaryDto.setValues(Collections.emptyList());
+        filterDictionaryDto.setValues(values);
         return filterDictionaryDto;
     }
 

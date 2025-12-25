@@ -58,6 +58,7 @@ import { InstancesStatisticsModule } from "./instances-statistics/instances-stat
 import { ConfusionMatrixModule } from './confusion-matrix/confusion-matrix.module';
 import { ClassifyInstanceModule } from './classify-instance/classify-instance.module';
 import { PersonalAccessTokensModule } from './personal-access-tokens/personal-access-tokens.module';
+import { EvaluationResultsRequestPathModule } from './evaluation-results-request-path/evaluation-results-request-path.module';
 
 export function eventSubscribe(eventHandler: EventHandler) {
   return () => eventHandler.eventSubscribe();
@@ -122,7 +123,8 @@ export function eventSubscribe(eventHandler: EventHandler) {
     InstancesStatisticsModule,
     InstancesDetailsTabsModule,
     ClassifyInstanceModule,
-    PersonalAccessTokensModule
+    PersonalAccessTokensModule,
+    EvaluationResultsRequestPathModule
   ],
   providers: [
     CookieService,

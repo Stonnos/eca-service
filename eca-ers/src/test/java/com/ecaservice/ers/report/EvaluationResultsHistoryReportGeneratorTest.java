@@ -18,6 +18,7 @@ import com.ecaservice.ers.service.EvaluationResultsHistoryCountQueryExecutor;
 import com.ecaservice.ers.service.EvaluationResultsHistoryService;
 import com.ecaservice.report.model.BaseReportBean;
 import com.ecaservice.report.model.FilterBean;
+import com.ecaservice.web.dto.model.FilterDictionaryValueDto;
 import com.ecaservice.web.dto.model.FilterRequestDto;
 import com.ecaservice.web.dto.model.MatchMode;
 import com.ecaservice.web.dto.model.PageRequestDto;
@@ -34,6 +35,7 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.UUID;
+import java.util.List;
 
 import static com.ecaservice.classifier.template.processor.util.Utils.toJsonString;
 import static com.ecaservice.ers.TestHelperUtils.createEvaluationResultsInfo;
@@ -63,6 +65,8 @@ class EvaluationResultsHistoryReportGeneratorTest extends AbstractJpaTest {
     private static final int PAGE_NUMBER = 0;
     private static final int PAGE_SIZE = 10;
     private static final String INSTANCES_INFO_ID = "instancesInfo.id";
+    private static final String CART_LABEL = "Алгоритм CART";
+    private static final String CART_VALUE = "CART";
 
     @MockBean
     private FilterTemplateService filterTemplateService;
@@ -82,7 +86,11 @@ class EvaluationResultsHistoryReportGeneratorTest extends AbstractJpaTest {
     public void init() {
         saveEvaluationResultsData();
         when(filterTemplateService.getFilterFields(anyString())).thenReturn(loadEvaluationResultsHistoryFilterFields());
-        when(filterTemplateService.getFilterDictionary(CLASSIFIER_NAME)).thenReturn(createFilterDictionaryDto());
+        when(filterTemplateService.getFilterDictionary(CLASSIFIER_NAME)).thenReturn(
+                createFilterDictionaryDto(
+                        List.of(new FilterDictionaryValueDto(CART_LABEL, CART_VALUE))
+                )
+        );
     }
 
     @Override
