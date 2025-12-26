@@ -33,4 +33,9 @@ public class EvaluationResultsReportInputData {
      * Roc curve image
      */
     private byte[] rocImage;
+
+    /**
+     * External details url
+     */
+    private String externalDetailsUrl;
 }

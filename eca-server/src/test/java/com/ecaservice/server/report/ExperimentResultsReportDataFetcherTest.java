@@ -1,6 +1,7 @@
 package com.ecaservice.server.report;
 
 import com.ecaservice.common.web.exception.EntityNotFoundException;
+import com.ecaservice.server.config.AppProperties;
 import com.ecaservice.server.exception.UnexpectedRequestStatusException;
 import com.ecaservice.server.model.entity.ErsResponseStatus;
 import com.ecaservice.server.model.entity.Experiment;
@@ -39,7 +40,7 @@ import static org.mockito.Mockito.when;
  *
  * @author Roman Batygin
  */
-@Import({ExperimentResultsReportDataFetcher.class})
+@Import({ExperimentResultsReportDataFetcher.class, AppProperties.class})
 class ExperimentResultsReportDataFetcherTest extends AbstractJpaTest {
 
     @MockBean

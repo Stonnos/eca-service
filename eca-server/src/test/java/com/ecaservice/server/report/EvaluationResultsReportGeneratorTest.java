@@ -7,6 +7,7 @@ import com.ecaservice.classifier.template.processor.service.ClassifiersTemplateP
 import com.ecaservice.core.form.template.service.FormTemplateProvider;
 import com.ecaservice.ers.dto.ClassificationCostsReport;
 import com.ecaservice.ers.dto.GetEvaluationResultsResponse;
+import com.ecaservice.server.config.AppProperties;
 import com.ecaservice.server.config.ClassifiersProperties;
 import com.ecaservice.server.mapping.EvaluationResultsReportDataMapperImpl;
 import com.ecaservice.server.model.entity.EvaluationLog;
@@ -41,6 +42,7 @@ import static com.ecaservice.server.TestHelperUtils.loadEvaluationResultsRespons
 import static com.ecaservice.server.TestHelperUtils.loadRocImage;
 import static com.ecaservice.server.report.ReportTemplates.EVALUATION_RESULTS_TEMPLATE;
 import static com.ecaservice.server.util.ClassifierOptionsHelper.toJsonString;
+import static com.ecaservice.server.util.RoutePaths.EVALUATION_RESULTS_DETAILS_PATH;
 import static org.apache.commons.lang3.SystemUtils.USER_DIR;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
@@ -55,16 +57,19 @@ import static org.mockito.Mockito.when;
 @TestPropertySource("classpath:application.properties")
 @Import({ClassifiersFormTemplateProvider.class, ClassifierOptionsInfoProcessor.class, ClassifiersOptionsConfig.class,
         ClassifiersProperties.class, ClassifierOptionsProcessor.class, ClassifiersTemplateProperties.class,
-        ClassifiersTemplateProvider.class, EvaluationResultsReportDataProcessor.class,
+        ClassifiersTemplateProvider.class, EvaluationResultsReportDataProcessor.class, AppProperties.class,
         EvaluationResultsReportDataMapperImpl.class, ConfusionMatrixService.class})
 public class EvaluationResultsReportGeneratorTest {
 
     private static final String CLASSIFIERS = "classifiers";
     private static final String ENSEMBLE_CLASSIFIERS = "ensembleClassifiers";
+    private static final long ID = 1L;
 
     @MockBean
     private FormTemplateProvider formTemplateProvider;
 
+    @Autowired
+    private AppProperties appProperties;
     @Autowired
     private EvaluationResultsReportDataProcessor evaluationResultsReportDataProcessor;
 
@@ -82,6 +87,7 @@ public class EvaluationResultsReportGeneratorTest {
     @Test
     void testGenerateEvaluationResultsReport() throws IOException {
         EvaluationLog evaluationLog = createEvaluationLog();
+        evaluationLog.setId(ID);
         var stackingOptions = createStackingOptions();
         evaluationLog.setClassifierOptions(toJsonString(stackingOptions));
         var rocImage = loadRocImage();
@@ -90,6 +96,7 @@ public class EvaluationResultsReportGeneratorTest {
                 .classifierOptions(evaluationLog.getClassifierOptions())
                 .evaluationResultsResponse(evaluationResultsResponse)
                 .rocImage(rocImage)
+                .externalDetailsUrl(getExternalDetailsUrl(evaluationLog))
                 .build();
         EvaluationResultsReportBean evaluationResultsReportBean =
                 evaluationResultsReportDataProcessor.processReportData(evaluationResultsReportInputData);
@@ -157,5 +164,10 @@ public class EvaluationResultsReportGeneratorTest {
         String fileName = String.format("%s/target/evaluation-results-report.xlsx", USER_DIR);
         @Cleanup var outputStream = new FileOutputStream(fileName);
         generateReport(EVALUATION_RESULTS_TEMPLATE, evaluationResultsReportBean, outputStream);
+    }
+
+    private String getExternalDetailsUrl(EvaluationLog evaluationLog) {
+        String path = String.format(EVALUATION_RESULTS_DETAILS_PATH, evaluationLog.getId());
+        return String.format("%s%s", appProperties.getWebExternalBaseUrl(), path);
     }
 }

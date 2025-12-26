@@ -2,6 +2,7 @@ package com.ecaservice.server.report;
 
 import com.ecaservice.common.web.exception.EntityNotFoundException;
 import com.ecaservice.ers.dto.GetEvaluationResultsResponse;
+import com.ecaservice.server.config.AppProperties;
 import com.ecaservice.server.model.entity.ErsResponseStatus;
 import com.ecaservice.server.model.entity.EvaluationLog;
 import com.ecaservice.server.model.entity.EvaluationResultsAttachmentType;
@@ -17,6 +18,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import static com.ecaservice.server.util.EvaluationResultsAttachmentKeys.EVALUATION_KEY_FORMAT;
+import static com.ecaservice.server.util.RoutePaths.EVALUATION_RESULTS_DETAILS_PATH;
 import static com.ecaservice.server.util.ValidationUtils.checkFinishedRequestStatus;
 
 /**
@@ -29,6 +31,7 @@ import static com.ecaservice.server.util.ValidationUtils.checkFinishedRequestSta
 @RequiredArgsConstructor
 public class SimpleEvaluationResultsReportDataFetcher implements EvaluationResultsReportDataFetcher {
 
+    private final AppProperties appProperties;
     private final EvaluationResultsReportDataProcessor evaluationResultsReportDataProcessor;
     private final ErsRequestService ersRequestService;
     private final EvaluationResultsAttachmentService evaluationResultsAttachmentService;
@@ -58,17 +61,24 @@ public class SimpleEvaluationResultsReportDataFetcher implements EvaluationResul
             String rocAttachmentKey = String.format(EVALUATION_KEY_FORMAT, evaluationLog.getRequestId());
             byte[] rocImage = evaluationResultsAttachmentService.getAttachment(rocAttachmentKey,
                     EvaluationResultsAttachmentType.ROC_CURVE_IMAGE);
+            String externalDetailsUrl = getExternalDetailsUrl(evaluationLog);
             EvaluationResultsReportInputData evaluationResultsReportInputData =
                     EvaluationResultsReportInputData.builder()
                             .evaluationEntity(evaluationLog)
                             .classifierOptions(evaluationLog.getClassifierOptions())
                             .evaluationResultsResponse(evaluationResultsResponse)
                             .rocImage(rocImage)
+                            .externalDetailsUrl(externalDetailsUrl)
                             .build();
             EvaluationResultsReportBean evaluationResultsReportBean =
                     evaluationResultsReportDataProcessor.processReportData(evaluationResultsReportInputData);
             log.info("Evaluation result report data has been fetched for evaluation log [{}]", id);
             return evaluationResultsReportBean;
         }
+    }
+
+    private String getExternalDetailsUrl(EvaluationLog evaluationLog) {
+        String path = String.format(EVALUATION_RESULTS_DETAILS_PATH, evaluationLog.getId());
+        return String.format("%s%s", appProperties.getWebExternalBaseUrl(), path);
     }
 }

@@ -125,4 +125,9 @@ public class EvaluationResultsReportBean {
      * Roc curve image
      */
     private byte[] rocImage;
+
+    /**
+     * External details url
+     */
+    private String externalDetailsUrl;
 }
