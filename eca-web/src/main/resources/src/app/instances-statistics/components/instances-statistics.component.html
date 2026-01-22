@@ -4,7 +4,7 @@
   animationDuration=".5s"
   *ngIf="loading">
 </p-progressSpinner>
-<div class="container-fluid mb-5">
+<div class="container-fluid mb-3">
   <div class="ui-g text-center justify-content-center align-items-center instances-title text-wrap">
     Данные: {{ instancesStatisticsDto?.relationName }}
   </div>
@@ -38,7 +38,8 @@
         <p-chart type="doughnut"
                  height="250px"
                  [data]="attributeCountingStatsDataSet"
-                 [options]="attributeCountingStatsBarOptions">
+                 [options]="attributeCountingStatsBarOptions"
+                 [plugins]="attributeCountingStatsPlugins">
         </p-chart>
       </div>
     </div>

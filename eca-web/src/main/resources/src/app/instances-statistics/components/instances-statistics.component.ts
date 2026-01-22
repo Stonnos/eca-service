@@ -26,6 +26,7 @@ export class InstancesStatisticsComponent implements OnInit {
 
   public attributeCountingStatsBarOptions: any;
   public attributeCountingStatsDataSet: any;
+  public attributeCountingStatsPlugins: any[];
 
   public frequencyDiagramBarOptions: any;
 
@@ -43,6 +44,7 @@ export class InstancesStatisticsComponent implements OnInit {
   }
 
   public ngOnInit() {
+    this.initAttributeCountingStatsPlugins();
     this.getInstancesStatistics();
     this.getAttributes();
   }
@@ -105,7 +107,7 @@ export class InstancesStatisticsComponent implements OnInit {
     this.attributeCountingStatsBarOptions = {
       title: {
         display: true,
-        text: `Число атрибутов: ${this.instancesStatisticsDto.numAttributes}`,
+        text: 'Число атрибутов',
         fontSize: 20
       },
       legend: {
@@ -113,6 +115,30 @@ export class InstancesStatisticsComponent implements OnInit {
         position: 'bottom'
       },
     };
+  }
+
+  private initAttributeCountingStatsPlugins(): void {
+    const plugin = {
+      id: 'doughnutInsideText',
+      beforeDraw: (chart) => {
+        if (this.instancesStatisticsDto) {
+          const width = chart.width;
+          const height = chart.height;
+          const ctx = chart.ctx;
+          ctx.restore();
+          const fontSize = (height / 114).toFixed(2);
+          ctx.font = fontSize + "em sans-serif";
+          ctx.textBaseline = "middle";
+          const text = String(this.instancesStatisticsDto.numAttributes);
+          const textWidth = ctx.measureText(text).width;
+          const textX = Math.round((width - textWidth) / 2);
+          const textY = height / 2 + 5;
+          ctx.fillText(text, textX, textY);
+          ctx.save();
+        }
+      }
+    };
+    this.attributeCountingStatsPlugins = [plugin];
   }
 
   private initAttributesCountingStatsDataSet(): void {
