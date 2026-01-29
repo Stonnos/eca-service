@@ -1,3 +1,10 @@
+.dashboard-menu::ng-deep {
+
+  .classifiers-configurations-menu-item {
+    width: 250px;
+  }
+}
+
 .notification {
   margin-top: 3px;
   color: white;

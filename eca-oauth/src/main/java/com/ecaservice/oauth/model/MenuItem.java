@@ -23,6 +23,16 @@ public class MenuItem {
     private String routerLink;
 
     /**
+     * Icon
+     */
+    private String icon;
+
+    /**
+     * Style class
+     */
+    private String styleClass;
+
+    /**
      * Available roles
      */
     private List<String> availableRoles;

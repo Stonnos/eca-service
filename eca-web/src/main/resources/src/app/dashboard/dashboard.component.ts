@@ -133,7 +133,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   }
 
   private mapMenuItem(item: MenuItemDto): MenuItem {
-    let menuItem = { label: item.label,  routerLink: null, items: null };
+    let menuItem = { label: item.label,  routerLink: null, icon: item.icon, styleClass: item.styleClass, items: null };
     if (item.routerLink) {
       menuItem.routerLink = [item.routerLink];
     }
