@@ -30,6 +30,20 @@
       "label": "Журнал аудита",
       "routerLink": "/dashboard/audit-logs",
       "availableRoles": ["ROLE_SUPER_ADMIN"]
+    },
+    {
+      "label": "Настройки",
+      "items": [
+        {
+          "label": "Эксперименты",
+          "items": [
+            {
+              "label": "Конфигурации классификаторов",
+              "routerLink": "/dashboard/experiments/classifiers-configurations"
+            }
+          ]
+        }
+      ]
     }
   ]
 }

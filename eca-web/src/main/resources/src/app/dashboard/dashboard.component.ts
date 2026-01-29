@@ -123,13 +123,26 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.webAppService.getUiPermissions().subscribe({
       next: (uiPermissionsDto: UiPermissionsDto) => {
         this.items = uiPermissionsDto.menuItems.map((item: MenuItemDto) => {
-          return { label: item.label, routerLink: [item.routerLink] }
+          return this.mapMenuItem(item);
         });
       },
       error: (error) => {
         this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
       }
     });
+  }
+
+  private mapMenuItem(item: MenuItemDto): MenuItem {
+    let menuItem = { label: item.label,  routerLink: null, items: null };
+    if (item.routerLink) {
+      menuItem.routerLink = [item.routerLink];
+    }
+    if (item.items && item.items.length > 0) {
+      menuItem.items = item.items.map((childItem: MenuItemDto) => {
+        return this.mapMenuItem(childItem);
+      });
+    }
+    return menuItem;
   }
 
   private handleLogoutError(error): void {

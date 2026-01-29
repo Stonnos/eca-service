@@ -17,7 +17,6 @@ import { FieldService } from "../../common/services/field.service";
 import { ActivatedRoute, NavigationEnd, Router, RouterEvent } from "@angular/router";
 import { ClassifiersConfigurationsService } from "../../classifiers-configurations/services/classifiers-configurations.service";
 import { ClassifiersConfigurationModel } from "../../create-classifiers-configuration/model/classifiers-configuration.model";
-import { ExperimentTabUtils } from "../../experiments-tabs/model/experiment-tab.utils";
 import { filter, finalize } from "rxjs/internal/operators";
 import { Utils } from "../../common/util/utils";
 import { OperationType }  from "../../common/model/operation-type.enum";
@@ -225,8 +224,7 @@ export class ClassifiersConfigurationDetailsComponent extends BaseListComponent<
     this.classifiersConfigurationService.deleteConfiguration(item.id)
       .subscribe({
         next: () => {
-          localStorage.setItem(ExperimentTabUtils.EXPERIMENT_ACTIVE_TAB_KEY, ExperimentTabUtils.CLASSIFIERS_CONFIGURATION_TAB_INDEX.toString());
-          this.router.navigate(['/dashboard/experiments']);
+          this.router.navigate(['/dashboard/experiments/classifiers-configurations']);
         },
         error: (error) => {
           this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });

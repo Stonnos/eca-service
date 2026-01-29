@@ -19,6 +19,7 @@ import { InstancesDetailsTabsComponent } from "../instances-details-tabs/compone
 import { EvaluationLogDetailsComponent } from '../evaluation-log-details/components/evaluation-log-details.component';
 import { ExperimentResultsDetailsComponent } from '../experiment-results-details/components/experiment-results-details.component';
 import { EvaluationResultsRequestPathComponent } from '../evaluation-results-request-path/components/evaluation-results-request-path.component';
+import { ClassifiersConfigurationsComponent } from '../classifiers-configurations/components/classifiers-configurations.component';
 
 const routes: Routes = [
   {
@@ -72,6 +73,10 @@ const routes: Routes = [
       {
         path: 'experiments/classifiers-configuration/details/:id',
         component: ClassifiersConfigurationFullDetailsComponent
+      },
+      {
+        path: 'experiments/classifiers-configurations',
+        component: ClassifiersConfigurationsComponent
       },
       {
         path: 'profile',
