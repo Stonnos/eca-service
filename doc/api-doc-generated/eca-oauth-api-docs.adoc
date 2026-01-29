@@ -2436,31 +2436,63 @@ a|
   "menuItems" : [ {
     "label" : "Эксперименты",
     "routerLink" : "/dashboard/experiments",
+    "icon" : null,
+    "styleClass" : null,
     "items" : null
   }, {
     "label" : "Классификаторы",
     "routerLink" : "/dashboard/classifiers",
+    "icon" : "pi pi-sitemap",
+    "styleClass" : null,
     "items" : null
   }, {
-    "label" : "Оптимальные настройки классификаторов",
-    "routerLink" : "/dashboard/classifiers-options-requests",
+    "label" : "История результатов классификации",
+    "routerLink" : "/dashboard/evaluation-results-history",
+    "icon" : "pi pi-list",
+    "styleClass" : null,
     "items" : null
   }, {
     "label" : "Датасеты",
     "routerLink" : "/dashboard/instances",
+    "icon" : "pi pi-table",
+    "styleClass" : null,
     "items" : null
   }, {
     "label" : "Пользователи",
     "routerLink" : "/dashboard/users",
+    "icon" : "pi pi-users",
+    "styleClass" : null,
     "items" : null
   }, {
     "label" : "Шаблоны email сообщений",
     "routerLink" : "/dashboard/email-templates",
+    "icon" : null,
+    "styleClass" : null,
     "items" : null
   }, {
     "label" : "Журнал аудита",
     "routerLink" : "/dashboard/audit-logs",
+    "icon" : "pi pi-file",
+    "styleClass" : null,
     "items" : null
+  }, {
+    "label" : "Настройки",
+    "routerLink" : null,
+    "icon" : "pi pi-fw pi-cog",
+    "styleClass" : null,
+    "items" : [ {
+      "label" : "Эксперименты",
+      "routerLink" : null,
+      "icon" : null,
+      "styleClass" : null,
+      "items" : [ {
+        "label" : "Конфигурации классификаторов",
+        "routerLink" : "/dashboard/experiments/classifiers-configurations",
+        "icon" : null,
+        "styleClass" : "classifiers-configurations-menu-item",
+        "items" : null
+      } ]
+    } ]
   } ]
 }
 ----
@@ -4989,6 +5021,44 @@ __string__
 
 |*routerLink*
 |Router link
+a|
+__string__
+
+
+
+
+*Max. length*: 255
+
+
+
+
+
+
+
+
+
+
+|*icon*
+|Icon
+a|
+__string__
+
+
+
+
+*Max. length*: 255
+
+
+
+
+
+
+
+
+
+
+|*styleClass*
+|Style class
 a|
 __string__
 
