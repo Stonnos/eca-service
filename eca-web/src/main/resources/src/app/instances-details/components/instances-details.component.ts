@@ -126,7 +126,13 @@ export class InstancesDetailsComponent extends BaseListComponent<string[]> {
   }
 
   public getAttributes(): void {
+    this.attributesLoading = true;
     this.instancesService.getAttributes(this.id)
+      .pipe(
+        finalize(() => {
+          this.attributesLoading = false;
+        })
+      )
       .subscribe({
         next: (attributes: AttributeDto[]) => {
           this.attributes = attributes;
