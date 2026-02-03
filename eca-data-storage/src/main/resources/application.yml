@@ -98,7 +98,7 @@ management:
       enabled: true
   tracing:
     sampling:
-      probability: 1.0
+      probability: 0
     baggage:
       correlation:
         fields:

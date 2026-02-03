@@ -30,8 +30,6 @@ management:
       enabled: true
   zipkin:
     tracing:
-      ## Вкл./выкл. отправки трейсов в zipkin
-      enabled: true
       ## Url zipkin
       endpoint: http://localhost:9411/api/v2/spans
   tracing:
