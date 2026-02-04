@@ -22,7 +22,7 @@ export abstract class BaseListComponent<T> implements FieldLink {
 
   public defaultSortField: string;
   public defaultSortOrder: number = -1;
-  public pageSize: number = 25;
+  public pageSize: number = 20;
 
   public searchQuery: string = '';
   public filters: Filter[] = [];
