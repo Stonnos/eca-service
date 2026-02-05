@@ -10,12 +10,14 @@ import com.ecaservice.data.storage.report.InstancesReportService;
 import com.ecaservice.data.storage.report.ReportsConfigurationService;
 import com.ecaservice.data.storage.repository.InstancesRepository;
 import com.ecaservice.data.storage.service.AttributeService;
+import com.ecaservice.data.storage.service.AttributesScatterPlotService;
 import com.ecaservice.data.storage.service.InstancesLoader;
 import com.ecaservice.data.storage.service.InstancesStatisticsService;
 import com.ecaservice.data.storage.service.impl.StorageServiceImpl;
 import com.ecaservice.oauth2.test.controller.AbstractControllerTest;
 import com.ecaservice.web.dto.model.AttributeDto;
 import com.ecaservice.web.dto.model.AttributeStatisticsDto;
+import com.ecaservice.web.dto.model.AttributesScatterPlotDto;
 import com.ecaservice.web.dto.model.CreateInstancesResultDto;
 import com.ecaservice.web.dto.model.InstancesDto;
 import com.ecaservice.web.dto.model.InstancesStatisticsDto;
@@ -88,6 +90,8 @@ class DataStorageControllerTest extends AbstractControllerTest {
     private static final String GET_ATTRIBUTE_STATISTICS_URL = BASE_URL + "/attribute-stats/{id}";
     private static final String GET_INSTANCES_STATISTICS_URL = BASE_URL + "/instances-stats/{id}";
 
+    private static final String GET_ATTRIBUTES_SCATTER_PLOT_URL = BASE_URL + "/attributes-scatter-plot";
+
     private static final String TRAINING_DATA_PARAM = "trainingData";
     private static final String TABLE_NAME = "table";
     private static final String RELATION_NAME_PARAM = "relationName";
@@ -98,6 +102,9 @@ class DataStorageControllerTest extends AbstractControllerTest {
     private static final long TOTAL_ELEMENTS = 1L;
     private static final int PAGE_NUMBER = 0;
     private static final String CLASS_ATTRIBUTE_ID_PARAM = "classAttributeId";
+    private static final String INSTANCES_ID_PARAM = "instancesId";
+    private static final String X_ATTRIBUTE_ID_PARAM = "xAttributeId";
+    private static final String Y_ATTRIBUTE_ID_PARAM = "yAttributeId";
 
     @MockBean
     private StorageServiceImpl storageService;
@@ -113,6 +120,8 @@ class DataStorageControllerTest extends AbstractControllerTest {
     private ReportsConfigurationService reportsConfigurationService;
     @MockBean
     private InstancesStatisticsService instancesStatisticsService;
+    @MockBean
+    private AttributesScatterPlotService attributesScatterPlotService;
 
     @Autowired
     private InstancesMapper instancesMapper;
@@ -429,6 +438,32 @@ class DataStorageControllerTest extends AbstractControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(content().json(objectMapper.writeValueAsString(attributeStatisticsDto)));
+    }
+
+    @Test
+    void testGetAttributesScatterPlotUnauthorized() throws Exception {
+        mockMvc.perform(get(GET_ATTRIBUTES_SCATTER_PLOT_URL)
+                        .param(INSTANCES_ID_PARAM, String.valueOf(ID))
+                        .param(X_ATTRIBUTE_ID_PARAM, String.valueOf(ID))
+                        .param(Y_ATTRIBUTE_ID_PARAM, String.valueOf(ID))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    void testGetAttributesScatterPlotOk() throws Exception {
+        AttributesScatterPlotDto attributesScatterPlotDto = new AttributesScatterPlotDto();
+        when(attributesScatterPlotService.getScatterPlot(anyLong(), anyLong(), anyLong()))
+                .thenReturn(attributesScatterPlotDto);
+        mockMvc.perform(get(GET_ATTRIBUTES_SCATTER_PLOT_URL)
+                        .param(INSTANCES_ID_PARAM, String.valueOf(ID))
+                        .param(X_ATTRIBUTE_ID_PARAM, String.valueOf(ID))
+                        .param(Y_ATTRIBUTE_ID_PARAM, String.valueOf(ID))
+                        .header(HttpHeaders.AUTHORIZATION, getBearerToken())
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(content().json(objectMapper.writeValueAsString(attributesScatterPlotDto)));
     }
 
     @Test

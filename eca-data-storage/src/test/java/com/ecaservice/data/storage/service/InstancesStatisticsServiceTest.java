@@ -38,7 +38,7 @@ import static com.ecaservice.data.storage.TestHelperUtils.IONOSPHERE_DATA_PATH;
 import static com.ecaservice.data.storage.TestHelperUtils.loadInstances;
 import static com.ecaservice.data.storage.TestHelperUtils.numAttributes;
 import static com.ecaservice.data.storage.util.Utils.toDecimal;
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
 /**
