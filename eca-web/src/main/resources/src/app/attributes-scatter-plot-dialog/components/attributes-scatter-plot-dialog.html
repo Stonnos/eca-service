@@ -1,0 +1,68 @@
+<p-dialog
+  #dialog
+  [(visible)]="visible"
+  [style]="{ width: '60%' }"
+  appendTo="body"
+  [modal]="true"
+  [blockScroll]="false"
+  [draggable]="false"
+  [resizable]="false"
+  (onHide)="hide()">
+  <div class="attributes-scatter-plot-panel mb-2 mt-2">
+    <div class="ui-g">
+      <div class="ui-g-12">
+        <p-chart type="scatter"
+                 height="475px"
+                 [data]="scatterPlotDataSet"
+                 [options]="scatterPlotBarOptions">
+        </p-chart>
+      </div>
+    </div>
+  </div>
+  <p-footer>
+    <div class="ui-g">
+      <div class="ui-g-12 d-flex justify-content-center align-items-center">
+
+        <label class="filter-label">Атрибут X</label>
+        <p-dropdown
+          required
+          id="xAttribute"
+          name="xAttribute"
+          placeholder="Выбрать"
+          [disabled]="loading"
+          [appendTo]="dialog"
+          [options]="attributes"
+          optionLabel="name"
+          [(ngModel)]="selectedXAttribute"
+          #xAttribute="ngModel"
+          [style]="{'width':'40%'}">
+        </p-dropdown>
+
+        <label class="ml-2 filter-label">Атрибут Y</label>
+        <p-dropdown
+          required
+          id="yAttribute"
+          name="yAttribute"
+          placeholder="Выбрать"
+          [disabled]="loading"
+          [appendTo]="dialog"
+          [options]="attributes"
+          optionLabel="name"
+          [(ngModel)]="selectedYAttribute"
+          #yAttribute="ngModel"
+          [style]="{'width':'40%'}">
+        </p-dropdown>
+
+        <button
+          pButton
+          class="ml-4"
+          label="Показать"
+          type="button"
+          (click)="fetchScatterPlot()"
+          [disabled]="loading || !selectedXAttribute || !selectedYAttribute">
+        </button>
+      </div>
+
+    </div>
+  </p-footer>
+</p-dialog>

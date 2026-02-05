@@ -6,6 +6,7 @@ import {
   InstancesDto, InstancesReportInfoDto, InstancesStatisticsDto,
   PageDto,
   PageRequestDto,
+  AttributesScatterPlotDto
 } from "../../../../../../../target/generated-sources/typescript/eca-web-dto";
 import { Observable } from "rxjs/internal/Observable";
 import { environment } from "../../../environments/environment";
@@ -105,5 +106,17 @@ export class InstancesService {
 
   public getAttributeStatistics(id: number): Observable<AttributeStatisticsDto> {
     return this.http.get<AttributeStatisticsDto>(this.serviceUrl + '/attribute-stats/' + id);
+  }
+
+  public getAttributesScatterPlot(instancesId: number, xAttributeId: number, yAttributeId: number): Observable<AttributesScatterPlotDto> {
+    const headers = new HttpHeaders({
+      'Content-type': 'application/json; charset=utf-8'
+    });
+    let params = new HttpParams()
+      .set('instancesId', instancesId.toString())
+      .set('xAttributeId', xAttributeId.toString())
+      .set('yAttributeId', yAttributeId.toString());
+    const options = { headers: headers, params: params };
+    return this.http.get<AttributesScatterPlotDto>(this.serviceUrl + '/attributes-scatter-plot', options);
   }
 }

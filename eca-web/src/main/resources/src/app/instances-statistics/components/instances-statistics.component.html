@@ -31,6 +31,17 @@
 
 </div>
 
+<div class="row mr-1">
+  <div class="col-8 justify-content-start">
+    <button pButton
+            type="button"
+            label="Диаграммы рассеяния"
+            (click)="setVisibleAttributesScatterPlotDialog(true)"
+            class="ui-button-secondary mb-2">
+    </button>
+  </div>
+</div>
+
 <div class="row">
   <div class="attributes-stats-sidebar">
     <div class="ui-g ui-fluid attr-counting-stats">
@@ -87,3 +98,8 @@
   </div>
 </div>
 
+<app-attributes-scatter-plot-dialog [visible]="attributesScatterPlotDialogVisibility"
+                                    (visibilityChange)="setVisibleAttributesScatterPlotDialog($event)"
+                                    [instancesId]="id"
+                                    [attributes]="attributes">
+</app-attributes-scatter-plot-dialog>
