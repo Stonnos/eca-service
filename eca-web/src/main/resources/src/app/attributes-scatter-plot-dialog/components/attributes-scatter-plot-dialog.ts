@@ -124,10 +124,6 @@ export class AttributesScatterPlotDialog implements BaseDialog, OnInit {
     } else {
       return [{
         type: 'linear',
-        ticks: {
-          min: 0,
-          beginAtZero: true,
-        },
         scaleLabel: {
           display: true,
           labelString: attribute.name,
