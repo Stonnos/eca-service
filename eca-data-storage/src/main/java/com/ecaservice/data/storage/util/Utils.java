@@ -35,8 +35,13 @@ public class Utils {
      */
     public static final int MIN_NUM_SELECTED_ATTRIBUTES = 2;
 
+    /**
+     * Comma separator
+     */
+    public static final String COMMA_SEPARATOR = ",";
+
     private static final String SELECT_QUERY = "select %s from %s order by %s";
-    private static final String COMMA_SEPARATOR = ",";
+
     private static final String SELECT_COUNT_DISTINCT_QUERY = "select count(distinct %s) from %s";
 
     /**

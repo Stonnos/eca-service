@@ -8,11 +8,13 @@ import com.ecaservice.data.storage.model.report.ReportType;
 import com.ecaservice.data.storage.report.InstancesReportService;
 import com.ecaservice.data.storage.report.ReportsConfigurationService;
 import com.ecaservice.data.storage.service.AttributeService;
+import com.ecaservice.data.storage.service.AttributesScatterPlotService;
 import com.ecaservice.data.storage.service.InstancesLoader;
 import com.ecaservice.data.storage.service.InstancesStatisticsService;
 import com.ecaservice.data.storage.service.StorageService;
 import com.ecaservice.web.dto.model.AttributeDto;
 import com.ecaservice.web.dto.model.AttributeStatisticsDto;
+import com.ecaservice.web.dto.model.AttributesScatterPlotDto;
 import com.ecaservice.web.dto.model.CreateInstancesResultDto;
 import com.ecaservice.web.dto.model.DataListPageDto;
 import com.ecaservice.web.dto.model.InstancesDto;
@@ -31,6 +33,10 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.Size;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -49,10 +55,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import weka.core.Instances;
 
-import jakarta.validation.Valid;
-import jakarta.validation.constraints.Max;
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.Size;
 import java.util.List;
 
 import static com.ecaservice.config.swagger.OpenApi30Configuration.ECA_AUTHENTICATION_SECURITY_SCHEME;
@@ -77,6 +79,7 @@ public class DataStorageController {
     private final InstancesReportService instancesReportService;
     private final AttributeService attributeService;
     private final InstancesStatisticsService instancesStatisticsService;
+    private final AttributesScatterPlotService attributesScatterPlotService;
     private final ReportsConfigurationService reportsConfigurationService;
     private final InstancesLoader instancesLoader;
     private final InstancesMapper instancesMapper;
@@ -810,6 +813,73 @@ public class DataStorageController {
             @PathVariable Long id) {
         log.info("Request get instances [{}] statistics", id);
         return instancesStatisticsService.getInstancesStatistics(id);
+    }
+
+    /**
+     * Gets scatter plot data.
+     *
+     * @param instancesId  - instances id
+     * @param xAttributeId - x attribute id
+     * @param yAttributeId - y attribute id
+     * @return scatter plot data
+     */
+    @PreAuthorize("hasAuthority('SCOPE_web')")
+    @Operation(
+            description = "Gets scatter plot data",
+            summary = "Gets scatter plot data",
+            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME, scopes = SCOPE_WEB),
+            responses = {
+                    @ApiResponse(description = "OK", responseCode = "200",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    examples = {
+                                            @ExampleObject(
+                                                    name = "AttributesScatterPlotResponse",
+                                                    ref = "#/components/examples/AttributesScatterPlotResponse"
+                                            ),
+                                    },
+                                    schema = @Schema(implementation = AttributesScatterPlotDto.class)
+                            )
+                    ),
+                    @ApiResponse(description = "Not authorized", responseCode = "401",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    examples = {
+                                            @ExampleObject(
+                                                    name = "NotAuthorizedResponse",
+                                                    ref = "#/components/examples/NotAuthorizedResponse"
+                                            ),
+                                    }
+                            )
+                    ),
+                    @ApiResponse(description = "Bad request", responseCode = "400",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    examples = {
+                                            @ExampleObject(
+                                                    name = "DataNotFoundResponse",
+                                                    ref = "#/components/examples/DataNotFoundResponse"
+                                            ),
+                                    },
+                                    array = @ArraySchema(schema = @Schema(implementation = ValidationErrorDto.class))
+                            )
+                    )
+            }
+    )
+    @GetMapping(value = "/attributes-scatter-plot")
+    public AttributesScatterPlotDto getAttributesScatterPlot(
+            @Parameter(description = "Instances id", example = "1", required = true)
+            @Min(VALUE_1) @Max(Long.MAX_VALUE)
+            @RequestParam Long instancesId,
+            @Parameter(description = "X-axis attribute id", example = "1", required = true)
+            @Min(VALUE_1) @Max(Long.MAX_VALUE)
+            @RequestParam Long xAttributeId,
+            @Parameter(description = "Y-axis attribute id", example = "1", required = true)
+            @Min(VALUE_1) @Max(Long.MAX_VALUE)
+            @RequestParam Long yAttributeId) {
+        log.info("Request get attributes scatter plot for instances [{}], x attribute id [{}], y attribute id [{}]",
+                instancesId, xAttributeId, yAttributeId);
+        return attributesScatterPlotService.getScatterPlot(instancesId, xAttributeId, yAttributeId);
     }
 
     /**

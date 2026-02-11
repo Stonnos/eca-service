@@ -59,6 +59,7 @@ import { ConfusionMatrixModule } from './confusion-matrix/confusion-matrix.modul
 import { ClassifyInstanceModule } from './classify-instance/classify-instance.module';
 import { PersonalAccessTokensModule } from './personal-access-tokens/personal-access-tokens.module';
 import { EvaluationResultsRequestPathModule } from './evaluation-results-request-path/evaluation-results-request-path.module';
+import { AttributesScatterPlotDialogModule } from './attributes-scatter-plot-dialog/attributes-scatter-plot-dialog.module';
 
 export function eventSubscribe(eventHandler: EventHandler) {
   return () => eventHandler.eventSubscribe();
@@ -124,7 +125,8 @@ export function eventSubscribe(eventHandler: EventHandler) {
     InstancesDetailsTabsModule,
     ClassifyInstanceModule,
     PersonalAccessTokensModule,
-    EvaluationResultsRequestPathModule
+    EvaluationResultsRequestPathModule,
+    AttributesScatterPlotDialogModule
   ],
   providers: [
     CookieService,

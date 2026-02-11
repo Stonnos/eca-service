@@ -13,6 +13,7 @@ import {
 import {
   NumericAttributeStatisticsTableComponent
 } from "./components/numeric-attribute-statistics-table/numeric-attribute-statistics-table.component";
+import { AttributesScatterPlotDialogModule } from '../attributes-scatter-plot-dialog/attributes-scatter-plot-dialog.module';
 
 @NgModule({
   imports: [
@@ -22,7 +23,8 @@ import {
     UiComponentsModule,
     CreateEditInstancesModule,
     ExportInstancesModule,
-    AttributesModule
+    AttributesModule,
+    AttributesScatterPlotDialogModule
   ],
   exports: [
     InstancesStatisticsComponent

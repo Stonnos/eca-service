@@ -32,6 +32,8 @@ export class InstancesStatisticsComponent implements OnInit {
 
   public frequencyDiagramDataSet: any;
 
+  public attributesScatterPlotDialogVisibility: boolean = false;
+
   public constructor(private injector: Injector,
                      private instancesService: InstancesService,
                      private messageService: MessageService,
@@ -81,6 +83,10 @@ export class InstancesStatisticsComponent implements OnInit {
           this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
         }
       });
+  }
+
+  public setVisibleAttributesScatterPlotDialog(attributesScatterPlotDialogVisibility: boolean): void {
+    this.attributesScatterPlotDialogVisibility = attributesScatterPlotDialogVisibility;
   }
 
   private getAttributeStatistics(id: number): void {

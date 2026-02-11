@@ -61,9 +61,27 @@
 
 .frequency-diagram-details {
   margin-left: 15px;
-  width: calc(100% - 475px);
+  margin-right: 10px;
+  width: calc(100% - 485px);
   border: 0.5px solid darkgrey;
   display: inline-block;
+}
+
+.scatter-plot-icon {
+  width: 14px;
+  height: 14px;
+  position: relative;
+  margin-left: 10px;
+  margin-right: 5px;
+}
+
+.scatter-plot-button {
+  height: 32px;
+  padding-top: 5px;
+}
+
+.scatter-plot-button-text {
+  margin-right: 10px;
 }
 
 .attr-counting-stats {
