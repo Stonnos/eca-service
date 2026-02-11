@@ -4,12 +4,16 @@ import {
   AttributeValueDto,
   AttributesScatterPlotDto,
   AttributesScatterPlotDataSetDto,
-  AttributesScatterPlotDataItemDto
+  AttributesScatterPlotDataItemDto,
+  ValidationErrorDto
 } from "../../../../../../../target/generated-sources/typescript/eca-web-dto";
 import { BaseDialog } from '../../common/dialog/base-dialog';
 import { InstancesService } from '../../instances/services/instances.service';
 import { finalize } from 'rxjs/internal/operators';
 import { MessageService } from 'primeng/api';
+import { HttpErrorResponse } from '@angular/common/http';
+import { ValidationErrorCode } from '../../common/model/validation-error-code';
+import { ValidationService } from '../../common/services/validation.service';
 
 @Component({
   selector: 'app-attributes-scatter-plot-dialog',
@@ -45,7 +49,8 @@ export class AttributesScatterPlotDialog implements BaseDialog, OnInit {
   ];
 
   public constructor(private instancesService: InstancesService,
-                     private messageService: MessageService) {
+                     private messageService: MessageService,
+                     private validationService: ValidationService) {
   }
 
   public ngOnInit(): void {
@@ -70,9 +75,20 @@ export class AttributesScatterPlotDialog implements BaseDialog, OnInit {
           this.updateScatterPlotDataSets(scatterPlotDto);
         },
         error: (error) => {
-          this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
+          this.handleError(error);
         }
       });
+  }
+
+  private handleError(error): void {
+    if (error instanceof HttpErrorResponse && error.status === 400) {
+      const errors: ValidationErrorDto[] = error.error;
+      if (this.validationService.hasErrorCode(errors, ValidationErrorCode.CLASS_ATTRIBUTE_NOT_SELECTED)) {
+        this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: 'Не выбран атрибут класса для заданной обучающей выборки' });
+      }
+    } else {
+      this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
+    }
   }
 
   private updateScatterPlotOptions(scatterPlotDto: AttributesScatterPlotDto): void {
