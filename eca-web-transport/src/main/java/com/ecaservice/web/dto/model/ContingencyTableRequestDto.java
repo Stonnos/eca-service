@@ -40,6 +40,7 @@ public class ContingencyTableRequestDto {
     /**
      * X attribute id
      */
+    @NotNull
     @Min(VALUE_1)
     @Max(Integer.MAX_VALUE)
     @Schema(description = "X attribute id")

@@ -11,6 +11,7 @@ import com.ecaservice.data.storage.report.ReportsConfigurationService;
 import com.ecaservice.data.storage.repository.InstancesRepository;
 import com.ecaservice.data.storage.service.AttributeService;
 import com.ecaservice.data.storage.service.AttributesScatterPlotService;
+import com.ecaservice.data.storage.service.ContingencyTableReportService;
 import com.ecaservice.data.storage.service.InstancesLoader;
 import com.ecaservice.data.storage.service.InstancesStatisticsService;
 import com.ecaservice.data.storage.service.impl.StorageServiceImpl;
@@ -18,6 +19,7 @@ import com.ecaservice.oauth2.test.controller.AbstractControllerTest;
 import com.ecaservice.web.dto.model.AttributeDto;
 import com.ecaservice.web.dto.model.AttributeStatisticsDto;
 import com.ecaservice.web.dto.model.AttributesScatterPlotDto;
+import com.ecaservice.web.dto.model.ContingencyTableRequestDto;
 import com.ecaservice.web.dto.model.CreateInstancesResultDto;
 import com.ecaservice.web.dto.model.InstancesDto;
 import com.ecaservice.web.dto.model.InstancesStatisticsDto;
@@ -36,11 +38,14 @@ import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.util.MimeTypeUtils;
 import weka.core.Instances;
 
+import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.List;
 
 import static com.ecaservice.data.storage.TestHelperUtils.createAttributeDto;
+import static com.ecaservice.data.storage.TestHelperUtils.createContingencyTableReportDto;
+import static com.ecaservice.data.storage.TestHelperUtils.createContingencyTableRequestDto;
 import static com.ecaservice.data.storage.TestHelperUtils.createInstancesEntity;
 import static com.ecaservice.data.storage.TestHelperUtils.createPageRequestDto;
 import static com.ecaservice.data.storage.TestHelperUtils.createReportProperties;
@@ -91,6 +96,7 @@ class DataStorageControllerTest extends AbstractControllerTest {
     private static final String GET_INSTANCES_STATISTICS_URL = BASE_URL + "/instances-stats/{id}";
 
     private static final String GET_ATTRIBUTES_SCATTER_PLOT_URL = BASE_URL + "/attributes-scatter-plot";
+    private static final String CONTINGENCY_TABLE_REPORT_URL = BASE_URL + "/contingency-table-report";
 
     private static final String TRAINING_DATA_PARAM = "trainingData";
     private static final String TABLE_NAME = "table";
@@ -122,6 +128,8 @@ class DataStorageControllerTest extends AbstractControllerTest {
     private InstancesStatisticsService instancesStatisticsService;
     @MockBean
     private AttributesScatterPlotService attributesScatterPlotService;
+    @MockBean
+    private ContingencyTableReportService contingencyTableReportService;
 
     @Autowired
     private InstancesMapper instancesMapper;
@@ -483,5 +491,79 @@ class DataStorageControllerTest extends AbstractControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(content().json(objectMapper.writeValueAsString(attributeStatisticsDto)));
+    }
+
+    @Test
+    void testGetContingencyTableReportUnauthorized() throws Exception {
+        var requestDto = createContingencyTableRequestDto();
+        mockMvc.perform(post(CONTINGENCY_TABLE_REPORT_URL)
+                        .content(objectMapper.writeValueAsString(requestDto))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    void testGetContingencyTableReportOk() throws Exception {
+        var requestDto = createContingencyTableRequestDto();
+        var reportDto = createContingencyTableReportDto();
+        when(contingencyTableReportService.calculateReport(any(ContingencyTableRequestDto.class)))
+                .thenReturn(reportDto);
+        mockMvc.perform(post(CONTINGENCY_TABLE_REPORT_URL)
+                        .content(objectMapper.writeValueAsString(requestDto))
+                        .header(HttpHeaders.AUTHORIZATION, getBearerToken())
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(content().json(objectMapper.writeValueAsString(reportDto)));
+    }
+
+    @Test
+    void testGetContingencyTableReportWithLowAlphaValue() throws Exception {
+        var requestDto = createContingencyTableRequestDto();
+        requestDto.setAlphaValue(BigDecimal.ZERO);
+        testGetContingencyTableBadRequest(requestDto);
+    }
+
+    @Test
+    void testGetContingencyTableReportWithHighAlphaValue() throws Exception {
+        var requestDto = createContingencyTableRequestDto();
+        requestDto.setAlphaValue(BigDecimal.ONE);
+        testGetContingencyTableBadRequest(requestDto);
+    }
+
+    @Test
+    void testGetContingencyTableReportWithNullAlphaValue() throws Exception {
+        var requestDto = createContingencyTableRequestDto();
+        requestDto.setAlphaValue(null);
+        testGetContingencyTableBadRequest(requestDto);
+    }
+
+    @Test
+    void testGetContingencyTableReportWithNullInstancesId() throws Exception {
+        var requestDto = createContingencyTableRequestDto();
+        requestDto.setInstancesId(null);
+        testGetContingencyTableBadRequest(requestDto);
+    }
+
+    @Test
+    void testGetContingencyTableReportWithNullXAttributeId() throws Exception {
+        var requestDto = createContingencyTableRequestDto();
+        requestDto.setXAttributeId(null);
+        testGetContingencyTableBadRequest(requestDto);
+    }
+
+    @Test
+    void testGetContingencyTableReportWithNullYAttributeId() throws Exception {
+        var requestDto = createContingencyTableRequestDto();
+        requestDto.setYAttributeId(null);
+        testGetContingencyTableBadRequest(requestDto);
+    }
+
+    private void testGetContingencyTableBadRequest(ContingencyTableRequestDto requestDto) throws Exception {
+        mockMvc.perform(post(CONTINGENCY_TABLE_REPORT_URL)
+                        .content(objectMapper.writeValueAsString(requestDto))
+                        .header(HttpHeaders.AUTHORIZATION, getBearerToken())
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
     }
 }
