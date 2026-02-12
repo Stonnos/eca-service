@@ -26,6 +26,11 @@ import static eca.data.db.SqlQueryHelper.formatNominalValue;
 public class Utils {
 
     /**
+     * Scale
+     */
+    private static final int SCALE = 4;
+
+    /**
      * Min. number of classes
      */
     public static final int MIN_NUM_CLASSES = 2;
@@ -43,6 +48,12 @@ public class Utils {
     private static final String SELECT_QUERY = "select %s from %s order by %s";
 
     private static final String SELECT_COUNT_DISTINCT_QUERY = "select count(distinct %s) from %s";
+
+    private static final String SELECT_QUERY_WITH_NOT_NULL_VALUES = "select %s from %s where %s";
+
+    private static final String NOT_NULL_CHECK = "%s is not null";
+
+    private static final String AND = " and ";
 
     /**
      * Gets attribute type.
@@ -77,6 +88,18 @@ public class Utils {
                         attributeEntity -> attributeEntity.getValues().stream().collect(
                                 Collectors.toMap(AttributeValueEntity::getValue, AttributeValueEntity::getIndex))
                 ));
+    }
+
+    /**
+     * Creates nominal attribute values index map.
+     *
+     * @param attributeEntity - attribute entity
+     * @return index map
+     */
+    public static Map<String, Integer> createNominalAttributeIndexMap(AttributeEntity attributeEntity) {
+        return attributeEntity.getValues()
+                .stream()
+                .collect(Collectors.toMap(AttributeValueEntity::getValue, AttributeValueEntity::getIndex));
     }
 
     /**
@@ -128,6 +151,25 @@ public class Utils {
     }
 
     /**
+     * Builds sql select query with not null values.
+     *
+     * @param instancesEntity - instances entity
+     * @param columns         - columns list
+     * @return sql query
+     */
+    public static String buildNullCheckSqlSelectQuery(InstancesEntity instancesEntity, List<String> columns) {
+        String attributes = StringUtils.join(columns, COMMA_SEPARATOR);
+        StringBuilder whereSubQuery = new StringBuilder();
+        IntStream.range(0, columns.size() - 1).forEach(i -> {
+            whereSubQuery.append(String.format(NOT_NULL_CHECK, columns.get(i)));
+            whereSubQuery.append(AND);
+        });
+        whereSubQuery.append(String.format(NOT_NULL_CHECK, columns.getLast()));
+        return String.format(SELECT_QUERY_WITH_NOT_NULL_VALUES, attributes, instancesEntity.getTableName(),
+                whereSubQuery);
+    }
+
+    /**
      * Builds sql count unique values.
      *
      * @param tableName  - table name
@@ -147,5 +189,15 @@ public class Utils {
      */
     public static BigDecimal toDecimal(double value, int scale) {
         return BigDecimal.valueOf(value).setScale(scale, RoundingMode.HALF_UP);
+    }
+
+    /**
+     * Converts to decimal value using half up rounding mode.
+     *
+     * @param value - double value
+     * @return decimal value
+     */
+    public static BigDecimal toDecimal(double value) {
+        return toDecimal(value, SCALE);
     }
 }
