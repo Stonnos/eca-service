@@ -36,9 +36,16 @@
     <button pButton
             type="button"
             (click)="setVisibleAttributesScatterPlotDialog(true)"
-            class="ui-button-secondary mb-2 scatter-plot-button">
+            class="ui-button-secondary mb-3 scatter-plot-button">
       <img class="scatter-plot-icon" src="assets/svg/chart-scatter.svg">
       <span class="scatter-plot-button-text">Диаграммы рассеяния</span>
+    </button>
+    <button pButton
+            type="button"
+            label="Таблицы сопряженности"
+            (click)="setVisibleAttributesContingencyTableDialog(true)"
+            class="ui-button-secondary contingency-table-button ml-2 mb-3"
+            icon="pi pi-table">
     </button>
   </div>
 </div>
@@ -104,3 +111,9 @@
                                     [instancesId]="id"
                                     [attributes]="attributes">
 </app-attributes-scatter-plot-dialog>
+
+<app-contingency-table-dialog [visible]="attributesContingencyTableDialogVisibility"
+                              (visibilityChange)="setVisibleAttributesContingencyTableDialog($event)"
+                              [instancesId]="id"
+                              [attributes]="nominalAttributes">
+</app-contingency-table-dialog>

@@ -1,0 +1,129 @@
+<p-dialog
+  #dialog
+  [(visible)]="visible"
+  [style]="{ width: '60%' }"
+  appendTo="body"
+  [modal]="true"
+  [blockScroll]="false"
+  [draggable]="false"
+  [resizable]="false"
+  (onHide)="hide()">
+
+  <p-fieldset legend="Таблица сопряженности" class="details-fieldset">
+    <p-table
+      class="contingency-table"
+      [scrollable]="true"
+      [scrollHeight]="'240px'"
+      [columns]="columns"
+      [value]="tableItems">
+
+      <ng-template pTemplate="header">
+        <tr>
+          <ng-container *ngFor="let column of columns">
+            <th>{{ column.label }}</th>
+          </ng-container>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-item let-rowIndex="rowIndex">
+        <tr>
+          <td *ngFor="let column of columns; let i = index">
+            {{ item[i] }}
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </p-fieldset>
+
+  <p-fieldset legend="Результаты теста χ²" class="details-fieldset">
+    <div class="chi-square-test-result">
+      <div *ngIf="reportDto" class="ui-g-12 text-left text-wrap">
+        <p>Расчетное значение χ² = {{ reportDto.chiSquaredValue }}</p>
+        <p class="mt-1">Критическое значение критерия χ² Пирсона при уровне значимости α = {{ reportDto.alpha }} и числе степеней свободы {{ reportDto.df }} составляет {{ reportDto.chiSquaredCriticalValue }}.</p>
+        <p class="mt-1"><span class="text-red" *ngIf="reportDto.significant">Существует</span>
+          <span *ngIf="!reportDto.significant">Не существует</span>
+          статистическая связь между атрибутами {{ reportDto.xattribute.name }} и {{ reportDto.yattribute.name }} при уровне значимости α = {{ reportDto.alpha }}
+        </p>
+      </div>
+    </div>
+  </p-fieldset>
+
+  <p-footer>
+    <div class="ui-g">
+      <div class="ui-g-12 d-flex justify-content-center align-items-center">
+
+        <label class="filter-label">Атрибут X</label>
+        <p-dropdown
+          required
+          id="xAttr"
+          name="xAttr"
+          placeholder="Выбрать"
+          [disabled]="loading"
+          [appendTo]="dialog"
+          [options]="attributes"
+          optionLabel="name"
+          [(ngModel)]="selectedXAttribute"
+          #xAttr="ngModel"
+          [style]="{'width':'40%'}">
+        </p-dropdown>
+
+        <label class="ml-2 filter-label">Атрибут Y</label>
+        <p-dropdown
+          required
+          id="yAttr"
+          name="yAttr"
+          placeholder="Выбрать"
+          [disabled]="loading"
+          [appendTo]="dialog"
+          [options]="attributes"
+          optionLabel="name"
+          [(ngModel)]="selectedYAttribute"
+          #yAttr="ngModel"
+          [style]="{'width':'40%'}">
+        </p-dropdown>
+
+        <button pButton
+                type="button"
+                class="ui-button-secondary ml-4 options-button"
+                icon="pi pi-cog"
+                (click)="infoPanel.toggle($event)">
+        </button>
+
+        <button
+          pButton
+          class="ml-2"
+          label="Применить"
+          type="button"
+          [disabled]="loading || !selectedXAttribute || !selectedYAttribute"
+          (click)="fetchReport()">
+        </button>
+      </div>
+    </div>
+  </p-footer>
+</p-dialog>
+
+<p-overlayPanel #infoPanel [showCloseIcon]="true" class="options-panel" (onHide)="onHideOptions()">
+  <form novalidate class="form d-flex flex-column justify-content-center m-auto">
+    <div class="ui-g ui-fluid">
+      <div class="ui-g-10 mx-auto mb-2">
+        <label class="text-bold control-label">Уровень значимости для теста χ²</label>
+        <input type="number"
+               pInputText
+               id="alpha"
+               name="alpha"
+               required
+               [(ngModel)]="alphaVal"
+               [step]="0.001"
+               [min]="minAlphaVal"
+               [max]="maxAlphaVal"/>
+      </div>
+      <div class="ui-g-10 mx-auto mb-2">
+        <p-checkbox class="form-checkbox"
+                    binary="true"
+                    name="useYates"
+                    label="Поправка Йетса"
+                    [(ngModel)]="useYates">
+        </p-checkbox>
+      </div>
+    </div>
+  </form>
+</p-overlayPanel>
