@@ -19,3 +19,10 @@
 .bg-white {
   background-color: white;
 }
+
+.parent-container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  margin: 5px 5px 5px 5px;
+}
