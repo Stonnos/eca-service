@@ -100,7 +100,7 @@ export class ExperimentResultsDetailsComponent implements OnInit, FieldLink {
     this.instancesInfoService.getClassValues(this.experimentResultsDetailsDto.experimentDto.instancesInfo.id)
       .subscribe({
         next: (classValues: AttributeValueMetaInfoDto[]) => {
-          this.classValues = this.attributesInfoMapper.mapValues(classValues);
+          this.classValues = this.attributesInfoMapper.mapValuesWithAllLabel(classValues);
         },
         error: (error) => {
           this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
