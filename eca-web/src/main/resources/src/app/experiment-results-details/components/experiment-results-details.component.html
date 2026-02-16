@@ -5,11 +5,11 @@
   *ngIf="loading">
 </p-progressSpinner>
 
-<div class="container-fluid mb-5">
+<div class="container-fluid">
   <p-tabView class="experiment-results-log-details-tab-details-tab">
     <p-tabPanel header="Результаты классификации" leftIcon="pi pi-table" [cache]="true">
       <ng-template pTemplate="content">
-        <div *ngIf="!loading" class="container-fluid">
+        <div *ngIf="!loading" class="container-fluid parent-container">
           <div class="row mt-2 details-panel">
             <div class="col-10">
               <h6 class="ml-4 mt-2 mb-2 text-bold">Информация о классификаторе
@@ -84,11 +84,13 @@
                 leftIcon="pi pi-sitemap"
                 [cache]="true">
       <ng-template pTemplate="content">
-        <app-classify-instance [modelId]="experimentResultsId"
-                               [instancesInfoDto]="experimentResultsDetailsDto?.experimentDto?.instancesInfo"
-                               [classifyInstanceService]="experimentsService"
-                               [attributeMetaInfoModels]="attributeMetaInfoModels">
-        </app-classify-instance>
+        <div class="parent-container">
+          <app-classify-instance [modelId]="experimentResultsId"
+                                 [instancesInfoDto]="experimentResultsDetailsDto?.experimentDto?.instancesInfo"
+                                 [classifyInstanceService]="experimentsService"
+                                 [attributeMetaInfoModels]="attributeMetaInfoModels">
+          </app-classify-instance>
+        </div>
       </ng-template>
     </p-tabPanel>
   </p-tabView>

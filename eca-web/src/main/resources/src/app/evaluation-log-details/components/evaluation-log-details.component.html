@@ -5,7 +5,7 @@
   *ngIf="loading">
 </p-progressSpinner>
 
-<div class="container-fluid mb-5">
+<div class="container-fluid">
   <p-tabView class="evaluation-log-details-tab">
     <p-tabPanel header="Результаты классификации" leftIcon="pi pi-table" [cache]="true">
       <ng-template pTemplate="content">
@@ -125,11 +125,13 @@
                 leftIcon="pi pi-sitemap"
                 [cache]="true">
       <ng-template pTemplate="content">
-        <app-classify-instance [modelId]="id"
-                               [instancesInfoDto]="evaluationLogDetails?.instancesInfo"
-                               [classifyInstanceService]="classifiersService"
-                               [attributeMetaInfoModels]="attributeMetaInfoModels">
-        </app-classify-instance>
+        <div class="parent-container">
+          <app-classify-instance [modelId]="id"
+                                 [instancesInfoDto]="evaluationLogDetails?.instancesInfo"
+                                 [classifyInstanceService]="classifiersService"
+                                 [attributeMetaInfoModels]="attributeMetaInfoModels">
+          </app-classify-instance>
+        </div>
       </ng-template>
     </p-tabPanel>
 

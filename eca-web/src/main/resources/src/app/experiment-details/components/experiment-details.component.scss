@@ -23,6 +23,5 @@
 .parent-container {
   display: flex;
   flex-direction: column;
-  height: 100vh;
-  margin: 5px 5px 5px 5px;
+  height: calc(100vh - 50px);
 }
