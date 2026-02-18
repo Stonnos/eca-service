@@ -12,15 +12,13 @@ import com.ecaservice.web.dto.model.AttributesScatterPlotDataSetDto;
 import com.ecaservice.web.dto.model.AttributesScatterPlotDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
-import static com.ecaservice.data.storage.util.Utils.COMMA_SEPARATOR;
+import static com.ecaservice.data.storage.util.Utils.buildNullCheckSqlSelectQuery;
 
 /**
  * Attributes scatter plot service.
@@ -31,10 +29,6 @@ import static com.ecaservice.data.storage.util.Utils.COMMA_SEPARATOR;
 @Service
 @RequiredArgsConstructor
 public class AttributesScatterPlotService {
-
-    private static final String SELECT_QUERY_WITH_NOT_NULL_VALUES = "select %s from %s where %s";
-    private static final String NOT_NULL_CHECK = "%s is not null";
-    private static final String AND = " and ";
 
     private final AttributeService attributeService;
     private final JdbcTemplate jdbcTemplate;
@@ -89,20 +83,8 @@ public class AttributesScatterPlotService {
                                                                 AttributeEntity yAttributeEntity) {
         List<String> columns = List.of(xAttributeEntity.getColumnName(), yAttributeEntity.getColumnName(),
                 instancesEntity.getClassAttribute().getColumnName());
-        String sqlQuery = buildSqlSelectQuery(instancesEntity, columns);
+        String sqlQuery = buildNullCheckSqlSelectQuery(instancesEntity, columns);
         var rowMapper =  new AttributesScatterPlotDataItemRowMapper(xAttributeEntity, yAttributeEntity);
         return jdbcTemplate.query(sqlQuery, rowMapper);
-    }
-
-    private String buildSqlSelectQuery(InstancesEntity instancesEntity, List<String> columns) {
-        String attributes = StringUtils.join(columns, COMMA_SEPARATOR);
-        StringBuilder whereSubQuery = new StringBuilder();
-        IntStream.range(0, columns.size() - 1).forEach(i -> {
-            whereSubQuery.append(String.format(NOT_NULL_CHECK, columns.get(i)));
-            whereSubQuery.append(AND);
-        });
-        whereSubQuery.append(String.format(NOT_NULL_CHECK, columns.getLast()));
-        return String.format(SELECT_QUERY_WITH_NOT_NULL_VALUES, attributes, instancesEntity.getTableName(),
-                whereSubQuery);
     }
 }

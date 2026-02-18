@@ -9,12 +9,15 @@ import com.ecaservice.data.storage.report.InstancesReportService;
 import com.ecaservice.data.storage.report.ReportsConfigurationService;
 import com.ecaservice.data.storage.service.AttributeService;
 import com.ecaservice.data.storage.service.AttributesScatterPlotService;
+import com.ecaservice.data.storage.service.ContingencyTableReportService;
 import com.ecaservice.data.storage.service.InstancesLoader;
 import com.ecaservice.data.storage.service.InstancesStatisticsService;
 import com.ecaservice.data.storage.service.StorageService;
 import com.ecaservice.web.dto.model.AttributeDto;
 import com.ecaservice.web.dto.model.AttributeStatisticsDto;
 import com.ecaservice.web.dto.model.AttributesScatterPlotDto;
+import com.ecaservice.web.dto.model.ContingencyTableReportDto;
+import com.ecaservice.web.dto.model.ContingencyTableRequestDto;
 import com.ecaservice.web.dto.model.CreateInstancesResultDto;
 import com.ecaservice.web.dto.model.DataListPageDto;
 import com.ecaservice.web.dto.model.InstancesDto;
@@ -80,6 +83,7 @@ public class DataStorageController {
     private final AttributeService attributeService;
     private final InstancesStatisticsService instancesStatisticsService;
     private final AttributesScatterPlotService attributesScatterPlotService;
+    private final ContingencyTableReportService contingencyTableReportService;
     private final ReportsConfigurationService reportsConfigurationService;
     private final InstancesLoader instancesLoader;
     private final InstancesMapper instancesMapper;
@@ -938,5 +942,69 @@ public class DataStorageController {
             @PathVariable Long id) {
         log.info("Request get attribute [{}] statistics", id);
         return instancesStatisticsService.getAttributeStatistics(id);
+    }
+
+    /**
+     * Calculates contingency table report.
+     *
+     * @param requestDto - request data
+     * @return contingency table report
+     */
+    @PreAuthorize("hasAuthority('SCOPE_web')")
+    @Operation(
+            description = "Calculates contingency table report",
+            summary = "Calculates contingency table report",
+            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME, scopes = SCOPE_WEB),
+            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(content = {
+                    @Content(examples = {
+                            @ExampleObject(
+                                    name = "ContingencyTableRequest",
+                                    ref = "#/components/examples/ContingencyTableRequest"
+                            )
+                    })
+            }),
+            responses = {
+                    @ApiResponse(description = "OK", responseCode = "200",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    examples = {
+                                            @ExampleObject(
+                                                    name = "ContingencyTableResponse",
+                                                    ref = "#/components/examples/ContingencyTableResponse"
+                                            ),
+                                    },
+                                    schema = @Schema(implementation = DataListPageDto.class)
+                            )
+                    ),
+                    @ApiResponse(description = "Not authorized", responseCode = "401",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    examples = {
+                                            @ExampleObject(
+                                                    name = "NotAuthorizedResponse",
+                                                    ref = "#/components/examples/NotAuthorizedResponse"
+                                            ),
+                                    }
+                            )
+                    ),
+                    @ApiResponse(description = "Bad request", responseCode = "400",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    examples = {
+                                            @ExampleObject(
+                                                    name = "DataNotFoundResponse",
+                                                    ref = "#/components/examples/DataNotFoundResponse"
+                                            ),
+                                    },
+                                    array = @ArraySchema(schema = @Schema(implementation = ValidationErrorDto.class))
+                            )
+                    )
+            }
+    )
+    @PostMapping(value = "/contingency-table-report")
+    public ContingencyTableReportDto getContingencyTableReport(
+            @Valid @RequestBody ContingencyTableRequestDto requestDto) {
+        log.info("Request contingency table report: {}", requestDto);
+        return contingencyTableReportService.calculateReport(requestDto);
     }
 }

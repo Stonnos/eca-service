@@ -175,4 +175,14 @@ public class FieldConstraints {
      * Decimal max one value.
      */
     public static final String DECIMAL_MAX_ONE = "1.0";
+
+    /**
+     * Alpha value min value
+     */
+    public static final String ALPHA_VALUE_MAX_VALUE = "0.999";
+
+    /**
+     * Alpha value max value
+     */
+    public static final String ALPHA_VALUE_MIN_VALUE = "0.001";
 }

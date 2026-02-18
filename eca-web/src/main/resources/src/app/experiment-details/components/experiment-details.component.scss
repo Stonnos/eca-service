@@ -19,3 +19,9 @@
 .bg-white {
   background-color: white;
 }
+
+.parent-container {
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - 50px);
+}

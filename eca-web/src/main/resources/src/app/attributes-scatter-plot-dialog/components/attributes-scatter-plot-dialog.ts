@@ -101,9 +101,12 @@ export class AttributesScatterPlotDialog implements BaseDialog, OnInit {
       legend: {
         display: true
       },
+      tooltips: {
+        enabled: false
+      },
       scales: {
-        xAxes: this.getAxisData(scatterPlotDto.xaxisAttribute),
-        yAxes: this.getAxisData(scatterPlotDto.yaxisAttribute)
+        xAxes: this.getAxisData(scatterPlotDto.xaxisAttribute, false),
+        yAxes: this.getAxisData(scatterPlotDto.yaxisAttribute, true)
       }
     };
   }
@@ -126,10 +129,13 @@ export class AttributesScatterPlotDialog implements BaseDialog, OnInit {
     };
   }
 
-  private getAxisData(attribute: AttributeDto): any {
+  private getAxisData(attribute: AttributeDto, reverse: boolean): any {
     if (attribute.type.value == 'NOMINAL') {
       return [{
         type: 'category',
+        ticks: {
+          reverse: reverse
+        },
         labels: attribute.values.map((v: AttributeValueDto) => v.value),
         scaleLabel: {
           display: true,

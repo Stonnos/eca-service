@@ -3,11 +3,12 @@ package com.ecaservice.data.storage;
 import com.ecaservice.data.storage.entity.AttributeEntity;
 import com.ecaservice.data.storage.entity.AttributeType;
 import com.ecaservice.data.storage.entity.AttributeValueEntity;
-import com.ecaservice.data.storage.entity.ExportInstancesObjectEntity;
 import com.ecaservice.data.storage.entity.InstancesEntity;
 import com.ecaservice.data.storage.model.report.ReportProperties;
 import com.ecaservice.data.storage.model.report.ReportType;
 import com.ecaservice.web.dto.model.AttributeDto;
+import com.ecaservice.web.dto.model.ContingencyTableReportDto;
+import com.ecaservice.web.dto.model.ContingencyTableRequestDto;
 import com.ecaservice.web.dto.model.PageRequestDto;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import eca.data.file.model.InstancesModel;
@@ -21,6 +22,8 @@ import weka.core.Instances;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.UUID;
@@ -57,6 +60,7 @@ public class TestHelperUtils {
     private static final String CREDIT_JSON = "credit.json";
 
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
+    private static final double ALPHA_VAL = 0.05d;
 
     /**
      * Loads instances model from resource.
@@ -199,18 +203,27 @@ public class TestHelperUtils {
     }
 
     /**
-     * Creates export instances entity object.
+     * Creates contingency table request.
      *
-     * @param instancesUuid - instances uuid
-     * @return export instances entity
+     * @return contingency table request
      */
-    public static ExportInstancesObjectEntity createExportInstancesObjectEntity(String instancesUuid) {
-        ExportInstancesObjectEntity exportInstancesObjectEntity = new ExportInstancesObjectEntity();
-        exportInstancesObjectEntity.setInstancesUuid(instancesUuid);
-        exportInstancesObjectEntity.setExternalDataUuid(UUID.randomUUID().toString());
-        exportInstancesObjectEntity.setMd5Hash(MD_5_HASH);
-        exportInstancesObjectEntity.setCreated(LocalDateTime.now());
-        return exportInstancesObjectEntity;
+    public static ContingencyTableRequestDto createContingencyTableRequestDto() {
+        return new ContingencyTableRequestDto(1L, 1L, 1L, BigDecimal.valueOf(ALPHA_VAL), false);
+    }
+
+    /**
+     * Creates contingency table report.
+     *
+     * @return contingency table report
+     */
+    public static ContingencyTableReportDto createContingencyTableReportDto() {
+        ContingencyTableReportDto contingencyTableReportDto = new ContingencyTableReportDto();
+        contingencyTableReportDto.setAlpha(BigDecimal.valueOf(ALPHA_VAL));
+        contingencyTableReportDto.setDf(BigInteger.ZERO.intValue());
+        contingencyTableReportDto.setSignificant(true);
+        contingencyTableReportDto.setChiSquaredValue(BigDecimal.TEN);
+        contingencyTableReportDto.setChiSquaredCriticalValue(BigDecimal.ONE);
+        return contingencyTableReportDto;
     }
 
     /**

@@ -6,7 +6,9 @@ import {
   InstancesDto, InstancesReportInfoDto, InstancesStatisticsDto,
   PageDto,
   PageRequestDto,
-  AttributesScatterPlotDto
+  AttributesScatterPlotDto,
+  ContingencyTableReportDto,
+  ContingencyTableRequestDto
 } from "../../../../../../../target/generated-sources/typescript/eca-web-dto";
 import { Observable } from "rxjs/internal/Observable";
 import { environment } from "../../../environments/environment";
@@ -118,5 +120,12 @@ export class InstancesService {
       .set('yAttributeId', yAttributeId.toString());
     const options = { headers: headers, params: params };
     return this.http.get<AttributesScatterPlotDto>(this.serviceUrl + '/attributes-scatter-plot', options);
+  }
+
+  public getContingencyTableReport(request: ContingencyTableRequestDto): Observable<ContingencyTableReportDto> {
+    const headers = new HttpHeaders({
+      'Content-type': 'application/json; charset=utf-8'
+    });
+    return this.http.post<ContingencyTableReportDto>(this.serviceUrl + '/contingency-table-report', request, { headers: headers });
   }
 }

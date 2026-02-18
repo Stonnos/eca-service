@@ -19,6 +19,7 @@ export class InstancesStatisticsComponent implements OnInit {
 
   public loading: boolean = false;
   public attributes: AttributeDto[] = [];
+  public nominalAttributes: AttributeDto[] = [];
   public selectedAttribute: AttributeDto;
   public instancesStatisticsDto: InstancesStatisticsDto;
 
@@ -33,6 +34,7 @@ export class InstancesStatisticsComponent implements OnInit {
   public frequencyDiagramDataSet: any;
 
   public attributesScatterPlotDialogVisibility: boolean = false;
+  public attributesContingencyTableDialogVisibility: boolean = false;
 
   public constructor(private injector: Injector,
                      private instancesService: InstancesService,
@@ -76,6 +78,7 @@ export class InstancesStatisticsComponent implements OnInit {
       .subscribe({
         next: (attributes: AttributeDto[]) => {
           this.attributes = attributes;
+          this.nominalAttributes = attributes.filter((attributeDto: AttributeDto) => attributeDto.type.value == 'NOMINAL');
           this.selectedAttribute = attributes[0];
           this.getAttributeStatistics(this.selectedAttribute.id);
         },
@@ -87,6 +90,10 @@ export class InstancesStatisticsComponent implements OnInit {
 
   public setVisibleAttributesScatterPlotDialog(attributesScatterPlotDialogVisibility: boolean): void {
     this.attributesScatterPlotDialogVisibility = attributesScatterPlotDialogVisibility;
+  }
+
+  public setVisibleAttributesContingencyTableDialog(attributesContingencyTableDialogVisibility: boolean): void {
+    this.attributesContingencyTableDialogVisibility = attributesContingencyTableDialogVisibility;
   }
 
   private getAttributeStatistics(id: number): void {

@@ -14,6 +14,7 @@ import {
   NumericAttributeStatisticsTableComponent
 } from "./components/numeric-attribute-statistics-table/numeric-attribute-statistics-table.component";
 import { AttributesScatterPlotDialogModule } from '../attributes-scatter-plot-dialog/attributes-scatter-plot-dialog.module';
+import { ContingencyTableDialogModule } from '../continjency-table-dialog/contingency-table-dialog.module';
 
 @NgModule({
   imports: [
@@ -24,7 +25,8 @@ import { AttributesScatterPlotDialogModule } from '../attributes-scatter-plot-di
     CreateEditInstancesModule,
     ExportInstancesModule,
     AttributesModule,
-    AttributesScatterPlotDialogModule
+    AttributesScatterPlotDialogModule,
+    ContingencyTableDialogModule
   ],
   exports: [
     InstancesStatisticsComponent
