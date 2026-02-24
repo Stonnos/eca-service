@@ -70,6 +70,7 @@ import com.ecaservice.web.dto.model.FilterDictionaryValueDto;
 import com.ecaservice.web.dto.model.FilterFieldDto;
 import com.ecaservice.web.dto.model.FilterFieldType;
 import com.ecaservice.web.dto.model.FormTemplateGroupDto;
+import com.ecaservice.web.dto.model.InstancesInfoDetailsDto;
 import com.ecaservice.web.dto.model.InstancesInfoDto;
 import com.ecaservice.web.dto.model.MatchMode;
 import com.ecaservice.web.dto.model.PageRequestDto;
@@ -1391,6 +1392,22 @@ public class TestHelperUtils {
         evaluationResultsRequestEntity.setResponseStatus(ersResponseStatus);
         evaluationResultsRequestEntity.setEvaluationLog(evaluationLog);
         return evaluationResultsRequestEntity;
+    }
+
+    /**
+     * Creates instances details dto.
+     *
+     * @return instances details dto
+     */
+    public static InstancesInfoDetailsDto createInstancesInfoDetailsDto() {
+        InstancesInfoDetailsDto instancesInfoDetailsDto = new InstancesInfoDetailsDto();
+        instancesInfoDetailsDto.setUuid(UUID.randomUUID().toString());
+        instancesInfoDetailsDto.setRelationName(RELATION_NAME);
+        instancesInfoDetailsDto.setNumInstances(NUM_INSTANCES);
+        instancesInfoDetailsDto.setNumAttributes(NUM_ATTRIBUTES);
+        instancesInfoDetailsDto.setNumClasses(NUM_CLASSES);
+        instancesInfoDetailsDto.setClassName(CLASS_NAME);
+        return instancesInfoDetailsDto;
     }
 
     private static <T> T loadConfig(String path, TypeReference<T> tTypeReference) {

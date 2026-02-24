@@ -5,6 +5,7 @@ import com.ecaservice.server.service.InstancesInfoService;
 import com.ecaservice.web.dto.model.AttributeValueMetaInfoDto;
 import com.ecaservice.web.dto.model.PageDto;
 import com.ecaservice.web.dto.model.PageRequestDto;
+import com.ecaservice.web.dto.model.S3ContentResponseDto;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -16,6 +17,7 @@ import java.util.List;
 
 import static com.ecaservice.server.PageRequestUtils.PAGE_NUMBER;
 import static com.ecaservice.server.PageRequestUtils.TOTAL_ELEMENTS;
+import static com.ecaservice.server.TestHelperUtils.createInstancesInfoDetailsDto;
 import static com.ecaservice.server.TestHelperUtils.createPageRequestDto;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
@@ -34,8 +36,11 @@ class InstancesInfoControllerTest extends PageRequestControllerTest {
 
     private static final String BASE_URL = "/instances-info";
     private static final String LIST_URL = BASE_URL + "/list";
+    private static final String DETAILS_URL = BASE_URL + "/details/{instancesId}";
+    private static final String DOWNLOAD_URL = BASE_URL + "/download/{instancesId}";
     private static final String CLASS_VALUES_URL = BASE_URL + "/class-values/{instancesId}";
     private static final long INSTANCES_ID = 2;
+    private static final String CONTENT_URL = "http://localhost:9000/content";
 
     @MockBean
     private InstancesInfoService instancesInfoService;
@@ -97,5 +102,41 @@ class InstancesInfoControllerTest extends PageRequestControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(content().json(objectMapper.writeValueAsString(classValues)));
+    }
+
+    @Test
+    void testGetInstancesInfoDetailsUnauthorized() throws Exception {
+        mockMvc.perform(get(DETAILS_URL, INSTANCES_ID))
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    void testGetInstancesInfoDetailsOk() throws Exception {
+        var instancesInfoDetailsDto = createInstancesInfoDetailsDto();
+        when(instancesInfoService.getInstancesInfoDetails(INSTANCES_ID)).thenReturn(instancesInfoDetailsDto);
+        mockMvc.perform(get(DETAILS_URL, INSTANCES_ID)
+                        .header(HttpHeaders.AUTHORIZATION, getBearerToken()))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(content().json(objectMapper.writeValueAsString(instancesInfoDetailsDto)));
+    }
+
+    @Test
+    void testGetInstancesDownloadUrlUnauthorized() throws Exception {
+        mockMvc.perform(get(DOWNLOAD_URL, INSTANCES_ID))
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    void testGetDownloadUrlOk() throws Exception {
+        var s3ContentResponseDto = S3ContentResponseDto.builder()
+                .contentUrl(CONTENT_URL)
+                .build();
+        when(instancesInfoService.getDownloadUrl(INSTANCES_ID)).thenReturn(s3ContentResponseDto);
+        mockMvc.perform(get(DOWNLOAD_URL, INSTANCES_ID)
+                        .header(HttpHeaders.AUTHORIZATION, getBearerToken()))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(content().json(objectMapper.writeValueAsString(s3ContentResponseDto)));
     }
 }
