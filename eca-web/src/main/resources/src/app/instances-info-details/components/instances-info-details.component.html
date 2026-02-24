@@ -40,11 +40,13 @@
             class="ui-button-success ml-2 mt-2 mb-2"
             icon="pi pi-fw pi-download" >
     </button>
-    <button pButton
+    <button *ngIf="dataSetRoutePath?.path"
+            pButton
             type="button"
             label="Датасет"
             pTooltip="Открыть исходный датасет"
             [disabled]="loading"
+            (click)="openDataSet()"
             class="ui-button-info ml-2 mt-2 mb-2"
             icon="pi pi-fw pi-table" >
     </button>

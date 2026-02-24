@@ -1,15 +1,16 @@
 import { Component, Injector, Input, OnInit } from '@angular/core';
 import {
   InstancesInfoDetailsDto,
-  AttributeMetaInfoDto
+  AttributeMetaInfoDto,
+  RoutePathDto
 } from "../../../../../../../target/generated-sources/typescript/eca-web-dto";
 import { MessageService } from "primeng/api";
-import { ActivatedRoute, Router } from "@angular/router";
 import { finalize } from "rxjs/internal/operators";
 import { InstancesInfoService } from '../../common/instances-info/services/instances-info.service';
 import { AttributeMetaInfoFields } from '../../common/util/field-names';
 import { FieldService } from '../../common/services/field.service';
 import { OverlayPanel } from 'primeng/primeng';
+import { InstancesService } from '../../instances/services/instances.service';
 
 @Component({
   selector: 'app-instances-info-details',
@@ -28,12 +29,13 @@ export class InstancesInfoDetailsComponent implements OnInit {
 
   public toggledAttribute: AttributeMetaInfoDto;
 
+  public dataSetRoutePath: RoutePathDto;
+
   public constructor(private injector: Injector,
                      private instancesInfoService: InstancesInfoService,
                      private fieldService: FieldService,
                      private messageService: MessageService,
-                     private router: Router,
-                     private route: ActivatedRoute) {
+                     private instancesService: InstancesService) {
     this.initAttributesTableColumns();
   }
 
@@ -52,6 +54,19 @@ export class InstancesInfoDetailsComponent implements OnInit {
       .subscribe({
         next: (instancesInfoDetailsDto: InstancesInfoDetailsDto) => {
           this.instancesInfoDetailsDto = instancesInfoDetailsDto;
+          this.getDataSetRoutePath();
+        },
+        error: (error) => {
+          this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
+        }
+      });
+  }
+
+  public getDataSetRoutePath(): void {
+    this.instancesService.getInstancesPath(this.instancesInfoDetailsDto.uuid)
+      .subscribe({
+        next: (routePathDto: RoutePathDto) => {
+          this.dataSetRoutePath = routePathDto;
         },
         error: (error) => {
           this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
@@ -80,6 +95,10 @@ export class InstancesInfoDetailsComponent implements OnInit {
       () => this.loading = false,
       (error) => this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message })
     );
+  }
+
+  public openDataSet(): void {
+    window.open(this.dataSetRoutePath.path, '_blank');
   }
 
   private initAttributesTableColumns(): void {
