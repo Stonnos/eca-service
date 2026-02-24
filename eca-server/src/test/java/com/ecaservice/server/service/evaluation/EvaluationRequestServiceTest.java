@@ -93,10 +93,10 @@ class EvaluationRequestServiceTest extends AbstractJpaTest {
     private ClassifierInitializerService classifierInitializerService;
     @Autowired
     private ClassifierOptionsAdapter classifierOptionsAdapter;
-    @Mock
-    private ObjectStorageService objectStorageService;
     @MockBean
     private InstancesMetaDataService instancesMetaDataService;
+    @MockBean
+    private ObjectStorageService objectStorageService;
     @Mock
     private InstancesLoaderService instancesLoaderService;
 

@@ -3,6 +3,9 @@ package com.ecaservice.server.service;
 import com.ecaservice.common.web.exception.EntityNotFoundException;
 import com.ecaservice.core.filter.service.FilterTemplateService;
 import com.ecaservice.core.filter.validation.annotations.ValidPageRequest;
+import com.ecaservice.s3.client.minio.model.GetPresignedUrlObject;
+import com.ecaservice.s3.client.minio.service.ObjectStorageService;
+import com.ecaservice.server.config.AppProperties;
 import com.ecaservice.server.filter.InstancesInfoFilter;
 import com.ecaservice.server.mapping.InstancesInfoMapper;
 import com.ecaservice.server.model.data.AttributeMetaInfo;
@@ -11,9 +14,11 @@ import com.ecaservice.server.repository.AttributesInfoRepository;
 import com.ecaservice.server.repository.InstancesInfoRepository;
 import com.ecaservice.web.dto.model.AttributeMetaInfoDto;
 import com.ecaservice.web.dto.model.AttributeValueMetaInfoDto;
+import com.ecaservice.web.dto.model.InstancesInfoDetailsDto;
 import com.ecaservice.web.dto.model.InstancesInfoDto;
 import com.ecaservice.web.dto.model.PageDto;
 import com.ecaservice.web.dto.model.PageRequestDto;
+import com.ecaservice.web.dto.model.S3ContentResponseDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
@@ -22,6 +27,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.IntStream;
 
 import static com.ecaservice.core.filter.util.FilterUtils.buildSort;
@@ -39,9 +45,11 @@ import static com.ecaservice.server.model.entity.InstancesInfo_.CREATED_DATE;
 @RequiredArgsConstructor
 public class InstancesInfoService {
 
+    private final AppProperties appProperties;
     private final FilterTemplateService filterTemplateService;
     private final InstancesInfoMapper instancesInfoMapper;
     private final InstancesProvider instancesProvider;
+    private final ObjectStorageService objectStorageService;
     private final InstancesInfoRepository instancesInfoRepository;
     private final AttributesInfoRepository attributesInfoRepository;
 
@@ -90,8 +98,7 @@ public class InstancesInfoService {
      */
     public List<AttributeValueMetaInfoDto> getClassValues(Long instancesId) {
         log.info("Starting to get instances [{}] class values", instancesId);
-        InstancesInfo instancesInfo = instancesInfoRepository.findById(instancesId)
-                .orElseThrow(() -> new EntityNotFoundException(InstancesInfo.class, instancesId));
+        InstancesInfo instancesInfo = getById(instancesId);
         var attributesInfo = attributesInfoRepository.findByInstancesInfo(instancesInfo)
                 .orElseThrow(() -> new EntityNotFoundException(InstancesInfo.class, instancesInfo.getId()));
         AttributeMetaInfo classAttributeInfo = attributesInfo.getAttributes()
@@ -119,8 +126,7 @@ public class InstancesInfoService {
      */
     public List<AttributeMetaInfoDto> getInputAttributes(Long instancesId) {
         log.info("Starting to get instances [{}] input attributes info", instancesId);
-        InstancesInfo instancesInfo = instancesInfoRepository.findById(instancesId)
-                .orElseThrow(() -> new EntityNotFoundException(InstancesInfo.class, instancesId));
+        InstancesInfo instancesInfo = getById(instancesId);
         var attributesInfo = attributesInfoRepository.findByInstancesInfo(instancesInfo)
                 .orElseThrow(() -> new EntityNotFoundException(InstancesInfo.class, instancesInfo.getId()));
         var attributesMetaInfoList = IntStream.range(0, attributesInfo.getAttributes().size())
@@ -135,5 +141,57 @@ public class InstancesInfoService {
         log.info("[{}] input attributes info has been fetched for instances [{}]", attributesMetaInfoList.size(),
                 instancesId);
         return attributesMetaInfoList;
+    }
+
+    /**
+     * Gets instances info details.
+     *
+     * @param id - instances id
+     * @return instances info details dto
+     */
+    public InstancesInfoDetailsDto getInstancesInfoDetails(Long id) {
+        log.info("Starting to get instances info [{}] details", id);
+        InstancesInfo instancesInfo = getById(id);
+        InstancesInfoDetailsDto instancesInfoDetailsDto = new InstancesInfoDetailsDto();
+        instancesInfoMapper.mapDetails(instancesInfo, instancesInfoDetailsDto);
+        var attributesInfo = attributesInfoRepository.findByInstancesInfo(instancesInfo)
+                .orElseThrow(() -> new EntityNotFoundException(InstancesInfo.class, instancesInfo.getId()));
+        var attributesMetaInfoList = IntStream.range(0, attributesInfo.getAttributes().size())
+                .mapToObj(i -> {
+                    var attributeMetaInfoDto = instancesInfoMapper.map(attributesInfo.getAttributes().get(i));
+                    attributeMetaInfoDto.setIndex(i);
+                    return attributeMetaInfoDto;
+                })
+                .toList();
+        instancesInfoDetailsDto.setAttributes(attributesMetaInfoList);
+        log.info("Instances info [{}] details has been fetched", id);
+        return instancesInfoDetailsDto;
+    }
+
+    /**
+     * Gets instances info download url.
+     *
+     * @param id - instances id
+     * @return download url
+     */
+    public S3ContentResponseDto getDownloadUrl(Long id) {
+        log.info("Starting to get instances info [{}] content url", id);
+        InstancesInfo instancesInfo = getById(id);
+        String contentUrl = objectStorageService.getObjectPresignedProxyUrl(
+                GetPresignedUrlObject.builder()
+                        .objectPath(instancesInfo.getObjectPath())
+                        .expirationTime(appProperties.getShortLifeUrlExpirationMinutes())
+                        .expirationTimeUnit(TimeUnit.MINUTES)
+                        .build()
+        );
+        log.info("Instances info [{}] content url has been fetched", id);
+        return S3ContentResponseDto.builder()
+                .contentUrl(contentUrl)
+                .build();
+    }
+
+    private InstancesInfo getById(Long id) {
+        return instancesInfoRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException(InstancesInfo.class, id));
     }
 }

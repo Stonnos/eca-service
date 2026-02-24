@@ -4,10 +4,12 @@ import com.ecaservice.common.error.model.ValidationErrorDto;
 import com.ecaservice.server.service.InstancesInfoService;
 import com.ecaservice.web.dto.model.AttributeMetaInfoDto;
 import com.ecaservice.web.dto.model.AttributeValueMetaInfoDto;
+import com.ecaservice.web.dto.model.InstancesInfoDetailsDto;
 import com.ecaservice.web.dto.model.InstancesInfoDto;
 import com.ecaservice.web.dto.model.InstancesInfoPageDto;
 import com.ecaservice.web.dto.model.PageDto;
 import com.ecaservice.web.dto.model.PageRequestDto;
+import com.ecaservice.web.dto.model.S3ContentResponseDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -222,5 +224,31 @@ public class InstancesInfoController {
     public List<AttributeMetaInfoDto> getInputAttributes(@PathVariable Long instancesId) {
         log.info("Request instances info {} input attributes", instancesId);
         return instancesInfoService.getInputAttributes(instancesId);
+    }
+
+    /**
+     * Gets instances info details.
+     *
+     * @param instancesId - instances id
+     * @return instances info details dto
+     */
+    @PreAuthorize("hasAuthority('SCOPE_web')")
+    @GetMapping(value = "/details/{instancesId}")
+    public InstancesInfoDetailsDto getInstancesInfoDetails(@PathVariable Long instancesId) {
+        log.info("Request instances info {} details", instancesId);
+        return instancesInfoService.getInstancesInfoDetails(instancesId);
+    }
+
+    /**
+     * Gets instances info download url.
+     *
+     * @param instancesId - instances id
+     * @return download url
+     */
+    @PreAuthorize("hasAuthority('SCOPE_web')")
+    @GetMapping(value = "/download/{instancesId}")
+    public S3ContentResponseDto getDownloadUrl(@PathVariable Long instancesId) {
+        log.info("Request instances info {} details", instancesId);
+        return instancesInfoService.getDownloadUrl(instancesId);
     }
 }

@@ -4,6 +4,7 @@
     "createdBy": "admin",
     "instancesInfo": {
         "id": 24,
+        "uuid": "1d2de514-3a87-4620-9b97-c260e24340de",
         "relationName": "glass",
         "numInstances": 214,
         "numAttributes": 10,

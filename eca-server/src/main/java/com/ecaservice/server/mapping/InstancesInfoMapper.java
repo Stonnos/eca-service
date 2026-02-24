@@ -10,6 +10,7 @@ import com.ecaservice.server.model.entity.InstancesInfo;
 import com.ecaservice.web.dto.model.AttributeMetaInfoDto;
 import com.ecaservice.web.dto.model.AttributeValueMetaInfoDto;
 import com.ecaservice.web.dto.model.EnumDto;
+import com.ecaservice.web.dto.model.InstancesInfoDetailsDto;
 import com.ecaservice.web.dto.model.InstancesInfoDto;
 import org.mapstruct.AfterMapping;
 import org.mapstruct.Mapper;
@@ -32,6 +33,14 @@ public interface InstancesInfoMapper {
      * @return instances info dto
      */
     InstancesInfoDto map(InstancesInfo instancesInfo);
+
+    /**
+     * Maps instances info to its details dto model.
+     *
+     * @param instancesInfo           - instances info entity
+     * @param instancesInfoDetailsDto - instances info details dto
+     */
+    void mapDetails(InstancesInfo instancesInfo, @MappingTarget InstancesInfoDetailsDto instancesInfoDetailsDto);
 
     /**
      * Maps instances info list to dto models list.

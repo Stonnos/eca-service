@@ -20,6 +20,7 @@
   "modelPath": "experiment-1d2de514-3a87-4620-9b97-c260e24340de.model",
   "instancesInfo": {
     "id": 1,
+    "uuid": "1d2de514-3a87-4620-9b97-c260e24340de",
     "relation": "glass",
     "numInstances": 214,
     "numAttributes": 10,
