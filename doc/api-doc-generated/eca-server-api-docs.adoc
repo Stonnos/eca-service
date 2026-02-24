@@ -377,6 +377,7 @@ a|
 {
   "content" : [ {
     "id" : 1,
+    "uuid" : "1d2de514-3a87-4620-9b97-c260e24340de",
     "relation" : "glass",
     "numInstances" : 214,
     "numAttributes" : 10,
@@ -741,6 +742,7 @@ a|
     "modelPath" : "experiment-1d2de514-3a87-4620-9b97-c260e24340de.model",
     "instancesInfo" : {
       "id" : 1,
+      "uuid" : "1d2de514-3a87-4620-9b97-c260e24340de",
       "relation" : "glass",
       "numInstances" : 214,
       "numAttributes" : 10,
@@ -2731,6 +2733,7 @@ a|
     "pctCorrect" : 96,
     "instancesInfo" : {
       "id" : 1,
+      "uuid" : "1d2de514-3a87-4620-9b97-c260e24340de",
       "relation" : "glass",
       "numInstances" : 214,
       "numAttributes" : 10,
@@ -3300,6 +3303,128 @@ a|
   "errorMessage" : "Entity with search key [1] not found!"
 } ]
 ----
+|===
+
+== API method
+
+__GET__ */instances-info/download/{instancesId}* 
+
+
+
+*Request parameters*
+[width=100%]
+|===
+|*Name*|*Description*|*Location*|*Schema*
+|*instancesId**
+|-
+|path
+a|
+__integer__
+__(int64)__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|===
+
+*Api responses*
+[width=100%]
+|===
+|*Code*|*Description*|*Content type*|*Schema*|*Example*
+|200
+|OK
+|**/**
+|
+<<S3ContentResponseDto>>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+a|
+-
+|===
+
+== API method
+
+__GET__ */instances-info/details/{instancesId}* 
+
+
+
+*Request parameters*
+[width=100%]
+|===
+|*Name*|*Description*|*Location*|*Schema*
+|*instancesId**
+|-
+|path
+a|
+__integer__
+__(int64)__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|===
+
+*Api responses*
+[width=100%]
+|===
+|*Code*|*Description*|*Content type*|*Schema*|*Example*
+|200
+|OK
+|**/**
+|
+<<InstancesInfoDetailsDto>>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+a|
+-
 |===
 
 == Gets class values info for specified instances
@@ -4628,6 +4753,7 @@ a|
     "createdBy" : "admin",
     "instancesInfo" : {
       "id" : 24,
+      "uuid" : "1d2de514-3a87-4620-9b97-c260e24340de",
       "relationName" : "glass",
       "numInstances" : 214,
       "numAttributes" : 10,
@@ -5452,6 +5578,7 @@ a|
   "modelPath" : "experiment-1d2de514-3a87-4620-9b97-c260e24340de.model",
   "instancesInfo" : {
     "id" : 1,
+    "uuid" : "1d2de514-3a87-4620-9b97-c260e24340de",
     "relation" : "glass",
     "numInstances" : 214,
     "numAttributes" : 10,
@@ -6303,6 +6430,7 @@ a|
   "createdBy" : "admin",
   "instancesInfo" : {
     "id" : 24,
+    "uuid" : "1d2de514-3a87-4620-9b97-c260e24340de",
     "relationName" : "glass",
     "numInstances" : 214,
     "numAttributes" : 10,
@@ -8053,6 +8181,25 @@ __(int64)__
 *Minimum*: 1*
 
 *Maximum*: 9 223 372 036 854 775 807*
+
+
+
+
+
+
+
+
+|*uuid*
+| Instances uuid
+a|
+__string__
+
+
+
+
+*Max. length*: 36
+
+
 
 
 
@@ -12617,6 +12764,224 @@ __string__
 
 
 |===
+=== S3ContentResponseDto
+:table-caption: Table
+.S3 content response
+[width=100%]
+|===
+|*Name*|*Description*|*Schema*
+|*contentUrl*
+|Content url
+a|
+__string__
+
+
+
+
+*Max. length*: 1 024
+
+
+
+
+
+
+
+
+
+
+|===
+=== InstancesInfoDetailsDto
+:table-caption: Table
+.Instances info details model
+[width=100%]
+|===
+|*Name*|*Description*|*Schema*
+|*id*
+|ID
+a|
+__integer__
+__(int64)__
+
+
+
+
+
+
+*Minimum*: 1*
+
+*Maximum*: 9 223 372 036 854 775 807*
+
+
+
+
+
+
+
+
+|*uuid*
+| Instances uuid
+a|
+__string__
+
+
+
+
+*Max. length*: 36
+
+
+
+
+
+
+
+
+
+
+|*relationName*
+|Instances name
+a|
+__string__
+
+
+
+
+*Max. length*: 255
+
+
+
+
+
+
+
+
+
+
+|*numInstances*
+|Instances number
+a|
+__integer__
+__(int32)__
+
+
+
+
+
+
+*Minimum*: 2*
+
+*Maximum*: 2 147 483 647*
+
+
+
+
+
+
+
+
+|*numAttributes*
+|Attributes number
+a|
+__integer__
+__(int32)__
+
+
+
+
+
+
+*Minimum*: 2*
+
+*Maximum*: 2 147 483 647*
+
+
+
+
+
+
+
+
+|*numClasses*
+|Classes number
+a|
+__integer__
+__(int32)__
+
+
+
+
+
+
+*Minimum*: 2*
+
+*Maximum*: 2 147 483 647*
+
+
+
+
+
+
+
+
+|*className*
+|Class name
+a|
+__string__
+
+
+
+
+*Max. length*: 255
+
+
+
+
+
+
+
+
+
+
+|*createdDate*
+|Created date
+a|
+__string__
+
+
+
+
+*Max. length*: 19
+
+
+
+
+
+
+
+
+
+
+|*attributes*
+|Attributes list
+a|
+__array__
+<<<AttributeMetaInfoDto>>
+>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|===
 === FilterDictionaryDto
 :table-caption: Table
 .Filter dictionary model
@@ -13837,32 +14202,6 @@ a|
 
 
 
-
-
-
-
-
-
-
-
-
-
-|===
-=== S3ContentResponseDto
-:table-caption: Table
-.S3 content response
-[width=100%]
-|===
-|*Name*|*Description*|*Schema*
-|*contentUrl*
-|Content url
-a|
-__string__
-
-
-
-
-*Max. length*: 1 024
 
 
 
