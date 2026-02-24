@@ -23,5 +23,15 @@
 .parent-container {
   display: flex;
   flex-direction: column;
-  height: calc(100vh - 50px);
+  height: calc(100vh - 125px);
+}
+
+.experiment-details-tab::ng-deep {
+  .ui-tabview {
+    background-color: inherit;
+  }
+
+  .ui-tabview-nav {
+    background-color: #f5f5f5;
+  }
 }
