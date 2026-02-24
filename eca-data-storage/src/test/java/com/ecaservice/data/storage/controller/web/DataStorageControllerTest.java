@@ -13,6 +13,7 @@ import com.ecaservice.data.storage.service.AttributeService;
 import com.ecaservice.data.storage.service.AttributesScatterPlotService;
 import com.ecaservice.data.storage.service.ContingencyTableReportService;
 import com.ecaservice.data.storage.service.InstancesLoader;
+import com.ecaservice.data.storage.service.InstancesPathService;
 import com.ecaservice.data.storage.service.InstancesStatisticsService;
 import com.ecaservice.data.storage.service.impl.StorageServiceImpl;
 import com.ecaservice.oauth2.test.controller.AbstractControllerTest;
@@ -25,6 +26,7 @@ import com.ecaservice.web.dto.model.InstancesDto;
 import com.ecaservice.web.dto.model.InstancesStatisticsDto;
 import com.ecaservice.web.dto.model.PageDto;
 import com.ecaservice.web.dto.model.PageRequestDto;
+import com.ecaservice.web.dto.model.RoutePathDto;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,6 +44,7 @@ import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.List;
+import java.util.UUID;
 
 import static com.ecaservice.data.storage.TestHelperUtils.createAttributeDto;
 import static com.ecaservice.data.storage.TestHelperUtils.createContingencyTableReportDto;
@@ -50,6 +53,7 @@ import static com.ecaservice.data.storage.TestHelperUtils.createInstancesEntity;
 import static com.ecaservice.data.storage.TestHelperUtils.createPageRequestDto;
 import static com.ecaservice.data.storage.TestHelperUtils.createReportProperties;
 import static com.ecaservice.data.storage.TestHelperUtils.loadInstances;
+import static com.ecaservice.data.storage.util.RoutePaths.INSTANCES_DETAILS_PATH;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -94,6 +98,7 @@ class DataStorageControllerTest extends AbstractControllerTest {
     private static final String REPORTS_INFO_URL = BASE_URL + "/reports-info";
     private static final String GET_ATTRIBUTE_STATISTICS_URL = BASE_URL + "/attribute-stats/{id}";
     private static final String GET_INSTANCES_STATISTICS_URL = BASE_URL + "/instances-stats/{id}";
+    private static final String GET_INSTANCES_PATH_URL = BASE_URL + "/route-path/{externalDataUuid}";
 
     private static final String GET_ATTRIBUTES_SCATTER_PLOT_URL = BASE_URL + "/attributes-scatter-plot";
     private static final String CONTINGENCY_TABLE_REPORT_URL = BASE_URL + "/contingency-table-report";
@@ -130,6 +135,8 @@ class DataStorageControllerTest extends AbstractControllerTest {
     private AttributesScatterPlotService attributesScatterPlotService;
     @MockBean
     private ContingencyTableReportService contingencyTableReportService;
+    @MockBean
+    private InstancesPathService instancesPathService;
 
     @Autowired
     private InstancesMapper instancesMapper;
@@ -565,5 +572,25 @@ class DataStorageControllerTest extends AbstractControllerTest {
                         .header(HttpHeaders.AUTHORIZATION, getBearerToken())
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void testGetInstancesPathUnauthorized() throws Exception {
+        mockMvc.perform(get(GET_INSTANCES_PATH_URL, UUID.randomUUID().toString())
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    void testGetInstancesPath() throws Exception {
+        RoutePathDto routePathDto = new RoutePathDto();
+        routePathDto.setPath(String.format(INSTANCES_DETAILS_PATH, ID));
+        when(instancesPathService.getInstancesPath(anyString())).thenReturn(routePathDto);
+        mockMvc.perform(get(GET_INSTANCES_PATH_URL, UUID.randomUUID().toString())
+                        .header(HttpHeaders.AUTHORIZATION, getBearerToken())
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(content().json(objectMapper.writeValueAsString(routePathDto)));
     }
 }
