@@ -103,6 +103,7 @@ export class ExperimentDetailsComponent implements OnInit, OnDestroy {
   }
 
   public cancelExperiment(): void {
+    this.loading = true;
     this.experimentsService.cancelExperiment(this.id)
       .pipe(
         finalize(() => {

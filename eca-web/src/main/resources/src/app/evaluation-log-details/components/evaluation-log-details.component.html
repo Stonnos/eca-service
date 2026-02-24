@@ -7,7 +7,7 @@
 
 <div class="container-fluid">
   <p-tabView class="evaluation-log-details-tab">
-    <p-tabPanel header="Результаты классификации" leftIcon="pi pi-table" [cache]="true">
+    <p-tabPanel header="Результаты классификации" leftIcon="pi pi-list" [cache]="true">
       <ng-template pTemplate="content">
 
         <div *ngIf="!loading" class="container-fluid">
@@ -104,6 +104,18 @@
           </div>
         </div>
 
+      </ng-template>
+    </p-tabPanel>
+
+    <p-tabPanel *ngIf="evaluationLogDetails?.instancesInfo"
+                leftIcon="pi pi-table"
+                header="Обучающая выборка"
+                [cache]="true">
+      <ng-template pTemplate="content">
+        <div class="parent-container">
+          <app-instances-info-details [id]="evaluationLogDetails?.instancesInfo?.id">
+          </app-instances-info-details>
+        </div>
       </ng-template>
     </p-tabPanel>
 

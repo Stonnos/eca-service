@@ -1,0 +1,61 @@
+.meta-info-panel::ng-deep {
+
+  .ui-panel {
+    background: rgba(226, 226, 226, 0.64);
+    border: 1px solid #d5d5d5;
+    border-radius: 10px;
+    height: 75px;
+
+    .ui-panel-content {
+      background: inherit;
+      padding: 2px;
+      border: none;
+    }
+  }
+}
+
+.instances-title {
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.attr {
+  margin-top: 5px;
+  font-weight: bold;
+  font-size: 14px;
+}
+
+.value {
+  margin-top: 10px;
+  font-size: 18px;
+}
+
+.attributes-table::ng-deep {
+
+  .ui-table-thead > tr > th {
+    &:first-child {
+      width: 75px;
+    }
+  }
+
+  .ui-table-tbody > tr > td {
+    &:first-child {
+      width: 75px;
+      font-weight: bold;
+    }
+  }
+}
+
+.attr-values-info-panel::ng-deep {
+
+  .ui-overlaypanel-content {
+    width: 400px;
+    max-height: 400px;
+    overflow-y: scroll;
+  }
+}
+
+.control-panel {
+  background: rgba(226, 226, 226, 0.64);
+  border: 1px solid #d5d5d5;
+}

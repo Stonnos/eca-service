@@ -61,6 +61,7 @@ import { PersonalAccessTokensModule } from './personal-access-tokens/personal-ac
 import { EvaluationResultsRequestPathModule } from './evaluation-results-request-path/evaluation-results-request-path.module';
 import { AttributesScatterPlotDialogModule } from './attributes-scatter-plot-dialog/attributes-scatter-plot-dialog.module';
 import { ContingencyTableDialogModule } from './continjency-table-dialog/contingency-table-dialog.module';
+import { InstancesInfoDetailsModule } from './instances-info-details/instances-info-details.module';
 
 export function eventSubscribe(eventHandler: EventHandler) {
   return () => eventHandler.eventSubscribe();
@@ -128,7 +129,8 @@ export function eventSubscribe(eventHandler: EventHandler) {
     PersonalAccessTokensModule,
     EvaluationResultsRequestPathModule,
     AttributesScatterPlotDialogModule,
-    ContingencyTableDialogModule
+    ContingencyTableDialogModule,
+    InstancesInfoDetailsModule
   ],
   providers: [
     CookieService,
