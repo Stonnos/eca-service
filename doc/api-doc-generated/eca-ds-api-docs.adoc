@@ -1052,6 +1052,201 @@ a|
 ----
 |===
 
+== Calculates contingency table report
+
+__POST__ */instances/contingency-table-report* - Calculates contingency table report
+
+*Security requirement*
+
+[cols="^50%,^50%",options="header"]
+|===
+|*Name*|*Scopes*
+|
+<<EcaAuth>>
+a|
+
+* web
+
+|===
+
+*Request body*
+
+[width=100%]
+|===
+|*Content type*|*Required*|*Schema*|*Example*
+|*application/json*
+|true
+|
+<<ContingencyTableRequestDto>>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+a|
+[source,json]
+----
+{
+  "instancesId" : 1,
+  "alphaValue" : 0.05,
+  "useYates" : false,
+  "yattributeId" : 3,
+  "xattributeId" : 1
+}
+----
+|===
+
+
+
+*Api responses*
+[width=100%]
+|===
+|*Code*|*Description*|*Content type*|*Schema*|*Example*
+|200
+|OK
+|*application/json*
+|
+<<DataListPageDto>>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+a|
+[source,json]
+----
+{
+  "tableData" : [ [ 67, 160, 12, 13, 22, 274 ], [ 55, 146, 35, 18, 15, 269 ], [ 153, 187, 38, 7, 9, 394 ], [ 18, 37, 3, 2, 3, 63 ], [ 293, 530, 88, 40, 49, 1000 ] ],
+  "chiSquaredValue" : 60.3321,
+  "chiSquaredCriticalValue" : 21.0261,
+  "df" : 12,
+  "alpha" : 0.05,
+  "significant" : true,
+  "xattribute" : {
+    "id" : 1,
+    "name" : "checking_status",
+    "index" : 0,
+    "selected" : true,
+    "type" : {
+      "value" : "NOMINAL",
+      "description" : "Категориальный"
+    },
+    "values" : [ {
+      "id" : 1,
+      "index" : 0,
+      "value" : "<0"
+    }, {
+      "id" : 2,
+      "index" : 1,
+      "value" : "0<=X<200"
+    }, {
+      "id" : 3,
+      "index" : 2,
+      "value" : "no checking"
+    }, {
+      "id" : 4,
+      "index" : 3,
+      "value" : ">=200"
+    } ]
+  },
+  "yattribute" : {
+    "id" : 3,
+    "name" : "credit_history",
+    "index" : 2,
+    "selected" : true,
+    "type" : {
+      "value" : "NOMINAL",
+      "description" : "Категориальный"
+    },
+    "values" : [ {
+      "id" : 5,
+      "index" : 0,
+      "value" : "critical/other existing credit"
+    }, {
+      "id" : 6,
+      "index" : 1,
+      "value" : "existing paid"
+    }, {
+      "id" : 7,
+      "index" : 2,
+      "value" : "delayed previously"
+    }, {
+      "id" : 8,
+      "index" : 3,
+      "value" : "no credits/all paid"
+    }, {
+      "id" : 9,
+      "index" : 4,
+      "value" : "all paid"
+    } ]
+  }
+}
+----
+|401
+|Not authorized
+|*application/json*
+|-
+a|
+[source,json]
+----
+{
+  "error" : "unauthorized",
+  "error_description" : "Full authentication is required to access this resource"
+}
+----
+|400
+|Bad request
+|*application/json*
+|
+__array__
+<<<ValidationErrorDto>>
+>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+a|
+[source,json]
+----
+[ {
+  "fieldName" : null,
+  "code" : "DataNotFound",
+  "errorMessage" : "Entity with search key [1] not found!"
+} ]
+----
+|===
+
 == Exports valid instances with selected attributes and assigned class attribute to central data storage
 
 __POST__ */api/internal/instances/export-valid-instances* - Exports valid instances with selected attributes and assigned class attribute to central data storage
@@ -1156,6 +1351,126 @@ a|
   "fieldName" : null,
   "code" : "SelectedAttributesNumberIsTooLow",
   "errorMessage" : "Selected attributes number must be greater than or equal to [2] for table [iris]"
+} ]
+----
+|===
+
+== Gets instances path by external data uuid from central storage
+
+__GET__ */instances/route-path/{externalDataUuid}* - Gets instances path by external data uuid from central storage
+
+*Security requirement*
+
+[cols="^50%,^50%",options="header"]
+|===
+|*Name*|*Scopes*
+|
+<<EcaAuth>>
+a|
+
+* web
+
+|===
+
+
+*Request parameters*
+[width=100%]
+|===
+|*Name*|*Description*|*Location*|*Schema*
+|*externalDataUuid**
+|Attribute id
+|path
+a|
+__string__
+
+
+*Min. length*: 1
+
+*Max. length*: 36
+
+
+
+
+
+
+
+*Pattern*: `^[0-9a-f]{8}-[0-9a-f]{4}-[34][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$`
+
+
+|===
+
+*Api responses*
+[width=100%]
+|===
+|*Code*|*Description*|*Content type*|*Schema*|*Example*
+|200
+|OK
+|*application/json*
+|
+<<RoutePathDto>>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+a|
+[source,json]
+----
+{
+  "path" : "/dashboard/instances/details/394"
+}
+----
+|401
+|Not authorized
+|*application/json*
+|-
+a|
+[source,json]
+----
+{
+  "error" : "unauthorized",
+  "error_description" : "Full authentication is required to access this resource"
+}
+----
+|400
+|Bad request
+|*application/json*
+|
+__array__
+<<<ValidationErrorDto>>
+>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+a|
+[source,json]
+----
+[ {
+  "fieldName" : null,
+  "code" : "DataNotFound",
+  "errorMessage" : "Entity with search key [1] not found!"
 } ]
 ----
 |===
@@ -3063,6 +3378,115 @@ __(int64)__
 
 
 |===
+=== ContingencyTableRequestDto
+:table-caption: Table
+.Attributes contingency table request model
+[width=100%]
+|===
+|*Name*|*Description*|*Schema*
+|*instancesId**
+|Instances id
+a|
+__integer__
+__(int64)__
+
+
+
+
+
+
+*Minimum*: 1*
+
+*Maximum*: 2 147 483 647*
+
+
+
+
+
+
+
+
+|*alphaValue**
+|Significant level (alpha value)
+a|
+__number__
+
+
+
+
+
+
+*Minimum*: 0,001*
+
+*Maximum*: 0,999*
+
+
+
+
+
+
+
+
+|*useYates*
+|Use Yates correct?
+a|
+__boolean__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|*xattributeId*
+|-
+a|
+__integer__
+__(int64)__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|*yattributeId*
+|-
+a|
+__integer__
+__(int64)__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|===
 === ExportInstancesResponseDto
 :table-caption: Table
 .Export instances response dto
@@ -3078,6 +3502,32 @@ __string__
 
 
 *Max. length*: 36
+
+
+
+
+
+
+
+
+
+
+|===
+=== RoutePathDto
+:table-caption: Table
+.Route path model
+[width=100%]
+|===
+|*Name*|*Description*|*Schema*
+|*path*
+|Route path
+a|
+__string__
+
+
+
+
+*Max. length*: 255
 
 
 
