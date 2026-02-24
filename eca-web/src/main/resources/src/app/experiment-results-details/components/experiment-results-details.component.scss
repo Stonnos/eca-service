@@ -1,7 +1,7 @@
 .parent-container {
   display: flex;
   flex-direction: column;
-  height: calc(100vh - 125px);
+  min-height: calc(100vh - 125px);
 }
 
 .experiment-results-log-details-tab::ng-deep {
