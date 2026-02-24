@@ -233,6 +233,48 @@ public class InstancesInfoController {
      * @return instances info details dto
      */
     @PreAuthorize("hasAuthority('SCOPE_web')")
+    @Operation(
+            description = "Gets instances info details",
+            summary = "Gets instances info details",
+            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME, scopes = SCOPE_WEB),
+            responses = {
+                    @ApiResponse(description = "OK", responseCode = "200",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    examples = {
+                                            @ExampleObject(
+                                                    name = "InstancesInfoDetailsResponse",
+                                                    ref = "#/components/examples/InstancesInfoDetailsResponse"
+                                            )
+                                    },
+                                    schema = @Schema(implementation = InstancesInfoDetailsDto.class)
+                            )
+                    ),
+                    @ApiResponse(description = "Not authorized", responseCode = "401",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    examples = {
+                                            @ExampleObject(
+                                                    name = "NotAuthorizedResponse",
+                                                    ref = "#/components/examples/NotAuthorizedResponse"
+                                            )
+                                    }
+                            )
+                    ),
+                    @ApiResponse(description = "Bad request", responseCode = "400",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    examples = {
+                                            @ExampleObject(
+                                                    name = "DataNotFoundResponse",
+                                                    ref = "#/components/examples/DataNotFoundResponse"
+                                            )
+                                    },
+                                    array = @ArraySchema(schema = @Schema(implementation = ValidationErrorDto.class))
+                            )
+                    )
+            }
+    )
     @GetMapping(value = "/details/{instancesId}")
     public InstancesInfoDetailsDto getInstancesInfoDetails(@PathVariable Long instancesId) {
         log.info("Request instances info {} details", instancesId);
@@ -246,6 +288,48 @@ public class InstancesInfoController {
      * @return download url
      */
     @PreAuthorize("hasAuthority('SCOPE_web')")
+    @Operation(
+            description = "Gets instances info download url",
+            summary = "Gets instances info download url",
+            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME, scopes = SCOPE_WEB),
+            responses = {
+                    @ApiResponse(description = "OK", responseCode = "200",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    examples = {
+                                            @ExampleObject(
+                                                    name = "GetInstancesContentResponse",
+                                                    ref = "#/components/examples/GetInstancesContentResponse"
+                                            )
+                                    },
+                                    schema = @Schema(implementation = S3ContentResponseDto.class)
+                            )
+                    ),
+                    @ApiResponse(description = "Not authorized", responseCode = "401",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    examples = {
+                                            @ExampleObject(
+                                                    name = "NotAuthorizedResponse",
+                                                    ref = "#/components/examples/NotAuthorizedResponse"
+                                            )
+                                    }
+                            )
+                    ),
+                    @ApiResponse(description = "Bad request", responseCode = "400",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    examples = {
+                                            @ExampleObject(
+                                                    name = "DataNotFoundResponse",
+                                                    ref = "#/components/examples/DataNotFoundResponse"
+                                            )
+                                    },
+                                    array = @ArraySchema(schema = @Schema(implementation = ValidationErrorDto.class))
+                            )
+                    )
+            }
+    )
     @GetMapping(value = "/download/{instancesId}")
     public S3ContentResponseDto getDownloadUrl(@PathVariable Long instancesId) {
         log.info("Request instances info {} details", instancesId);
