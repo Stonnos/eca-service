@@ -2,6 +2,7 @@ package com.ecaservice.data.storage.repository;
 
 import com.ecaservice.data.storage.entity.ExportInstancesObjectEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 
 /**
  * Repository to manage with {@link ExportInstancesObjectEntity} persistence entity.
@@ -17,4 +18,11 @@ public interface ExportInstancesObjectRepository extends JpaRepository<ExportIns
      * @return export instances object entity
      */
     ExportInstancesObjectEntity findFirstByInstancesUuidOrderByCreatedDesc(String instancesUuid);
+
+    /**
+     * Deletes all export instances objects with specified instances uuid.
+     *
+     * @param instancesUuid - instances uuid
+     */
+    void deleteByInstancesUuid(String instancesUuid);
 }
