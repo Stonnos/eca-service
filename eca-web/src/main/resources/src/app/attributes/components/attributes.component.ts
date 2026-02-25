@@ -36,6 +36,8 @@ export class AttributesComponent implements OnInit {
   @Input()
   public attributes: AttributeDto[] = [];
   @Input()
+  public classAttributes: AttributeDto[] = [];
+  @Input()
   public classAttribute: AttributeDto;
 
   public toggledAttribute: AttributeDto;

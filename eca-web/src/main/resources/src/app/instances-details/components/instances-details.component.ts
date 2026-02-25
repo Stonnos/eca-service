@@ -44,6 +44,7 @@ export class InstancesDetailsComponent extends BaseListComponent<string[]> {
 
   public attributesLoading: boolean = false;
   public attributes: AttributeDto[] = [];
+  public nominalAttributes: AttributeDto[] = [];
   public classAttribute: AttributeDto;
 
   public createEditInstancesDialogVisibility: boolean = false;
@@ -136,6 +137,7 @@ export class InstancesDetailsComponent extends BaseListComponent<string[]> {
       .subscribe({
         next: (attributes: AttributeDto[]) => {
           this.attributes = attributes;
+          this.nominalAttributes = attributes.filter((attributeDto: AttributeDto) => attributeDto.type.value == 'NOMINAL');
           this.setClassIfAbsent();
           this.columns = attributes.map((attr: AttributeDto) => { return { name: attr.name, label: attr.name, sortBy: attr.name} });
         },
