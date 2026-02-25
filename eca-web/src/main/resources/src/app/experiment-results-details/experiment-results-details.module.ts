@@ -6,6 +6,7 @@ import { EvaluationResultsModule } from "../evaluation-results/evaluation-result
 import { ExperimentResultsDetailsComponent } from "./components/experiment-results-details.component";
 import { SharedModule } from "../common/shared.module";
 import { ClassifyInstanceModule } from '../classify-instance/classify-instance.module';
+import { InstancesInfoDetailsModule } from '../instances-info-details/instances-info-details.module';
 
 @NgModule({
   imports: [
@@ -14,7 +15,8 @@ import { ClassifyInstanceModule } from '../classify-instance/classify-instance.m
     UiComponentsModule,
     EvaluationResultsModule,
     SharedModule,
-    ClassifyInstanceModule
+    ClassifyInstanceModule,
+    InstancesInfoDetailsModule
   ],
   declarations: [
     ExperimentResultsDetailsComponent

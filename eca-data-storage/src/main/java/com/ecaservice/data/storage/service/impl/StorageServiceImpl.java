@@ -14,6 +14,7 @@ import com.ecaservice.data.storage.exception.InvalidClassAttributeTypeException;
 import com.ecaservice.data.storage.filter.InstancesFilter;
 import com.ecaservice.data.storage.mapping.AttributeMapper;
 import com.ecaservice.data.storage.repository.AttributeRepository;
+import com.ecaservice.data.storage.repository.ExportInstancesObjectRepository;
 import com.ecaservice.data.storage.repository.InstancesRepository;
 import com.ecaservice.data.storage.service.AttributeService;
 import com.ecaservice.data.storage.service.InstancesService;
@@ -74,6 +75,7 @@ public class StorageServiceImpl implements StorageService {
     private final AttributeMapper attributeMapper;
     private final InstancesRepository instancesRepository;
     private final AttributeRepository attributeRepository;
+    private final ExportInstancesObjectRepository exportInstancesObjectRepository;
 
     @Override
     public Page<InstancesEntity> getNextPage(PageRequestDto pageRequestDto) {
@@ -126,6 +128,7 @@ public class StorageServiceImpl implements StorageService {
         instancesService.deleteInstances(instancesEntity.getTableName());
         unsetClassAttribute(instancesEntity);
         attributeService.deleteAttributes(instancesEntity);
+        exportInstancesObjectRepository.deleteByInstancesUuid(instancesEntity.getUuid());
         instancesRepository.deleteById(id);
         log.info("Instances [{}] with id [{}] has been deleted", instancesEntity.getRelationName(), id);
         return instancesEntity.getRelationName();

@@ -11,6 +11,7 @@ import com.ecaservice.data.storage.service.AttributeService;
 import com.ecaservice.data.storage.service.AttributesScatterPlotService;
 import com.ecaservice.data.storage.service.ContingencyTableReportService;
 import com.ecaservice.data.storage.service.InstancesLoader;
+import com.ecaservice.data.storage.service.InstancesPathService;
 import com.ecaservice.data.storage.service.InstancesStatisticsService;
 import com.ecaservice.data.storage.service.StorageService;
 import com.ecaservice.web.dto.model.AttributeDto;
@@ -26,6 +27,7 @@ import com.ecaservice.web.dto.model.InstancesReportInfoDto;
 import com.ecaservice.web.dto.model.InstancesStatisticsDto;
 import com.ecaservice.web.dto.model.PageDto;
 import com.ecaservice.web.dto.model.PageRequestDto;
+import com.ecaservice.web.dto.model.RoutePathDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -39,6 +41,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -62,6 +65,8 @@ import java.util.List;
 
 import static com.ecaservice.config.swagger.OpenApi30Configuration.ECA_AUTHENTICATION_SECURITY_SCHEME;
 import static com.ecaservice.config.swagger.OpenApi30Configuration.SCOPE_WEB;
+import static com.ecaservice.web.dto.util.FieldConstraints.UUID_MAX_SIZE;
+import static com.ecaservice.web.dto.util.FieldConstraints.UUID_PATTERN;
 import static com.ecaservice.web.dto.util.FieldConstraints.VALUE_1;
 
 /**
@@ -85,6 +90,7 @@ public class DataStorageController {
     private final AttributesScatterPlotService attributesScatterPlotService;
     private final ContingencyTableReportService contingencyTableReportService;
     private final ReportsConfigurationService reportsConfigurationService;
+    private final InstancesPathService instancesPathService;
     private final InstancesLoader instancesLoader;
     private final InstancesMapper instancesMapper;
 
@@ -1006,5 +1012,64 @@ public class DataStorageController {
             @Valid @RequestBody ContingencyTableRequestDto requestDto) {
         log.info("Request contingency table report: {}", requestDto);
         return contingencyTableReportService.calculateReport(requestDto);
+    }
+
+    /**
+     * Gets instances path by external data uuid from central storage.
+     *
+     * @param externalDataUuid - external data uuid
+     * @return instances route path
+     */
+    @PreAuthorize("hasAuthority('SCOPE_web')")
+    @Operation(
+            description = "Gets instances path by external data uuid from central storage",
+            summary = "Gets instances path by external data uuid from central storage",
+            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME, scopes = SCOPE_WEB),
+            responses = {
+                    @ApiResponse(description = "OK", responseCode = "200",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    examples = {
+                                            @ExampleObject(
+                                                    name = "InstancesPathResponse",
+                                                    ref = "#/components/examples/InstancesPathResponse"
+                                            ),
+                                    },
+                                    schema = @Schema(implementation = RoutePathDto.class)
+                            )
+                    ),
+                    @ApiResponse(description = "Not authorized", responseCode = "401",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    examples = {
+                                            @ExampleObject(
+                                                    name = "NotAuthorizedResponse",
+                                                    ref = "#/components/examples/NotAuthorizedResponse"
+                                            ),
+                                    }
+                            )
+                    ),
+                    @ApiResponse(description = "Bad request", responseCode = "400",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    examples = {
+                                            @ExampleObject(
+                                                    name = "DataNotFoundResponse",
+                                                    ref = "#/components/examples/DataNotFoundResponse"
+                                            ),
+                                    },
+                                    array = @ArraySchema(schema = @Schema(implementation = ValidationErrorDto.class))
+                            )
+                    )
+            }
+    )
+    @GetMapping(value = "/route-path/{externalDataUuid}")
+    public RoutePathDto getInstancesPath(
+            @Parameter(description = "Attribute id", example = "1", required = true)
+            @Pattern(regexp = UUID_PATTERN)
+            @Size(min = VALUE_1, max = UUID_MAX_SIZE)
+            @PathVariable String externalDataUuid) {
+        log.info("Request get instances path by external data uuid [{}] statistics", externalDataUuid);
+        return instancesPathService.getInstancesPath(externalDataUuid);
     }
 }

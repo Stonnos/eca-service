@@ -8,7 +8,8 @@ import {
   PageRequestDto,
   AttributesScatterPlotDto,
   ContingencyTableReportDto,
-  ContingencyTableRequestDto
+  ContingencyTableRequestDto,
+  RoutePathDto
 } from "../../../../../../../target/generated-sources/typescript/eca-web-dto";
 import { Observable } from "rxjs/internal/Observable";
 import { environment } from "../../../environments/environment";
@@ -108,6 +109,10 @@ export class InstancesService {
 
   public getAttributeStatistics(id: number): Observable<AttributeStatisticsDto> {
     return this.http.get<AttributeStatisticsDto>(this.serviceUrl + '/attribute-stats/' + id);
+  }
+
+  public getInstancesPath(externalDataUuid: string): Observable<RoutePathDto> {
+    return this.http.get<RoutePathDto>(this.serviceUrl + '/route-path/' + externalDataUuid);
   }
 
   public getAttributesScatterPlot(instancesId: number, xAttributeId: number, yAttributeId: number): Observable<AttributesScatterPlotDto> {

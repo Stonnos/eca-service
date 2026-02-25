@@ -5,6 +5,7 @@ import { UiComponentsModule } from "../ui-components.module";
 import { ExperimentDetailsComponent } from "./components/experiment-details.component";
 import { ExperimentErsReportModule } from "../experiment-ers-report/experiment-ers-report.module";
 import { SharedModule } from "../common/shared.module";
+import { InstancesInfoDetailsModule } from '../instances-info-details/instances-info-details.module';
 
 @NgModule({
   imports: [
@@ -12,7 +13,8 @@ import { SharedModule } from "../common/shared.module";
     FormsModule,
     UiComponentsModule,
     SharedModule,
-    ExperimentErsReportModule
+    ExperimentErsReportModule,
+    InstancesInfoDetailsModule
   ],
   declarations: [
     ExperimentDetailsComponent

@@ -14,6 +14,7 @@ import static com.ecaservice.web.dto.util.FieldConstraints.MAX_INTEGER_VALUE_STR
 import static com.ecaservice.web.dto.util.FieldConstraints.MAX_LENGTH_255;
 import static com.ecaservice.web.dto.util.FieldConstraints.MAX_LONG_VALUE_STRING;
 import static com.ecaservice.web.dto.util.FieldConstraints.MIN_NUM_CLASSES_STRING;
+import static com.ecaservice.web.dto.util.FieldConstraints.UUID_MAX_LENGTH;
 import static com.ecaservice.web.dto.util.FieldConstraints.VALUE_1_STRING;
 import static com.ecaservice.web.dto.util.FieldConstraints.VALUE_2_STRING;
 
@@ -31,6 +32,13 @@ public class InstancesInfoDto {
      */
     @Schema(description = "ID", example = "1", minimum = VALUE_1_STRING, maximum = MAX_LONG_VALUE_STRING)
     private Long id;
+
+    /**
+     * Instances uuid
+     */
+    @Schema(description = " Instances uuid", example = "1d2de514-3a87-4620-9b97-c260e24340de",
+            maxLength = UUID_MAX_LENGTH)
+    private String uuid;
 
     /**
      * Instances name

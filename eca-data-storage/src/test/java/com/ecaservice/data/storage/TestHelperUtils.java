@@ -3,6 +3,7 @@ package com.ecaservice.data.storage;
 import com.ecaservice.data.storage.entity.AttributeEntity;
 import com.ecaservice.data.storage.entity.AttributeType;
 import com.ecaservice.data.storage.entity.AttributeValueEntity;
+import com.ecaservice.data.storage.entity.ExportInstancesObjectEntity;
 import com.ecaservice.data.storage.entity.InstancesEntity;
 import com.ecaservice.data.storage.model.report.ReportProperties;
 import com.ecaservice.data.storage.model.report.ReportType;
@@ -123,6 +124,22 @@ public class TestHelperUtils {
         instancesEntity.setCreated(LocalDateTime.now());
         instancesEntity.setCreatedBy(CREATED_BY);
         return instancesEntity;
+    }
+
+    /**
+     * Creates export instances object.
+     *
+     * @param instancesEntity - instances entity
+     * @return export instances object
+     */
+    public static ExportInstancesObjectEntity createExportInstancesObjectEntity(InstancesEntity instancesEntity) {
+        ExportInstancesObjectEntity exportInstancesObjectEntity = new ExportInstancesObjectEntity();
+        exportInstancesObjectEntity.setMd5Hash(MD_5_HASH);
+        exportInstancesObjectEntity.setUpdatesCounter(0);
+        exportInstancesObjectEntity.setExternalDataUuid(UUID.randomUUID().toString());
+        exportInstancesObjectEntity.setInstancesUuid(instancesEntity.getUuid());
+        exportInstancesObjectEntity.setCreated(LocalDateTime.now());
+        return exportInstancesObjectEntity;
     }
 
     /**

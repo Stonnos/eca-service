@@ -1,6 +1,7 @@
 package com.ecaservice.server.service.experiment;
 
 import com.ecaservice.core.filter.service.FilterTemplateService;
+import com.ecaservice.s3.client.minio.service.ObjectStorageService;
 import com.ecaservice.server.AssertionUtils;
 import com.ecaservice.server.TestHelperUtils;
 import com.ecaservice.server.config.AppProperties;
@@ -74,6 +75,8 @@ class ExperimentServiceTest extends AbstractJpaTest {
     private FilterTemplateService filterTemplateService;
     @MockBean
     private ExperimentStepProcessor experimentStepProcessor;
+    @MockBean
+    private ObjectStorageService objectStorageService;
 
     @Autowired
     private ExperimentService experimentService;

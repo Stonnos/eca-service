@@ -1,6 +1,9 @@
 package com.ecaservice.server.service;
 
 import com.ecaservice.core.filter.service.FilterTemplateService;
+import com.ecaservice.s3.client.minio.model.GetPresignedUrlObject;
+import com.ecaservice.s3.client.minio.service.ObjectStorageService;
+import com.ecaservice.server.config.AppProperties;
 import com.ecaservice.server.mapping.InstancesInfoMapperImpl;
 import com.ecaservice.server.model.data.AttributeMetaInfo;
 import com.ecaservice.server.model.data.AttributeType;
@@ -29,6 +32,7 @@ import static com.ecaservice.server.PageRequestUtils.PAGE_NUMBER;
 import static com.ecaservice.server.PageRequestUtils.PAGE_SIZE;
 import static com.ecaservice.server.model.entity.FilterTemplateType.INSTANCES_INFO;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 /**
@@ -36,7 +40,7 @@ import static org.mockito.Mockito.when;
  *
  * @author Roman Batygin
  */
-@Import({InstancesInfoService.class, InstancesInfoMapperImpl.class, InstancesProvider.class})
+@Import({InstancesInfoService.class, InstancesInfoMapperImpl.class, InstancesProvider.class, AppProperties.class})
 class InstancesInfoServiceTest extends AbstractJpaTest {
 
     private static final List<AttributeMetaInfo> ATTRIBUTE_META_INFO_LIST = Arrays.asList(
@@ -49,11 +53,14 @@ class InstancesInfoServiceTest extends AbstractJpaTest {
     private static final int NUM_INSTANCES = 150;
     private static final int NUM_ATTRIBUTES = 2;
     private static final String OBJECT_PATH = "instances";
+    private static final String DOWNLOAD_URL = "http://localhost:9000/instances";
 
     @MockBean
     private FilterTemplateService filterTemplateService;
     @MockBean
     private InstancesMetaDataService instancesMetaDataService;
+    @MockBean
+    private ObjectStorageService objectStorageService;
 
     @Autowired
     private InstancesInfoRepository instancesInfoRepository;
@@ -109,6 +116,30 @@ class InstancesInfoServiceTest extends AbstractJpaTest {
         assertThat(attributes).isNotEmpty();
         assertThat(attributes).hasSize(ATTRIBUTE_META_INFO_LIST.size() - 1);
 
+    }
+
+    @Test
+    void testGetInstancesInfoDetails() {
+        var instancesInfo = saveInstancesInfo();
+        var instancesInfoDetails = instancesInfoService.getInstancesInfoDetails(instancesInfo.getId());
+        assertThat(instancesInfoDetails).isNotNull();
+        assertThat(instancesInfoDetails.getRelationName()).isEqualTo(instancesInfo.getRelationName());
+        assertThat(instancesInfoDetails.getNumInstances()).isEqualTo(instancesInfo.getNumInstances());
+        assertThat(instancesInfoDetails.getNumAttributes()).isEqualTo(instancesInfo.getNumAttributes());
+        assertThat(instancesInfoDetails.getNumClasses()).isEqualTo(instancesInfo.getNumClasses());
+        assertThat(instancesInfoDetails.getClassName()).isEqualTo(instancesInfo.getClassName());
+        assertThat(instancesInfoDetails.getUuid()).isEqualTo(instancesInfo.getUuid());
+        assertThat(instancesInfoDetails.getAttributes()).hasSize(ATTRIBUTE_META_INFO_LIST.size());
+    }
+
+    @Test
+    void testGetDownloadUrl() {
+        var instancesInfo = saveInstancesInfo();
+        when(objectStorageService.getObjectPresignedProxyUrl(any(GetPresignedUrlObject.class)))
+                .thenReturn(DOWNLOAD_URL);
+        var s3ContentResponseDto = instancesInfoService.getDownloadUrl(instancesInfo.getId());
+        assertThat(s3ContentResponseDto).isNotNull();
+        assertThat(s3ContentResponseDto.getContentUrl()).isEqualTo(DOWNLOAD_URL);
     }
 
     @Test

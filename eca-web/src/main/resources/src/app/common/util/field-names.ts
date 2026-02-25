@@ -183,3 +183,9 @@ export class PersonalAccessTokenFields {
   public static readonly NAME: string = "name";
   public static readonly EXPIRE_DATE: string = "expireDate";
 }
+
+export class AttributeMetaInfoFields {
+  public static readonly INDEX: string = "index";
+  public static readonly NAME: string = "name";
+  public static readonly TYPE_DESCRIPTION: string = "type.description";
+}
