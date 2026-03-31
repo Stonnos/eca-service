@@ -25,7 +25,9 @@ jobs:
           restore-keys: ${{ runner.os }}-m2
 
       - name: Run tests and sonar analysis
-        run: mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent test sonar:sonar -D sonar.projectKey=${{ vars.SONAR_PROJECTKEY }} -D sonar.organization=${{ vars.SONAR_ORGANIZATION }} -D sonar.host.url=${{ vars.SONAR_HOST }} -D sonar.token=${{ secrets.SONAR_TOKEN }}
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        run: mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent test sonar:sonar -Dsonar.projectKey=${{ vars.SONAR_PROJECTKEY }} -Dsonar.organization=${{ vars.SONAR_ORGANIZATION }} -Dsonar.host.url=${{ vars.SONAR_HOST }}
 
       - name: Docker login
         uses: docker/login-action@v2
