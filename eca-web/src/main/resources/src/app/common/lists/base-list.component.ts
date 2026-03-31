@@ -11,14 +11,13 @@ import {
   SimplePageRequestDto
 } from "../../../../../../../target/generated-sources/typescript/eca-web-dto";
 import { FieldService } from "../services/field.service";
-import { FieldLink } from "../model/field-link";
 import { ColumnModel } from "../model/column.model";
 import { saveAs } from 'file-saver/dist/FileSaver';
 import { LazyReferenceFilterValueTransformer } from "../../filter/autocomplete/transformer/lazy-reference-filter-value-transformer";
 import { AutocompleteHandler } from "../../filter/autocomplete/handler/autocomplete-handler";
 import { AutocompleteItemModel } from "../../filter/model/autocomplete-item.model";
 
-export abstract class BaseListComponent<T> implements FieldLink {
+export abstract class BaseListComponent<T> {
 
   public defaultSortField: string;
   public defaultSortOrder: number = -1;
@@ -140,7 +139,7 @@ export abstract class BaseListComponent<T> implements FieldLink {
     return this.fieldService.getFieldValue(column, item);
   }
 
-  public isLink(column: string): boolean {
+  public isLink(column: string, item: T): boolean {
     return this.linkColumns.includes(column);
   }
 

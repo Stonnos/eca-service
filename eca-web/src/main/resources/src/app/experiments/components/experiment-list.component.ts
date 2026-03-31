@@ -135,6 +135,13 @@ export class ExperimentListComponent extends BaseListComponent<ExperimentDto> im
     this.downloadReport(observable, ExperimentListComponent.EXPERIMENTS_REPORT_FILE_NAME);
   }
 
+  public isLink(column: string, item: ExperimentDto): boolean {
+    if (column == ExperimentFields.EVALUATION_METHOD_DESCRIPTION) {
+      return item.evaluationMethod.value == EvaluationMethod.CROSS_VALIDATION;
+    }
+    return super.isLink(column, item);
+  }
+
   public onLink(event, column: string, experiment: ExperimentDto, overlayPanel: OverlayPanel) {
     switch (column) {
       case ExperimentFields.RELATION_NAME:

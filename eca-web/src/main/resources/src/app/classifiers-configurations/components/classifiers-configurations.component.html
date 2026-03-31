@@ -55,10 +55,10 @@
           </app-classifiers-configuration-menu>
         </td>
         <td *ngFor="let column of columns">
-          <a class="link" [routerLink]="" *ngIf="isLink(column.name)" (click)="onLink($event, column.name, item)">
+          <a class="link" [routerLink]="" *ngIf="isLink(column.name, item)" (click)="onLink($event, column.name, item)">
             {{ getColumnValue(column.name, item) }}
           </a>
-          <span *ngIf="!isLink(column.name)">{{ getColumnValue(column.name, item) }}</span>
+          <span *ngIf="!isLink(column.name, item)">{{ getColumnValue(column.name, item) }}</span>
           <ng-container [ngSwitch]="column.name">
             <ng-container *ngSwitchCase="'configurationName'">
               <div *ngIf="item.buildIn" class="ml-2 build-in-status bg-secondary text-white text-bold">

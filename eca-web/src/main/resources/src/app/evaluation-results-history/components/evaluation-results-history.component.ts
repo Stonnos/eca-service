@@ -15,11 +15,11 @@ import { FieldService } from "../../common/services/field.service";
 import { EvaluationResultsHistoryService } from "../services/evaluation-results-history.service";
 import { EvaluationResultsHistoryFilterFields } from "../../common/util/filter-field-names";
 import { OverlayPanel } from "primeng/primeng";
-import { EvaluationMethod } from "../../common/model/evaluation-method.enum";
 import { InstancesInfoFilterValueTransformer } from "../../filter/autocomplete/transformer/instances-info-filter-value-transformer";
 import { InstancesInfoAutocompleteHandler } from "../../filter/autocomplete/handler/instances-info-autocomplete-handler";
 import { finalize } from 'rxjs/internal/operators';
 import { Router } from '@angular/router';
+import { EvaluationMethod } from '../../common/model/evaluation-method.enum';
 
 @Component({
   selector: 'app-evaluation-results-history',
@@ -72,12 +72,15 @@ export class EvaluationResultsHistoryComponent extends BaseListComponent<Evaluat
     this.downloadReport(observable, EvaluationResultsHistoryComponent.EVALUATION_RESULTS_HISTORY_REPORT_FILE_NAME);
   }
 
-  public onSelect(event, evaluationResultsHistoryDto: EvaluationResultsHistoryDto, column: string, overlayPanel: OverlayPanel): void {
-    if (evaluationResultsHistoryDto.evaluationMethod.value == EvaluationMethod.CROSS_VALIDATION) {
-      this.toggleOverlayPanel(event, evaluationResultsHistoryDto, column, overlayPanel);
-    } else {
-      this.messageService.add({severity: 'error', summary: 'Ошибка', detail: `Can't handle ${column} as link`});
+  public isLink(column: string, item: EvaluationResultsHistoryDto): boolean {
+    if (column == EvaluationResultsHistoryFields.EVALUATION_METHOD_DESCRIPTION) {
+      return item.evaluationMethod.value == EvaluationMethod.CROSS_VALIDATION;
     }
+    return super.isLink(column, item);
+  }
+
+  public onSelect(event, evaluationResultsHistoryDto: EvaluationResultsHistoryDto, column: string, overlayPanel: OverlayPanel): void {
+    this.toggleOverlayPanel(event, evaluationResultsHistoryDto, column, overlayPanel);
   }
 
   public onEvaluationResultsLink(event, evaluationResultsHistoryDto: EvaluationResultsHistoryDto): void {

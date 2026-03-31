@@ -96,11 +96,11 @@
               </button>
             </td>
             <td *ngFor="let column of columns">
-              <a [routerLink]="" *ngIf="isLink(column.name)"
+              <a [routerLink]="" *ngIf="isLink(column.name, item)"
                  (click)="onSelect($event, item, column.name, infoPanel)">
                 {{ getColumnValue(column.name, item) }}
               </a>
-              <div *ngIf="!isLink(column.name)">
+              <div *ngIf="!isLink(column.name, item)">
                 <ng-container [ngSwitch]="column.name">
                   <ng-container *ngSwitchCase="'requestStatus.description'">
                     <app-request-status [requestStatus]="item.requestStatus"></app-request-status>

@@ -175,6 +175,13 @@ export class ClassifierListComponent extends BaseListComponent<EvaluationLogDto>
     this.downloadReport(observable, ClassifierListComponent.EVALUATION_LOGS_REPORT_FILE_NAME);
   }
 
+  public isLink(column: string, item: EvaluationLogDto): boolean {
+    if (column == EvaluationLogFields.EVALUATION_METHOD_DESCRIPTION) {
+      return item.evaluationMethod.value == EvaluationMethod.CROSS_VALIDATION;
+    }
+    return super.isLink(column, item);
+  }
+
   public onSelect(event, evaluationLog: EvaluationLogDto, column: string, overlayPanel: OverlayPanel): void {
     switch (column) {
       case EvaluationLogFields.REQUEST_ID:

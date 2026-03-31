@@ -46,10 +46,10 @@
   <ng-template pTemplate="body" let-item>
     <tr [ngClass]="{'item-blink': isBlink(item)}">
       <td *ngFor="let column of columns">
-        <a class="link" [routerLink]="" *ngIf="isLink(column.name)" (click)="onSelect($event, item, configsPanel)">
+        <a class="link" [routerLink]="" *ngIf="isLink(column.name, item)" (click)="onSelect($event, item, configsPanel)">
           {{ getColumnValue(column.name, item) }}
         </a>
-        <span *ngIf="!isLink(column.name)">{{ getColumnValue(column.name, item) }}</span>
+        <span *ngIf="!isLink(column.name, item)">{{ getColumnValue(column.name, item) }}</span>
       </td>
       <td>
         <button pButton

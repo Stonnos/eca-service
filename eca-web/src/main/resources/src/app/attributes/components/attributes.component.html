@@ -41,10 +41,10 @@
               </p-checkbox>
             </td>
             <td *ngFor="let column of columns">
-              <a class="link" [routerLink]="" *ngIf="isLink(column.name)" (click)="toggleOverlayPanel($event, item, infoPanel)">
+              <a class="link" [routerLink]="" *ngIf="isLink(column.name, item)" (click)="toggleOverlayPanel($event, item, infoPanel)">
                 {{ getColumnValue(column.name, item) }}
               </a>
-              <div *ngIf="!isLink(column.name)">
+              <div *ngIf="!isLink(column.name, item)">
                 {{ getColumnValue(column.name, item) }}
               </div>
             </td>

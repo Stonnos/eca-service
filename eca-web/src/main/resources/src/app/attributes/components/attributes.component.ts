@@ -17,7 +17,6 @@ export class AttributesComponent implements OnInit {
 
   public columns: any[] = [];
   public header: string = 'Атрибуты';
-  public linkColumns: string[] = [];
   public selectedAttributesIsTooLowMessage: Message[] = [
     {
       severity: 'warn',
@@ -51,7 +50,6 @@ export class AttributesComponent implements OnInit {
 
   public constructor(private fieldService: FieldService) {
     this.initColumns();
-    this.linkColumns = [AttributeFields.NAME];
   }
 
   public ngOnInit() {
@@ -68,8 +66,8 @@ export class AttributesComponent implements OnInit {
     return this.fieldService.getFieldValue(column, item);
   }
 
-  public isLink(column: string): boolean {
-    return this.linkColumns.includes(column);
+  public isLink(column: string, attributeDto: AttributeDto): boolean {
+    return column == AttributeFields.NAME && attributeDto.type.value == 'NOMINAL';
   }
 
   public selectAttribute(attribute: AttributeDto, event): void {

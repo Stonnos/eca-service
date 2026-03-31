@@ -31,10 +31,10 @@
     <ng-template pTemplate="body" let-item>
       <tr>
         <td *ngFor="let column of columns">
-          <a [routerLink]="" *ngIf="isLink(column.name)" (click)="onSelect(item, column.name)">
+          <a [routerLink]="" *ngIf="isLink(column.name, item)" (click)="onSelect(item, column.name)">
             {{ getColumnValue(column.name, item) }}
           </a>
-          <div *ngIf="!isLink(column.name)">
+          <div *ngIf="!isLink(column.name, item)">
             {{ getColumnValue(column.name, item) }}
           </div>
         </td>

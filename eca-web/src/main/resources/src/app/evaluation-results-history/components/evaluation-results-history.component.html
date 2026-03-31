@@ -73,11 +73,11 @@
               </button>
             </td>
             <td *ngFor="let column of columns">
-              <a [routerLink]="" *ngIf="isLink(column.name)"
+              <a [routerLink]="" *ngIf="isLink(column.name, item)"
                  (click)="onSelect($event, item, column.name, infoPanel)">
                 {{ getColumnValue(column.name, item) }}
               </a>
-              <div *ngIf="!isLink(column.name)">
+              <div *ngIf="!isLink(column.name, item)">
                 <span>{{ getColumnValue(column.name, item) }}</span>
               </div>
             </td>
