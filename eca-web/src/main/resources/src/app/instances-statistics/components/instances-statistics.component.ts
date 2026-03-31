@@ -15,7 +15,7 @@ import { finalize } from "rxjs/internal/operators";
 })
 export class InstancesStatisticsComponent implements OnInit {
 
-  private readonly id: number;
+  public readonly id: number;
 
   public loading: boolean = false;
   public attributes: AttributeDto[] = [];
