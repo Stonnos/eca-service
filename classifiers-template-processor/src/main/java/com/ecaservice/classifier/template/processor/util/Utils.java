@@ -3,8 +3,10 @@ package com.ecaservice.classifier.template.processor.util;
 import com.ecaservice.classifier.options.model.ClassifierOptions;
 import com.ecaservice.classifier.options.model.IterativeEnsembleOptions;
 import com.ecaservice.classifier.options.model.StackingOptions;
+import com.ecaservice.web.dto.model.ClassifierInfoDto;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.experimental.UtilityClass;
+import org.springframework.util.CollectionUtils;
 
 import java.io.IOException;
 
@@ -17,6 +19,8 @@ import java.io.IOException;
 public class Utils {
 
     private static final ObjectMapper objectMapper = new ObjectMapper();
+    private static final String LINE_BREAK = "\n";
+    private static final String COLON = ": ";
 
     /**
      * Checks if classifier options is ensemble classifier options.
@@ -56,5 +60,39 @@ public class Utils {
         } catch (Exception ex) {
             throw new IllegalStateException(ex.getMessage());
         }
+    }
+
+    /**
+     * Gets classifier options details string.
+     *
+     * @param classifierInfoDto - classifier info dto
+     * @return classifier options details string
+     */
+    public static String getClassifierOptionsDetailsString(ClassifierInfoDto classifierInfoDto) {
+        StringBuilder classifierOptions = new StringBuilder();
+        classifierInfoDto.getInputOptions().forEach(inputOptionDto -> {
+            if (!CollectionUtils.isEmpty(inputOptionDto.getIndividualClassifiers())) {
+                classifierOptions.append(LINE_BREAK)
+                        .append(inputOptionDto.getOptionName())
+                        .append(COLON);
+                inputOptionDto.getIndividualClassifiers().forEach(individualClassifierInfo -> {
+                    classifierOptions.append(LINE_BREAK)
+                            .append(individualClassifierInfo.getClassifierDescription())
+                            .append(LINE_BREAK);
+                    individualClassifierInfo.getInputOptions().forEach(individualClassifierOptions -> {
+                        classifierOptions.append(individualClassifierOptions.getOptionName())
+                                .append(COLON)
+                                .append(individualClassifierOptions.getOptionValue())
+                                .append(LINE_BREAK);
+                    });
+                });
+            } else {
+                classifierOptions.append(inputOptionDto.getOptionName())
+                        .append(COLON)
+                        .append(inputOptionDto.getOptionValue())
+                        .append(LINE_BREAK);
+            }
+        });
+        return classifierOptions.toString();
     }
 }

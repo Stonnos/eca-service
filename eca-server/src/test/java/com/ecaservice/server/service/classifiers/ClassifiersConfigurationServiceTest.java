@@ -1,8 +1,12 @@
 package com.ecaservice.server.service.classifiers;
 
+import com.ecaservice.classifier.template.processor.config.ClassifiersTemplateProperties;
+import com.ecaservice.classifier.template.processor.service.ClassifierOptionsProcessor;
+import com.ecaservice.classifier.template.processor.service.ClassifiersTemplateProvider;
 import com.ecaservice.common.web.exception.EntityNotFoundException;
 import com.ecaservice.common.web.exception.InvalidOperationException;
 import com.ecaservice.core.filter.service.FilterTemplateService;
+import com.ecaservice.core.form.template.service.FormTemplateProvider;
 import com.ecaservice.core.lock.config.CoreLockAutoConfiguration;
 import com.ecaservice.core.lock.metrics.LockMeterService;
 import com.ecaservice.core.message.template.service.MessageTemplateProcessor;
@@ -24,6 +28,7 @@ import com.ecaservice.server.service.UserService;
 import com.ecaservice.web.dto.model.ClassifiersConfigurationDto;
 import com.ecaservice.web.dto.model.CreateClassifiersConfigurationDto;
 import com.ecaservice.web.dto.model.FormTemplateDto;
+import com.ecaservice.web.dto.model.FormTemplateGroupDto;
 import com.ecaservice.web.dto.model.PageDto;
 import com.ecaservice.web.dto.model.PageRequestDto;
 import com.ecaservice.web.dto.model.SortFieldRequestDto;
@@ -50,8 +55,12 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import static com.ecaservice.report.ReportGenerator.generateReport;
+import static com.ecaservice.server.TestHelperUtils.createDecisionTreeOptions;
+import static com.ecaservice.server.TestHelperUtils.loadClassifiersTemplates;
+import static com.ecaservice.server.TestHelperUtils.loadEnsembleClassifiersTemplates;
 import static com.ecaservice.server.model.entity.BaseEntity_.CREATION_DATE;
 import static com.ecaservice.server.report.ReportTemplates.CLASSIFIERS_CONFIGURATION_TEMPLATE;
+import static com.ecaservice.server.util.ClassifierOptionsHelper.toJsonString;
 import static com.google.common.collect.Lists.newArrayList;
 import static org.apache.commons.lang3.SystemUtils.USER_DIR;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -68,12 +77,12 @@ import static org.mockito.Mockito.when;
 @EnableAspectJAutoProxy
 @Import({ClassifiersConfigurationServiceImpl.class, ClassifiersConfigurationMapperImpl.class, AppProperties.class,
         DateTimeConverter.class, ClassifierOptionsDatabaseModelMapperImpl.class,
-        CoreLockAutoConfiguration.class,
+        CoreLockAutoConfiguration.class, ClassifierOptionsInfoProcessor.class, ClassifierOptionsProcessor.class,
+        ClassifiersTemplateProperties.class, ClassifiersTemplateProvider.class,
         ClassifiersConfigurationHistoryService.class, ClassifiersConfigurationHistoryMapperImpl.class})
 class ClassifiersConfigurationServiceTest extends AbstractJpaTest {
 
     private static final int NUM_THREADS = 4;
-    private static final String TEST_CONFIG = "test_config";
     private static final String TEST_CONFIGURATION_NAME = "TestConfiguration";
     private static final String TEST_CONFIGURATION_UPDATED_NAME = "UpdatedTestName";
     private static final String USER_NAME = "user";
@@ -82,6 +91,8 @@ class ClassifiersConfigurationServiceTest extends AbstractJpaTest {
     private static final int PAGE_SIZE = 10;
     private static final String MESSAGE = "message";
     private static final String TEMPLATE_TITLE = "title";
+    private static final String CLASSIFIERS = "classifiers";
+    private static final String ENSEMBLE_CLASSIFIERS = "ensembleClassifiers";
 
     @Autowired
     private ClassifierOptionsDatabaseModelRepository classifierOptionsDatabaseModelRepository;
@@ -101,6 +112,8 @@ class ClassifiersConfigurationServiceTest extends AbstractJpaTest {
     private ClassifiersFormTemplateProvider classifiersFormTemplateProvider;
     @MockBean
     private MessageTemplateProcessor messageTemplateProcessor;
+    @MockBean
+    private FormTemplateProvider formTemplateProvider;
 
     @Override
     public void init() {
@@ -108,6 +121,10 @@ class ClassifiersConfigurationServiceTest extends AbstractJpaTest {
         var formTemplate = new FormTemplateDto();
         formTemplate.setTemplateTitle(TEMPLATE_TITLE);
         when(classifiersFormTemplateProvider.getClassifierTemplateByClass(anyString())).thenReturn(formTemplate);
+        FormTemplateGroupDto templates = loadClassifiersTemplates();
+        FormTemplateGroupDto ensembleTemplates = loadEnsembleClassifiersTemplates();
+        when(formTemplateProvider.getFormGroupDto(CLASSIFIERS)).thenReturn(templates);
+        when(formTemplateProvider.getFormGroupDto(ENSEMBLE_CLASSIFIERS)).thenReturn(ensembleTemplates);
         when(messageTemplateProcessor.process(anyString(), anyMap())).thenReturn(MESSAGE);
     }
 
@@ -288,7 +305,9 @@ class ClassifiersConfigurationServiceTest extends AbstractJpaTest {
         ClassifiersConfiguration firstConfiguration = saveConfiguration(true, true);
         ClassifiersConfiguration secondConfiguration = saveConfiguration(false, false);
         classifierOptionsDatabaseModelRepository.save(
-                TestHelperUtils.createClassifierOptionsDatabaseModel(TEST_CONFIG, secondConfiguration));
+                TestHelperUtils.createClassifierOptionsDatabaseModel(toJsonString(createDecisionTreeOptions()),
+                        secondConfiguration)
+        );
         PageRequestDto pageRequestDto = new PageRequestDto(PAGE_NUMBER, PAGE_SIZE,
                 Collections.singletonList(new SortFieldRequestDto(CREATION_DATE, false)), null,
                 Collections.emptyList());
@@ -363,8 +382,10 @@ class ClassifiersConfigurationServiceTest extends AbstractJpaTest {
         classifiersConfiguration.setConfigurationName(TEST_CONFIGURATION_NAME);
         classifiersConfigurationRepository.save(classifiersConfiguration);
         classifierOptionsDatabaseModelRepository.saveAll(Arrays.asList(
-                TestHelperUtils.createClassifierOptionsDatabaseModel(TEST_CONFIG, classifiersConfiguration),
-                TestHelperUtils.createClassifierOptionsDatabaseModel(TEST_CONFIG, classifiersConfiguration)
+                TestHelperUtils.createClassifierOptionsDatabaseModel(toJsonString(createDecisionTreeOptions()),
+                        classifiersConfiguration),
+                TestHelperUtils.createClassifierOptionsDatabaseModel(toJsonString(createDecisionTreeOptions()),
+                        classifiersConfiguration)
         ));
         return classifiersConfiguration;
     }
