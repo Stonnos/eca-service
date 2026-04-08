@@ -95,6 +95,7 @@ public interface EvaluationResultsMapper {
      * @return evaluation results history report model
      */
     @Mapping(target = "evaluationMethod", ignore = true)
+    @Mapping(target = "classifierOptions", ignore = true)
     @Mapping(source = "saveDate", target = "saveDate", qualifiedByName = "formatLocalDateTime")
     @Mapping(source = "instancesInfo.relationName", target = "relationName")
     @Mapping(source = "statistics.numTestInstances", target = "numTestInstances")

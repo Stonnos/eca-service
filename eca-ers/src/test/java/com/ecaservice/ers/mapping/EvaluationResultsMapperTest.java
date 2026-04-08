@@ -116,7 +116,5 @@ class EvaluationResultsMapperTest {
                 evaluationResultsInfo.getInstancesInfo().getRelationName());
         assertThat(evaluationResultsHistoryBean.getClassifierName())
                 .isEqualTo(evaluationResultsInfo.getClassifierName());
-        assertThat(evaluationResultsHistoryBean.getClassifierOptions())
-                .isEqualTo(evaluationResultsInfo.getClassifierOptions());
     }
 }

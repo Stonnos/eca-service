@@ -1,5 +1,6 @@
 package com.ecaservice.ers;
 
+import com.ecaservice.classifier.options.model.DecisionTreeOptions;
 import com.ecaservice.ers.dto.ClassificationCostsReport;
 import com.ecaservice.ers.dto.ClassifierOptionsRequest;
 import com.ecaservice.ers.dto.ClassifierReport;
@@ -25,8 +26,10 @@ import com.ecaservice.ers.model.StatisticsInfo;
 import com.ecaservice.web.dto.model.FilterDictionaryDto;
 import com.ecaservice.web.dto.model.FilterDictionaryValueDto;
 import com.ecaservice.web.dto.model.FilterFieldDto;
+import com.ecaservice.web.dto.model.FormTemplateGroupDto;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import eca.ensemble.forests.DecisionTreeType;
 import lombok.Cleanup;
 import lombok.experimental.UtilityClass;
 
@@ -59,8 +62,21 @@ public class TestHelperUtils {
     private static final String OPTIONS = "options";
     private static final String EVALUATION_RESULTS_HISTORY_FILTER_FIELDS_JSON =
             "evaluation_results_history_filter_fields.json";
+    private static final String CLASSIFIERS_TEMPLATES_JSON = "classifiers-templates.json";
     private static final String FILTER_NAME = "filterName";
     private static final String OBJECT_PATH = "instances.json";
+    private static final int MAX_DEPTH = 10;
+    private static final int MIN_OBJ = 2;
+
+    /**
+     * Loads classifiers templates.
+     *
+     * @return classifiers templates
+     */
+    public static FormTemplateGroupDto loadClassifiersTemplates() {
+        return loadConfig(CLASSIFIERS_TEMPLATES_JSON, new TypeReference<>() {
+        });
+    }
 
     /**
      * Loads evaluation results filter fields.
@@ -68,14 +84,8 @@ public class TestHelperUtils {
      * @return filter fields list
      */
     public static List<FilterFieldDto> loadEvaluationResultsHistoryFilterFields() {
-        try {
-            ClassLoader classLoader = ClassLoader.getSystemClassLoader();
-            @Cleanup var inputStream = classLoader.getResourceAsStream(EVALUATION_RESULTS_HISTORY_FILTER_FIELDS_JSON);
-            return OBJECT_MAPPER.readValue(inputStream, new TypeReference<>() {
-            });
-        } catch (Exception ex) {
-            throw new IllegalStateException(ex.getMessage());
-        }
+        return loadConfig(EVALUATION_RESULTS_HISTORY_FILTER_FIELDS_JSON, new TypeReference<>() {
+        });
     }
 
     /**
@@ -450,5 +460,32 @@ public class TestHelperUtils {
         getEvaluationResultsResponse.setStatistics(buildStatisticsReport());
         getEvaluationResultsResponse.setInstances(buildInstancesReport());
         return getEvaluationResultsResponse;
+    }
+
+    /**
+     * Creates decision tree options.
+     *
+     * @return decision tree options
+     */
+    public static DecisionTreeOptions createDecisionTreeOptions() {
+        DecisionTreeOptions decisionTreeOptions = new DecisionTreeOptions();
+        decisionTreeOptions.setDecisionTreeType(DecisionTreeType.CART);
+        decisionTreeOptions.setMaxDepth(MAX_DEPTH);
+        decisionTreeOptions.setMinObj(MIN_OBJ);
+        decisionTreeOptions.setRandomTree(false);
+        decisionTreeOptions.setUseBinarySplits(true);
+        decisionTreeOptions.setUseRandomSplits(false);
+        decisionTreeOptions.setSeed(SEED);
+        return decisionTreeOptions;
+    }
+
+    private static <T> T loadConfig(String path, TypeReference<T> tTypeReference) {
+        try {
+            ClassLoader classLoader = ClassLoader.getSystemClassLoader();
+            @Cleanup var inputStream = classLoader.getResourceAsStream(path);
+            return OBJECT_MAPPER.readValue(inputStream, tTypeReference);
+        } catch (Exception ex) {
+            throw new IllegalStateException(ex.getMessage());
+        }
     }
 }
