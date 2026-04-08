@@ -26,6 +26,26 @@ public abstract class EvaluationBean {
     private String relationName;
 
     /**
+     * Instances number
+     */
+    private Integer numInstances;
+
+    /**
+     * Attributes number
+     */
+    private Integer numAttributes;
+
+    /**
+     * Classes number
+     */
+    private Integer numClasses;
+
+    /**
+     * Class name
+     */
+    private String className;
+
+    /**
      * Request creation date
      */
     private String creationDate;

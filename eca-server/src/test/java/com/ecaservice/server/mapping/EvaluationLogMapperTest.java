@@ -138,6 +138,16 @@ class EvaluationLogMapperTest {
         assertThat(evaluationLogBean.getEvaluationMethod()).isNotNull();
         assertThat(evaluationLogBean.getRelationName())
                 .isEqualTo(evaluationLog.getInstancesInfo().getRelationName());
+        assertThat(evaluationLogBean.getRelationName())
+                .isEqualTo(evaluationLog.getInstancesInfo().getRelationName());
+        assertThat(evaluationLogBean.getNumInstances())
+                .isEqualTo(evaluationLog.getInstancesInfo().getNumInstances());
+        assertThat(evaluationLogBean.getNumAttributes())
+                .isEqualTo(evaluationLog.getInstancesInfo().getNumAttributes());
+        assertThat(evaluationLogBean.getNumClasses())
+                .isEqualTo(evaluationLog.getInstancesInfo().getNumClasses());
+        assertThat(evaluationLogBean.getClassName())
+                .isEqualTo(evaluationLog.getInstancesInfo().getClassName());
         assertThat(evaluationLogBean.getRequestId()).isEqualTo(evaluationLog.getRequestId());
         assertThat(evaluationLogBean.getRequestStatus())
                 .isEqualTo(evaluationLog.getRequestStatus().getDescription());

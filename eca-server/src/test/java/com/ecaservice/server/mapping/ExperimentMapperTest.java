@@ -164,6 +164,10 @@ class ExperimentMapperTest {
         assertThat(experimentBean.getRequestId()).isEqualTo(experiment.getRequestId());
         assertThat(experimentBean.getEvaluationTotalTime()).isNotNull();
         assertThat(experimentBean.getRelationName()).isEqualTo(experiment.getInstancesInfo().getRelationName());
+        assertThat(experimentBean.getNumInstances()).isEqualTo(experiment.getInstancesInfo().getNumInstances());
+        assertThat(experimentBean.getNumAttributes()).isEqualTo(experiment.getInstancesInfo().getNumAttributes());
+        assertThat(experimentBean.getNumClasses()).isEqualTo(experiment.getInstancesInfo().getNumClasses());
+        assertThat(experimentBean.getClassName()).isEqualTo(experiment.getInstancesInfo().getClassName());
         assertThat(experimentBean.getMaxPctCorrect()).isEqualTo(experiment.getMaxPctCorrect());
     }
 

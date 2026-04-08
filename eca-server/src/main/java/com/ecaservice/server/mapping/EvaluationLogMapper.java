@@ -167,6 +167,10 @@ public abstract class EvaluationLogMapper extends AbstractEvaluationMapper {
      */
     @Mapping(target = "evaluationMethod", ignore = true)
     @Mapping(source = "requestStatus.description", target = "requestStatus")
+    @Mapping(source = "instancesInfo.numInstances", target = "numInstances")
+    @Mapping(source = "instancesInfo.numAttributes", target = "numAttributes")
+    @Mapping(source = "instancesInfo.numClasses", target = "numClasses")
+    @Mapping(source = "instancesInfo.className", target = "className")
     @Mapping(source = "evaluationLog", target = "evaluationTotalTime", qualifiedByName = "calculateEvaluationTotalTime")
     @Mapping(source = "modelPath", target = "modelPath", qualifiedByName = "mapModelPath")
     @Mapping(source = "creationDate", target = "creationDate", qualifiedByName = "formatLocalDateTime")
