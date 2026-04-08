@@ -24,6 +24,26 @@ public class EvaluationResultsHistoryBean {
     private String relationName;
 
     /**
+     * Instances number
+     */
+    private Integer numInstances;
+
+    /**
+     * Attributes number
+     */
+    private Integer numAttributes;
+
+    /**
+     * Classes number
+     */
+    private Integer numClasses;
+
+    /**
+     * Class name
+     */
+    private String className;
+
+    /**
      * Evaluation method
      */
     private String evaluationMethod;

@@ -20,6 +20,11 @@ public class EvaluationLogBean extends EvaluationBean {
     private String classifierName;
 
     /**
+     * Classifier options
+     */
+    private String classifierOptions;
+
+    /**
      * Correctly classified percentage
      */
     private BigDecimal pctCorrect;

@@ -114,6 +114,10 @@ public abstract class ExperimentMapper extends AbstractEvaluationMapper {
      * @return experiment bean
      */
     @Mapping(source = "instancesInfo.relationName", target = "relationName")
+    @Mapping(source = "instancesInfo.numInstances", target = "numInstances")
+    @Mapping(source = "instancesInfo.numAttributes", target = "numAttributes")
+    @Mapping(source = "instancesInfo.numClasses", target = "numClasses")
+    @Mapping(source = "instancesInfo.className", target = "className")
     @Mapping(source = "experiment", target = "evaluationTotalTime", qualifiedByName = "calculateEvaluationTotalTime")
     @Mapping(source = "modelPath", target = "modelPath", qualifiedByName = "mapModelPath")
     @Mapping(target = "evaluationMethod", ignore = true)

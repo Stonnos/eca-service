@@ -34,6 +34,7 @@ import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import static com.ecaservice.classifier.template.processor.util.Utils.getClassifierOptionsDetailsString;
 import static com.ecaservice.core.filter.util.FilterUtils.buildSort;
 import static com.ecaservice.server.config.audit.AuditCodes.ADD_CONFIGURATION;
 import static com.ecaservice.server.config.audit.AuditCodes.COPY_CONFIGURATION;
@@ -58,7 +59,7 @@ public class ClassifiersConfigurationServiceImpl implements ClassifiersConfigura
     private final ClassifiersConfigurationMapper classifiersConfigurationMapper;
     private final ClassifierOptionsDatabaseModelMapper classifierOptionsDatabaseModelMapper;
     private final ClassifiersConfigurationHistoryService classifiersConfigurationHistoryService;
-    private final ClassifiersFormTemplateProvider classifiersFormTemplateProvider;
+    private final ClassifierOptionsInfoProcessor classifierOptionsInfoProcessor;
     private final ClassifiersConfigurationRepository classifiersConfigurationRepository;
     private final ClassifierOptionsDatabaseModelRepository classifierOptionsDatabaseModelRepository;
 
@@ -255,9 +256,10 @@ public class ClassifiersConfigurationServiceImpl implements ClassifiersConfigura
     private ClassifierOptionsBean internalPopulateClassifierOptionsBean(
             ClassifierOptionsDatabaseModel classifierOptionsDatabaseModel) {
         var classifierOptionsBean = classifierOptionsDatabaseModelMapper.mapToBean(classifierOptionsDatabaseModel);
-        var classifierFormTemplate = classifiersFormTemplateProvider.getClassifierTemplateByClass(
-                classifierOptionsDatabaseModel.getOptionsName());
-        classifierOptionsBean.setOptionsName(classifierFormTemplate.getTemplateTitle());
+        var classifierInfoDto =
+                classifierOptionsInfoProcessor.processClassifierInfo(classifierOptionsDatabaseModel.getConfig());
+        classifierOptionsBean.setOptionsName(classifierInfoDto.getClassifierDescription());
+        classifierOptionsBean.setOptionsString(getClassifierOptionsDetailsString(classifierInfoDto));
         return classifierOptionsBean;
     }
 }

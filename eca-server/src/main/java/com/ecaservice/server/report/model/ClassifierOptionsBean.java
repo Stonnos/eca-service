@@ -16,6 +16,11 @@ public class ClassifierOptionsBean {
     private String optionsName;
 
     /**
+     * Options string
+     */
+    private String optionsString;
+
+    /**
      * Creation date
      */
     private String creationDate;

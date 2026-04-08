@@ -10,6 +10,7 @@ import com.ecaservice.server.report.customize.InstancesInfoFilterReportCustomize
 import com.ecaservice.server.report.model.BaseReportType;
 import com.ecaservice.server.report.model.EvaluationLogBean;
 import com.ecaservice.server.repository.InstancesInfoRepository;
+import com.ecaservice.server.service.classifiers.ClassifierOptionsInfoProcessor;
 import com.ecaservice.server.service.evaluation.EvaluationLogDataService;
 import com.ecaservice.web.dto.model.PageRequestDto;
 import jakarta.annotation.PostConstruct;
@@ -20,6 +21,7 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static com.ecaservice.classifier.template.processor.util.Utils.getClassifierOptionsDetailsString;
 import static com.ecaservice.server.service.filter.dictionary.FilterDictionaries.CLASSIFIER_NAME;
 import static com.ecaservice.server.util.RoutePaths.EVALUATION_RESULTS_DETAILS_PATH;
 
@@ -35,29 +37,33 @@ public class EvaluationLogsBaseReportDataFetcher extends
     private final AppProperties appProperties;
     private final EvaluationLogDataService evaluationLogDataService;
     private final EvaluationLogMapper evaluationLogMapper;
+    private final ClassifierOptionsInfoProcessor classifierOptionsInfoProcessor;
     private final InstancesInfoRepository instancesInfoRepository;
 
     /**
      * Constructor with spring dependency injection.
      *
-     * @param filterService            - filter template service bean
-     * @param appProperties            - app properties
-     * @param instancesInfoRepository  - instances info repository
-     * @param evaluationLogDataService - evaluation log service bean
-     * @param evaluationLogMapper      - evaluation log mapper bean
+     * @param filterService                  - filter template service bean
+     * @param appProperties                  - app properties
+     * @param instancesInfoRepository        - instances info repository
+     * @param evaluationLogDataService       - evaluation log service bean
+     * @param evaluationLogMapper            - evaluation log mapper bean
+     * @param classifierOptionsInfoProcessor - classifier options info processor
      */
     @Autowired
     public EvaluationLogsBaseReportDataFetcher(FilterTemplateService filterService,
                                                AppProperties appProperties,
                                                InstancesInfoRepository instancesInfoRepository,
                                                EvaluationLogDataService evaluationLogDataService,
-                                               EvaluationLogMapper evaluationLogMapper) {
+                                               EvaluationLogMapper evaluationLogMapper,
+                                               ClassifierOptionsInfoProcessor classifierOptionsInfoProcessor) {
         super(BaseReportType.EVALUATION_LOGS.name(), FilterTemplateType.EVALUATION_LOG, appProperties.getMaxPagesNum(),
                 filterService);
         this.appProperties = appProperties;
         this.evaluationLogDataService = evaluationLogDataService;
         this.evaluationLogMapper = evaluationLogMapper;
         this.instancesInfoRepository = instancesInfoRepository;
+        this.classifierOptionsInfoProcessor = classifierOptionsInfoProcessor;
     }
 
     /**
@@ -79,13 +85,22 @@ public class EvaluationLogsBaseReportDataFetcher extends
                 .stream()
                 .map(evaluationLog -> {
                     var evaluationLogBean = evaluationLogMapper.mapToBean(evaluationLog);
-                    var classifierName = getDictionaryLabelByCode(CLASSIFIER_NAME, evaluationLog.getClassifierName());
+                    String classifierName =
+                            getDictionaryLabelByCode(CLASSIFIER_NAME, evaluationLog.getClassifierName());
+                    String classifierOptions = getClassifierOptionsDetails(evaluationLog);
                     String externalDetailUrl = getExternalDetailsUrl(evaluationLog);
                     evaluationLogBean.setClassifierName(classifierName);
+                    evaluationLogBean.setClassifierOptions(classifierOptions);
                     evaluationLogBean.setExternalDetailsUrl(externalDetailUrl);
                     return evaluationLogBean;
                 })
                 .collect(Collectors.toList());
+    }
+
+    private String getClassifierOptionsDetails(EvaluationLog evaluationLog) {
+        var classifierInfoDto =
+                classifierOptionsInfoProcessor.processClassifierInfo(evaluationLog.getClassifierOptions());
+        return getClassifierOptionsDetailsString(classifierInfoDto);
     }
 
     private String getExternalDetailsUrl(EvaluationLog evaluationLog) {

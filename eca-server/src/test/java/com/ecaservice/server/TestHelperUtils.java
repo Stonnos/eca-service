@@ -730,8 +730,9 @@ public class TestHelperUtils {
         evaluationLog.setEndDate(LocalDateTime.now());
         evaluationLog.setClassifierName(CART.class.getSimpleName());
         evaluationLog.setClassifierOptions(toJsonString(createDecisionTreeOptions()));
-        evaluationLog.setInstancesInfo(createInstancesInfo());
-        evaluationLog.setRelationName(RELATION_NAME);
+        var instancesInfo = createInstancesInfo();
+        evaluationLog.setInstancesInfo(instancesInfo);
+        evaluationLog.setRelationName(instancesInfo.getRelationName());
         evaluationLog.setEvaluationMethod(EvaluationMethod.CROSS_VALIDATION);
         evaluationLog.setNumFolds(NUM_FOLDS);
         evaluationLog.setNumTests(NUM_TESTS);
