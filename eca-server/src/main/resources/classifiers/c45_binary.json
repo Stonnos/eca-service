@@ -1,5 +1,9 @@
 {
   "type": "decision_tree",
   "decisionTreeType": "C45",
-  "useBinarySplits": true
+  "useBinarySplits": true,
+  "minObj": 2,
+  "maxDepth": 0,
+  "randomTree": false,
+  "useRandomSplits": false
 }

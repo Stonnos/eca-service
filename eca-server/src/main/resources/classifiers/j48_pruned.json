@@ -1,5 +1,6 @@
 {
   "type": "j48",
   "unpruned": false,
-  "binarySplits": false
+  "binarySplits": false,
+  "numFolds": 3
 }

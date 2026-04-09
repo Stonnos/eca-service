@@ -1,6 +1,14 @@
 {
   "type": "neural_network",
+  "seed": 1,
+  "numIterations": 1000000,
+  "minError": 1.0E-5,
   "activationFunctionOptions": {
-    "activationFunctionType": "LOGISTIC"
+    "activationFunctionType": "LOGISTIC",
+    "coefficient": 1.0
+  },
+  "backPropagationOptions": {
+    "learningRate": 0.1,
+    "momentum": 0.2
   }
 }

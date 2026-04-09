@@ -1,3 +1,5 @@
 {
-  "type": "logistic"
+  "type": "logistic",
+  "maxIts": 200,
+  "useConjugateGradientDescent": false
 }
