@@ -100,7 +100,7 @@
         <maven-processor-plugin.version>4.5</maven-processor-plugin.version>
         <logstash-encoder.version>6.2</logstash-encoder.version>
         <org.mapstruct.version>1.5.5.Final</org.mapstruct.version>
-        <commons.io.version>2.13.0</commons.io.version>
+        <commons.io.version>2.14.0</commons.io.version>
         <org.apache.commons.lang3.version>3.10</org.apache.commons.lang3.version>
         <jakarta-validation-api.version>3.0.2</jakarta-validation-api.version>
         <swagger-annotations.version>2.2.15</swagger-annotations.version>
