@@ -108,10 +108,10 @@
         <guava.version>32.1.1-jre</guava.version>
         <jacoco-plugin.version>0.8.10</jacoco-plugin.version>
         <jacoco.minCoverage>0.0</jacoco.minCoverage>
-        <micrometer-registry-prometheus.version>1.16.5</micrometer-registry-prometheus.version>
+        <micrometer-registry-prometheus.version>1.15.11</micrometer-registry-prometheus.version>
         <hibernate-validator.version>6.2.5.Final</hibernate-validator.version>
         <commons.csv.version>1.10.0</commons.csv.version>
-        <feign-micrometer.version>13.12</feign-micrometer.version>
+        <feign-micrometer.version>13.6.1</feign-micrometer.version>
         <spring-cloud-starter-openfeign.version>4.3.2</spring-cloud-starter-openfeign.version>
         <spring-cloud-starter-netflix-eureka-client.version>4.3.2</spring-cloud-starter-netflix-eureka-client.version>
         <hibernate-validator.version>8.0.1.Final</hibernate-validator.version>
