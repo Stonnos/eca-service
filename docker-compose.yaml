@@ -72,11 +72,10 @@ services:
       - "8761:8761"
     environment:
       TZ: ${TIME_ZONE}
-      SPRING_PROFILES_ACTIVE: "docker"
+      SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES}
       JAVA_OPTS: "-Xmx192m -XX:MaxMetaspaceSize=192m"
       MANAGEMENT_TRACING_SAMPLING_PROBABILITY: ${TRACING_SAMPLING}
       MANAGEMENT_ZIPKIN_TRACING_ENDPOINT: ${ZIPKIN_URL}
-      LOGGING_MODE: ${LOGGING_MODE}
     deploy:
       resources:
         limits:
@@ -93,7 +92,7 @@ services:
     restart: always
     environment:
       TZ: ${TIME_ZONE}
-      SPRING_PROFILES_ACTIVE: "docker"
+      SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES}
       JAVA_OPTS: ${ECA_SERVER_JAVA_OPTS}
       QUEUE_EVALUATIONREQUESTQUEUE: ${QUEUE_EVALUATION_REQUEST_QUEUE}
       QUEUE_EVALUATIONOPTIMIZERREQUESTQUEUE: ${QUEUE_EVALUATION_OPTIMIZER_REQUEST_QUEUE}
@@ -107,7 +106,6 @@ services:
       OPENAPI_BASEPATH: "/eca-server"
       MANAGEMENT_TRACING_SAMPLING_PROBABILITY: ${TRACING_SAMPLING}
       MANAGEMENT_ZIPKIN_TRACING_ENDPOINT: ${ZIPKIN_URL}
-      LOGGING_MODE: ${LOGGING_MODE}
     deploy:
       resources:
         limits:
@@ -128,7 +126,7 @@ services:
     restart: always
     environment:
       TZ: ${TIME_ZONE}
-      SPRING_PROFILES_ACTIVE: "docker"
+      SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES}
       JAVA_OPTS: "-Xmx384m -XX:MaxMetaspaceSize=256m"
       AUDIT_ENABLED: "true"
       AUDIT_ASYNCEVENTS: ${AUDIT_ASYNC_EVENTS}
@@ -137,7 +135,6 @@ services:
       OPENAPI_BASEPATH: "/eca-oauth"
       MANAGEMENT_TRACING_SAMPLING_PROBABILITY: ${TRACING_SAMPLING}
       MANAGEMENT_ZIPKIN_TRACING_ENDPOINT: ${ZIPKIN_URL}
-      LOGGING_MODE: ${LOGGING_MODE}
     deploy:
       resources:
         limits:
@@ -157,12 +154,11 @@ services:
     restart: always
     environment:
       TZ: ${TIME_ZONE}
-      SPRING_PROFILES_ACTIVE: "docker"
+      SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES}
       JAVA_OPTS: "-Xmx384m -XX:MaxMetaspaceSize=256m"
       OPENAPI_BASEPATH: "/eca-mail"
       MANAGEMENT_TRACING_SAMPLING_PROBABILITY: ${TRACING_SAMPLING}
       MANAGEMENT_ZIPKIN_TRACING_ENDPOINT: ${ZIPKIN_URL}
-      LOGGING_MODE: ${LOGGING_MODE}
     networks:
       - default
     deploy:
@@ -182,7 +178,7 @@ services:
     restart: always
     environment:
       TZ: ${TIME_ZONE}
-      SPRING_PROFILES_ACTIVE: "docker"
+      SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES}
       JAVA_OPTS: "-Xmx512m -XX:MaxMetaspaceSize=256m"
       AUDIT_ENABLED: "true"
       AUDIT_ASYNCEVENTS: ${AUDIT_ASYNC_EVENTS}
@@ -191,7 +187,6 @@ services:
       OPENAPI_BASEPATH: "/eca-ds"
       MANAGEMENT_TRACING_SAMPLING_PROBABILITY: ${TRACING_SAMPLING}
       MANAGEMENT_ZIPKIN_TRACING_ENDPOINT: ${ZIPKIN_URL}
-      LOGGING_MODE: ${LOGGING_MODE}
     networks:
       - default
     deploy:
@@ -211,7 +206,7 @@ services:
     restart: always
     environment:
       TZ: ${TIME_ZONE}
-      SPRING_PROFILES_ACTIVE: "docker"
+      SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES}
       JAVA_OPTS: "-Xmx384m -XX:MaxMetaspaceSize=256m"
       AUDIT_ENABLED: "true"
       AUDIT_ASYNCEVENTS: ${AUDIT_ASYNC_EVENTS}
@@ -220,7 +215,6 @@ services:
       OPENAPI_BASEPATH: "/eca-ers"
       MANAGEMENT_TRACING_SAMPLING_PROBABILITY: ${TRACING_SAMPLING}
       MANAGEMENT_ZIPKIN_TRACING_ENDPOINT: ${ZIPKIN_URL}
-      LOGGING_MODE: ${LOGGING_MODE}
     networks:
       - default
     deploy:
@@ -239,11 +233,10 @@ services:
     container_name: eca-web
     environment:
       TZ: ${TIME_ZONE}
-      SPRING_PROFILES_ACTIVE: "docker"
+      SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES}
       JAVA_OPTS: "-Xmx192m -XX:MaxMetaspaceSize=192m"
       MANAGEMENT_TRACING_SAMPLING_PROBABILITY: ${TRACING_SAMPLING}
       MANAGEMENT_ZIPKIN_TRACING_ENDPOINT: ${ZIPKIN_URL}
-      LOGGING_MODE: ${LOGGING_MODE}
     networks:
       - default
     deploy:
@@ -261,11 +254,10 @@ services:
     container_name: api-gateway
     environment:
       TZ: ${TIME_ZONE}
-      SPRING_PROFILES_ACTIVE: "docker"
+      SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES}
       JAVA_OPTS: "-Xmx256m -XX:MaxMetaspaceSize=256m"
       MANAGEMENT_TRACING_SAMPLING_PROBABILITY: ${TRACING_SAMPLING}
       MANAGEMENT_ZIPKIN_TRACING_ENDPOINT: ${ZIPKIN_URL}
-      LOGGING_MODE: ${LOGGING_MODE}
     ports:
       - "8080:8080"
     deploy:
@@ -286,12 +278,11 @@ services:
     restart: always
     environment:
       TZ: ${TIME_ZONE}
-      SPRING_PROFILES_ACTIVE: "docker"
+      SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES}
       JAVA_OPTS: "-Xmx384m -XX:MaxMetaspaceSize=256m"
       OPENAPI_BASEPATH: "/eca-web-push"
       MANAGEMENT_TRACING_SAMPLING_PROBABILITY: ${TRACING_SAMPLING}
       MANAGEMENT_ZIPKIN_TRACING_ENDPOINT: ${ZIPKIN_URL}
-      LOGGING_MODE: ${LOGGING_MODE}
     deploy:
       resources:
         limits:
@@ -308,12 +299,11 @@ services:
     restart: always
     environment:
       TZ: ${TIME_ZONE}
-      SPRING_PROFILES_ACTIVE: "docker"
+      SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES}
       JAVA_OPTS: "-Xmx384m -XX:MaxMetaspaceSize=256m"
       OPENAPI_BASEPATH: "/eca-audit-log"
       MANAGEMENT_TRACING_SAMPLING_PROBABILITY: ${TRACING_SAMPLING}
       MANAGEMENT_ZIPKIN_TRACING_ENDPOINT: ${ZIPKIN_URL}
-      LOGGING_MODE: ${LOGGING_MODE}
     deploy:
       resources:
         limits:
@@ -333,12 +323,11 @@ services:
     restart: always
     environment:
       TZ: ${TIME_ZONE}
-      SPRING_PROFILES_ACTIVE: "docker"
+      SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES}
       JAVA_OPTS: "-Xmx512m -XX:MaxMetaspaceSize=256m"
       OPENAPI_BASEPATH: "/eca-data-loader"
       MANAGEMENT_TRACING_SAMPLING_PROBABILITY: ${TRACING_SAMPLING}
       MANAGEMENT_ZIPKIN_TRACING_ENDPOINT: ${ZIPKIN_URL}
-      LOGGING_MODE: ${LOGGING_MODE}
     deploy:
       resources:
         limits:

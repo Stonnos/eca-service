@@ -151,6 +151,10 @@ docker cp application.jar container_name:/
 
 mvn versions:set -DnewVersion=version -DgenerateBackupPoms=false
 
+Настройка логирования
+-------------------------------------------------------
+Для включения логирования в формате json, необходимо задать профиль spring.profiles.active=logging-json
+
 Статический анализ кода с Sonarcloud
 -------------------------------------------------------
 
