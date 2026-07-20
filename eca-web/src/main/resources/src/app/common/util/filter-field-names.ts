@@ -76,8 +76,8 @@ export class InstancesFilterFields {
 
 export class EvaluationResultsHistoryFilterFields {
   public static readonly EVALUATION_METHOD: string = "evaluationMethod";
-  public static readonly CLASSIFIER_NAME: string = "classifierInfo.classifierName";
-  public static readonly RELATION_NAME: string = "instancesInfo.relationName";
+  public static readonly CLASSIFIER_NAME: string = "classifierName";
+  public static readonly RELATION_NAME: string = "relationName";
   public static readonly PCT_CORRECT: string = "statistics.pctCorrect";
   public static readonly MEAN_ABSOLUTE_ERROR: string = "statistics.meanAbsoluteError";
   public static readonly ROOT_MEAN_SQUARED_ERROR: string = "statistics.rootMeanSquaredError";
