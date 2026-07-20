@@ -6,7 +6,7 @@
     <parent>
         <groupId>eca.service</groupId>
         <artifactId>eca-service</artifactId>
-        <version>7ю.0.4</version>
+        <version>7.0.4</version>
     </parent>
 
     <artifactId>user-profile-options-cache-client</artifactId>
