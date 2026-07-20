@@ -12,7 +12,7 @@ import feign.FeignException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
@@ -38,9 +38,9 @@ import static org.mockito.Mockito.when;
 @Import({InstancesMetaDataService.class, InstancesInfoMapperImpl.class})
 class InstancesMetaDataServiceTest {
 
-    @MockBean
+    @MockitoBean
     private DataLoaderClient dataLoaderClient;
-    @MockBean
+    @MockitoBean
     private ObjectStorageService objectStorageService;
 
     @Autowired

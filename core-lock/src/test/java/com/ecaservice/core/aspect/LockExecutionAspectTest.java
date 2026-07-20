@@ -11,7 +11,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.TestPropertySource;
@@ -40,7 +40,7 @@ class LockExecutionAspectTest {
     private static final int NUM_THREADS = 4;
     private static final int NUM_ITS = 100;
 
-    @MockBean
+    @MockitoBean
     private LockMeterService lockMeterService;
 
     @Autowired

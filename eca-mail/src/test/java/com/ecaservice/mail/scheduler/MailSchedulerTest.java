@@ -11,7 +11,7 @@ import com.ecaservice.mail.service.MailSenderService;
 import jakarta.mail.MessagingException;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.context.annotation.Import;
 
 import java.time.LocalDateTime;
@@ -32,9 +32,9 @@ class MailSchedulerTest extends AbstractJpaTest {
     private MailConfig mailConfig;
     @Autowired
     private EmailRepository emailRepository;
-    @MockBean
+    @MockitoBean
     private MailSenderService mailSenderService;
-    @MockBean
+    @MockitoBean
     private MetricsService metricsService;
 
     private MailScheduler mailScheduler;

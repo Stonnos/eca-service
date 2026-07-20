@@ -25,7 +25,7 @@ import com.ecaservice.user.profile.options.dto.UserNotificationEventType;
 import com.ecaservice.user.profile.options.dto.UserProfileOptionsDto;
 import lombok.Getter;
 import org.junit.jupiter.api.BeforeEach;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.jdbc.Sql;
@@ -55,45 +55,45 @@ public abstract class AbstractEvaluationProcessManagerTest<T extends AbstractEva
     private static final String CREATED_BY = "user";
     private static final String TEST_MAIL_RU = "test@mail.ru";
 
-    @MockBean
+    @MockitoBean
     private MailClientRabbitConfiguration mailClientRabbitConfiguration;
-    @MockBean
+    @MockitoBean
     private WebPushClientRabbitConfiguration webPushClientRabbitConfiguration;
 
-    @MockBean
+    @MockitoBean
     @Getter
     private UserProfileOptionsFeignClient userProfileOptionsFeignClient;
-    @MockBean
+    @MockitoBean
     @Getter
     private EmailRequestSender emailRequestSender;
-    @MockBean
+    @MockitoBean
     @Getter
     private WebPushSender webPushSender;
-    @MockBean
+    @MockitoBean
     @Getter
     private ObjectStorageService objectStorageService;
-    @MockBean
+    @MockitoBean
     @Getter
     private ErsClient ersClient;
-    @MockBean
+    @MockitoBean
     @Getter
     private UsersClient usersClient;
-    @MockBean
+    @MockitoBean
     @Getter
     private DataStorageService dataStorageService;
-    @MockBean
+    @MockitoBean
     @Getter
     private EcaResponseSender ecaResponseSender;
-    @MockBean
+    @MockitoBean
     @Getter
     private InstancesLoaderService instancesLoaderService;
-    @MockBean
+    @MockitoBean
     @Getter
     private InstancesMetaDataService instancesMetaDataService;
-    @MockBean
+    @MockitoBean
     @Getter
     private UserService userService;
-    @MockBean
+    @MockitoBean
     @Getter
     private UserProfileOptionsProvider userProfileOptionsProvider;
 

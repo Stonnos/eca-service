@@ -18,8 +18,8 @@ import eca.data.db.InstancesResultSetConverter;
 import eca.statistics.contingency.ContingencyTable;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import weka.core.Instances;
 
 import java.math.BigDecimal;
@@ -55,9 +55,9 @@ class ContingencyTableReportServiceTest extends AbstractJpaTest {
     @Autowired
     private AttributeValueRepository attributeValueRepository;
 
-    @MockBean
+    @MockitoBean
     private UserService userService;
-    @MockBean
+    @MockitoBean
     private FilterTemplateService filterTemplateService;
 
     @Autowired

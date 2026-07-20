@@ -48,7 +48,6 @@ minio:
 
 ## Swagger properties
 open-api:
-  basePath: /
   title: Microservice for loading training data sets
   description: API provides operations for loading training data sets
   author: Roman Batygin
@@ -65,6 +64,10 @@ springdoc:
       client-id: external-api
       client-secret: external_api_secret
     disable-swagger-default-url: true
+    config-url: ${open-api.base-path:}/v3/api-docs/swagger-config
+    urls:
+      - name: ${spring.application.name}
+        url: ${open-api.base-path:}/v3/api-docs
 
 auth-server:
   baseUrl: http://localhost:8085/eca-oauth

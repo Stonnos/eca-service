@@ -9,7 +9,7 @@ import com.ecaservice.oauth2.test.controller.AbstractControllerTest;
 import com.ecaservice.web.dto.model.UserProfileNotificationOptionsDto;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpHeaders;
@@ -37,9 +37,9 @@ class UserProfileOptionsControllerTest extends AbstractControllerTest {
     private static final String GET_USER_PROFILE_NOTIFICATIONS_URL = BASE_URL + "/notifications";
     private static final String UPDATE_USER_PROFILE_NOTIFICATIONS_URL = BASE_URL + "/update-notifications";
 
-    @MockBean
+    @MockitoBean
     private UserProfileOptionsService userProfileOptionsService;
-    @MockBean
+    @MockitoBean
     private ApplicationEventPublisher applicationEventPublisher;
 
     @Test

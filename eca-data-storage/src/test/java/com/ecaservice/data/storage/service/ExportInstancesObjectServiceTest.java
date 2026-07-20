@@ -9,7 +9,7 @@ import com.ecaservice.data.storage.service.data.UploadInstancesObjectService;
 import eca.data.file.model.InstancesModel;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.context.annotation.Import;
 
 import java.io.IOException;
@@ -32,9 +32,9 @@ class ExportInstancesObjectServiceTest extends AbstractJpaTest {
 
     private static final String MD_5_HASH = "3032e188204cb537f69fc7364f638641";
 
-    @MockBean
+    @MockitoBean
     private UploadInstancesObjectService uploadInstancesObjectService;
-    @MockBean
+    @MockitoBean
     private StorageService storageService;
 
     @Autowired

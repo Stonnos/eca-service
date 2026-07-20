@@ -14,7 +14,7 @@ import com.ecaservice.server.service.evaluation.EvaluationProcessManager;
 import com.ecaservice.server.service.evaluation.EvaluationRequestsFetcher;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.context.annotation.Import;
 
 import java.util.UUID;
@@ -44,9 +44,9 @@ class EvaluationSchedulerTest extends AbstractJpaTest {
     @Autowired
     private EvaluationRequestsFetcher evaluationRequestsFetcher;
 
-    @MockBean
+    @MockitoBean
     private ClassifiersDataCleaner classifiersDataCleaner;
-    @MockBean
+    @MockitoBean
     private EvaluationProcessManager evaluationProcessManager;
 
     private EvaluationScheduler evaluationScheduler;

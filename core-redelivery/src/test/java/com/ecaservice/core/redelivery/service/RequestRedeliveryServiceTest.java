@@ -13,8 +13,8 @@ import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.boot.test.mock.mockito.SpyBean;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
+import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.context.annotation.Import;
 
@@ -35,7 +35,7 @@ import static org.mockito.Mockito.verify;
  * @author Roman Batygin
  */
 @EnableAspectJAutoProxy
-@Import({RequestRedeliveryService.class, RedeliveryProperties.class, RetryService.class,
+@Import({RequestRedeliveryService.class, RedeliveryProperties.class, RetryService.class, TestServiceA.class,
         RetryRequestCacheService.class, RedeliverTestConfiguration.class, RetryAspect.class, RetryRequestFetcher.class})
 class RequestRedeliveryServiceTest extends AbstractJpaTest {
 
@@ -44,13 +44,13 @@ class RequestRedeliveryServiceTest extends AbstractJpaTest {
     private static final long SECONDS = 60000L;
     private static final int MAX_RETRIES = 10;
 
-    @MockBean
+    @MockitoBean
     private RetryMeterService retryMeterService;
 
-    @SpyBean
+    @MockitoSpyBean
     private TestServiceA testServiceA;
 
-    @SpyBean
+    @MockitoSpyBean
     private RetryService retryService;
 
     @Captor

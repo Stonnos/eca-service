@@ -20,7 +20,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.Page;
@@ -72,13 +72,13 @@ class ClassifierOptionsControllerTest extends PageRequestControllerTest {
     private static final String OPTIONS = "options";
     private static final long CONFIGURATION_ID = 1L;
 
-    @MockBean
+    @MockitoBean
     private ClassifierOptionsService classifierOptionsService;
-    @MockBean
+    @MockitoBean
     private ClassifiersConfigurationService classifiersConfigurationService;
-    @MockBean
+    @MockitoBean
     private UserService userService;
-    @MockBean
+    @MockitoBean
     private ApplicationEventPublisher applicationEventPublisher;
 
     @Autowired

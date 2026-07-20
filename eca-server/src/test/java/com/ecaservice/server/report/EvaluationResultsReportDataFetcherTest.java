@@ -18,7 +18,7 @@ import com.ecaservice.server.service.EvaluationResultsAttachmentService;
 import com.ecaservice.server.service.ers.ErsRequestService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.context.annotation.Import;
 
 import java.util.UUID;
@@ -41,11 +41,11 @@ import static org.mockito.Mockito.when;
 @Import({SimpleEvaluationResultsReportDataFetcher.class, AppProperties.class})
 class EvaluationResultsReportDataFetcherTest extends AbstractJpaTest {
 
-    @MockBean
+    @MockitoBean
     private EvaluationResultsReportDataProcessor evaluationResultsReportDataProcessor;
-    @MockBean
+    @MockitoBean
     private ErsRequestService ersRequestService;
-    @MockBean
+    @MockitoBean
     private EvaluationResultsAttachmentService evaluationResultsAttachmentService;
 
     @Autowired

@@ -24,7 +24,7 @@ import com.ecaservice.ers.repository.EvaluationResultsInfoRepository;
 import com.ecaservice.ers.repository.InstancesInfoRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.context.annotation.Import;
 
@@ -53,9 +53,9 @@ class EvaluationResultsServiceTest extends AbstractJpaTest {
 
     private static final int NUM_THREADS = 2;
 
-    @MockBean
+    @MockitoBean
     private LockMeterService lockMeterService;
-    @MockBean
+    @MockitoBean
     private FilterTemplateService filterTemplateService;
 
     @Autowired

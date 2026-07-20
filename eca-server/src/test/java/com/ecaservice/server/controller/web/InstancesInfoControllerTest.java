@@ -8,7 +8,7 @@ import com.ecaservice.web.dto.model.PageRequestDto;
 import com.ecaservice.web.dto.model.S3ContentResponseDto;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 
@@ -42,7 +42,7 @@ class InstancesInfoControllerTest extends PageRequestControllerTest {
     private static final long INSTANCES_ID = 2;
     private static final String CONTENT_URL = "http://localhost:9000/content";
 
-    @MockBean
+    @MockitoBean
     private InstancesInfoService instancesInfoService;
 
     @Test

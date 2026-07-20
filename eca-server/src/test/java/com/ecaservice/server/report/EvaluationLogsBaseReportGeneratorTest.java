@@ -38,8 +38,8 @@ import jakarta.persistence.EntityManager;
 import lombok.Cleanup;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -82,13 +82,13 @@ class EvaluationLogsBaseReportGeneratorTest extends AbstractJpaTest {
     private static final String CLASSIFIERS = "classifiers";
     private static final String ENSEMBLE_CLASSIFIERS = "ensembleClassifiers";
 
-    @MockBean
+    @MockitoBean
     private FilterTemplateService filterTemplateService;
-    @MockBean
+    @MockitoBean
     private ErsService ersService;
-    @MockBean
+    @MockitoBean
     private ObjectStorageService objectStorageService;
-    @MockBean
+    @MockitoBean
     private FormTemplateProvider formTemplateProvider;
 
     @Autowired

@@ -19,7 +19,7 @@ import com.ecaservice.server.service.classifiers.ClassifiersConfigurationHistory
 import com.ecaservice.server.service.classifiers.ClassifiersFormTemplateProvider;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
@@ -41,15 +41,15 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
         ClassifiersConfigurationHistoryService.class, ClassifiersConfigurationHistoryMapperImpl.class})
 class ExperimentConfigurationServiceTest extends AbstractJpaTest {
 
-    @MockBean
+    @MockitoBean
     private UserService userService;
-    @MockBean
+    @MockitoBean
     private FilterTemplateService filterTemplateService;
-    @MockBean
+    @MockitoBean
     private ClassifierOptionsInfoProcessor classifierOptionsInfoProcessor;
-    @MockBean
+    @MockitoBean
     private MessageTemplateProcessor messageTemplateProcessor;
-    @MockBean
+    @MockitoBean
     private ClassifiersFormTemplateProvider classifiersFormTemplateProvider;
     @Autowired
     private ClassifierOptionsService classifierOptionsService;

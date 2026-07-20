@@ -9,7 +9,7 @@ import com.ecaservice.web.dto.model.PageRequestDto;
 import com.ecaservice.web.dto.model.SortFieldRequestDto;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.context.annotation.Import;
 
 import java.util.Arrays;
@@ -34,7 +34,7 @@ class InstancesServiceTest extends AbstractJpaTest {
     private static final String RELATION_1 = "relation1";
     private static final String RELATION_2 = "relation2";
 
-    @MockBean
+    @MockitoBean
     private FilterTemplateService filterTemplateService;
 
     @Autowired

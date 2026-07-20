@@ -30,8 +30,8 @@ import com.ecaservice.server.service.data.InstancesLoaderService;
 import com.ecaservice.server.service.data.InstancesMetaDataService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import weka.core.Instances;
 
 import java.util.Collections;
@@ -67,15 +67,15 @@ class ExperimentServiceTest extends AbstractJpaTest {
     private AttributesInfoRepository attributesInfoRepository;
     @Autowired
     private ExperimentProgressRepository experimentProgressRepository;
-    @MockBean
+    @MockitoBean
     private InstancesMetaDataService instancesMetaDataService;
-    @MockBean
+    @MockitoBean
     private InstancesLoaderService instancesLoaderService;
-    @MockBean
+    @MockitoBean
     private FilterTemplateService filterTemplateService;
-    @MockBean
+    @MockitoBean
     private ExperimentStepProcessor experimentStepProcessor;
-    @MockBean
+    @MockitoBean
     private ObjectStorageService objectStorageService;
 
     @Autowired

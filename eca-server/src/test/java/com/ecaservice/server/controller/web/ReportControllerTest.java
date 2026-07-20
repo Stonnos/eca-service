@@ -6,7 +6,7 @@ import com.ecaservice.server.report.model.BaseReportType;
 import com.ecaservice.web.dto.model.PageRequestDto;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 
@@ -31,9 +31,9 @@ class ReportControllerTest extends PageRequestControllerTest {
     private static final String DOWNLOAD_REPORT_URL = "/reports/download";
     private static final String REPORT_TYPE_PARAM = "reportType";
 
-    @MockBean
+    @MockitoBean
     private ExperimentsBaseReportDataFetcher experimentsBaseReportDataFetcher;
-    @MockBean
+    @MockitoBean
     private EvaluationLogsBaseReportDataFetcher evaluationLogsBaseReportDataFetcher;
 
     @Override

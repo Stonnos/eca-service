@@ -8,7 +8,7 @@ import com.ecaservice.web.dto.model.ChangeEmailRequestStatusDto;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -49,9 +49,9 @@ class ChangeEmailControllerTest extends AbstractControllerTest {
     private static final String NEW_EMAIL_PARAM = "newEmail";
     private static final String INVALID_EMAIL = "123";
 
-    @MockBean
+    @MockitoBean
     private ChangeEmailService changeEmailService;
-    @MockBean
+    @MockitoBean
     private ApplicationEventPublisher applicationEventPublisher;
 
     @Autowired

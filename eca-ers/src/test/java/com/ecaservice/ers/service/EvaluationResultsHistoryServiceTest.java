@@ -20,7 +20,7 @@ import com.ecaservice.web.dto.model.SortFieldRequestDto;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.context.annotation.Import;
 
 import java.util.Arrays;
@@ -52,9 +52,9 @@ class EvaluationResultsHistoryServiceTest extends AbstractJpaTest {
     private static final String INSTANCES_INFO_ID = "instancesInfo.id";
     private static final String CLASSIFIER_NAME = "classifierName";
 
-    @MockBean
+    @MockitoBean
     private FilterTemplateService filterTemplateService;
-    @MockBean
+    @MockitoBean
     private ClassifierOptionsProcessor classifierOptionsProcessor;
 
     @Autowired

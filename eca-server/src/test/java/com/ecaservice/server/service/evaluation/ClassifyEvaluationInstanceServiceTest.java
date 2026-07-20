@@ -24,7 +24,7 @@ import eca.core.evaluation.EvaluationResults;
 import eca.core.model.ClassificationModel;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.context.annotation.Import;
 import weka.classifiers.AbstractClassifier;
 import weka.core.Instance;
@@ -66,7 +66,7 @@ class ClassifyEvaluationInstanceServiceTest extends AbstractJpaTest {
     @Autowired
     private ClassifyEvaluationInstanceService classifyEvaluationInstanceService;
 
-    @MockBean
+    @MockitoBean
     private ObjectStorageService objectStorageService;
 
     private EvaluationLog evaluationLog;

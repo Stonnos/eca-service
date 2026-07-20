@@ -25,7 +25,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpHeaders;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -72,9 +72,9 @@ abstract class AbstractUserProcessTest {
     @Value("${oauth2.client.secret}")
     private String clientSecret;
 
-    @MockBean
+    @MockitoBean
     private EmailRequestSender emailRequestSender;
-    @MockBean
+    @MockitoBean
     private OutboxMessageService outboxMessageService;
     @Captor
     private ArgumentCaptor<EmailRequest> emailRequestArgumentCaptor;

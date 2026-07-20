@@ -52,7 +52,6 @@ spring:
 
 ## Swagger properties
 open-api:
-  basePath: /
   title: Auto tests execution module
   description: API provides operations for auto tests execution
   author: Roman Batygin

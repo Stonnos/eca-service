@@ -8,7 +8,7 @@ import com.ecaservice.web.dto.model.UserNotificationStatisticsDto;
 import com.ecaservice.web.push.service.UserNotificationService;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 
@@ -42,7 +42,7 @@ class UserNotificationControllerTest extends AbstractControllerTest {
     private static final long TOTAL_ELEMENTS = 1L;
     private static final int PAGE_NUMBER = 0;
 
-    @MockBean
+    @MockitoBean
     private UserNotificationService userNotificationService;
 
     @Test

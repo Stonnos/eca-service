@@ -31,12 +31,12 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.util.MimeTypeUtils;
 import weka.core.Instances;
 
@@ -117,25 +117,25 @@ class DataStorageControllerTest extends AbstractControllerTest {
     private static final String X_ATTRIBUTE_ID_PARAM = "xAttributeId";
     private static final String Y_ATTRIBUTE_ID_PARAM = "yAttributeId";
 
-    @MockBean
+    @MockitoBean
     private StorageServiceImpl storageService;
-    @MockBean
+    @MockitoBean
     private InstancesRepository instancesRepository;
-    @MockBean
+    @MockitoBean
     private InstancesLoader instancesLoader;
-    @MockBean
+    @MockitoBean
     private InstancesReportService instancesReportService;
-    @MockBean
+    @MockitoBean
     private AttributeService attributeService;
-    @MockBean
+    @MockitoBean
     private ReportsConfigurationService reportsConfigurationService;
-    @MockBean
+    @MockitoBean
     private InstancesStatisticsService instancesStatisticsService;
-    @MockBean
+    @MockitoBean
     private AttributesScatterPlotService attributesScatterPlotService;
-    @MockBean
+    @MockitoBean
     private ContingencyTableReportService contingencyTableReportService;
-    @MockBean
+    @MockitoBean
     private InstancesPathService instancesPathService;
 
     @Autowired

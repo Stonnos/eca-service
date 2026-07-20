@@ -10,7 +10,7 @@ import com.ecaservice.web.dto.model.PageRequestDto;
 import com.ecaservice.web.dto.model.SortFieldRequestDto;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.Page;
 
@@ -37,7 +37,7 @@ class TemplateServiceTest extends AbstractJpaTest {
     private static final int PAGE = 0;
     private static final int SIZE = 10;
 
-    @MockBean
+    @MockitoBean
     private FilterTemplateService filterTemplateService;
 
     @Autowired

@@ -1,14 +1,14 @@
 package com.ecaservice.server.controller.web;
 
 import com.ecaservice.oauth2.test.controller.AbstractControllerTest;
-import com.ecaservice.server.configuation.annotation.EnableCamundaMock;
 import com.ecaservice.server.service.ers.EvaluationResultsRequestPathService;
 import com.ecaservice.web.dto.model.RoutePathDto;
+import org.camunda.bpm.spring.boot.starter.SpringBootProcessApplication;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
 import java.util.UUID;
 
@@ -24,14 +24,15 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  *
  * @author Roman Batygin
  */
-@EnableCamundaMock
 @WebMvcTest(controllers = EvaluationResultsRequestPathController.class)
 class EvaluationResultsRequestPathControllerTest extends AbstractControllerTest {
 
     private static final String BASE_URL = "/evaluation-results";
     private static final String EVALUATION_RESULTS_REQUEST_PATH_URL = BASE_URL + "/request-path/{resultId}";
 
-    @MockBean
+    @MockitoBean
+    private SpringBootProcessApplication springBootProcessApplication;
+    @MockitoBean
     private EvaluationResultsRequestPathService evaluationResultsRequestPathService;
 
     @Test

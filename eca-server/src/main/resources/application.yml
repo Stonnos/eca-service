@@ -113,7 +113,6 @@ classifiers-options:
 
 ## Swagger properties
 open-api:
-  basePath: /
   title: Microservice for classifiers learning
   description: API provides operations for individual and ensemble classification models learning
   author: Roman Batygin
@@ -130,6 +129,10 @@ springdoc:
       client-id: swagger
       client-secret: swagger_secret
     disable-swagger-default-url: true
+    config-url: ${open-api.base-path:}/v3/api-docs/swagger-config
+    urls:
+      - name: ${spring.application.name}
+        url: ${open-api.base-path:}/v3/api-docs
 
 ## Classifier properties
 classifiers:

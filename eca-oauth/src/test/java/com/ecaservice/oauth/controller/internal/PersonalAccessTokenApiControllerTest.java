@@ -6,7 +6,7 @@ import com.ecaservice.user.dto.PersonalAccessTokenInfoDto;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 
@@ -30,7 +30,7 @@ class PersonalAccessTokenApiControllerTest extends AbstractControllerTest {
     private static final String VERIFY_TOKEN_URL = BASE_URL + "/verify-token";
     private static final String TOKEN_PARAM = "token";
 
-    @MockBean
+    @MockitoBean
     private PersonalAccessTokenService personalAccessTokenService;
 
     @Test

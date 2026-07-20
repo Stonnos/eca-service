@@ -18,7 +18,7 @@ import eca.data.file.model.AttributeType;
 import eca.data.file.model.InstancesModel;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Import;
 import org.springframework.mock.web.MockMultipartFile;
@@ -43,7 +43,7 @@ import static org.mockito.Mockito.doThrow;
         InstancesReader.class, InstancesDeserializer.class, InstancesMapperImpl.class})
 class UploadInstancesServiceTest extends AbstractJpaTest {
 
-    @MockBean
+    @MockitoBean
     private MinioStorageService minioStorageService;
 
     @Autowired

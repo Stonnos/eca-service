@@ -16,7 +16,7 @@ import com.ecaservice.web.dto.util.FieldConstraints;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpHeaders;
@@ -69,13 +69,13 @@ class ClassifiersConfigurationControllerTest extends PageRequestControllerTest {
     private static final String CONFIGURATION_ID_PARAM = "configurationId";
     private static final long CONFIGURATION_ID = 1L;
 
-    @MockBean
+    @MockitoBean
     private ClassifiersConfigurationService classifiersConfigurationService;
-    @MockBean
+    @MockitoBean
     private ClassifiersConfigurationHistoryService classifiersConfigurationHistoryService;
-    @MockBean
+    @MockitoBean
     private UserService userService;
-    @MockBean
+    @MockitoBean
     private ApplicationEventPublisher applicationEventPublisher;
 
     @Test

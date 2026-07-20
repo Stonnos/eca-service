@@ -38,7 +38,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpHeaders;
@@ -86,23 +86,23 @@ class ExperimentControllerTest extends PageRequestControllerTest {
     private static final long ID = 1L;
     private static final String CONTENT_URL = "http://localhost:9000/content";
 
-    @MockBean
+    @MockitoBean
     private ExperimentDataService experimentDataService;
-    @MockBean
+    @MockitoBean
     private ExperimentResultsRocCurveDataProvider experimentResultsRocCurveDataProvider;
-    @MockBean
+    @MockitoBean
     private ClassifyExperimentResultsInstanceService classifyExperimentResultsInstanceService;
-    @MockBean
+    @MockitoBean
     private ExperimentResultsService experimentResultsService;
-    @MockBean
+    @MockitoBean
     private ExperimentProgressService experimentProgressService;
-    @MockBean
+    @MockitoBean
     private ExperimentRequestWebApiService experimentRequestWebApiService;
-    @MockBean
+    @MockitoBean
     private ExperimentResultsEntityRepository experimentResultsEntityRepository;
-    @MockBean
+    @MockitoBean
     private ExperimentResultsReportDataFetcher experimentResultsReportDataFetcher;
-    @MockBean
+    @MockitoBean
     private ExperimentResultsAttachmentUploader experimentResultsAttachmentUploader;
 
     @Autowired

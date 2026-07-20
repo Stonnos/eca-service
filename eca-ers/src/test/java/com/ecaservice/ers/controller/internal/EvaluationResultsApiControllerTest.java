@@ -14,7 +14,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
@@ -44,9 +44,9 @@ class EvaluationResultsApiControllerTest extends AbstractControllerTest {
     private static final String GET_EVALUATION_RESULTS_REQUEST_URL = BASE_URL + "/results";
     private static final String OPTIMAL_CLASSIFIER_OPTIONS_REQUEST_URL = BASE_URL + "/optimal-classifier-options";
 
-    @MockBean
+    @MockitoBean
     private EvaluationResultsService evaluationResultsService;
-    @MockBean
+    @MockitoBean
     private ClassifierOptionsRequestService classifierOptionsRequestService;
 
     @Autowired

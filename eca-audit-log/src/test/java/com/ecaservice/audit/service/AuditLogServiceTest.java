@@ -16,7 +16,7 @@ import com.ecaservice.web.dto.model.PageRequestDto;
 import com.ecaservice.web.dto.model.SortFieldRequestDto;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.Page;
@@ -54,9 +54,9 @@ class AuditLogServiceTest extends AbstractJpaTest {
     @Autowired
     private AuditLogRepository auditLogRepository;
 
-    @MockBean
+    @MockitoBean
     private FilterTemplateService filterTemplateService;
-    @MockBean
+    @MockitoBean
     private LockMeterService lockMeterService;
 
     @Override

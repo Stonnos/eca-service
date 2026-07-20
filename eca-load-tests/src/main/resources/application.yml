@@ -70,7 +70,6 @@ queue:
 
 ## Swagger properties
 open-api:
-  basePath: /
   title: Load tests execution module
   description: API provides operations for load tests execution
   author: Roman Batygin

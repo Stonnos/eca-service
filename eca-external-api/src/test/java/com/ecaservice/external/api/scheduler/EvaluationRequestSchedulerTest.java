@@ -8,7 +8,7 @@ import com.ecaservice.external.api.repository.EcaRequestRepository;
 import com.ecaservice.external.api.service.RequestStageHandler;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.context.annotation.Import;
 
 import java.time.LocalDateTime;
@@ -27,7 +27,7 @@ import static org.mockito.Mockito.verify;
 @Import({ExternalApiConfig.class, EvaluationRequestScheduler.class})
 class EvaluationRequestSchedulerTest extends AbstractJpaTest {
 
-    @MockBean
+    @MockitoBean
     private RequestStageHandler requestStageHandler;
 
     @Autowired

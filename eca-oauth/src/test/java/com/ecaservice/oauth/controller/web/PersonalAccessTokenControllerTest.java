@@ -7,7 +7,7 @@ import com.ecaservice.web.dto.model.PersonalAccessTokenDto;
 import com.ecaservice.web.dto.model.SimplePageRequestDto;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 
@@ -40,7 +40,7 @@ class PersonalAccessTokenControllerTest extends AbstractControllerTest {
     private static final long TOTAL_ELEMENTS = 1L;
     private static final int PAGE_NUMBER = 0;
 
-    @MockBean
+    @MockitoBean
     private PersonalAccessTokenService personalAccessTokenService;
 
     @Test

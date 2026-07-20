@@ -33,7 +33,7 @@ import com.ecaservice.web.dto.model.SortFieldRequestDto;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.Page;
 
@@ -76,11 +76,11 @@ class ExperimentDataServiceTest extends AbstractJpaTest {
     private ExperimentStepRepository experimentStepRepository;
     @Autowired
     private ExperimentProgressRepository experimentProgressRepository;
-    @MockBean
+    @MockitoBean
     private ObjectStorageService objectStorageService;
-    @MockBean
+    @MockitoBean
     private FilterTemplateService filterTemplateService;
-    @MockBean
+    @MockitoBean
     private ExperimentStepProcessor experimentStepProcessor;
 
     @Autowired

@@ -17,7 +17,7 @@ import com.google.common.collect.ImmutableList;
 import lombok.Cleanup;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.context.annotation.Import;
 
 import java.io.FileOutputStream;
@@ -56,7 +56,7 @@ class AuditLogsBaseReportGeneratorTest extends AbstractJpaTest {
     private static final LocalDateTime SECOND_DATE = LocalDateTime.of(2018, 3, 5, 0, 0, 0);
     private static final LocalDateTime THIRD_DATE = LocalDateTime.of(2019, 2, 2, 0, 0, 0);
 
-    @MockBean
+    @MockitoBean
     private FilterTemplateService filterTemplateService;
 
     @Autowired

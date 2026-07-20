@@ -12,7 +12,7 @@ import org.springframework.amqp.core.MessagePostProcessor;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -34,7 +34,7 @@ import static org.mockito.Mockito.verify;
 @Import({RabbitSender.class, QueueConfig.class})
 class RabbitSenderTest {
 
-    @MockBean
+    @MockitoBean
     private RabbitTemplate rabbitTemplate;
 
     @Autowired

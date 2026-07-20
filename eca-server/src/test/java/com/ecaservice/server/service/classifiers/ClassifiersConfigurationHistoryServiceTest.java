@@ -15,7 +15,7 @@ import com.ecaservice.web.dto.model.PageRequestDto;
 import com.ecaservice.web.dto.model.SortFieldRequestDto;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.context.annotation.Import;
 
 import java.time.LocalDateTime;
@@ -51,13 +51,13 @@ class ClassifiersConfigurationHistoryServiceTest extends AbstractJpaTest {
     private ClassifiersConfigurationRepository classifiersConfigurationRepository;
     @Autowired
     private ClassifiersConfigurationHistoryService classifiersConfigurationHistoryService;
-    @MockBean
+    @MockitoBean
     private FilterTemplateService filterTemplateService;
-    @MockBean
+    @MockitoBean
     private UserService userService;
-    @MockBean
+    @MockitoBean
     private MessageTemplateProcessor messageTemplateProcessor;
-    @MockBean
+    @MockitoBean
     private ClassifiersFormTemplateProvider classifiersFormTemplateProvider;
 
     @Override

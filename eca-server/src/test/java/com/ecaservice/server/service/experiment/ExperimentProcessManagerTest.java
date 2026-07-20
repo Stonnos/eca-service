@@ -29,7 +29,7 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
 import java.util.UUID;
 
@@ -67,9 +67,9 @@ class ExperimentProcessManagerTest extends AbstractEvaluationProcessManagerTest<
     private static final String REPLY_TO = "reply-yo";
     private static final String CREATED_BY = "user";
 
-    @MockBean
+    @MockitoBean
     private ExperimentModelLocalStorage experimentModelLocalStorage;
-    @MockBean
+    @MockitoBean
     private MinioStorageService minioStorageService;
 
     @Autowired

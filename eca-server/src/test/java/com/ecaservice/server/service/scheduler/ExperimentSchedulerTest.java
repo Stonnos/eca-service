@@ -19,7 +19,7 @@ import com.ecaservice.server.service.experiment.ExperimentRequestFetcher;
 import com.ecaservice.server.service.experiment.ExperimentService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Import;
 
@@ -50,16 +50,16 @@ class ExperimentSchedulerTest extends AbstractJpaTest {
     @Autowired
     private InstancesInfoRepository instancesInfoRepository;
 
-    @MockBean
+    @MockitoBean
     private ExperimentService experimentService;
-    @MockBean
+    @MockitoBean
     private ExperimentProgressService experimentProgressService;
-    @MockBean
+    @MockitoBean
     private ExperimentDataCleaner experimentDataCleaner;
-    @MockBean
+    @MockitoBean
     private ApplicationEventPublisher eventPublisher;
 
-    @MockBean
+    @MockitoBean
     private ExperimentProcessManager experimentProcessManager;
 
     private ExperimentScheduler experimentScheduler;

@@ -7,7 +7,7 @@ import com.ecaservice.server.service.InstancesInfoService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
@@ -30,9 +30,9 @@ import static org.mockito.Mockito.when;
 @Import({InstancesLoaderService.class, InstancesInfoMapperImpl.class})
 class InstancesLoaderServiceTest {
 
-    @MockBean
+    @MockitoBean
     private InstancesInfoService instancesInfoService;
-    @MockBean
+    @MockitoBean
     private ObjectStorageService objectStorageService;
 
     @Autowired

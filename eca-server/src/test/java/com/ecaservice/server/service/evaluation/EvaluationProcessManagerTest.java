@@ -25,7 +25,7 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
 import java.io.IOException;
 import java.io.Serializable;
@@ -65,10 +65,10 @@ class EvaluationProcessManagerTest extends AbstractEvaluationProcessManagerTest<
     private static final String EVALUATION_REQUEST_STATUS = "requestStatus";
     private static final String CREATED_BY = "user";
 
-    @MockBean
+    @MockitoBean
     private OptimalClassifierOptionsFetcher optimalClassifierOptionsFetcher;
 
-    @MockBean
+    @MockitoBean
     private FormTemplateProvider formTemplateProvider;
 
     @Autowired

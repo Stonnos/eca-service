@@ -10,10 +10,10 @@ import com.ecaservice.core.redelivery.test.model.TestRequest;
 import com.ecaservice.core.redelivery.test.service.TestServiceA;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.context.annotation.Import;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
+import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 
 import static com.ecaservice.core.redelivery.TestHelperUtils.createRetryRequest;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -26,16 +26,16 @@ import static org.mockito.Mockito.doThrow;
  */
 @EnableAspectJAutoProxy
 @Import({RetryService.class, RetryRequestCacheService.class, RedeliveryProperties.class, RetryAspect.class,
-        RedeliverTestConfiguration.class})
+        RedeliverTestConfiguration.class, TestServiceA.class})
 class RetryServiceTest extends AbstractJpaTest {
 
     private static final String REQUEST_1 = "REQUEST_1";
     private static final int MAX_RETRIES = 2;
 
-    @SpyBean
+    @MockitoSpyBean
     private TestServiceA testServiceA;
 
-    @MockBean
+    @MockitoBean
     private RetryMeterService retryMeterService;
 
     @Autowired

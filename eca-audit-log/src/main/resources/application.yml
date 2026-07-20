@@ -46,7 +46,6 @@ lock:
 
 ## Swagger properties
 open-api:
-  basePath: /
   title: Microservice for collecting and storing audit events
   description: API provides operations with audit events
   author: Roman Batygin
@@ -63,6 +62,10 @@ springdoc:
       client-id: swagger
       client-secret: swagger_secret
     disable-swagger-default-url: true
+    config-url: ${open-api.base-path:}/v3/api-docs/swagger-config
+    urls:
+      - name: ${spring.application.name}
+        url: ${open-api.base-path:}/v3/api-docs
 
 auth-server:
   baseUrl: http://localhost:8085/eca-oauth

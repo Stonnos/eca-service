@@ -31,8 +31,8 @@ import lombok.Cleanup;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -76,9 +76,9 @@ class EvaluationResultsHistoryReportGeneratorTest extends AbstractJpaTest {
     private static final String CART_VALUE = "CART";
     private static final String CLASSIFIERS = "classifiers";
 
-    @MockBean
+    @MockitoBean
     private FilterTemplateService filterTemplateService;
-    @MockBean
+    @MockitoBean
     private FormTemplateProvider formTemplateProvider;
 
     @Autowired

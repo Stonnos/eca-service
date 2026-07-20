@@ -36,9 +36,9 @@ import com.ecaservice.web.dto.model.UpdateClassifiersConfigurationDto;
 import lombok.Cleanup;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.context.annotation.Import;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -102,17 +102,17 @@ class ClassifiersConfigurationServiceTest extends AbstractJpaTest {
     private ClassifiersConfigurationRepository classifiersConfigurationRepository;
     @Autowired
     private ClassifiersConfigurationService classifiersConfigurationService;
-    @MockBean
+    @MockitoBean
     private FilterTemplateService filterTemplateService;
-    @MockBean
+    @MockitoBean
     private UserService userService;
-    @MockBean
+    @MockitoBean
     private LockMeterService lockMeterService;
-    @MockBean
+    @MockitoBean
     private ClassifiersFormTemplateProvider classifiersFormTemplateProvider;
-    @MockBean
+    @MockitoBean
     private MessageTemplateProcessor messageTemplateProcessor;
-    @MockBean
+    @MockitoBean
     private FormTemplateProvider formTemplateProvider;
 
     @Override

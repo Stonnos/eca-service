@@ -32,8 +32,8 @@ import com.ecaservice.server.service.evaluation.initializers.ClassifierInitializ
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import weka.core.Instances;
 
 import java.math.BigDecimal;
@@ -63,7 +63,7 @@ class EvaluationRequestServiceTest extends AbstractJpaTest {
 
     private static final String MODEL_DOWNLOAD_URL = "http//:localhost/model";
 
-    @MockBean
+    @MockitoBean
     private FilterTemplateService filterTemplateService;
 
     @Autowired
@@ -93,9 +93,9 @@ class EvaluationRequestServiceTest extends AbstractJpaTest {
     private ClassifierInitializerService classifierInitializerService;
     @Autowired
     private ClassifierOptionsAdapter classifierOptionsAdapter;
-    @MockBean
+    @MockitoBean
     private InstancesMetaDataService instancesMetaDataService;
-    @MockBean
+    @MockitoBean
     private ObjectStorageService objectStorageService;
     @Mock
     private InstancesLoaderService instancesLoaderService;

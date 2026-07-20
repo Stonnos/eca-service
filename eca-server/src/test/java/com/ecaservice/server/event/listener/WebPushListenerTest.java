@@ -19,7 +19,7 @@ import com.ecaservice.user.profile.options.dto.UserProfileOptionsDto;
 import com.ecaservice.web.push.dto.AbstractPushRequest;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.context.annotation.Import;
 
 import java.util.Collections;
@@ -45,11 +45,11 @@ class WebPushListenerTest extends AbstractJpaTest {
     private static final String CURRENT_USER = "currentUser";
     private static final String USER_1 = "user1";
 
-    @MockBean
+    @MockitoBean
     private MessageTemplateProcessor messageTemplateProcessor;
-    @MockBean
+    @MockitoBean
     private WebPushSender webPushSender;
-    @MockBean
+    @MockitoBean
     private UserProfileOptionsProvider userProfileOptionsProvider;
 
     @Autowired

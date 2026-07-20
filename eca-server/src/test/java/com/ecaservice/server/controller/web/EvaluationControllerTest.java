@@ -29,7 +29,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -73,19 +73,19 @@ class EvaluationControllerTest extends PageRequestControllerTest {
     private static final String CONTENT_URL = "http://localhost:9000/content";
     private static final long ID = 1L;
 
-    @MockBean
+    @MockitoBean
     private EvaluationLogDataService evaluationLogDataService;
-    @MockBean
+    @MockitoBean
     private EvaluationRequestWebApiService evaluationRequestWebApiService;
-    @MockBean
+    @MockitoBean
     private EvaluationRocCurveDataProvider evaluationRocCurveDataProvider;
-    @MockBean
+    @MockitoBean
     private ClassifyEvaluationInstanceService classifyEvaluationInstanceService;
-    @MockBean
+    @MockitoBean
     private SimpleEvaluationResultsReportDataFetcher simpleEvaluationResultsReportDataFetcher;
-    @MockBean
+    @MockitoBean
     private SimpleEvaluationResultsAttachmentUploader simpleEvaluationResultsAttachmentUploader;
-    @MockBean
+    @MockitoBean
     private EvaluationLogRepository evaluationLogRepository;
 
     @Autowired

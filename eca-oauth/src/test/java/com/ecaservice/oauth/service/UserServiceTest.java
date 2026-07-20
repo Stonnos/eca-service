@@ -29,7 +29,7 @@ import com.google.common.collect.Sets;
 import org.apache.commons.io.FilenameUtils;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.Page;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
@@ -82,13 +82,13 @@ class UserServiceTest extends AbstractJpaTest {
     @Autowired
     private UserPhotoRepository userPhotoRepository;
 
-    @MockBean
+    @MockitoBean
     private Oauth2RevokeTokenService oauth2RevokeTokenService;
-    @MockBean
+    @MockitoBean
     private UserProfileOptionsConfigurationService userProfileOptionsConfigurationService;
-    @MockBean
+    @MockitoBean
     private FilterTemplateService filterTemplateService;
-    @MockBean
+    @MockitoBean
     private UserProfileOptionsDataEventService userProfileOptionsDataEventService;
 
     private UserService userService;

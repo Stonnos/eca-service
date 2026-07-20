@@ -68,7 +68,6 @@ eca-ds:
 
 ## Swagger properties
 open-api:
-  basePath: /
   title: Microservice for storaging training data sets
   description: API provides operations with training data sets for ECA web application
   author: Roman Batygin
@@ -85,6 +84,10 @@ springdoc:
       client-id: swagger
       client-secret: swagger_secret
     disable-swagger-default-url: true
+    config-url: ${open-api.base-path:}/v3/api-docs/swagger-config
+    urls:
+      - name: ${spring.application.name}
+        url: ${open-api.base-path:}/v3/api-docs
 
 auth-server:
   baseUrl: http://localhost:8085/eca-oauth

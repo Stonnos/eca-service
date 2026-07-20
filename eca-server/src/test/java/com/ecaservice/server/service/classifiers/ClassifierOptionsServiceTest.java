@@ -28,7 +28,7 @@ import com.ecaservice.web.dto.model.SortFieldRequestDto;
 import com.google.common.collect.Sets;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.context.annotation.Import;
 import org.testcontainers.shaded.com.fasterxml.jackson.core.JsonProcessingException;
 import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
@@ -72,15 +72,15 @@ class ClassifierOptionsServiceTest extends AbstractJpaTest {
     private ClassifiersConfigurationHistoryRepository classifiersConfigurationHistoryRepository;
     @Autowired
     private ClassifiersConfigurationRepository classifiersConfigurationRepository;
-    @MockBean
+    @MockitoBean
     private UserService userService;
-    @MockBean
+    @MockitoBean
     private FilterTemplateService filterTemplateService;
-    @MockBean
+    @MockitoBean
     private ClassifierOptionsInfoProcessor classifierOptionsInfoProcessor;
-    @MockBean
+    @MockitoBean
     private ClassifiersFormTemplateProvider classifiersFormTemplateProvider;
-    @MockBean
+    @MockitoBean
     private MessageTemplateProcessor messageTemplateProcessor;
     @Autowired
     private ClassifierOptionsService classifierOptionsService;

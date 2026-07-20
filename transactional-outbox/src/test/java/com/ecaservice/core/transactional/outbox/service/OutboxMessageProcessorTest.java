@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.mock.mockito.SpyBean;
+import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 import org.springframework.context.annotation.Import;
 
 import java.time.LocalDateTime;
@@ -46,7 +46,7 @@ class OutboxMessageProcessorTest extends AbstractJpaTest {
     @Autowired
     private OutboxMessageService outboxMessageService;
 
-    @SpyBean
+    @MockitoSpyBean
     private OutboxSenderService outboxSenderService;
 
     @Autowired

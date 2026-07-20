@@ -38,7 +38,6 @@ lock:
 
 ## Swagger properties
 open-api:
-  basePath: /
   title: Microservice for storaging and analysis evaluation results
   description: API provides operations with evaluation results
   author: Roman Batygin
@@ -55,6 +54,10 @@ springdoc:
       client-id: swagger
       client-secret: swagger_secret
     disable-swagger-default-url: true
+    config-url: ${open-api.base-path:}/v3/api-docs/swagger-config
+    urls:
+      - name: ${spring.application.name}
+        url: ${open-api.base-path:}/v3/api-docs
 
 ers:
   resultSize: 5

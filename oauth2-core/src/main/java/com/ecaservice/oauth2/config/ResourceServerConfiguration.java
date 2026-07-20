@@ -74,8 +74,10 @@ public class ResourceServerConfiguration {
     @Bean
     public OpaqueTokenIntrospector opaqueTokenIntrospector() {
         String introspectEndpoint = String.format(CHECK_TOKEN_ENDPOINT_FORMAT, authServerProperties.getBaseUrl());
-        var delegate = new SpringOpaqueTokenIntrospector(introspectEndpoint, authServerProperties.getClientId(),
-                authServerProperties.getClientSecret());
+        var delegate =  SpringOpaqueTokenIntrospector.withIntrospectionUri(introspectEndpoint)
+                .clientId(authServerProperties.getClientId())
+                .clientSecret(authServerProperties.getClientSecret())
+                .build();
         return new CustomTokenIntrospector(delegate);
     }
 

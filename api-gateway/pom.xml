@@ -13,7 +13,7 @@
     <packaging>jar</packaging>
 
     <properties>
-        <spring-cloud-starter-gateway>4.1.1</spring-cloud-starter-gateway>
+        <spring-cloud-starter-gateway.version>4.3.4</spring-cloud-starter-gateway.version>
         <sonar.coverage.exclusions>**/*.*</sonar.coverage.exclusions>
     </properties>
 
@@ -27,8 +27,8 @@
 
         <dependency>
             <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-starter-gateway</artifactId>
-            <version>${spring-cloud-starter-gateway}</version>
+            <artifactId>spring-cloud-starter-gateway-server-webflux</artifactId>
+            <version>${spring-cloud-starter-gateway.version}</version>
         </dependency>
 
         <dependency>

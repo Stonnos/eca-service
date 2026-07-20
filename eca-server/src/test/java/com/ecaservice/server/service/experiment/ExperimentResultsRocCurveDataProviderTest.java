@@ -20,7 +20,7 @@ import com.ecaservice.web.dto.model.RocCurveDataDto;
 import eca.core.evaluation.EvaluationResults;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.context.annotation.Import;
 
 import java.io.IOException;
@@ -61,7 +61,7 @@ class ExperimentResultsRocCurveDataProviderTest extends AbstractJpaTest {
     @Autowired
     private ExperimentResultsRocCurveDataProvider experimentResultsRocCurveDataProvider;
 
-    @MockBean
+    @MockitoBean
     private ObjectStorageService objectStorageService;
 
     private Experiment experiment;

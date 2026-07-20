@@ -17,7 +17,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.context.annotation.Import;
 
 import static com.ecaservice.external.api.TestHelperUtils.createEvaluationRequestDto;
@@ -35,7 +35,7 @@ import static org.mockito.Mockito.verify;
         EcaRequestService.class, ExternalApiConfig.class, RequestStageHandler.class})
 class EvaluationApiServiceTest extends AbstractJpaTest {
 
-    @MockBean
+    @MockitoBean
     private RabbitSender rabbitSender;
 
     @Autowired

@@ -17,7 +17,7 @@ import com.ecaservice.oauth.repository.UserEntityRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -56,7 +56,7 @@ class ChangePasswordServiceTest extends AbstractJpaTest {
     @Autowired
     private ChangePasswordRequestRepository changePasswordRequestRepository;
 
-    @MockBean
+    @MockitoBean
     private Oauth2RevokeTokenService oauth2RevokeTokenService;
 
     private ChangePasswordService changePasswordService;

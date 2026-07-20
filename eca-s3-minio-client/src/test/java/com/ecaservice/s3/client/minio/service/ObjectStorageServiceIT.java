@@ -11,7 +11,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -39,7 +39,7 @@ class ObjectStorageServiceIT {
     private static final int EXPIRATION_TIME = 7;
     private static final String OBJECT_PATH_FORMAT = "object-%s.json";
 
-    @MockBean
+    @MockitoBean
     private MinioStorageMetricsService minioStorageMetricsService;
 
     @Autowired

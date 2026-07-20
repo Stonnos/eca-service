@@ -28,7 +28,7 @@ import com.google.common.collect.ImmutableList;
 import lombok.Cleanup;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.context.annotation.Import;
 
 import java.io.FileOutputStream;
@@ -60,11 +60,11 @@ class ExperimentsBaseReportGeneratorTest extends AbstractJpaTest {
     private static final LocalDateTime CREATION_DATE = LocalDateTime.of(2018, 1, 5, 0, 0, 0);
     private static final String EXPERIMENTS_REPORT_TEMPLATE_XLSX = "experiments-report-template.xlsx";
 
-    @MockBean
+    @MockitoBean
     private ObjectStorageService objectStorageService;
-    @MockBean
+    @MockitoBean
     private FilterTemplateService filterTemplateService;
-    @MockBean
+    @MockitoBean
     private ExperimentStepProcessor experimentStepProcessor;
 
     @Autowired

@@ -6,7 +6,7 @@ import com.ecaservice.web.push.service.PushTokenService;
 import com.ecaservice.web.push.service.UserService;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 
@@ -29,9 +29,9 @@ class PushTokenControllerTest extends AbstractControllerTest {
 
     private static final String USER = "user";
 
-    @MockBean
+    @MockitoBean
     private UserService userService;
-    @MockBean
+    @MockitoBean
     private PushTokenService pushTokenService;
 
     @Test
