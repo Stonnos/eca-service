@@ -4,6 +4,13 @@
       {{ evaluationResults?.evaluationResultsStatus.description }}
     </div>
   </div>
+  <div class="ui-g-12">
+    <p-progressBar
+      class="w-100"
+      [style]="{'height':'15px'}"
+      mode="indeterminate">
+    </p-progressBar>
+  </div>
 </div>
 
 <div *ngIf="isEvaluationResultsErrorStatus()" class="ui-g">
