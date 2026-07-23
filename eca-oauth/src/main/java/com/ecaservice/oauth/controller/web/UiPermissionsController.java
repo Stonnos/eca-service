@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import static com.ecaservice.config.swagger.OpenApi30Configuration.ECA_AUTHENTICATION_SECURITY_SCHEME;
 import static com.ecaservice.config.swagger.OpenApi30Configuration.SCOPE_WEB;
+import static com.ecaservice.oauth.util.ExampleObjects.UI_PERMISSIONS_RESPONSE_JSON;
 
 /**
  * UI permissions API controller.
@@ -51,7 +52,8 @@ public class UiPermissionsController {
                                     examples = {
                                             @ExampleObject(
                                                     name = "UiPermissionsResponse",
-                                                    ref = "#/components/examples/UiPermissionsResponse"
+                                                    ref = "#/components/examples/UiPermissionsResponse",
+                                                    externalValue = UI_PERMISSIONS_RESPONSE_JSON
                                             ),
                                     },
                                     schema = @Schema(implementation = UiPermissionsDto.class)

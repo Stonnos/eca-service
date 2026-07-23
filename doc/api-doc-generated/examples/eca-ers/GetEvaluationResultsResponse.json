@@ -1,0 +1,303 @@
+{
+  "requestId": "94c0d852-6beb-424d-a887-a059c033932d",
+  "instances": {
+    "uuid": "f8cecbf7-405b-403b-9a94-f51e8fb73ed8",
+    "relationName": "glass",
+    "numInstances": 214,
+    "numAttributes": 10,
+    "numClasses": 6,
+    "className": "type",
+    "objectPath": "instances-f8cecbf7-405b-403b-9a94-f51e8fb73ed8.json"
+  },
+  "classifierReport": {
+    "classifierName": "Logistic",
+    "options": "{\"type\":\"logistic\",\"maxIts\":200,\"useConjugateGradientDescent\":false}"
+  },
+  "evaluationMethodReport": {
+    "evaluationMethod": "CROSS_VALIDATION",
+    "numFolds": 10,
+    "numTests": 1,
+    "seed": 1
+  },
+  "statistics": {
+    "numTestInstances": 214,
+    "numCorrect": 137,
+    "numIncorrect": 77,
+    "pctCorrect": 64.01869158878505,
+    "pctIncorrect": 35.981308411214954,
+    "meanAbsoluteError": 0.14376091581568973,
+    "rootMeanSquaredError": 0.30208658843903385,
+    "maxAucValue": 0.9783783783783784,
+    "varianceError": 0.005618757831752862,
+    "confidenceIntervalLowerBound": 0.3061910946114487,
+    "confidenceIntervalUpperBound": 0.4134350736128503
+  },
+  "classificationCosts": [
+    {
+      "classIndex": 0,
+      "classValue": "build wind float",
+      "truePositiveRate": 0.6428571428571429,
+      "falsePositiveRate": 0.19444444444444445,
+      "trueNegativeRate": 0.8055555555555556,
+      "falseNegativeRate": 0.35714285714285715,
+      "rocCurve": {
+        "aucValue": 0.8237103174603174,
+        "specificity": 0.5694444444444444,
+        "sensitivity": 0.9428571428571428,
+        "thresholdValue": 0.19192572443021555
+      }
+    },
+    {
+      "classIndex": 1,
+      "classValue": "vehic wind float",
+      "truePositiveRate": 0.11764705882352941,
+      "falsePositiveRate": 0.025380710659898477,
+      "trueNegativeRate": 0.9746192893401016,
+      "falseNegativeRate": 0.8823529411764706,
+      "rocCurve": {
+        "aucValue": 0.7954613317408181,
+        "specificity": 0.8121827411167513,
+        "sensitivity": 0.7647058823529411,
+        "thresholdValue": 0.08531212420240561
+      }
+    },
+    {
+      "classIndex": 2,
+      "classValue": "tableware",
+      "truePositiveRate": 0.6666666666666666,
+      "falsePositiveRate": 0.01951219512195122,
+      "trueNegativeRate": 0.9804878048780488,
+      "falseNegativeRate": 0.3333333333333333,
+      "rocCurve": {
+        "aucValue": 0.9550135501355014,
+        "specificity": 0.9804878048780488,
+        "sensitivity": 0.8888888888888888,
+        "thresholdValue": 5.508938596555931E-9
+      }
+    },
+    {
+      "classIndex": 3,
+      "classValue": "build wind non-float",
+      "truePositiveRate": 0.6578947368421053,
+      "falsePositiveRate": 0.21014492753623187,
+      "trueNegativeRate": 0.7898550724637681,
+      "falseNegativeRate": 0.34210526315789475,
+      "rocCurve": {
+        "aucValue": 0.7545766590389016,
+        "specificity": 0.7318840579710144,
+        "sensitivity": 0.7236842105263158,
+        "thresholdValue": 0.3752861685842112
+      }
+    },
+    {
+      "classIndex": 4,
+      "classValue": "headlamps",
+      "truePositiveRate": 0.8275862068965517,
+      "falsePositiveRate": 0.02702702702702703,
+      "trueNegativeRate": 0.972972972972973,
+      "falseNegativeRate": 0.1724137931034483,
+      "rocCurve": {
+        "aucValue": 0.9783783783783784,
+        "specificity": 0.9297297297297298,
+        "sensitivity": 0.9310344827586207,
+        "thresholdValue": 2.71767875053676E-29
+      }
+    },
+    {
+      "classIndex": 5,
+      "classValue": "containers",
+      "truePositiveRate": 0.7692307692307693,
+      "falsePositiveRate": 0.029850746268656716,
+      "trueNegativeRate": 0.9701492537313433,
+      "falseNegativeRate": 0.23076923076923078,
+      "rocCurve": {
+        "aucValue": 0.7975507079984692,
+        "specificity": 0.9701492537313433,
+        "sensitivity": 0.7692307692307693,
+        "thresholdValue": 0.4447975576277138
+      }
+    }
+  ],
+  "confusionMatrix": [
+    {
+      "actualClassIndex": 0,
+      "predictedClassIndex": 0,
+      "numInstances": 45
+    },
+    {
+      "actualClassIndex": 0,
+      "predictedClassIndex": 1,
+      "numInstances": 5
+    },
+    {
+      "actualClassIndex": 0,
+      "predictedClassIndex": 2,
+      "numInstances": 0
+    },
+    {
+      "actualClassIndex": 0,
+      "predictedClassIndex": 3,
+      "numInstances": 19
+    },
+    {
+      "actualClassIndex": 0,
+      "predictedClassIndex": 4,
+      "numInstances": 0
+    },
+    {
+      "actualClassIndex": 0,
+      "predictedClassIndex": 5,
+      "numInstances": 1
+    },
+    {
+      "actualClassIndex": 1,
+      "predictedClassIndex": 0,
+      "numInstances": 9
+    },
+    {
+      "actualClassIndex": 1,
+      "predictedClassIndex": 1,
+      "numInstances": 2
+    },
+    {
+      "actualClassIndex": 1,
+      "predictedClassIndex": 2,
+      "numInstances": 0
+    },
+    {
+      "actualClassIndex": 1,
+      "predictedClassIndex": 3,
+      "numInstances": 6
+    },
+    {
+      "actualClassIndex": 1,
+      "predictedClassIndex": 4,
+      "numInstances": 0
+    },
+    {
+      "actualClassIndex": 1,
+      "predictedClassIndex": 5,
+      "numInstances": 0
+    },
+    {
+      "actualClassIndex": 2,
+      "predictedClassIndex": 0,
+      "numInstances": 0
+    },
+    {
+      "actualClassIndex": 2,
+      "predictedClassIndex": 1,
+      "numInstances": 0
+    },
+    {
+      "actualClassIndex": 2,
+      "predictedClassIndex": 2,
+      "numInstances": 6
+    },
+    {
+      "actualClassIndex": 2,
+      "predictedClassIndex": 3,
+      "numInstances": 1
+    },
+    {
+      "actualClassIndex": 2,
+      "predictedClassIndex": 4,
+      "numInstances": 2
+    },
+    {
+      "actualClassIndex": 2,
+      "predictedClassIndex": 5,
+      "numInstances": 0
+    },
+    {
+      "actualClassIndex": 3,
+      "predictedClassIndex": 0,
+      "numInstances": 18
+    },
+    {
+      "actualClassIndex": 3,
+      "predictedClassIndex": 1,
+      "numInstances": 0
+    },
+    {
+      "actualClassIndex": 3,
+      "predictedClassIndex": 2,
+      "numInstances": 3
+    },
+    {
+      "actualClassIndex": 3,
+      "predictedClassIndex": 3,
+      "numInstances": 50
+    },
+    {
+      "actualClassIndex": 3,
+      "predictedClassIndex": 4,
+      "numInstances": 2
+    },
+    {
+      "actualClassIndex": 3,
+      "predictedClassIndex": 5,
+      "numInstances": 3
+    },
+    {
+      "actualClassIndex": 4,
+      "predictedClassIndex": 0,
+      "numInstances": 1
+    },
+    {
+      "actualClassIndex": 4,
+      "predictedClassIndex": 1,
+      "numInstances": 0
+    },
+    {
+      "actualClassIndex": 4,
+      "predictedClassIndex": 2,
+      "numInstances": 1
+    },
+    {
+      "actualClassIndex": 4,
+      "predictedClassIndex": 3,
+      "numInstances": 1
+    },
+    {
+      "actualClassIndex": 4,
+      "predictedClassIndex": 4,
+      "numInstances": 24
+    },
+    {
+      "actualClassIndex": 4,
+      "predictedClassIndex": 5,
+      "numInstances": 2
+    },
+    {
+      "actualClassIndex": 5,
+      "predictedClassIndex": 0,
+      "numInstances": 0
+    },
+    {
+      "actualClassIndex": 5,
+      "predictedClassIndex": 1,
+      "numInstances": 0
+    },
+    {
+      "actualClassIndex": 5,
+      "predictedClassIndex": 2,
+      "numInstances": 0
+    },
+    {
+      "actualClassIndex": 5,
+      "predictedClassIndex": 3,
+      "numInstances": 2
+    },
+    {
+      "actualClassIndex": 5,
+      "predictedClassIndex": 4,
+      "numInstances": 1
+    },
+    {
+      "actualClassIndex": 5,
+      "predictedClassIndex": 5,
+      "numInstances": 10
+    }
+  ]
+}

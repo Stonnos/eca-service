@@ -53,6 +53,7 @@ import static com.ecaservice.config.swagger.OpenApi30Configuration.ECA_AUTHENTIC
 import static com.ecaservice.config.swagger.OpenApi30Configuration.SCOPE_WEB;
 import static com.ecaservice.server.config.audit.AuditCodes.GENERATE_CONFIGURATION_REPORT;
 import static com.ecaservice.server.report.ReportTemplates.CLASSIFIERS_CONFIGURATION_TEMPLATE;
+import static com.ecaservice.server.util.ExampleObjects.CONFIGURATION_HISTORY_PAGE_RESPONSE_JSON;
 import static com.ecaservice.server.util.ReportHelper.download;
 import static com.ecaservice.web.dto.util.FieldConstraints.VALUE_1;
 
@@ -548,7 +549,8 @@ public class ClassifiersConfigurationController {
                                     examples = {
                                             @ExampleObject(
                                                     name = "ClassifiersConfigurationHistoryPageResponse",
-                                                    ref = "#/components/examples/ClassifiersConfigurationHistoryPageResponse"
+                                                    ref = "#/components/examples/ClassifiersConfigurationHistoryPageResponse",
+                                                    externalValue = CONFIGURATION_HISTORY_PAGE_RESPONSE_JSON
                                             ),
                                     },
                                     schema = @Schema(implementation = ClassifiersConfigurationHistoryPageDto.class)

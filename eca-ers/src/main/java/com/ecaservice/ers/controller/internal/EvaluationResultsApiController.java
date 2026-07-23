@@ -30,6 +30,8 @@ import jakarta.validation.Valid;
 
 import static com.ecaservice.config.swagger.OpenApi30Configuration.ECA_AUTHENTICATION_SECURITY_SCHEME;
 import static com.ecaservice.config.swagger.OpenApi30Configuration.SCOPE_INTERNAL_API;
+import static com.ecaservice.ers.util.ExampleObjects.EVALUATION_REQUEST_JSON;
+import static com.ecaservice.ers.util.ExampleObjects.GET_EVALUATION_RESULTS_RESPONSE_JSON;
 
 /**
  * Evaluation results service controller.
@@ -61,7 +63,8 @@ public class EvaluationResultsApiController {
                     @Content(examples = {
                             @ExampleObject(
                                     name = "EvaluationRequest",
-                                    ref = "#/components/examples/EvaluationRequest"
+                                    ref = "#/components/examples/EvaluationRequest",
+                                    externalValue = EVALUATION_REQUEST_JSON
                             )
                     })
             }),
@@ -124,7 +127,8 @@ public class EvaluationResultsApiController {
                                     examples = {
                                             @ExampleObject(
                                                     name = "GetEvaluationResultsResponse",
-                                                    ref = "#/components/examples/GetEvaluationResultsResponse"
+                                                    ref = "#/components/examples/GetEvaluationResultsResponse",
+                                                    externalValue = GET_EVALUATION_RESULTS_RESPONSE_JSON
                                             ),
                                     },
                                     schema = @Schema(implementation = GetEvaluationResultsResponse.class)

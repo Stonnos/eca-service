@@ -65,6 +65,10 @@ import java.util.List;
 
 import static com.ecaservice.config.swagger.OpenApi30Configuration.ECA_AUTHENTICATION_SECURITY_SCHEME;
 import static com.ecaservice.config.swagger.OpenApi30Configuration.SCOPE_WEB;
+import static com.ecaservice.data.storage.util.ExampleObjects.ATTRIBUTES_LIST_RESPONSE_JSON;
+import static com.ecaservice.data.storage.util.ExampleObjects.ATTRIBUTES_SCATTER_PLOT_RESPONSE_JSON;
+import static com.ecaservice.data.storage.util.ExampleObjects.ATTRIBUTE_STATISTICS_RESPONSE_JSON;
+import static com.ecaservice.data.storage.util.ExampleObjects.CONTINGENCY_TABLE_RESPONSE_JSON;
 import static com.ecaservice.web.dto.util.FieldConstraints.UUID_MAX_SIZE;
 import static com.ecaservice.web.dto.util.FieldConstraints.UUID_PATTERN;
 import static com.ecaservice.web.dto.util.FieldConstraints.VALUE_1;
@@ -459,7 +463,8 @@ public class DataStorageController {
                                     examples = {
                                             @ExampleObject(
                                                     name = "AttributesListResponse",
-                                                    ref = "#/components/examples/AttributesListResponse"
+                                                    ref = "#/components/examples/AttributesListResponse",
+                                                    externalValue = ATTRIBUTES_LIST_RESPONSE_JSON
                                             ),
                                     },
                                     array = @ArraySchema(schema = @Schema(implementation = AttributeDto.class))
@@ -845,7 +850,8 @@ public class DataStorageController {
                                     examples = {
                                             @ExampleObject(
                                                     name = "AttributesScatterPlotResponse",
-                                                    ref = "#/components/examples/AttributesScatterPlotResponse"
+                                                    ref = "#/components/examples/AttributesScatterPlotResponse",
+                                                    externalValue = ATTRIBUTES_SCATTER_PLOT_RESPONSE_JSON
                                             ),
                                     },
                                     schema = @Schema(implementation = AttributesScatterPlotDto.class)
@@ -910,7 +916,8 @@ public class DataStorageController {
                                     examples = {
                                             @ExampleObject(
                                                     name = "AttributeStatisticsResponse",
-                                                    ref = "#/components/examples/AttributeStatisticsResponse"
+                                                    ref = "#/components/examples/AttributeStatisticsResponse",
+                                                    externalValue = ATTRIBUTE_STATISTICS_RESPONSE_JSON
                                             ),
                                     },
                                     schema = @Schema(implementation = AttributeStatisticsDto.class)
@@ -976,7 +983,8 @@ public class DataStorageController {
                                     examples = {
                                             @ExampleObject(
                                                     name = "ContingencyTableResponse",
-                                                    ref = "#/components/examples/ContingencyTableResponse"
+                                                    ref = "#/components/examples/ContingencyTableResponse",
+                                                    externalValue = CONTINGENCY_TABLE_RESPONSE_JSON
                                             ),
                                     },
                                     schema = @Schema(implementation = DataListPageDto.class)

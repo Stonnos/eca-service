@@ -35,6 +35,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import jakarta.validation.Valid;
+
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.List;
@@ -44,6 +45,8 @@ import static com.ecaservice.config.swagger.OpenApi30Configuration.SCOPE_WEB;
 import static com.ecaservice.ers.config.audit.AuditCodes.DOWNLOAD_EVALUATION_RESULTS_HISTORY_REPORT;
 import static com.ecaservice.ers.dictionary.FilterDictionaries.EVALUATION_RESULTS_HISTORY_TEMPLATE;
 import static com.ecaservice.ers.report.ReportTemplates.EVALUATION_RESULTS_HISTORY_TEMPLATE_CODE;
+import static com.ecaservice.ers.util.ExampleObjects.EVALUATION_RESULTS_HISTORY_FILTER_FIELDS_RESPONSE_JSON;
+import static com.ecaservice.ers.util.ExampleObjects.EVALUATION_RESULTS_HISTORY_PAGE_RESPONSE_JSON;
 import static com.ecaservice.report.ReportGenerator.generateReport;
 
 /**
@@ -92,7 +95,8 @@ public class EvaluationResultsHistoryController {
                                     examples = {
                                             @ExampleObject(
                                                     name = "EvaluationResultsHistoryPageResponse",
-                                                    ref = "#/components/examples/EvaluationResultsHistoryPageResponse"
+                                                    ref = "#/components/examples/EvaluationResultsHistoryPageResponse",
+                                                    externalValue = EVALUATION_RESULTS_HISTORY_PAGE_RESPONSE_JSON
                                             ),
                                     },
                                     schema = @Schema(implementation = EvaluationResultsHistoryPageDto.class)
@@ -147,7 +151,8 @@ public class EvaluationResultsHistoryController {
                                     examples = {
                                             @ExampleObject(
                                                     name = "EvaluationResultsHistoryFilterFieldsResponse",
-                                                    ref = "#/components/examples/EvaluationResultsHistoryFilterFieldsResponse"
+                                                    ref = "#/components/examples/EvaluationResultsHistoryFilterFieldsResponse",
+                                                    externalValue = EVALUATION_RESULTS_HISTORY_FILTER_FIELDS_RESPONSE_JSON
                                             ),
                                     }
                             )

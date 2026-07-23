@@ -1,0 +1,99 @@
+{
+  "dataSets": [
+    {
+      "classValue": "bad",
+      "items": [
+        {
+          "classValue": "bad",
+          "xvalue": 1,
+          "ylabel": null,
+          "xlabel": "0<=X<200",
+          "yvalue": 48.0000
+        },
+        {
+          "classValue": "bad",
+          "xvalue": 0,
+          "ylabel": null,
+          "xlabel": "<0",
+          "yvalue": 24.0000
+        },
+        {
+          "classValue": "bad",
+          "xvalue": 1,
+          "ylabel": null,
+          "xlabel": "0<=X<200",
+          "yvalue": 30.0000
+        }
+      ]
+    },
+    {
+      "classValue": "good",
+      "items": [
+        {
+          "classValue": "good",
+          "xvalue": 0,
+          "ylabel": null,
+          "xlabel": "<0",
+          "yvalue": 6.0000
+        },
+        {
+          "classValue": "good",
+          "xvalue": 2,
+          "ylabel": null,
+          "xlabel": "no checking",
+          "yvalue": 12.0000
+        },
+        {
+          "classValue": "good",
+          "xvalue": 0,
+          "ylabel": null,
+          "xlabel": "<0",
+          "yvalue": 42.0000
+        }
+      ]
+    }
+  ],
+  "yaxisAttribute": {
+    "id": 2,
+    "name": "duration",
+    "index": 1,
+    "selected": true,
+    "type": {
+      "value": "NUMERIC",
+      "description": "Числовой"
+    },
+    "values": []
+  },
+  "xaxisAttribute": {
+    "id": 1,
+    "name": "checking_status",
+    "index": 0,
+    "selected": true,
+    "type": {
+      "value": "NOMINAL",
+      "description": "Категориальный"
+    },
+    "values": [
+      {
+        "id": 1,
+        "index": 0,
+        "value": "<0"
+      },
+      {
+        "id": 2,
+        "index": 1,
+        "value": "0<=X<200"
+      },
+      {
+        "id": 3,
+        "index": 2,
+        "value": "no checking"
+      },
+      {
+        "id": 4,
+        "index": 3,
+        "value": ">=200"
+      }
+    ]
+  }
+}
