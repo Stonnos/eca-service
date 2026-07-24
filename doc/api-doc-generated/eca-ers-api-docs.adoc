@@ -81,7 +81,7 @@ a|
 
 
 a|
-link:./examples/eca-ers/EvaluationRequest.json[Show]
+link:./examples/eca-ers/EvaluationRequest.json[EvaluationRequest.json]
 |===
 
 
@@ -242,7 +242,7 @@ a|
 
 
 a|
-link:./examples/eca-ers/GetEvaluationResultsResponse.json[Show]
+link:./examples/eca-ers/GetEvaluationResultsResponse.json[GetEvaluationResultsResponse.json]
 |400
 |Bad request
 |*application/json*
@@ -763,7 +763,7 @@ a|
 
 
 a|
-link:./examples/eca-ers/EvaluationResultsHistoryPageResponse.json[Show]
+link:./examples/eca-ers/EvaluationResultsHistoryPageResponse.json[EvaluationResultsHistoryPageResponse.json]
 |401
 |Not authorized
 |*application/json*
@@ -840,7 +840,7 @@ a|
 |*application/json*
 |-
 a|
-link:./examples/eca-ers/EvaluationResultsHistoryFilterFieldsResponse.json[Show]
+link:./examples/eca-ers/EvaluationResultsHistoryFilterFieldsResponse.json[EvaluationResultsHistoryFilterFieldsResponse.json]
 |401
 |Not authorized
 |*application/json*
