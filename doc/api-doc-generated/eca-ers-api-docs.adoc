@@ -81,7 +81,7 @@ a|
 
 
 a|
-link:/examples/eca-ers/EvaluationRequest.json[Example]
+link:./examples/eca-ers/EvaluationRequest.json[Example]
 -
 |===
 
