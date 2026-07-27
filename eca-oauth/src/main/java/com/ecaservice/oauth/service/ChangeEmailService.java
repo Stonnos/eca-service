@@ -32,6 +32,7 @@ import static com.ecaservice.common.web.util.MaskUtils.mask;
 import static com.ecaservice.common.web.util.MaskUtils.maskEmail;
 import static com.ecaservice.oauth.config.audit.AuditCodes.CONFIRM_CHANGE_EMAIL_REQUEST;
 import static com.ecaservice.oauth.config.audit.AuditCodes.CREATE_CHANGE_EMAIL_REQUEST;
+import static com.ecaservice.oauth.config.audit.AuditCodes.REVOKE_CHANGE_EMAIL_REQUEST;
 import static com.ecaservice.oauth.util.RandomUtils.randomString;
 import static org.apache.commons.codec.digest.DigestUtils.md5Hex;
 
@@ -166,6 +167,7 @@ public class ChangeEmailService {
      * @param revocationToken - revocation token
      * @return change email request
      */
+    @Audit(value = REVOKE_CHANGE_EMAIL_REQUEST)
     @Transactional
     public ChangeEmailRequestEntity revokeChangeEmailRequest(String revocationToken) {
         log.info("Starting to revoke change email request: [{}]", mask(revocationToken));

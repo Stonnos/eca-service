@@ -104,4 +104,9 @@ public class AuditCodes {
      * Delete personal access token
      */
     public static final String DELETE_PERSONAL_ACCESS_TOKEN = "DELETE_PERSONAL_ACCESS_TOKEN";
+
+    /**
+     * Revoke change email request
+     */
+    public static final String REVOKE_CHANGE_EMAIL_REQUEST = "REVOKE_CHANGE_EMAIL_REQUEST";
 }

@@ -73,6 +73,9 @@
 |CONFIRM_CHANGE_EMAIL_REQUEST
 |Подтверждение запроса на изменение Email
 |USER_PROFILE_ACTIONS
+|REVOKE_CHANGE_EMAIL_REQUEST
+|Отмена запроса на изменение Email
+|USER_PROFILE_ACTIONS
 |LOGIN
 |Вход в систему
 |USER_PROFILE_ACTIONS
