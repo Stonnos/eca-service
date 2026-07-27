@@ -12,6 +12,7 @@ import com.ecaservice.oauth.repository.ChangeEmailRequestRepository;
 import com.ecaservice.oauth.repository.UserEntityRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 
 import java.time.LocalDateTime;
@@ -32,8 +33,12 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 class ChangeEmailServiceTest extends AbstractJpaTest {
 
     private static final String NEW_EMAIL = "newemail@mail.ru";
+    private static final String OLD_EMAIL = "oldemail@mail.ru";
     private static final String INVALID_USERNAME = "abc";
     private static final String CONFIRMATION_CODE = "code";
+
+    @MockBean
+    private Oauth2RevokeTokenService oauth2RevokeTokenService;
 
     @Autowired
     private AppProperties appProperties;
@@ -128,6 +133,16 @@ class ChangeEmailServiceTest extends AbstractJpaTest {
     }
 
     @Test
+    void testChangeEmailForRevokedRequest() {
+        var changeEmailRequestEntity = createAndSaveChangeEmailRequestEntity(
+                LocalDateTime.now().plusMinutes(appProperties.getChangeEmail().getValidityMinutes()), null);
+        changeEmailRequestEntity.setRevocationDate(LocalDateTime.now());
+        changeEmailRequestRepository.save(changeEmailRequestEntity);
+        assertThrows(InvalidTokenException.class,
+                () -> changeEmailService.confirmChangeEmail(changeEmailRequestEntity.getToken(), CONFIRMATION_CODE));
+    }
+
+    @Test
     void testChangeEmail() {
         var changeEmailRequestEntity = createAndSaveChangeEmailRequestEntity(
                 LocalDateTime.now().plusMinutes(appProperties.getChangeEmail().getValidityMinutes()), null);
@@ -137,6 +152,51 @@ class ChangeEmailServiceTest extends AbstractJpaTest {
         assertThat(actual).isNotNull();
         assertThat(actual.getConfirmationDate()).isNotNull();
         assertThat(actual.getUserEntity().getEmail()).isEqualTo(changeEmailRequestEntity.getNewEmail());
+    }
+
+    @Test
+    void testRevokeChangeEmailForExpiredToken() {
+        var changeEmailRequestEntity =
+                createAndSaveChangeEmailRequestEntity(LocalDateTime.now().plusHours(1L), null);
+        String revocationToken = UUID.randomUUID().toString();
+        changeEmailRequestEntity.setRevocationToken(md5Hex(revocationToken));
+        changeEmailRequestEntity.setRevocationExpireAt(LocalDateTime.now().minusMinutes(1L));
+        changeEmailRequestRepository.save(changeEmailRequestEntity);
+        assertThrows(InvalidTokenException.class, () -> changeEmailService.revokeChangeEmailRequest(revocationToken));
+    }
+
+    @Test
+    void testRevokeChangeEmailForAlreadyRevoked() {
+        var changeEmailRequestEntity =
+                createAndSaveChangeEmailRequestEntity(LocalDateTime.now().plusHours(1L), null);
+        String revocationToken = UUID.randomUUID().toString();
+        changeEmailRequestEntity.setRevocationToken(md5Hex(revocationToken));
+        changeEmailRequestEntity.setRevocationDate(LocalDateTime.now());
+        changeEmailRequestRepository.save(changeEmailRequestEntity);
+        assertThrows(InvalidTokenException.class, () -> changeEmailService.revokeChangeEmailRequest(revocationToken));
+    }
+
+    @Test
+    void testRevokeChangeEmailWithInvalidToken() {
+        var changeEmailRequestEntity =
+                createAndSaveChangeEmailRequestEntity(LocalDateTime.now().plusHours(1L), null);
+        changeEmailRequestRepository.save(changeEmailRequestEntity);
+        assertThrows(InvalidTokenException.class,
+                () -> changeEmailService.revokeChangeEmailRequest(UUID.randomUUID().toString()));
+    }
+
+    @Test
+    void testRevokeChangeEmailRequest() {
+        var changeEmailRequestEntity =
+                createAndSaveChangeEmailRequestEntity(LocalDateTime.now().plusHours(1L), null);
+        String revocationToken = UUID.randomUUID().toString();
+        changeEmailRequestEntity.setRevocationToken(md5Hex(revocationToken));
+        changeEmailRequestRepository.save(changeEmailRequestEntity);
+        changeEmailService.revokeChangeEmailRequest(revocationToken);
+        var expectedRequest = changeEmailRequestRepository.findById(changeEmailRequestEntity.getId()).orElse(null);
+        assertThat(expectedRequest).isNotNull();
+        assertThat(expectedRequest.getRevocationDate()).isNotNull();
+        assertThat(expectedRequest.getUserEntity().getEmail()).isEqualTo(OLD_EMAIL);
     }
 
     @Test
@@ -168,6 +228,13 @@ class ChangeEmailServiceTest extends AbstractJpaTest {
         testInactiveChangeEmailRequestStatus();
     }
 
+    @Test
+    void testGetChangeEmailRequestStatusForRevokedRequest() {
+        var request = createAndSaveChangeEmailRequestEntity(LocalDateTime.now().minusDays(1L), null);
+        request.setRevocationDate(LocalDateTime.now());
+        testInactiveChangeEmailRequestStatus();
+    }
+
     private UserEntity createAndSaveUser() {
         UserEntity userEntity = createUserEntity();
         userEntity.setRoles(Collections.emptySet());
@@ -185,10 +252,13 @@ class ChangeEmailServiceTest extends AbstractJpaTest {
         ChangeEmailRequestEntity changeEmailRequestEntity = new ChangeEmailRequestEntity();
         changeEmailRequestEntity.setConfirmationCode(md5Hex(CONFIRMATION_CODE));
         changeEmailRequestEntity.setToken(UUID.randomUUID().toString());
+        changeEmailRequestEntity.setRevocationToken(md5Hex(UUID.randomUUID().toString()));
         changeEmailRequestEntity.setExpireDate(expireDate);
         changeEmailRequestEntity.setConfirmationDate(confirmationDate);
         changeEmailRequestEntity.setUserEntity(userEntity);
         changeEmailRequestEntity.setNewEmail(NEW_EMAIL);
+        changeEmailRequestEntity.setOldEmail(OLD_EMAIL);
+        changeEmailRequestEntity.setRevocationExpireAt(LocalDateTime.now().plusHours(1));
         changeEmailRequestEntity.setCreated(LocalDateTime.now());
         return changeEmailRequestRepository.save(changeEmailRequestEntity);
     }

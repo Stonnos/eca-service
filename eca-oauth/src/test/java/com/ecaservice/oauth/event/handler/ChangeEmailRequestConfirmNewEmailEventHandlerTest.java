@@ -2,7 +2,7 @@ package com.ecaservice.oauth.event.handler;
 
 import com.ecaservice.notification.dto.EmailRequest;
 import com.ecaservice.oauth.config.AppProperties;
-import com.ecaservice.oauth.event.model.ChangeEmailRequestEmailEvent;
+import com.ecaservice.oauth.event.model.ChangeEmailRequestConfirmNewEmailEvent;
 import com.ecaservice.oauth.model.TokenModel;
 import com.ecaservice.oauth.service.mail.dictionary.TemplateVariablesDictionary;
 import com.ecaservice.oauth.service.mail.dictionary.Templates;
@@ -21,15 +21,15 @@ import static com.ecaservice.oauth.TestHelperUtils.createChangeEmailRequestEntit
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- * Unit tests for class {@link ChangeEmailRequestEmailEventHandler}.
+ * Unit tests for class {@link ChangeEmailRequestConfirmNewEmailEventHandler}.
  *
  * @author Roman Batygin
  */
 @ExtendWith(SpringExtension.class)
 @EnableConfigurationProperties
 @TestPropertySource("classpath:application.properties")
-@Import({AppProperties.class, ChangeEmailRequestEmailEventHandler.class})
-class ChangeEmailRequestEmailEventHandlerTest {
+@Import({AppProperties.class, ChangeEmailRequestConfirmNewEmailEventHandler.class})
+class ChangeEmailRequestConfirmNewEmailEventHandlerTest {
 
     private static final String CONFIRMATION_CODE = "token";
     private static final long USER_ID = 1L;
@@ -39,7 +39,7 @@ class ChangeEmailRequestEmailEventHandlerTest {
     @Autowired
     private AppProperties appProperties;
     @Autowired
-    private ChangeEmailRequestEmailEventHandler eventHandler;
+    private ChangeEmailRequestConfirmNewEmailEventHandler eventHandler;
 
     @Test
     void testEvent() {
@@ -50,22 +50,18 @@ class ChangeEmailRequestEmailEventHandlerTest {
                 .confirmationCode(CONFIRMATION_CODE)
                 .tokenId(changeEmailRequestEntity.getId())
                 .login(changeEmailRequestEntity.getUserEntity().getLogin())
-                .revocationToken(UUID.randomUUID().toString())
                 .email(changeEmailRequestEntity.getUserEntity().getEmail())
                 .build();
-        var changeEmailNotificationEvent = new ChangeEmailRequestEmailEvent(this, tokenModel, NEW_EMAIL);
+        var changeEmailNotificationEvent = new ChangeEmailRequestConfirmNewEmailEvent(this, tokenModel, NEW_EMAIL);
         EmailRequest actual = eventHandler.handle(changeEmailNotificationEvent);
         assertThat(actual).isNotNull();
-        assertThat(actual.getTemplateCode()).isEqualTo(Templates.CHANGE_EMAIL);
-        assertThat(actual.getReceiver()).isEqualTo(changeEmailRequestEntity.getUserEntity().getEmail());
+        assertThat(actual.getTemplateCode()).isEqualTo(Templates.CHANGE_EMAIL_CONFIRM_NEW_EMAIL);
+        assertThat(actual.getReceiver()).isEqualTo(NEW_EMAIL);
         assertThat(actual.getVariables()).isNotEmpty();
-        assertThat(actual.getVariables()).containsEntry(TemplateVariablesDictionary.NEW_EMAIL, NEW_EMAIL);
-        String tokenRevocationEndpoint =
-                String.format(appProperties.getChangeEmail().getRevocationUrl(), tokenModel.getRevocationToken());
-        String expectedChangeEmailRevocationUrl =
-                String.format("%s%s", appProperties.getWebExternalBaseUrl(), tokenRevocationEndpoint);
-        assertThat(actual.getVariables()).containsEntry(TemplateVariablesDictionary.REVOKE_CHANGE_EMAIL_REQUEST_URL,
-                expectedChangeEmailRevocationUrl);
+        assertThat(actual.getVariables()).containsEntry(TemplateVariablesDictionary.VALIDITY_MINUTES_KEY,
+                String.valueOf(appProperties.getChangeEmail().getValidityMinutes()));
+        assertThat(actual.getVariables()).containsEntry(TemplateVariablesDictionary.CONFIRMATION_CODE_KEY,
+                tokenModel.getConfirmationCode());
         assertThat(actual.getPriority()).isEqualTo(MEDIUM);
     }
 }

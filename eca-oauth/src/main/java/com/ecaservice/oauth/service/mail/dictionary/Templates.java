@@ -34,6 +34,10 @@ public class Templates {
      * Change email request template
      */
     public static final String CHANGE_EMAIL = "CHANGE_EMAIL";
+    /**
+     * Change email request confirm new email template
+     */
+    public static final String CHANGE_EMAIL_CONFIRM_NEW_EMAIL = "CHANGE_EMAIL_CONFIRM_NEW_EMAIL";
 
     /**
      * Email changed template

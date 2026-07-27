@@ -1,6 +1,7 @@
 package com.ecaservice.oauth.controller.web;
 
 import com.ecaservice.common.error.model.ValidationErrorDto;
+import com.ecaservice.oauth.event.model.ChangeEmailRequestConfirmNewEmailEvent;
 import com.ecaservice.oauth.event.model.ChangeEmailRequestEmailEvent;
 import com.ecaservice.oauth.event.model.EmailChangedEmailEvent;
 import com.ecaservice.oauth.service.ChangeEmailService;
@@ -112,6 +113,7 @@ public class ChangeEmailController {
         log.info("Received change email request for user [{}]", principal.getName());
         var tokenModel = changeEmailService.createChangeEmailRequest(principal.getName(), newEmail);
         applicationEventPublisher.publishEvent(new ChangeEmailRequestEmailEvent(this, tokenModel, newEmail));
+        applicationEventPublisher.publishEvent(new ChangeEmailRequestConfirmNewEmailEvent(this, tokenModel, newEmail));
         log.info("Change email request [{}] has been processed for user [{}]", tokenModel.getToken(),
                 principal.getName());
         return ChangeEmailRequestStatusDto.builder()
@@ -169,6 +171,51 @@ public class ChangeEmailController {
         applicationEventPublisher.publishEvent(
                 new EmailChangedEmailEvent(this, changeEmailRequest.getUserEntity(), changeEmailRequest));
         log.info("Change email request [{}] confirmation has been processed", token);
+    }
+
+    /**
+     * Revokes change email request.
+     *
+     * @param revocationToken - revocation token value
+     */
+    @PreAuthorize("hasAuthority('SCOPE_web')")
+    @Operation(
+            description = "Revokes change email request",
+            summary = "Revokes change email request",
+            responses = {
+                    @ApiResponse(description = "OK", responseCode = "200"),
+                    @ApiResponse(description = "Not authorized", responseCode = "401",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    examples = {
+                                            @ExampleObject(
+                                                    name = "NotAuthorizedResponse",
+                                                    ref = "#/components/examples/NotAuthorizedResponse"
+                                            ),
+                                    }
+                            )
+                    ),
+                    @ApiResponse(description = "Bad request", responseCode = "400",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    examples = {
+                                            @ExampleObject(
+                                                    name = "InvalidTokenErrorCode",
+                                                    ref = "#/components/examples/InvalidTokenErrorCode"
+                                            ),
+                                    },
+                                    array = @ArraySchema(schema = @Schema(implementation = ValidationErrorDto.class))
+                            )
+                    )
+            }
+    )
+    @PostMapping(value = "/revoke")
+    public void revokeEmailRequest(
+            @Size(min = VALUE_1, max = MAX_LENGTH_255)
+            @Parameter(description = "Revocation token", required = true) @RequestParam String revocationToken) {
+        log.info("Received change email revocation request");
+        var changeEmailRequest = changeEmailService.revokeChangeEmailRequest(revocationToken);
+        log.info("Change email revocation request has been processed");
     }
 
     /**

@@ -16,11 +16,14 @@ import com.ecaservice.oauth.repository.UserEntityRepository;
 import com.ecaservice.web.dto.model.ChangeEmailRequestStatusDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.RandomStringUtils;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.security.crypto.keygen.Base64StringKeyGenerator;
+import org.springframework.security.crypto.keygen.StringKeyGenerator;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.Base64;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
@@ -30,6 +33,7 @@ import static com.ecaservice.common.web.util.LogHelper.putMdc;
 import static com.ecaservice.common.web.util.MaskUtils.maskEmail;
 import static com.ecaservice.oauth.config.audit.AuditCodes.CONFIRM_CHANGE_EMAIL_REQUEST;
 import static com.ecaservice.oauth.config.audit.AuditCodes.CREATE_CHANGE_EMAIL_REQUEST;
+import static com.ecaservice.oauth.util.RandomUtils.randomString;
 import static org.apache.commons.codec.digest.DigestUtils.md5Hex;
 
 /**
@@ -42,7 +46,14 @@ import static org.apache.commons.codec.digest.DigestUtils.md5Hex;
 @RequiredArgsConstructor
 public class ChangeEmailService {
 
+    private static final int TOKEN_LENGTH = 96;
+    private static final PageRequest FIRST_PAGE_ELEMENT = PageRequest.of(0, 1);
+
+    private final StringKeyGenerator tokenGenerator =
+            new Base64StringKeyGenerator(Base64.getUrlEncoder().withoutPadding(), TOKEN_LENGTH);
+
     private final AppProperties appProperties;
+    private final Oauth2RevokeTokenService oauth2RevokeTokenService;
     private final ChangeEmailRequestRepository changeEmailRequestRepository;
     private final UserEntityRepository userEntityRepository;
 
@@ -67,21 +78,32 @@ public class ChangeEmailService {
             throw new EmailDuplicationException();
         }
         LocalDateTime now = LocalDateTime.now();
-        if (changeEmailRequestRepository
-                .existsByUserEntityAndExpireDateAfterAndConfirmationDateIsNull(userEntity, now)) {
+        if (changeEmailRequestRepository.hasActiveChangeEmailRequest(userEntity, now)) {
             throw new ChangeEmailRequestAlreadyExistsException();
         }
-        String confirmationCode =
-                RandomStringUtils.random(appProperties.getChangeEmail().getConfirmationCodeLength(), false, true);
+        String confirmationCode = randomString(appProperties.getChangeEmail().getConfirmationCodeLength());
+        String revocationToken = tokenGenerator.generateKey();
         LocalDateTime expireDate = now.plusMinutes(appProperties.getChangeEmail().getValidityMinutes());
-        var changeEmailRequestEntity =
-                saveChangeEmailRequest(newEmail, userEntity, token, confirmationCode, expireDate);
-        log.info("Change email request [{}] has been created for user [{}], new email [{}]",
-                changeEmailRequestEntity.getToken(), userEntity.getId(), maskEmail(newEmail));
+        LocalDateTime revocationExpireAt =
+                now.plusMinutes(appProperties.getChangeEmail().getRevocationValidityMinutes());
+        var changeEmailRequestEntity = new ChangeEmailRequestEntity();
+        changeEmailRequestEntity.setToken(token);
+        changeEmailRequestEntity.setConfirmationCode(md5Hex(confirmationCode));
+        changeEmailRequestEntity.setRevocationToken(md5Hex(revocationToken));
+        changeEmailRequestEntity.setExpireDate(expireDate);
+        changeEmailRequestEntity.setRevocationExpireAt(revocationExpireAt);
+        changeEmailRequestEntity.setOldEmail(userEntity.getEmail());
+        changeEmailRequestEntity.setNewEmail(newEmail);
+        changeEmailRequestEntity.setUserEntity(userEntity);
+        changeEmailRequestEntity.setCreated(LocalDateTime.now());
+        changeEmailRequestRepository.save(changeEmailRequestEntity);
+        log.info("Change email request has been created for user [{}], new email [{}]", userEntity.getId(),
+                maskEmail(newEmail));
         return TokenModel.builder()
                 .token(changeEmailRequestEntity.getToken())
                 .tokenId(changeEmailRequestEntity.getId())
                 .confirmationCode(confirmationCode)
+                .revocationToken(revocationToken)
                 .login(userEntity.getLogin())
                 .email(userEntity.getEmail())
                 .build();
@@ -126,10 +148,7 @@ public class ChangeEmailService {
     public ChangeEmailRequestEntity confirmChangeEmail(String token, String confirmationCode) {
         putMdc(TX_ID, token);
         log.info("Starting to confirm change email for token [{}]", token);
-        var changeEmailRequestEntity =
-                changeEmailRequestRepository.findByTokenAndExpireDateAfterAndConfirmationDateIsNull(token,
-                                LocalDateTime.now())
-                        .orElseThrow(InvalidTokenException::new);
+        var changeEmailRequestEntity = getRequestByToken(token).orElseThrow(InvalidTokenException::new);
         String confirmationCodeMd5Hash = md5Hex(confirmationCode);
         if (!changeEmailRequestEntity.getConfirmationCode().equals(confirmationCodeMd5Hash)) {
             throw new InvalidConfirmationCodeException();
@@ -144,25 +163,42 @@ public class ChangeEmailService {
         return changeEmailRequestEntity;
     }
 
-    private Optional<ChangeEmailRequestEntity> getLastActiveChangeEmailRequest(UserEntity userEntity) {
-        LocalDateTime now = LocalDateTime.now();
-        return changeEmailRequestRepository.findByUserEntityAndExpireDateAfterAndConfirmationDateIsNull(userEntity,
-                now);
+    /**
+     * Revoke change email request.
+     *
+     * @param revocationToken - revocation token
+     * @return change email request
+     */
+    @Transactional
+    public ChangeEmailRequestEntity revokeChangeEmailRequest(String revocationToken) {
+        log.info("Starting to revoke change email request");
+        var request = getRequestToRevoke(revocationToken).orElseThrow(InvalidTokenException::new);
+        UserEntity userEntity = request.getUserEntity();
+        userEntity.setEmail(request.getOldEmail());
+        oauth2RevokeTokenService.revokeTokens(userEntity);
+        request.setRevocationDate(LocalDateTime.now());
+        changeEmailRequestRepository.save(request);
+        log.info("Change email request [{}] has been revoked", request.getId());
+        return request;
     }
 
-    private ChangeEmailRequestEntity saveChangeEmailRequest(String newEmail,
-                                                            UserEntity userEntity,
-                                                            String token,
-                                                            String confirmationCode,
-                                                            LocalDateTime expireDate) {
-        var changeEmailRequestEntity = new ChangeEmailRequestEntity();
-        changeEmailRequestEntity.setToken(UUID.randomUUID().toString());
-        changeEmailRequestEntity.setToken(token);
-        changeEmailRequestEntity.setConfirmationCode(md5Hex(confirmationCode));
-        changeEmailRequestEntity.setExpireDate(expireDate);
-        changeEmailRequestEntity.setNewEmail(newEmail);
-        changeEmailRequestEntity.setUserEntity(userEntity);
-        changeEmailRequestEntity.setCreated(LocalDateTime.now());
-        return changeEmailRequestRepository.save(changeEmailRequestEntity);
+    private Optional<ChangeEmailRequestEntity> getRequestByToken(String token) {
+        return changeEmailRequestRepository.findActiveRequestsByToken(token, LocalDateTime.now(), FIRST_PAGE_ELEMENT)
+                .stream()
+                .findFirst();
+    }
+
+    private Optional<ChangeEmailRequestEntity> getLastActiveChangeEmailRequest(UserEntity userEntity) {
+        LocalDateTime now = LocalDateTime.now();
+        return changeEmailRequestRepository.findActiveRequestsByUser(userEntity, now, FIRST_PAGE_ELEMENT)
+                .stream()
+                .findFirst();
+    }
+
+    private Optional<ChangeEmailRequestEntity> getRequestToRevoke(String revocationToken) {
+        LocalDateTime now = LocalDateTime.now();
+        return changeEmailRequestRepository.findRequestsToRevoke(md5Hex(revocationToken), now, FIRST_PAGE_ELEMENT)
+                .stream()
+                .findFirst();
     }
 }

@@ -52,7 +52,9 @@ app:
   changePassword:
     validityMinutes: 15
   changeEmail:
-    validityMinutes: 2880
+    validityMinutes: 30
+    revocationValidityMinutes: 20160
+    revocationUrl: /revoke-change-email/?token=%s
   security:
     writeTokenInCookie: true
     refreshTokenCookiePath: /eca-oauth/oauth2/token

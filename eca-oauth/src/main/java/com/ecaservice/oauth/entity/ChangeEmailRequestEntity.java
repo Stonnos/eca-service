@@ -28,10 +28,34 @@ public class ChangeEmailRequestEntity extends TokenEntity {
     private String confirmationCode;
 
     /**
+     * Revocation token value
+     */
+    @Column(name = "revocation_token", nullable = false, unique = true)
+    private String revocationToken;
+
+    /**
      * Confirmation date
      */
     @Column(name = "confirmation_date")
     private LocalDateTime confirmationDate;
+
+    /**
+     * Revocation date
+     */
+    @Column(name = "revocation_date")
+    private LocalDateTime revocationDate;
+
+    /**
+     * Revocation date
+     */
+    @Column(name = "revocation_axpire_at", nullable = false)
+    private LocalDateTime revocationExpireAt;
+
+    /**
+     * Old email
+     */
+    @Column(name = "old_email", nullable = false)
+    private String oldEmail;
 
     /**
      * New email

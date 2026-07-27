@@ -51,4 +51,5 @@
     <include file="db/changelog/v40-dop-user-profile-options-data-event-table.xml"/>
     <include file="../transactional-outbox-changelog.xml" relativeToChangelogFile="true"/>
     <include file="db/changelog/v41-create-personal-access-token-table.xml"/>
+    <include file="db/changelog/v42-add-revocation-token-to-change-email-request-table.xml"/>
 </databaseChangeLog>

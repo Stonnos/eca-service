@@ -85,6 +85,16 @@ public class AppProperties {
         private Long validityMinutes;
 
         /**
+         * Revocation token validity minutes
+         */
+        private Long revocationValidityMinutes;
+
+        /**
+         * Revocation url
+         */
+        private String revocationUrl;
+
+        /**
          * Token url
          */
         private String url;
