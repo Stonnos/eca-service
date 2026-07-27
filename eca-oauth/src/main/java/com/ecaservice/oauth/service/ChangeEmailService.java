@@ -28,8 +28,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 
-import static com.ecaservice.common.web.util.LogHelper.TX_ID;
-import static com.ecaservice.common.web.util.LogHelper.putMdc;
+import static com.ecaservice.common.web.util.MaskUtils.mask;
 import static com.ecaservice.common.web.util.MaskUtils.maskEmail;
 import static com.ecaservice.oauth.config.audit.AuditCodes.CONFIRM_CHANGE_EMAIL_REQUEST;
 import static com.ecaservice.oauth.config.audit.AuditCodes.CREATE_CHANGE_EMAIL_REQUEST;
@@ -67,7 +66,6 @@ public class ChangeEmailService {
     @Audit(CREATE_CHANGE_EMAIL_REQUEST)
     public TokenModel createChangeEmailRequest(String user, String newEmail) {
         String token = UUID.randomUUID().toString();
-        putMdc(TX_ID, token);
         log.info("Starting to create change email request for user [{}], new email [{}]", user, maskEmail(newEmail));
         UserEntity userEntity = userEntityRepository.findByLogin(user)
                 .orElseThrow(() -> new EntityNotFoundException(UserEntity.class, user));
@@ -97,8 +95,8 @@ public class ChangeEmailService {
         changeEmailRequestEntity.setUserEntity(userEntity);
         changeEmailRequestEntity.setCreated(LocalDateTime.now());
         changeEmailRequestRepository.save(changeEmailRequestEntity);
-        log.info("Change email request has been created for user [{}], new email [{}]", userEntity.getId(),
-                maskEmail(newEmail));
+        log.info("Change email request [{}] has been created for user [{}], new email [{}]",
+                changeEmailRequestEntity.getId(), userEntity.getId(), maskEmail(newEmail));
         return TokenModel.builder()
                 .token(changeEmailRequestEntity.getToken())
                 .tokenId(changeEmailRequestEntity.getId())
@@ -127,7 +125,7 @@ public class ChangeEmailService {
                     .build();
         } else {
             var changeEmailRequest = changeEmailRequestOpt.get();
-            log.info("Active change email request [{}] has been found for user [{}]", changeEmailRequest.getToken(),
+            log.info("Active change email request [{}] has been found for user [{}]", changeEmailRequest.getId(),
                     user);
             return ChangeEmailRequestStatusDto.builder()
                     .active(true)
@@ -146,8 +144,7 @@ public class ChangeEmailService {
     @Audit(value = CONFIRM_CHANGE_EMAIL_REQUEST)
     @Transactional
     public ChangeEmailRequestEntity confirmChangeEmail(String token, String confirmationCode) {
-        putMdc(TX_ID, token);
-        log.info("Starting to confirm change email for token [{}]", token);
+        log.info("Starting to confirm change email for token [{}]", mask(token));
         var changeEmailRequestEntity = getRequestByToken(token).orElseThrow(InvalidTokenException::new);
         String confirmationCodeMd5Hash = md5Hex(confirmationCode);
         if (!changeEmailRequestEntity.getConfirmationCode().equals(confirmationCodeMd5Hash)) {
@@ -159,7 +156,7 @@ public class ChangeEmailService {
         userEntityRepository.save(userEntity);
         changeEmailRequestRepository.save(changeEmailRequestEntity);
         log.info("New email [{}] has been set for user [{}], change email request id [{}]",
-                maskEmail(userEntity.getEmail()), userEntity.getId(), changeEmailRequestEntity.getToken());
+                maskEmail(userEntity.getEmail()), userEntity.getId(), changeEmailRequestEntity.getId());
         return changeEmailRequestEntity;
     }
 
@@ -171,7 +168,7 @@ public class ChangeEmailService {
      */
     @Transactional
     public ChangeEmailRequestEntity revokeChangeEmailRequest(String revocationToken) {
-        log.info("Starting to revoke change email request");
+        log.info("Starting to revoke change email request: [{}]", mask(revocationToken));
         var request = getRequestToRevoke(revocationToken).orElseThrow(InvalidTokenException::new);
         UserEntity userEntity = request.getUserEntity();
         userEntity.setEmail(request.getOldEmail());

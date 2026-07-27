@@ -31,6 +31,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.security.Principal;
 
+import static com.ecaservice.common.web.util.MaskUtils.mask;
 import static com.ecaservice.config.swagger.OpenApi30Configuration.ECA_AUTHENTICATION_SECURITY_SCHEME;
 import static com.ecaservice.config.swagger.OpenApi30Configuration.SCOPE_WEB;
 import static com.ecaservice.oauth.util.FieldConstraints.EMAIL_MAX_SIZE;
@@ -114,7 +115,7 @@ public class ChangeEmailController {
         var tokenModel = changeEmailService.createChangeEmailRequest(principal.getName(), newEmail);
         applicationEventPublisher.publishEvent(new ChangeEmailRequestEmailEvent(this, tokenModel, newEmail));
         applicationEventPublisher.publishEvent(new ChangeEmailRequestConfirmNewEmailEvent(this, tokenModel, newEmail));
-        log.info("Change email request [{}] has been processed for user [{}]", tokenModel.getToken(),
+        log.info("Change email request [{}] has been processed for user [{}]", tokenModel.getTokenId(),
                 principal.getName());
         return ChangeEmailRequestStatusDto.builder()
                 .token(tokenModel.getToken())
@@ -166,11 +167,11 @@ public class ChangeEmailController {
             @Parameter(description = "Token value", required = true) @RequestParam String token,
             @Size(min = VALUE_1, max = MAX_LENGTH_255)
             @Parameter(description = "Confirmation code", required = true) @RequestParam String confirmationCode) {
-        log.info("Received change email request [{}] confirmation", token);
+        log.info("Received change email request [{}] confirmation", mask(token));
         var changeEmailRequest = changeEmailService.confirmChangeEmail(token, confirmationCode);
         applicationEventPublisher.publishEvent(
                 new EmailChangedEmailEvent(this, changeEmailRequest.getUserEntity(), changeEmailRequest));
-        log.info("Change email request [{}] confirmation has been processed", token);
+        log.info("Change email request [{}] confirmation has been processed", changeEmailRequest.getId());
     }
 
     /**
