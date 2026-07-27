@@ -35,6 +35,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.List;
 
+import static com.ecaservice.audit.util.ExampleObjects.AUDIT_FILTER_FIELDS_RESPONSE_JSON;
 import static com.ecaservice.audit.dictionary.FilterDictionaries.AUDIT_LOG_TEMPLATE;
 import static com.ecaservice.audit.report.ReportTemplates.AUDIT_LOGS_TEMPLATE;
 import static com.ecaservice.config.swagger.OpenApi30Configuration.ECA_AUTHENTICATION_SECURITY_SCHEME;
@@ -151,7 +152,8 @@ public class AuditLogController {
                                     examples = {
                                             @ExampleObject(
                                                     name = "AuditFilterFieldsResponse",
-                                                    ref = "#/components/examples/AuditFilterFieldsResponse"
+                                                    ref = "#/components/examples/AuditFilterFieldsResponse",
+                                                    externalValue = AUDIT_FILTER_FIELDS_RESPONSE_JSON
                                             ),
                                     }
                             )

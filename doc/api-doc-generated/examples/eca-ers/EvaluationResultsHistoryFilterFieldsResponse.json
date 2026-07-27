@@ -1,0 +1,114 @@
+[
+  {
+    "fieldName": "classifierInfo.classifierName",
+    "description": "Классификатор",
+    "fieldOrder": 0,
+    "filterFieldType": "REFERENCE",
+    "matchMode": "EQUALS",
+    "multiple": true,
+    "dictionary": {
+      "name": "classifier",
+      "values": [
+        {
+          "label": "Алгоритм CART",
+          "value": "CART"
+        },
+        {
+          "label": "Алгоритм C4.5",
+          "value": "C45"
+        },
+        {
+          "label": "Алгоритм ID3",
+          "value": "ID3"
+        },
+        {
+          "label": "Алгоритм CHAID",
+          "value": "CHAID"
+        },
+        {
+          "label": "Алгоритм J48",
+          "value": "J48"
+        },
+        {
+          "label": "Нейронная сеть (Многослойный персептрон)",
+          "value": "NeuralNetwork"
+        },
+        {
+          "label": "Алгоритм k - взвешенных ближайших соседей",
+          "value": "KNearestNeighbours"
+        },
+        {
+          "label": "Логистическая регрессия",
+          "value": "Logistic"
+        },
+        {
+          "label": "Алгоритм AdaBoost",
+          "value": "AdaBoostClassifier"
+        },
+        {
+          "label": "Неоднородный ансамблевый алгоритм",
+          "value": "HeterogeneousClassifier"
+        },
+        {
+          "label": "Модифицированный неоднородный ансамблевый алгоритм",
+          "value": "ModifiedHeterogeneousClassifier"
+        },
+        {
+          "label": "Алгоритм Stacking",
+          "value": "StackingClassifier"
+        },
+        {
+          "label": "Алгоритм Случайные леса",
+          "value": "RandomForests"
+        },
+        {
+          "label": "Алгоритм Extra trees",
+          "value": "ExtraTreesClassifier"
+        },
+        {
+          "label": "Алгоритм Случайные сети",
+          "value": "RandomNetworks"
+        }
+      ]
+    }
+  },
+  {
+    "fieldName": "instancesInfo.id",
+    "description": "Обучающая выборка",
+    "fieldOrder": 1,
+    "filterFieldType": "LAZY_REFERENCE",
+    "matchMode": "EQUALS",
+    "multiple": false,
+    "dictionary": null
+  },
+  {
+    "fieldName": "evaluationMethod",
+    "description": "Метод оценки точности",
+    "fieldOrder": 2,
+    "filterFieldType": "REFERENCE",
+    "matchMode": "EQUALS",
+    "multiple": false,
+    "dictionary": {
+      "name": "evaluationMethod",
+      "values": [
+        {
+          "label": "Использование обучающего множества",
+          "value": "TRAINING_DATA"
+        },
+        {
+          "label": "V-блочная кросс-проверка",
+          "value": "CROSS_VALIDATION"
+        }
+      ]
+    }
+  },
+  {
+    "fieldName": "saveDate",
+    "description": "Дата сохранения результатов",
+    "fieldOrder": 3,
+    "filterFieldType": "DATE",
+    "matchMode": "RANGE",
+    "multiple": true,
+    "dictionary": null
+  }
+]

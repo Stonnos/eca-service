@@ -26,6 +26,7 @@ import java.util.List;
 
 import static com.ecaservice.config.swagger.OpenApi30Configuration.ECA_AUTHENTICATION_SECURITY_SCHEME;
 import static com.ecaservice.config.swagger.OpenApi30Configuration.SCOPE_WEB;
+import static com.ecaservice.server.util.ExampleObjects.CLASSIFIERS_TEMPLATES_RESPONSE_JSON;
 
 /**
  * Implements API to manage classifiers templates.
@@ -60,7 +61,8 @@ public class ClassifiersTemplatesController {
                                     examples = {
                                             @ExampleObject(
                                                     name = "ClassifiersTemplatesResponse",
-                                                    ref = "#/components/examples/ClassifiersTemplatesResponse"
+                                                    ref = "#/components/examples/ClassifiersTemplatesResponse",
+                                                    externalValue = CLASSIFIERS_TEMPLATES_RESPONSE_JSON
                                             )
                                     },
                                     array = @ArraySchema(schema = @Schema(implementation = FormTemplateGroupDto.class))

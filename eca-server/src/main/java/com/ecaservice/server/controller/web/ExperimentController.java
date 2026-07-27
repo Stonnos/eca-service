@@ -68,6 +68,9 @@ import static com.ecaservice.config.swagger.OpenApi30Configuration.ECA_AUTHENTIC
 import static com.ecaservice.config.swagger.OpenApi30Configuration.SCOPE_WEB;
 import static com.ecaservice.server.config.audit.AuditCodes.GENERATE_EXPERIMENT_RESULTS_REPORT;
 import static com.ecaservice.server.report.ReportTemplates.EVALUATION_RESULTS_TEMPLATE;
+import static com.ecaservice.server.util.ExampleObjects.EXPERIMENTS_STATISTICS_RESPONSE_JSON;
+import static com.ecaservice.server.util.ExampleObjects.EXPERIMENT_RESULTS_DETAILS_RESPONSE_JSON;
+import static com.ecaservice.server.util.ExampleObjects.ROC_CURVE_DATA_RESPONSE_JSON;
 import static com.ecaservice.server.util.ReportHelper.download;
 import static com.ecaservice.web.dto.util.FieldConstraints.VALUE_0;
 import static com.ecaservice.web.dto.util.FieldConstraints.VALUE_1;
@@ -344,7 +347,8 @@ public class ExperimentController {
                                     examples = {
                                             @ExampleObject(
                                                     name = "ExperimentResultsDetailsResponse",
-                                                    ref = "#/components/examples/ExperimentResultsDetailsResponse"
+                                                    ref = "#/components/examples/ExperimentResultsDetailsResponse",
+                                                    externalValue = EXPERIMENT_RESULTS_DETAILS_RESPONSE_JSON
                                             )
                                     },
                                     schema = @Schema(implementation = ExperimentResultsDetailsDto.class)
@@ -503,7 +507,8 @@ public class ExperimentController {
                                     examples = {
                                             @ExampleObject(
                                                     name = "ExperimentsStatisticsResponse",
-                                                    ref = "#/components/examples/ExperimentsStatisticsResponse"
+                                                    ref = "#/components/examples/ExperimentsStatisticsResponse",
+                                                    externalValue = EXPERIMENTS_STATISTICS_RESPONSE_JSON
                                             )
                                     },
                                     schema = @Schema(implementation = ChartDto.class)
@@ -670,7 +675,8 @@ public class ExperimentController {
                                     examples = {
                                             @ExampleObject(
                                                     name = "RocCurveDataResponse",
-                                                    ref = "#/components/examples/RocCurveDataResponse"
+                                                    ref = "#/components/examples/RocCurveDataResponse",
+                                                    externalValue = ROC_CURVE_DATA_RESPONSE_JSON
                                             )
                                     },
                                     schema = @Schema(implementation = RocCurveDataDto.class)

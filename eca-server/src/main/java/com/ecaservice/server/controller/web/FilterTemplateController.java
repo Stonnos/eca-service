@@ -25,6 +25,9 @@ import java.util.List;
 
 import static com.ecaservice.config.swagger.OpenApi30Configuration.ECA_AUTHENTICATION_SECURITY_SCHEME;
 import static com.ecaservice.config.swagger.OpenApi30Configuration.SCOPE_WEB;
+import static com.ecaservice.server.util.ExampleObjects.CONFIGURATION_HISTORY_FILTER_FIELDS_RESPONSE_JSON;
+import static com.ecaservice.server.util.ExampleObjects.EVALUATION_LOG_FILTER_FIELDS_RESPONSE_JSON;
+import static com.ecaservice.server.util.ExampleObjects.EXPERIMENT_FILTER_FIELDS_RESPONSE_JSON;
 
 /**
  * Filter templates controller for web application.
@@ -57,7 +60,8 @@ public class FilterTemplateController {
                                     examples = {
                                             @ExampleObject(
                                                     name = "ExperimentFilterFieldsResponse",
-                                                    ref = "#/components/examples/ExperimentFilterFieldsResponse"
+                                                    ref = "#/components/examples/ExperimentFilterFieldsResponse",
+                                                    externalValue = EXPERIMENT_FILTER_FIELDS_RESPONSE_JSON
                                             )
                                     },
                                     array = @ArraySchema(schema = @Schema(implementation = FilterFieldDto.class))
@@ -98,7 +102,8 @@ public class FilterTemplateController {
                                     examples = {
                                             @ExampleObject(
                                                     name = "EvaluationLogFilterFieldsResponse",
-                                                    ref = "#/components/examples/EvaluationLogFilterFieldsResponse"
+                                                    ref = "#/components/examples/EvaluationLogFilterFieldsResponse",
+                                                    externalValue = EVALUATION_LOG_FILTER_FIELDS_RESPONSE_JSON
                                             )
                                     },
                                     array = @ArraySchema(schema = @Schema(implementation = FilterFieldDto.class))
@@ -221,7 +226,8 @@ public class FilterTemplateController {
                                     examples = {
                                             @ExampleObject(
                                                     name = "ClassifiersConfigurationHistoryFilterFieldsResponse",
-                                                    ref = "#/components/examples/ClassifiersConfigurationHistoryFilterFieldsResponse"
+                                                    ref = "#/components/examples/ClassifiersConfigurationHistoryFilterFieldsResponse",
+                                                    externalValue = CONFIGURATION_HISTORY_FILTER_FIELDS_RESPONSE_JSON
                                             )
                                     },
                                     array = @ArraySchema(schema = @Schema(implementation = FilterFieldDto.class))

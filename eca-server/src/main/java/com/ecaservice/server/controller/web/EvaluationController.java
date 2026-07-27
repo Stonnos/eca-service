@@ -61,6 +61,10 @@ import static com.ecaservice.config.swagger.OpenApi30Configuration.ECA_AUTHENTIC
 import static com.ecaservice.config.swagger.OpenApi30Configuration.SCOPE_WEB;
 import static com.ecaservice.server.config.audit.AuditCodes.GENERATE_EVALUATION_RESULTS_REPORT;
 import static com.ecaservice.server.report.ReportTemplates.EVALUATION_RESULTS_TEMPLATE;
+import static com.ecaservice.server.util.ExampleObjects.CLASSIFIERS_STATISTICS_RESPONSE_JSON;
+import static com.ecaservice.server.util.ExampleObjects.EVALUATION_LOGS_PAGE_RESPONSE_JSON;
+import static com.ecaservice.server.util.ExampleObjects.EVALUATION_LOG_DETAILS_RESPONSE_JSON;
+import static com.ecaservice.server.util.ExampleObjects.ROC_CURVE_DATA_RESPONSE_JSON;
 import static com.ecaservice.server.util.ReportHelper.download;
 import static com.ecaservice.web.dto.util.FieldConstraints.VALUE_0;
 import static com.ecaservice.web.dto.util.FieldConstraints.VALUE_1;
@@ -238,7 +242,8 @@ public class EvaluationController {
                                     examples = {
                                             @ExampleObject(
                                                     name = "EvaluationLogsPageResponse",
-                                                    ref = "#/components/examples/EvaluationLogsPageResponse"
+                                                    ref = "#/components/examples/EvaluationLogsPageResponse",
+                                                    externalValue = EVALUATION_LOGS_PAGE_RESPONSE_JSON
                                             )
                                     },
                                     schema = @Schema(implementation = EvaluationLogsPageDto.class)
@@ -293,7 +298,8 @@ public class EvaluationController {
                                     examples = {
                                             @ExampleObject(
                                                     name = "EvaluationLogDetailsResponse",
-                                                    ref = "#/components/examples/EvaluationLogDetailsResponse"
+                                                    ref = "#/components/examples/EvaluationLogDetailsResponse",
+                                                    externalValue = EVALUATION_LOG_DETAILS_RESPONSE_JSON
                                             )
                                     },
                                     schema = @Schema(implementation = EvaluationLogDetailsDto.class)
@@ -394,7 +400,8 @@ public class EvaluationController {
                                     examples = {
                                             @ExampleObject(
                                                     name = "ClassifiersStatisticsResponse",
-                                                    ref = "#/components/examples/ClassifiersStatisticsResponse"
+                                                    ref = "#/components/examples/ClassifiersStatisticsResponse",
+                                                    externalValue = CLASSIFIERS_STATISTICS_RESPONSE_JSON
                                             )
                                     },
                                     schema = @Schema(implementation = ChartDto.class)
@@ -502,7 +509,8 @@ public class EvaluationController {
                                     examples = {
                                             @ExampleObject(
                                                     name = "RocCurveDataResponse",
-                                                    ref = "#/components/examples/RocCurveDataResponse"
+                                                    ref = "#/components/examples/RocCurveDataResponse",
+                                                    externalValue = ROC_CURVE_DATA_RESPONSE_JSON
                                             )
                                     },
                                     schema = @Schema(implementation = RocCurveDataDto.class)
