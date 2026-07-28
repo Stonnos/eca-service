@@ -2,7 +2,7 @@ id;event_type;message_template;audit_code_id
 1;SUCCESS;Включена двухфакторная аутентификация;ENABLE_2FA
 2;SUCCESS;Выключена двухфакторная аутентификация;DISABLE_2FA
 3;SUCCESS;Персональные данные были изменены;UPDATE_PERSONAL_DATA
-4;SUCCESS;Создан запрос на изменение Email адреса на [${newEmail}];CREATE_CHANGE_EMAIL_REQUEST
+4;SUCCESS;Создан запрос на изменение Email адреса с [${returnValue.email}] на [${changeEmailRequest.newEmail}];CREATE_CHANGE_EMAIL_REQUEST
 5;SUCCESS;Обновлена фотография профиля;UPDATE_PHOTO
 6;SUCCESS;Удалена фотография профиля;DELETE_PHOTO
 7;SUCCESS;Создан новый пользователь [${createUserDto.login}];CREATE_USER
@@ -12,10 +12,10 @@ id;event_type;message_template;audit_code_id
 11;SUCCESS;Пароль был изменен;CONFIRM_CHANGE_PASSWORD_REQUEST
 12;SUCCESS;Создан запрос на сброс пароля;CREATE_RESET_PASSWORD_REQUEST
 13;SUCCESS;Пароль был сброшен;RESET_PASSWORD
-14;SUCCESS;Email адрес был изменен на [${returnValue.userEntity.email}];CONFIRM_CHANGE_EMAIL_REQUEST
+14;SUCCESS;Email адрес был изменен с [${returnValue.oldEmail}] на [${returnValue.newEmail}];CONFIRM_CHANGE_EMAIL_REQUEST
 17;SUCCESS;Изменены настроки уведомлений в личном кабинете;UPDATE_USER_PROFILE_NOTIFICATION_OPTIONS
 18;SUCCESS;Успешный вход в систему;LOGIN
 19;SUCCESS;Выход из системы;LOGOUT
 20;SUCCESS;Создание персонального токена доступа с именем ${returnValue.name};CREATE_PERSONAL_ACCESS_TOKEN
 21;SUCCESS;Удаление персонального токена доступа с именем ${returnValue.name};DELETE_PERSONAL_ACCESS_TOKEN
-22;SUCCESS;Запрос изменения Email адреса на [${returnValue.newEmail}] был отменен;REVOKE_CHANGE_EMAIL_REQUEST
+22;SUCCESS;Запрос изменения Email адреса с [${returnValue.oldEmail}] на [${returnValue.newEmail}] был отменен;REVOKE_CHANGE_EMAIL_REQUEST
