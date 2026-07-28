@@ -96,8 +96,9 @@ export class LoginComponent implements BaseForm, OnInit, OnDestroy {
     }
   }
 
-  public onPasswordChanged(event): void {
+  public setLoginStep(event): void {
     this.forceSetPasswordRequiredStep = false;
+    this.tfaCodeVerificationStep = false;
     this.loginStep = true;
   }
 

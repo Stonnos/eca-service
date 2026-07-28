@@ -151,7 +151,8 @@
 
       <div *ngIf="forceSetPasswordRequiredStep" class="d-flex flex-column justify-content-center m-auto">
         <app-set-password [token]="token"
-                          (passwordChanged)="onPasswordChanged($event)">
+                          (passwordChanged)="setLoginStep($event)"
+                          (returnEvent)="setLoginStep($event)">
         </app-set-password>
       </div>
     </div>

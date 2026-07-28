@@ -28,6 +28,8 @@ export class SetPasswordComponent implements BaseForm, OnInit {
 
   @Output()
   public passwordChanged: EventEmitter<any> = new EventEmitter<any>();
+  @Output()
+  public returnEvent: EventEmitter<any> = new EventEmitter<any>();
 
   @ViewChild(NgForm, { static: true })
   public form: NgForm;
@@ -98,6 +100,10 @@ export class SetPasswordComponent implements BaseForm, OnInit {
           }
         });
     }
+  }
+
+  public onReturn(): void {
+    this.returnEvent.emit();
   }
 
   public getErrorMessage(): string {
