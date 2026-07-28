@@ -3,7 +3,7 @@ import { MessageService } from "primeng/api";
 import { NgForm } from "@angular/forms";
 import { finalize } from "rxjs/operators";
 import { HttpErrorResponse } from "@angular/common/http";
-import { ActivatedRoute, Router } from '@angular/router';
+import { Router } from '@angular/router';
 import { BaseForm } from '../../common/form/base-form';
 import { Utils } from '../../common/util/utils';
 import { ValidationErrorCode } from '../../common/model/validation-error-code';
@@ -12,6 +12,8 @@ import { ForceSetPasswordService } from '../services/force-set-password.service'
 import { ValidationService } from '../../common/services/validation.service';
 import { ErrorHandler} from '../../common/services/error-handler';
 import { ForceSetPasswordRequest } from '../model/force-set-password.request';
+import { GlobalStateService } from '../../common/services/global-state.service';
+import { GlobalVariables } from '../../common/util/global-variables';
 
 @Component({
   selector: 'app-reset-password',
@@ -58,13 +60,13 @@ export class SetPasswordComponent implements BaseForm, OnInit {
   public constructor(private messageService: MessageService,
                      private forceSetPasswordService: ForceSetPasswordService,
                      private validationService: ValidationService,
+                     private globalStateService: GlobalStateService,
                      private errorHandler: ErrorHandler,
-                     private router: Router,
-                     private route: ActivatedRoute) {
-    this.token = this.route.snapshot.queryParams['token'];
+                     private router: Router) {
   }
 
   public ngOnInit(): void {
+    this.token = this.globalStateService.getValue(GlobalVariables.SET_PASSWORD_TOKEN);
     this.verifyToken();
   }
 
@@ -90,6 +92,7 @@ export class SetPasswordComponent implements BaseForm, OnInit {
         .subscribe({
           next: () => {
             this.clear();
+            this.globalStateService.remove(GlobalVariables.SET_PASSWORD_TOKEN);
             this.messageService.add({ severity: 'info', summary: `Пароль был успешно установлен`, detail: '' });
             this.router.navigate(['/login']);
           },
