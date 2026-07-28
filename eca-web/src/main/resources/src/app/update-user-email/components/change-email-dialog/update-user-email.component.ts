@@ -6,13 +6,15 @@ import { ValidationErrorCode } from "../../../common/model/validation-error-code
 import { ChangeEmailService } from "../../services/change-email.service";
 import { ErrorHandler } from "../../../common/services/error-handler";
 import { ChangeEmailRequestStatusDto } from "../../../../../../../../target/generated-sources/typescript/eca-web-dto";
+import { ChangeEmailRequest } from '../../model/change-email.request';
+import { ValidationService } from '../../../common/services/validation.service';
 
 @Component({
   selector: 'app-update-user-email',
   templateUrl: './update-user-email.component.html',
   styleUrls: ['./update-user-email.component.scss']
 })
-export class UpdateUserEmailComponent extends BaseCreateDialogComponent<string> implements OnInit {
+export class UpdateUserEmailComponent extends BaseCreateDialogComponent<ChangeEmailRequest> implements OnInit {
 
   private static readonly CHANGE_EMAIL_STEP: string = 'change-email';
   private static readonly CONFIRM_CHANGE_EMAIL_STEP: string = 'confirm-change-email';
@@ -23,7 +25,7 @@ export class UpdateUserEmailComponent extends BaseCreateDialogComponent<string> 
   public token: string;
 
   public changeEmailRequestCreatedMessage: string =
-    'На ваш email отправлено письмо с кодом подтверждением для изменения email';
+    'На новый email отправлено письмо с кодом подтверждением для изменения email';
 
   public confirmationCode: string;
 
@@ -32,6 +34,8 @@ export class UpdateUserEmailComponent extends BaseCreateDialogComponent<string> 
   public loading: boolean = false;
 
   public errorCode: string;
+
+  public invalidPassword: boolean;
 
   private readonly validationErrorCodes: string[] = [
     ValidationErrorCode.UNIQUE_EMAIL,
@@ -51,6 +55,7 @@ export class UpdateUserEmailComponent extends BaseCreateDialogComponent<string> 
 
   public constructor(private changeEmailService: ChangeEmailService,
                      private messageService: MessageService,
+                     private validationService: ValidationService,
                      private errorHandler: ErrorHandler) {
     super();
   }
@@ -75,6 +80,10 @@ export class UpdateUserEmailComponent extends BaseCreateDialogComponent<string> 
     }
   }
 
+  public onPasswordFocus(event): void {
+    this.invalidPassword = false;
+  }
+
   public onEmailFocus(event): void {
     this.errorCode = null;
   }
@@ -85,6 +94,7 @@ export class UpdateUserEmailComponent extends BaseCreateDialogComponent<string> 
 
   private handleError(error): void {
     this.errorCode = this.errorHandler.getFirstErrorCode(error, this.validationErrorCodes);
+    this.invalidPassword = this.validationService.hasErrorCode(error.error, ValidationErrorCode.INVALID_PASSWORD);
   }
 
   private changeEmailRequest(): void {
@@ -99,6 +109,7 @@ export class UpdateUserEmailComponent extends BaseCreateDialogComponent<string> 
         next: (changeEmailRequestStatusDto: ChangeEmailRequestStatusDto) => {
           this.token = changeEmailRequestStatusDto.token;
           this.step = UpdateUserEmailComponent.CONFIRM_CHANGE_EMAIL_STEP;
+          this.item = new ChangeEmailRequest();
         },
         error: (error) => {
           this.handleError(error);

@@ -12,7 +12,7 @@
 
   <form novalidate class="form d-flex flex-column justify-content-center m-auto" (keydown.enter)="submit()">
     <div *ngIf="step == 'change-email'" class="ui-g ui-fluid">
-      <div class="ui-g-10 mx-auto mb-4">
+      <div class="ui-g-10 mx-auto mb-2">
         <label class="text-bold control-label">Email</label>
         <input
           required
@@ -22,7 +22,7 @@
           name="email"
           type="text"
           placeholder="Введите новый Email"
-          [(ngModel)]="item"
+          [(ngModel)]="item.newEmail"
           [disabled]="loading"
           #email="ngModel"
           maxlength="255"
@@ -40,6 +40,28 @@
           {{ getErrorMessage() }}
         </div>
       </div>
+
+      <div class="ui-g-10 mx-auto mb-4">
+        <label class="text-bold">Пароль</label>
+        <input
+          required
+          notBlank
+          pPassword
+          id="userPassword"
+          name="userPassword"
+          type="password"
+          [feedback]="false"
+          placeholder="Введите пароль от учетной записи"
+          [(ngModel)]="item.password"
+          [disabled]="loading"
+          maxlength="255"
+          (focus)="onPasswordFocus($event)"
+          class="form-control d-block w-100">
+        <div class="text-danger error-message" *ngIf="invalidPassword && submitted">
+          Неправильный пароль
+        </div>
+      </div>
+
       <div class="ui-g-10 mx-auto mt-3">
         <button
           pButton

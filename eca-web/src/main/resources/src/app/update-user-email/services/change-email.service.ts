@@ -1,9 +1,9 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { environment } from "../../../environments/environment";
-import { Utils } from "../../common/util/utils";
 import { Observable } from "rxjs/internal/Observable";
 import { ChangeEmailRequestStatusDto } from "../../../../../../../target/generated-sources/typescript/eca-web-dto";
+import { ChangeEmailRequest } from '../model/change-email.request';
 
 @Injectable()
 export class ChangeEmailService {
@@ -13,10 +13,11 @@ export class ChangeEmailService {
   public constructor(private http: HttpClient) {
   }
 
-  public changeEmail(newEmail: string): Observable<ChangeEmailRequestStatusDto> {
-    const formData = new FormData();
-    formData.append('newEmail', newEmail);
-    return this.http.post<ChangeEmailRequestStatusDto>(this.serviceUrl + '/request', formData)
+  public changeEmail(changeEmailRequest: ChangeEmailRequest): Observable<ChangeEmailRequestStatusDto> {
+    const headers = new HttpHeaders({
+      'Content-type': 'application/json; charset=utf-8'
+    });
+    return this.http.post<ChangeEmailRequestStatusDto>(this.serviceUrl + '/request', changeEmailRequest, { headers: headers })
   }
 
   public confirmChangeEmailRequest(token: string, confirmationCode: string) {
@@ -24,6 +25,12 @@ export class ChangeEmailService {
     formData.append('token', token);
     formData.append('confirmationCode', confirmationCode);
     return this.http.post(this.serviceUrl + '/confirm', formData);
+  }
+
+  public revokeChangeEmail(token: string) {
+    const formData = new FormData();
+    formData.append('revocationToken', token);
+    return this.http.post(this.serviceUrl + '/revoke', formData);
   }
 
   public getChangeEmailRequestStatus(): Observable<ChangeEmailRequestStatusDto> {

@@ -5,6 +5,7 @@ import { UiComponentsModule } from "../ui-components.module";
 import { UpdateUserEmailComponent } from "./components/change-email-dialog/update-user-email.component";
 import { ChangeEmailService } from "./services/change-email.service";
 import { SharedModule } from "../common/shared.module";
+import { RevokeChangeEmailComponent } from './components/revoke-change-email/revoke-change-email.component';
 
 @NgModule({
     imports: [
@@ -14,10 +15,12 @@ import { SharedModule } from "../common/shared.module";
         SharedModule
     ],
   declarations: [
-    UpdateUserEmailComponent
+    UpdateUserEmailComponent,
+    RevokeChangeEmailComponent
   ],
   exports: [
-    UpdateUserEmailComponent
+    UpdateUserEmailComponent,
+    RevokeChangeEmailComponent
   ],
   providers: [
     ChangeEmailService

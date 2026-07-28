@@ -17,6 +17,7 @@ import { ChangePasswordRequest } from "../../change-password/model/change-passwo
 import { UpdateUserInfoModel } from "../../users/model/update-user-info.model";
 import { ChangeEmailService } from "../../update-user-email/services/change-email.service";
 import { ChangePasswordService } from "../../change-password/services/change-password.service";
+import { ChangeEmailRequest } from '../../update-user-email/model/change-email.request';
 
 @Component({
   selector: 'app-user-profile',
@@ -66,6 +67,8 @@ export class UserProfileComponent implements OnInit {
   public changePasswordStep = 'change-password';
 
   public changeEmailStep = 'change-email';
+
+  public changeEmailRequest: ChangeEmailRequest = new ChangeEmailRequest();
 
   private photo: Blob;
 
