@@ -60,6 +60,12 @@ public class AppProperties {
     private TokenValidityProperties changeEmail = new TokenValidityProperties();
 
     /**
+     * Force set password properties
+     */
+    @NotNull
+    private TokenValidityProperties forceSetPassword = new TokenValidityProperties();
+
+    /**
      * Security properties
      */
     @NotNull

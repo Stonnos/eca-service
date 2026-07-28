@@ -29,4 +29,5 @@
     <include file="db/changelog/v21-insert-confirmation-code-template-parameter.xml"/>
     <include file="db/changelog/v22-insert-cancel-experiment-template.xml"/>
     <include file="db/changelog/v23-insert-change-email-confirm-new-email-template.xml"/>
+    <include file="db/changelog/v24-insert-set-password-confirmation-code-template.xml"/>
 </databaseChangeLog>

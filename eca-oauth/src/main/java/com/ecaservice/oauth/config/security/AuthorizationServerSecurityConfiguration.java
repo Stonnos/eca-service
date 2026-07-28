@@ -15,6 +15,7 @@ import com.ecaservice.oauth.security.authentication.Oauth2TokenAuthenticationSuc
 import com.ecaservice.oauth.security.converter.OAuth2RefreshTokenCookieAuthenticationConverter;
 import com.ecaservice.oauth.security.converter.Oauth2PasswordGrantAuthenticationConverter;
 import com.ecaservice.oauth.security.converter.Oauth2TfaCodeGrantAuthenticationConverter;
+import com.ecaservice.oauth.service.ForceSetPasswordService;
 import com.ecaservice.oauth.service.tfa.TfaCodeService;
 import com.fasterxml.jackson.core.type.TypeReference;
 import lombok.RequiredArgsConstructor;
@@ -191,6 +192,7 @@ public class AuthorizationServerSecurityConfiguration {
      * @param userEntityRepository      - user entity repository
      * @param applicationEventPublisher - application event publisher
      * @param oauth2AccessTokenService  - oauth2 access token service
+     * @param forceSetPasswordService   - force set password service
      * @return password grant authentication provider
      */
     @Bean
@@ -200,9 +202,10 @@ public class AuthorizationServerSecurityConfiguration {
             TfaCodeService tfaCodeService,
             UserEntityRepository userEntityRepository,
             ApplicationEventPublisher applicationEventPublisher,
-            Oauth2AccessTokenService oauth2AccessTokenService) {
+            Oauth2AccessTokenService oauth2AccessTokenService,
+            ForceSetPasswordService forceSetPasswordService) {
         return new Oauth2PasswordGrantAuthenticationProvider(daoAuthenticationProvider, tfaConfig, tfaCodeService,
-                userEntityRepository, applicationEventPublisher, oauth2AccessTokenService);
+                userEntityRepository, applicationEventPublisher, oauth2AccessTokenService, forceSetPasswordService);
     }
 
     /**

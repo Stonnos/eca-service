@@ -40,11 +40,6 @@ public class ChangeEmailRequestEmailEventHandler
     }
 
     @Override
-    public String getCorrelationId(ChangeEmailRequestEmailEvent emailEvent) {
-        return emailEvent.getTokenModel().getToken();
-    }
-
-    @Override
     public Map<String, String> createVariables(ChangeEmailRequestEmailEvent event) {
         Map<String, String> templateVariables = newHashMap();
         String revokeEndpoint = String.format(appProperties.getChangeEmail().getRevocationUrl(),

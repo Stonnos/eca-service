@@ -68,4 +68,9 @@ public class Templates {
      * User unlocked template
      */
     public static final String USER_UNLOCKED = "USER_UNLOCKED";
+
+    /**
+     * Set password confirmation code template
+     */
+    public static final String SET_PASSWORD_CONFIRMATION_CODE = "SET_PASSWORD_CONFIRMATION_CODE";
 }

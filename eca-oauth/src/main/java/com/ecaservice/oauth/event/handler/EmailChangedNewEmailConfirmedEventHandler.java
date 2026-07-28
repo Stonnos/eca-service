@@ -26,9 +26,4 @@ public class EmailChangedNewEmailConfirmedEventHandler
     public String getTemplateCode(EmailChangedNewEmailConfirmedEvent emailEvent) {
         return Templates.EMAIL_CHANGED_NEW_EMAIL_CONFIRMED;
     }
-
-    @Override
-    public String getCorrelationId(EmailChangedNewEmailConfirmedEvent emailEvent) {
-        return emailEvent.getChangeEmailRequestEntity().getToken();
-    }
 }

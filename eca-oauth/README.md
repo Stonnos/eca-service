@@ -26,6 +26,7 @@
    * app.changeEmail.validityMinutes - время действия токена для изменения email в мин.
    * app.changeEmail.revocationValidityMinutes - время действия токена для отмены изменения email в мин.
    * app.changeEmail.revocationUrl - url для отмены изменения email
+   * app.forceSetPassword.validityMinutes - время действия токена для установки пароля в мин.
    * app.security.whitelistUrls - список endpoint-ов не требующих авторизацию
    * app.security.writeTokenInCookie - получать access/refresh токен в куках
    * app.security.refreshTokenCookiePath - refresh токен куки path

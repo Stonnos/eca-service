@@ -25,7 +25,7 @@ public class ChangeEmailRequestConfirmNewEmailEventHandler
     private final AppProperties appProperties;
 
     /**
-     * Creates change email notification event handler.
+     * Creates change email request new email notification event handler.
      *
      * @param appProperties - app properties
      */

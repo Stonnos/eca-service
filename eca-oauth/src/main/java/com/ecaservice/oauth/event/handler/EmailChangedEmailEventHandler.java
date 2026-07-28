@@ -33,11 +33,6 @@ public class EmailChangedEmailEventHandler
     }
 
     @Override
-    public String getCorrelationId(EmailChangedEmailEvent emailEvent) {
-        return emailEvent.getChangeEmailRequestEntity().getToken();
-    }
-
-    @Override
     public String getReceiver(EmailChangedEmailEvent event) {
         return event.getChangeEmailRequestEntity().getOldEmail();
     }

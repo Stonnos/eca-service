@@ -55,6 +55,8 @@ app:
     validityMinutes: 30
     revocationValidityMinutes: 7200
     revocationUrl: /revoke-change-email/?token=%s
+  forceSetPassword:
+    validityMinutes: 15
   security:
     writeTokenInCookie: true
     refreshTokenCookiePath: /eca-oauth/oauth2/token
