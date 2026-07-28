@@ -126,7 +126,7 @@
                 pButton
                 type="submit"
                 [disabled]="!tfaVerificationCode || loading"
-                class="auth-button w-100 mb-1 mb-sm-3">
+                class="auth-button w-100 mb-1 mt-1 mb-sm-3">
                 <span class="button-text" *ngIf="!loading">Подтвердить</span>
                 <p-progressSpinner
                   *ngIf="loading"
@@ -148,6 +148,12 @@
           </div>
         </p-panel>
       </form>
+
+      <div *ngIf="forceSetPasswordRequiredStep" class="d-flex flex-column justify-content-center m-auto">
+        <app-set-password [token]="token"
+                          (passwordChanged)="onPasswordChanged($event)">
+        </app-set-password>
+      </div>
     </div>
   </div>
 </div>

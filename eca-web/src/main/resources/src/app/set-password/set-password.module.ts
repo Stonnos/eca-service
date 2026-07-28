@@ -16,6 +16,9 @@ import { UiComponentsModule } from '../ui-components.module';
   declarations: [
     SetPasswordComponent
   ],
+  exports: [
+    SetPasswordComponent
+  ],
   providers: [
     ForceSetPasswordService
   ]

@@ -38,13 +38,4 @@ public interface ForceSetPasswordRequestRepository extends JpaRepository<ForceSe
      */
     Optional<ForceSetPasswordRequestEntity> findByTokenAndExpireDateAfterAndPasswordDateIsNull(String token,
                                                                                                LocalDateTime date);
-
-    /**
-     * Checks token validity.
-     *
-     * @param token - token value
-     * @param date  - search date
-     * @return {@code true} if token is valid. {@code false} otherwise
-     */
-    boolean existsByTokenAndExpireDateAfterAndPasswordDateIsNull(String token, LocalDateTime date);
 }

@@ -12,8 +12,6 @@ import { HttpErrorResponse } from "@angular/common/http";
 import { MessageService } from "primeng/api";
 import { UsersService } from "../../users/services/users.service";
 import { Subscription, timer } from "rxjs";
-import { GlobalStateService } from '../../common/services/global-state.service';
-import { GlobalVariables } from '../../common/util/global-variables';
 
 @Component({
   selector: 'app-login',
@@ -35,6 +33,7 @@ export class LoginComponent implements BaseForm, OnInit, OnDestroy {
   public loading: boolean = false;
   public loginStep: boolean = true;
   public tfaCodeVerificationStep: boolean = false;
+  public forceSetPasswordRequiredStep: boolean = false;
 
   public userModel: UserModel = new UserModel();
 
@@ -54,7 +53,6 @@ export class LoginComponent implements BaseForm, OnInit, OnDestroy {
   public constructor(private router: Router,
                      private authService: AuthService,
                      private usersService: UsersService,
-                     private globalStateService: GlobalStateService,
                      private messageService: MessageService) {
   }
 
@@ -96,6 +94,11 @@ export class LoginComponent implements BaseForm, OnInit, OnDestroy {
       }
       this.clear();
     }
+  }
+
+  public onPasswordChanged(event): void {
+    this.forceSetPasswordRequiredStep = false;
+    this.loginStep = true;
   }
 
   public resetTfaCodeVerification(): void {
@@ -179,8 +182,8 @@ export class LoginComponent implements BaseForm, OnInit, OnDestroy {
       case LoginComponent.CHANGE_PASSWORD_REQUIRED_ERROR_CODE:
         this.errorMessage = null;
         this.loginStep = false;
-        this.globalStateService.setValue(GlobalVariables.SET_PASSWORD_TOKEN,  error.error.token);
-        this.router.navigate(['/set-password']);
+        this.token = error.error.token;
+        this.forceSetPasswordRequiredStep = true;
         break;
       default:
         this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });

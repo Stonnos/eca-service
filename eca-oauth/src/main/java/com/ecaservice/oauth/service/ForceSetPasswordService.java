@@ -126,22 +126,6 @@ public class ForceSetPasswordService {
         return requestEntity;
     }
 
-    /**
-     * Verify set password token.
-     *
-     * @param token - set password token
-     * @return {@code true} if token is valid (not expired and not reset). {@code false} otherwise
-     */
-    public boolean verifyToken(String token) {
-        log.info("Received request for set password token [{}] verification", mask(token));
-        String md5Hash = md5Hex(token);
-        boolean verified =
-                forceSetPasswordRequestRepository.existsByTokenAndExpireDateAfterAndPasswordDateIsNull(md5Hash,
-                        LocalDateTime.now());
-        log.info("Set password request token [{}] verification result: {}", mask(token), verified);
-        return verified;
-    }
-
     private Optional<ForceSetPasswordRequestEntity> getRequestByToken(String token) {
         String md5HashToken = md5Hex(token);
         return forceSetPasswordRequestRepository.findByTokenAndExpireDateAfterAndPasswordDateIsNull(md5HashToken,

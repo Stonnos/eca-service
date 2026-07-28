@@ -1,9 +1,8 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { MessageService } from "primeng/api";
 import { NgForm } from "@angular/forms";
 import { finalize } from "rxjs/operators";
 import { HttpErrorResponse } from "@angular/common/http";
-import { Router } from '@angular/router';
 import { BaseForm } from '../../common/form/base-form';
 import { Utils } from '../../common/util/utils';
 import { ValidationErrorCode } from '../../common/model/validation-error-code';
@@ -12,11 +11,9 @@ import { ForceSetPasswordService } from '../services/force-set-password.service'
 import { ValidationService } from '../../common/services/validation.service';
 import { ErrorHandler} from '../../common/services/error-handler';
 import { ForceSetPasswordRequest } from '../model/force-set-password.request';
-import { GlobalStateService } from '../../common/services/global-state.service';
-import { GlobalVariables } from '../../common/util/global-variables';
 
 @Component({
-  selector: 'app-reset-password',
+  selector: 'app-set-password',
   templateUrl: './set-password.component.html',
   styleUrls: ['./set-password.component.scss']
 })
@@ -24,14 +21,19 @@ export class SetPasswordComponent implements BaseForm, OnInit {
 
   public submitted: boolean = false;
   public loading: boolean = false;
-  public tokenValid: boolean = false;
+  public tokenValid: boolean = true;
+
+  @Input()
+  public token: string;
+
+  @Output()
+  public passwordChanged: EventEmitter<any> = new EventEmitter<any>();
 
   @ViewChild(NgForm, { static: true })
   public form: NgForm;
 
   public notSafePassword: boolean = false;
 
-  public token: string;
   public confirmationCode: string;
   public password: string;
   public confirmPassword: string;
@@ -60,14 +62,10 @@ export class SetPasswordComponent implements BaseForm, OnInit {
   public constructor(private messageService: MessageService,
                      private forceSetPasswordService: ForceSetPasswordService,
                      private validationService: ValidationService,
-                     private globalStateService: GlobalStateService,
-                     private errorHandler: ErrorHandler,
-                     private router: Router) {
+                     private errorHandler: ErrorHandler) {
   }
 
   public ngOnInit(): void {
-    this.token = this.globalStateService.getValue(GlobalVariables.SET_PASSWORD_TOKEN);
-    this.verifyToken();
   }
 
   public clear(): void {
@@ -92,33 +90,14 @@ export class SetPasswordComponent implements BaseForm, OnInit {
         .subscribe({
           next: () => {
             this.clear();
-            this.globalStateService.remove(GlobalVariables.SET_PASSWORD_TOKEN);
             this.messageService.add({ severity: 'info', summary: `Пароль был успешно установлен`, detail: '' });
-            this.router.navigate(['/login']);
+            this.passwordChanged.emit();
           },
           error: (error) => {
             this.handleError(error);
           }
         });
     }
-  }
-
-  private verifyToken(): void {
-    this.loading = true;
-    this.forceSetPasswordService.verifyToken(this.token)
-      .pipe(
-        finalize(() => {
-          this.loading = false;
-        })
-      )
-      .subscribe({
-        next: (tokenValid: boolean) => {
-          this.tokenValid = tokenValid;
-        },
-        error: (error) => {
-          this.handleError(error);
-        }
-      });
   }
 
   public getErrorMessage(): string {

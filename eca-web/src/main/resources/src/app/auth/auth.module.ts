@@ -8,13 +8,15 @@ import { HTTP_INTERCEPTORS } from "@angular/common/http";
 import { AuthInterceptor } from "./interceptors/auth-interceptor";
 import { LogoutService } from "./services/logout.service";
 import { SharedModule } from "../common/shared.module";
+import { SetPasswordModule } from '../set-password/set-password.module';
 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
     UiComponentsModule,
-    SharedModule
+    SharedModule,
+    SetPasswordModule
   ],
   declarations: [
     LoginComponent
