@@ -5,6 +5,7 @@ import com.ecaservice.oauth.dto.ForceSetPasswordRequest;
 import com.ecaservice.oauth.event.model.PasswordChangedEmailEvent;
 import com.ecaservice.oauth.service.ForceSetPasswordService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
@@ -12,6 +13,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Size;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
@@ -20,9 +22,12 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import static com.ecaservice.common.web.util.MaskUtils.mask;
+import static com.ecaservice.web.dto.util.FieldConstraints.MAX_LENGTH_255;
+import static com.ecaservice.web.dto.util.FieldConstraints.VALUE_1;
 
 /**
  * Implements force set password REST API.
@@ -79,5 +84,32 @@ public class ForceSetPasswordController {
         applicationEventPublisher.publishEvent(new PasswordChangedEmailEvent(this, requestEntity.getUserEntity()));
         log.info("Force set password request has been processed for token [{}]",
                 mask(forceSetPasswordRequest.getToken()));
+    }
+
+    /**
+     * Verify set password token.
+     *
+     * @param token - set password token
+     * @return {@code true} if token is valid (not expired and not reset). {@code false} otherwise
+     */
+    @Operation(
+            description = "Verify set password token",
+            summary = "Verify set password token",
+            responses = {
+                    @ApiResponse(description = "OK", responseCode = "200",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    examples = {
+                                            @ExampleObject(value = "false"),
+                                    }
+                            )
+                    )
+            }
+    )
+    @PostMapping(value = "/verify-token")
+    public boolean verifyToken(
+            @Size(min = VALUE_1, max = MAX_LENGTH_255)
+            @Parameter(description = "Set password token", required = true) @RequestParam String token) {
+        return forceSetPasswordService.verifyToken(token);
     }
 }

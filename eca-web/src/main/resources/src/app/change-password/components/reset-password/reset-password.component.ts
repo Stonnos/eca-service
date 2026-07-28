@@ -139,6 +139,8 @@ export class ResetPasswordComponent implements BaseForm, OnInit {
       const error = errors.pop();
       const passwordValidationError = error as PasswordValidationErrorDto;
       this.passwordValidationRuleDetails = passwordValidationError.details;
+    } else {
+      this.notSafePassword = false;
     }
   }
 }

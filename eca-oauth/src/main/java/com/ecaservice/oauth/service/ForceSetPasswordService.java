@@ -91,7 +91,7 @@ public class ForceSetPasswordService {
      *
      * @param forceSetPasswordRequest - force set password request
      */
-    @Audit(value = FORCE_SET_PASSWORD)
+    @Audit(value = FORCE_SET_PASSWORD, initiatorKey = "#result.userEntity.login")
     @Transactional
     public ForceSetPasswordRequestEntity forceSetPassword(ForceSetPasswordRequest forceSetPasswordRequest) {
         log.info("Starting to force set password for token [{}]", mask(forceSetPasswordRequest.getToken()));
@@ -124,6 +124,22 @@ public class ForceSetPasswordService {
         log.info("New password has been force set for user [{}], set password request id [{}]", userEntity.getId(),
                 requestEntity.getId());
         return requestEntity;
+    }
+
+    /**
+     * Verify set password token.
+     *
+     * @param token - set password token
+     * @return {@code true} if token is valid (not expired and not reset). {@code false} otherwise
+     */
+    public boolean verifyToken(String token) {
+        log.info("Received request for set password token [{}] verification", mask(token));
+        String md5Hash = md5Hex(token);
+        boolean verified =
+                forceSetPasswordRequestRepository.existsByTokenAndExpireDateAfterAndPasswordDateIsNull(md5Hash,
+                        LocalDateTime.now());
+        log.info("Set password request token [{}] verification result: {}", mask(token), verified);
+        return verified;
     }
 
     private Optional<ForceSetPasswordRequestEntity> getRequestByToken(String token) {

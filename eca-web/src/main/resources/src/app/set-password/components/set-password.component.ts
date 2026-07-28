@@ -44,7 +44,9 @@ export class SetPasswordComponent implements BaseForm, OnInit {
   public passwordValidationRuleDetails: PasswordRuleResultDto[] = [];
 
   private readonly errorCodes: string[] = [
-    ValidationErrorCode.USER_LOCKED
+    ValidationErrorCode.USER_LOCKED,
+    ValidationErrorCode.PASSWORDS_MATCHED,
+    ValidationErrorCode.INVALID_CONFIRMATION_CODE
   ];
 
   private readonly errorCodesMap = new Map<string, string>()
@@ -138,6 +140,8 @@ export class SetPasswordComponent implements BaseForm, OnInit {
       const error = errors.pop();
       const passwordValidationError = error as PasswordValidationErrorDto;
       this.passwordValidationRuleDetails = passwordValidationError.details;
+    } else {
+      this.notSafePassword = false;
     }
   }
 }
