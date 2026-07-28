@@ -5,6 +5,7 @@ import com.ecaservice.oauth.dto.ChangeEmailRequest;
 import com.ecaservice.oauth.event.model.ChangeEmailRequestConfirmNewEmailEvent;
 import com.ecaservice.oauth.event.model.ChangeEmailRequestEmailEvent;
 import com.ecaservice.oauth.event.model.EmailChangedEmailEvent;
+import com.ecaservice.oauth.event.model.EmailChangedNewEmailConfirmedEvent;
 import com.ecaservice.oauth.service.ChangeEmailService;
 import com.ecaservice.web.dto.model.ChangeEmailRequestStatusDto;
 import io.swagger.v3.oas.annotations.Operation;
@@ -171,6 +172,9 @@ public class ChangeEmailController {
         var changeEmailRequest = changeEmailService.confirmChangeEmail(token, confirmationCode);
         applicationEventPublisher.publishEvent(
                 new EmailChangedEmailEvent(this, changeEmailRequest.getUserEntity(), changeEmailRequest));
+        var newEmailConfirmedEvent =
+                new EmailChangedNewEmailConfirmedEvent(this, changeEmailRequest.getUserEntity(), changeEmailRequest);
+        applicationEventPublisher.publishEvent(newEmailConfirmedEvent);
         log.info("Change email request [{}] confirmation has been processed", changeEmailRequest.getId());
     }
 

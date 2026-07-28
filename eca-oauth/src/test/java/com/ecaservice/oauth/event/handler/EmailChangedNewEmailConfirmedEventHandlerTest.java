@@ -9,24 +9,21 @@ import static com.ecaservice.oauth.TestHelperUtils.createUserEntity;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- * Unit tests for {@link EmailChangedEmailEventHandler} class.
+ * Unit tests for {@link EmailChangedNewEmailConfirmedEventHandler} class.
  *
  * @author Roman Batygin
  */
-class EmailChangedEmailEventHandlerTest {
+class EmailChangedNewEmailConfirmedEventHandlerTest {
 
-    private static final String OLD_MAIL = "old@mail.com";
-
-    private final EmailChangedEmailEventHandler handler = new EmailChangedEmailEventHandler();
+    private final EmailChangedNewEmailConfirmedEventHandler handler = new EmailChangedNewEmailConfirmedEventHandler();
 
     @Test
     void testHandleEvent() {
         var userEntity = createUserEntity();
         var changeEmailRequestEntity = new ChangeEmailRequestEntity();
-        changeEmailRequestEntity.setOldEmail(OLD_MAIL);
         var emailRequest = handler.handle(new EmailChangedEmailEvent(this, userEntity, changeEmailRequestEntity));
         assertThat(emailRequest).isNotNull();
-        assertThat(emailRequest.getTemplateCode()).isEqualTo(Templates.EMAIL_CHANGED);
-        assertThat(emailRequest.getReceiver()).isEqualTo(changeEmailRequestEntity.getOldEmail());
+        assertThat(emailRequest.getTemplateCode()).isEqualTo(Templates.EMAIL_CHANGED_NEW_EMAIL_CONFIRMED);
+        assertThat(emailRequest.getReceiver()).isEqualTo(userEntity.getEmail());
     }
 }

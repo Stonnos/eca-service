@@ -1,6 +1,5 @@
 package com.ecaservice.oauth.event.handler;
 
-import com.ecaservice.oauth.event.model.AbstractUserEmailEvent;
 import com.ecaservice.oauth.event.model.EmailChangedEmailEvent;
 import com.ecaservice.oauth.service.mail.dictionary.Templates;
 import lombok.extern.slf4j.Slf4j;
@@ -13,28 +12,23 @@ import org.springframework.stereotype.Component;
  */
 @Slf4j
 @Component
-public class EmailChangedEmailEventHandler
+public class EmailChangedNewEmailConfirmedEventHandler
         extends AbstractUserEmailEventHandler<EmailChangedEmailEvent> {
 
     /**
      * Creates email changed notification event handler.
      */
-    public EmailChangedEmailEventHandler() {
+    public EmailChangedNewEmailConfirmedEventHandler() {
         super(EmailChangedEmailEvent.class);
     }
 
     @Override
     public String getTemplateCode(EmailChangedEmailEvent emailEvent) {
-        return Templates.EMAIL_CHANGED;
+        return Templates.EMAIL_CHANGED_NEW_EMAIL_CONFIRMED;
     }
 
     @Override
     public String getCorrelationId(EmailChangedEmailEvent emailEvent) {
         return emailEvent.getChangeEmailRequestEntity().getToken();
-    }
-
-    @Override
-    public String getReceiver(EmailChangedEmailEvent event) {
-        return event.getChangeEmailRequestEntity().getOldEmail();
     }
 }

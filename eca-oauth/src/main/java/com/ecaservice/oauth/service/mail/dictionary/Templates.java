@@ -45,6 +45,11 @@ public class Templates {
     public static final String EMAIL_CHANGED = "EMAIL_CHANGED";
 
     /**
+     * Email changed new email confirmed template
+     */
+    public static final String EMAIL_CHANGED_NEW_EMAIL_CONFIRMED = "EMAIL_CHANGED_NEW_EMAIL_CONFIRMED";
+
+    /**
      * Password changed template
      */
     public static final String PASSWORD_CHANGED = "PASSWORD_CHANGED";
