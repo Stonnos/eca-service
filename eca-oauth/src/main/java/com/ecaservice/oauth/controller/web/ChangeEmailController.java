@@ -183,7 +183,6 @@ public class ChangeEmailController {
      *
      * @param revocationToken - revocation token value
      */
-    @PreAuthorize("hasAuthority('SCOPE_web')")
     @Operation(
             description = "Revokes change email request",
             summary = "Revokes change email request",
