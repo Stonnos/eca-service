@@ -1,6 +1,7 @@
 package com.ecaservice.oauth.controller.web;
 
 import com.ecaservice.common.web.annotation.EnableGlobalExceptionHandler;
+import com.ecaservice.oauth.dto.ChangeEmailRequest;
 import com.ecaservice.oauth.model.TokenModel;
 import com.ecaservice.oauth.service.ChangeEmailService;
 import com.ecaservice.oauth2.test.controller.AbstractControllerTest;
@@ -46,8 +47,8 @@ class ChangeEmailControllerTest extends AbstractControllerTest {
     private static final String REQUEST_URL = BASE_URL + "/request";
     private static final String REQUEST_STATUS_URL = BASE_URL + "/request-status";
     private static final String EMAIL = "test@mail.ru";
-    private static final String NEW_EMAIL_PARAM = "newEmail";
     private static final String INVALID_EMAIL = "123";
+    private static final String PASSWORD = "pa66word";
 
     @MockBean
     private ChangeEmailService changeEmailService;
@@ -66,16 +67,20 @@ class ChangeEmailControllerTest extends AbstractControllerTest {
 
     @Test
     void testCreateChangeEmailRequestWithInvalidNewEmail() throws Exception {
+        var changeEmailRequest = new ChangeEmailRequest(INVALID_EMAIL, PASSWORD);
         mockMvc.perform(post(REQUEST_URL)
-                        .param(NEW_EMAIL_PARAM, INVALID_EMAIL)
+                        .content(objectMapper.writeValueAsString(changeEmailRequest))
+                        .contentType(MediaType.APPLICATION_JSON)
                         .header(HttpHeaders.AUTHORIZATION, getBearerToken()))
                 .andExpect(status().isBadRequest());
     }
 
     @Test
     void testCreateChangeEmailUnauthorized() throws Exception {
+        var changeEmailRequest = new ChangeEmailRequest(EMAIL, PASSWORD);
         mockMvc.perform(post(REQUEST_URL)
-                        .param(NEW_EMAIL_PARAM, EMAIL))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(changeEmailRequest)))
                 .andExpect(status().isUnauthorized());
     }
 
@@ -87,14 +92,16 @@ class ChangeEmailControllerTest extends AbstractControllerTest {
                 .newEmail(EMAIL)
                 .active(true)
                 .build();
-        when(changeEmailService.createChangeEmailRequest(anyString(), any(String.class)))
+        var changeEmailRequest = new ChangeEmailRequest(EMAIL, PASSWORD);
+        when(changeEmailService.createChangeEmailRequest(anyString(), any()))
                 .thenReturn(TokenModel.builder()
                         .token(token)
                         .email(EMAIL)
                         .build()
                 );
         mockMvc.perform(post(REQUEST_URL)
-                        .param(NEW_EMAIL_PARAM, EMAIL)
+                        .content(objectMapper.writeValueAsString(changeEmailRequest))
+                        .contentType(MediaType.APPLICATION_JSON)
                         .header(HttpHeaders.AUTHORIZATION, getBearerToken()))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))

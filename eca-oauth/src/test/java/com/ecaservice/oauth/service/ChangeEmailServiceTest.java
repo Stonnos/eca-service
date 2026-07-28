@@ -3,10 +3,12 @@ package com.ecaservice.oauth.service;
 import com.ecaservice.common.web.exception.EntityNotFoundException;
 import com.ecaservice.oauth.AbstractJpaTest;
 import com.ecaservice.oauth.config.AppProperties;
+import com.ecaservice.oauth.dto.ChangeEmailRequest;
 import com.ecaservice.oauth.entity.ChangeEmailRequestEntity;
 import com.ecaservice.oauth.entity.UserEntity;
 import com.ecaservice.oauth.exception.ChangeEmailRequestAlreadyExistsException;
 import com.ecaservice.oauth.exception.EmailAlreadyBoundException;
+import com.ecaservice.oauth.exception.InvalidPasswordException;
 import com.ecaservice.oauth.exception.InvalidTokenException;
 import com.ecaservice.oauth.repository.ChangeEmailRequestRepository;
 import com.ecaservice.oauth.repository.UserEntityRepository;
@@ -14,6 +16,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
+import org.springframework.security.crypto.factory.PasswordEncoderFactories;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.time.LocalDateTime;
 import java.util.Collections;
@@ -29,13 +33,15 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
  *
  * @author Roman Batygin
  */
-@Import({AppProperties.class, ChangeEmailService.class})
+@Import(AppProperties.class)
 class ChangeEmailServiceTest extends AbstractJpaTest {
 
+    private static final String PASSWORD = "pa66word!";
     private static final String NEW_EMAIL = "newemail@mail.ru";
     private static final String OLD_EMAIL = "oldemail@mail.ru";
     private static final String INVALID_USERNAME = "abc";
     private static final String CONFIRMATION_CODE = "code";
+    private static final String INVALID_PASSWORD = "invalidPassword";
 
     @MockBean
     private Oauth2RevokeTokenService oauth2RevokeTokenService;
@@ -46,13 +52,18 @@ class ChangeEmailServiceTest extends AbstractJpaTest {
     private UserEntityRepository userEntityRepository;
     @Autowired
     private ChangeEmailRequestRepository changeEmailRequestRepository;
-    @Autowired
+
     private ChangeEmailService changeEmailService;
+
+    private PasswordEncoder passwordEncoder;
 
     private UserEntity userEntity;
 
     @Override
     public void init() {
+        passwordEncoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
+        changeEmailService = new ChangeEmailService(appProperties, oauth2RevokeTokenService, passwordEncoder,
+                changeEmailRequestRepository, userEntityRepository);
         userEntity = createAndSaveUser();
     }
 
@@ -94,18 +105,27 @@ class ChangeEmailServiceTest extends AbstractJpaTest {
 
     @Test
     void testCreateChangeEmailRequestWithChangeEmailRequestAlreadyExistsException() {
-        var actual = changeEmailService.createChangeEmailRequest(userEntity.getLogin(), NEW_EMAIL);
+        var changeEmailRequest = new ChangeEmailRequest(NEW_EMAIL, PASSWORD);
+        var actual = changeEmailService.createChangeEmailRequest(userEntity.getLogin(), changeEmailRequest);
         assertThat(actual).isNotNull();
         String username = userEntity.getLogin();
         assertThrows(ChangeEmailRequestAlreadyExistsException.class,
-                () -> changeEmailService.createChangeEmailRequest(username, NEW_EMAIL));
+                () -> changeEmailService.createChangeEmailRequest(username, changeEmailRequest));
         assertThat(changeEmailRequestRepository.count()).isOne();
     }
 
     @Test
+    void testCreateChangeEmailRequestWithInvalidPassword() {
+        var changeEmailRequest = new ChangeEmailRequest(NEW_EMAIL, INVALID_PASSWORD);
+        assertThrows(InvalidPasswordException.class,
+                () -> changeEmailService.createChangeEmailRequest(userEntity.getLogin(), changeEmailRequest));
+    }
+
+    @Test
     void testCreateChangeEmailRequestForNotExistingUser() {
+        var changeEmailRequest = new ChangeEmailRequest(NEW_EMAIL, PASSWORD);
         assertThrows(EntityNotFoundException.class,
-                () -> changeEmailService.createChangeEmailRequest(INVALID_USERNAME, NEW_EMAIL));
+                () -> changeEmailService.createChangeEmailRequest(INVALID_USERNAME, changeEmailRequest));
     }
 
     @Test
@@ -237,6 +257,8 @@ class ChangeEmailServiceTest extends AbstractJpaTest {
 
     private UserEntity createAndSaveUser() {
         UserEntity userEntity = createUserEntity();
+        userEntity.setPassword(passwordEncoder.encode(PASSWORD));
+        userEntity.setEmail(OLD_EMAIL);
         userEntity.setRoles(Collections.emptySet());
         return userEntityRepository.save(userEntity);
     }
@@ -264,7 +286,8 @@ class ChangeEmailServiceTest extends AbstractJpaTest {
     }
 
     private void internalTestCreateChangeEmailRequest(String email) {
-        var actual = changeEmailService.createChangeEmailRequest(userEntity.getLogin(), email);
+        var changeEmailRequest = new ChangeEmailRequest(email, PASSWORD);
+        var actual = changeEmailService.createChangeEmailRequest(userEntity.getLogin(), changeEmailRequest);
         assertThat(actual).isNotNull();
         assertThat(actual.getToken()).isNotNull();
         assertThat(actual.getLogin()).isNotNull();

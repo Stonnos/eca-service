@@ -3,12 +3,14 @@ package com.ecaservice.oauth.service;
 import com.ecaservice.common.web.exception.EntityNotFoundException;
 import com.ecaservice.core.audit.annotation.Audit;
 import com.ecaservice.oauth.config.AppProperties;
+import com.ecaservice.oauth.dto.ChangeEmailRequest;
 import com.ecaservice.oauth.entity.ChangeEmailRequestEntity;
 import com.ecaservice.oauth.entity.UserEntity;
 import com.ecaservice.oauth.exception.ChangeEmailRequestAlreadyExistsException;
 import com.ecaservice.oauth.exception.EmailAlreadyBoundException;
 import com.ecaservice.oauth.exception.EmailDuplicationException;
 import com.ecaservice.oauth.exception.InvalidConfirmationCodeException;
+import com.ecaservice.oauth.exception.InvalidPasswordException;
 import com.ecaservice.oauth.exception.InvalidTokenException;
 import com.ecaservice.oauth.model.TokenModel;
 import com.ecaservice.oauth.repository.ChangeEmailRequestRepository;
@@ -19,6 +21,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.security.crypto.keygen.Base64StringKeyGenerator;
 import org.springframework.security.crypto.keygen.StringKeyGenerator;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -54,19 +57,21 @@ public class ChangeEmailService {
 
     private final AppProperties appProperties;
     private final Oauth2RevokeTokenService oauth2RevokeTokenService;
+    private final PasswordEncoder passwordEncoder;
     private final ChangeEmailRequestRepository changeEmailRequestRepository;
     private final UserEntityRepository userEntityRepository;
 
     /**
      * Creates change email request.
      *
-     * @param user     - user id
-     * @param newEmail - new email
+     * @param user               - user id
+     * @param changeEmailRequest - change email request
      * @return token model
      */
     @Audit(CREATE_CHANGE_EMAIL_REQUEST)
-    public TokenModel createChangeEmailRequest(String user, String newEmail) {
+    public TokenModel createChangeEmailRequest(String user, ChangeEmailRequest changeEmailRequest) {
         String token = UUID.randomUUID().toString();
+        String newEmail = changeEmailRequest.getNewEmail();
         log.info("Starting to create change email request for user [{}], new email [{}]", user, maskEmail(newEmail));
         UserEntity userEntity = userEntityRepository.findByLogin(user)
                 .orElseThrow(() -> new EntityNotFoundException(UserEntity.class, user));
@@ -75,6 +80,9 @@ public class ChangeEmailService {
         }
         if (userEntityRepository.existsByEmail(newEmail)) {
             throw new EmailDuplicationException();
+        }
+        if (!isValidPassword(userEntity, changeEmailRequest)) {
+            throw new InvalidPasswordException();
         }
         LocalDateTime now = LocalDateTime.now();
         if (changeEmailRequestRepository.hasActiveChangeEmailRequest(userEntity, now)) {
@@ -199,5 +207,9 @@ public class ChangeEmailService {
         return changeEmailRequestRepository.findRequestsToRevoke(md5Hex(revocationToken), now, FIRST_PAGE_ELEMENT)
                 .stream()
                 .findFirst();
+    }
+
+    private boolean isValidPassword(UserEntity userEntity, ChangeEmailRequest changeEmailRequest) {
+        return passwordEncoder.matches(changeEmailRequest.getPassword().trim(), userEntity.getPassword());
     }
 }
