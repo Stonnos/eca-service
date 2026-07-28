@@ -53,7 +53,7 @@ app:
     validityMinutes: 15
   changeEmail:
     validityMinutes: 30
-    revocationValidityMinutes: 20160
+    revocationValidityMinutes: 7200
     revocationUrl: /revoke-change-email/?token=%s
   security:
     writeTokenInCookie: true
