@@ -33,7 +33,6 @@ export class LoginComponent implements BaseForm, OnInit, OnDestroy {
   public loading: boolean = false;
   public loginStep: boolean = true;
   public tfaCodeVerificationStep: boolean = false;
-  public changePasswordRequiredStep: boolean = false;
 
   public userModel: UserModel = new UserModel();
 
@@ -177,7 +176,7 @@ export class LoginComponent implements BaseForm, OnInit, OnDestroy {
       case LoginComponent.CHANGE_PASSWORD_REQUIRED_ERROR_CODE:
         this.errorMessage = null;
         this.loginStep = false;
-        this.changePasswordRequiredStep = true;
+        this.router.navigate(['/set-password'], { queryParams: { token: error.error.token }});
         break;
       default:
         this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });
