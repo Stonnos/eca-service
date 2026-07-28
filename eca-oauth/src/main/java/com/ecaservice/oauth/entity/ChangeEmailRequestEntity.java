@@ -48,7 +48,7 @@ public class ChangeEmailRequestEntity extends TokenEntity {
     /**
      * Revocation date
      */
-    @Column(name = "revocation_axpire_at", nullable = false)
+    @Column(name = "revocation_expire_at", nullable = false)
     private LocalDateTime revocationExpireAt;
 
     /**
