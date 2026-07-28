@@ -8,6 +8,7 @@ import com.ecaservice.oauth.entity.UserEntity;
 import com.ecaservice.oauth.exception.InvalidConfirmationCodeException;
 import com.ecaservice.oauth.exception.InvalidTokenException;
 import com.ecaservice.oauth.exception.NotSafePasswordException;
+import com.ecaservice.oauth.exception.PasswordsMatchedException;
 import com.ecaservice.oauth.exception.UserLockedException;
 import com.ecaservice.oauth.model.TokenModel;
 import com.ecaservice.oauth.repository.ForceSetPasswordRequestRepository;
@@ -100,6 +101,9 @@ public class ForceSetPasswordService {
         if (userEntity.isLocked()) {
             throw new UserLockedException(userEntity.getId());
         }
+        if (isPasswordsMatched(userEntity, forceSetPasswordRequest)) {
+            throw new PasswordsMatchedException();
+        }
         var validationResult
                 = passwordValidationService.validate(forceSetPasswordRequest.getPassword());
         if (!validationResult.isValid()) {
@@ -126,5 +130,9 @@ public class ForceSetPasswordService {
         String md5HashToken = md5Hex(token);
         return forceSetPasswordRequestRepository.findByTokenAndExpireDateAfterAndPasswordDateIsNull(md5HashToken,
                 LocalDateTime.now());
+    }
+
+    private boolean isPasswordsMatched(UserEntity userEntity, ForceSetPasswordRequest forceSetPasswordRequest) {
+        return passwordEncoder.matches(forceSetPasswordRequest.getPassword().trim(), userEntity.getPassword());
     }
 }

@@ -7,6 +7,7 @@ import com.ecaservice.oauth.dto.ForceSetPasswordRequest;
 import com.ecaservice.oauth.entity.ForceSetPasswordRequestEntity;
 import com.ecaservice.oauth.entity.UserEntity;
 import com.ecaservice.oauth.exception.InvalidTokenException;
+import com.ecaservice.oauth.exception.PasswordsMatchedException;
 import com.ecaservice.oauth.exception.UserLockedException;
 import com.ecaservice.oauth.model.TokenModel;
 import com.ecaservice.oauth.repository.ForceSetPasswordRequestRepository;
@@ -154,6 +155,15 @@ class ForceSetPasswordServiceTest extends AbstractJpaTest {
         ForceSetPasswordRequest forceSetPasswordRequest =
                 new ForceSetPasswordRequest(requestEntity.getToken(), CONFIRMATION_CODE, NEW_PASSWORD);
         assertThrows(UserLockedException.class,
+                () -> forceSetPasswordService.forceSetPassword(forceSetPasswordRequest));
+    }
+
+    @Test
+    void testForceSetPasswordWithSamePasswordShouldThrowPasswordMatchedException() {
+        var requestEntity = forceSetPasswordService.createForceSetPasswordRequest(userEntity);
+        ForceSetPasswordRequest forceSetPasswordRequest =
+                new ForceSetPasswordRequest(requestEntity.getToken(), CONFIRMATION_CODE, PASSWORD);
+        assertThrows(PasswordsMatchedException.class,
                 () -> forceSetPasswordService.forceSetPassword(forceSetPasswordRequest));
     }
 
