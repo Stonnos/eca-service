@@ -1,5 +1,6 @@
 package com.ecaservice.oauth.service;
 
+import com.ecaservice.core.audit.annotation.Audit;
 import com.ecaservice.oauth.config.AppProperties;
 import com.ecaservice.oauth.dto.ForceSetPasswordRequest;
 import com.ecaservice.oauth.entity.ForceSetPasswordRequestEntity;
@@ -24,6 +25,7 @@ import java.util.Base64;
 import java.util.Optional;
 
 import static com.ecaservice.common.web.util.MaskUtils.mask;
+import static com.ecaservice.oauth.config.audit.AuditCodes.FORCE_SET_PASSWORD;
 import static com.ecaservice.oauth.util.RandomUtils.randomString;
 import static org.apache.commons.codec.digest.DigestUtils.md5Hex;
 
@@ -88,6 +90,7 @@ public class ForceSetPasswordService {
      *
      * @param forceSetPasswordRequest - force set password request
      */
+    @Audit(value = FORCE_SET_PASSWORD)
     @Transactional
     public ForceSetPasswordRequestEntity forceSetPassword(ForceSetPasswordRequest forceSetPasswordRequest) {
         log.info("Starting to force set password for token [{}]", mask(forceSetPasswordRequest.getToken()));

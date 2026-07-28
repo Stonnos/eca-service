@@ -75,7 +75,8 @@ public class ForceSetPasswordController {
     @PostMapping
     public void forceSetPassword(@Valid @RequestBody ForceSetPasswordRequest forceSetPasswordRequest) {
         log.info("Received force set password request for token [{}]", mask(forceSetPasswordRequest.getToken()));
-        forceSetPasswordService.forceSetPassword(forceSetPasswordRequest);
+        var requestEntity = forceSetPasswordService.forceSetPassword(forceSetPasswordRequest);
+        applicationEventPublisher.publishEvent(new PasswordChangedEmailEvent(this, requestEntity.getUserEntity()));
         log.info("Force set password request has been processed for token [{}]",
                 mask(forceSetPasswordRequest.getToken()));
     }

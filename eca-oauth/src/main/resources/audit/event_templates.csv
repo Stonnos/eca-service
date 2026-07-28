@@ -19,3 +19,4 @@ id;event_type;message_template;audit_code_id
 20;SUCCESS;Создание персонального токена доступа с именем ${returnValue.name};CREATE_PERSONAL_ACCESS_TOKEN
 21;SUCCESS;Удаление персонального токена доступа с именем ${returnValue.name};DELETE_PERSONAL_ACCESS_TOKEN
 22;SUCCESS;Запрос изменения Email адреса с [${returnValue.oldEmail}] на [${returnValue.newEmail}] был отменен;REVOKE_CHANGE_EMAIL_REQUEST
+23;SUCCESS;Постоянный пароль был установлен;FORCE_SET_PASSWORD

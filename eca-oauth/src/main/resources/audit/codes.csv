@@ -19,3 +19,4 @@ LOGOUT;Выход из системы;true;USER_PROFILE_ACTIONS
 CREATE_PERSONAL_ACCESS_TOKEN;Создание персонального токена доступа;true;USER_PROFILE_ACTIONS
 DELETE_PERSONAL_ACCESS_TOKEN;Удаление персонального токена доступа;true;USER_PROFILE_ACTIONS
 REVOKE_CHANGE_EMAIL_REQUEST;Отмена запроса на изменение Email;true;USER_PROFILE_ACTIONS
+FORCE_SET_PASSWORD;Установка постоянного пароля;USER_PROFILE_ACTIONS

@@ -172,7 +172,7 @@ public class ChangePasswordController {
         log.info("Received change password request [{}] confirmation", mask(token));
         var changePasswordRequest = changePasswordService.confirmChangePassword(token, confirmationCode);
         applicationEventPublisher.publishEvent(
-                new PasswordChangedEmailEvent(this, changePasswordRequest.getUserEntity(), changePasswordRequest));
+                new PasswordChangedEmailEvent(this, changePasswordRequest.getUserEntity()));
         log.info("Change password request confirmation [{}] has been processed", changePasswordRequest.getId());
     }
 
