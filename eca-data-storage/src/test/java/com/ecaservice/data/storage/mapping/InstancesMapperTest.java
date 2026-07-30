@@ -42,6 +42,7 @@ class InstancesMapperTest {
         assertThat(instancesDto.getCreatedBy()).isEqualTo(instancesEntity.getCreatedBy());
         assertThat(instancesDto.getId()).isEqualTo(instancesEntity.getId());
         assertThat(instancesDto.getUuid()).isEqualTo(instancesEntity.getUuid());
+        assertThat(instancesDto.isDeleteAllowed()).isTrue();
     }
 
     @Test

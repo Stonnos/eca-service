@@ -137,7 +137,7 @@ public class TestHelperUtils {
         exportInstancesObjectEntity.setMd5Hash(MD_5_HASH);
         exportInstancesObjectEntity.setUpdatesCounter(0);
         exportInstancesObjectEntity.setExternalDataUuid(UUID.randomUUID().toString());
-        exportInstancesObjectEntity.setInstancesUuid(instancesEntity.getUuid());
+        exportInstancesObjectEntity.setInstancesEntity(instancesEntity);
         exportInstancesObjectEntity.setCreated(LocalDateTime.now());
         return exportInstancesObjectEntity;
     }

@@ -41,8 +41,8 @@ class InstancesPathServiceTest extends AbstractJpaTest {
 
     @Override
     public void deleteAll() {
-        instancesRepository.deleteAll();
         exportInstancesObjectRepository.deleteAll();
+        instancesRepository.deleteAll();
     }
 
     @Test

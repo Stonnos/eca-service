@@ -59,6 +59,8 @@
           <button pButton
                   type="button"
                   class="ui-button-danger round-button mr-1"
+                  [disabled]="!item.deleteAllowed"
+                  [pTooltip]="getDeleteButtonTooltip(item)"
                   (click)="onDeleteInstances(item)"
                   icon="pi pi-fw pi-trash">
           </button>

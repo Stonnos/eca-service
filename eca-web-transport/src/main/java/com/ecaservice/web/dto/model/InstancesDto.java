@@ -76,4 +76,10 @@ public class InstancesDto {
      */
     @Schema(description = "User name", example = "admin", maxLength = MAX_LENGTH_255)
     private String createdBy;
+
+    /**
+     * Is instances delete allowed? The value is false if dataset was used to build models
+     */
+    @Schema(description = "Is instances delete allowed? The value is false if dataset was used to build models")
+    private boolean deleteAllowed;
 }

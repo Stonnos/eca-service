@@ -1,5 +1,7 @@
 package com.ecaservice.data.storage.entity;
 
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import lombok.Data;
 
 import jakarta.persistence.Column;
@@ -24,10 +26,11 @@ public class ExportInstancesObjectEntity {
     private Long id;
 
     /**
-     * Instances uuid
+     * Instances id
      */
-    @Column(name = "instances_uuid", nullable = false)
-    private String instancesUuid;
+    @ManyToOne
+    @JoinColumn(name = "instances_id", nullable = false)
+    private InstancesEntity instancesEntity;
 
     /**
      * External data uuid in central data storage

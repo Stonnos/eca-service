@@ -5,10 +5,13 @@ import com.ecaservice.data.storage.model.report.ReportProperties;
 import com.ecaservice.web.dto.model.InstancesDto;
 import com.ecaservice.web.dto.model.InstancesReportInfoDto;
 import com.ecaservice.web.dto.model.InstancesStatisticsDto;
+import org.mapstruct.AfterMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
 
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Instances mapper.
@@ -59,4 +62,15 @@ public interface InstancesMapper {
      * @return instances statistics dto
      */
     InstancesStatisticsDto mapToStatistics(InstancesEntity instancesEntity);
+
+    /**
+     * Maps delete allowed value.
+     *
+     * @param instancesEntity - instances entity
+     * @param instancesDto    - instances dto
+     */
+    @AfterMapping
+    default void mapDeleteAllowed(InstancesEntity instancesEntity, @MappingTarget InstancesDto instancesDto) {
+        instancesDto.setDeleteAllowed(Objects.isNull(instancesEntity.getLastExportedDate()));
+    }
 }

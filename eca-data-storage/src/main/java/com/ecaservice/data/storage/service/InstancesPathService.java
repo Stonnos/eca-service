@@ -1,8 +1,7 @@
 package com.ecaservice.data.storage.service;
 
-import com.ecaservice.data.storage.entity.ExportInstancesObjectEntity;
+import com.ecaservice.data.storage.entity.InstancesEntity;
 import com.ecaservice.data.storage.repository.ExportInstancesObjectRepository;
-import com.ecaservice.data.storage.repository.InstancesRepository;
 import com.ecaservice.web.dto.model.RoutePathDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,7 +20,6 @@ import static com.ecaservice.data.storage.util.RoutePaths.INSTANCES_DETAILS_PATH
 public class InstancesPathService {
 
     private final ExportInstancesObjectRepository exportInstancesObjectRepository;
-    private final InstancesRepository instancesRepository;
 
     /**
      * Gets instances path by external data uuid from central storage.
@@ -36,13 +34,8 @@ public class InstancesPathService {
         if (exportInstancesObjectEntity == null) {
             log.warn("Can't find instances route path by external data uuid [{}]", externalDataUuid);
         } else {
-            var instancesEntity =
-                    instancesRepository.findByUuid(exportInstancesObjectEntity.getInstancesUuid()).orElse(null);
-            if (instancesEntity == null) {
-                log.warn("Can't find instances route path by external data uuid [{}]", externalDataUuid);
-            } else {
-                routePathDto.setPath(String.format(INSTANCES_DETAILS_PATH, instancesEntity.getId()));
-            }
+            InstancesEntity instancesEntity = exportInstancesObjectEntity.getInstancesEntity();
+            routePathDto.setPath(String.format(INSTANCES_DETAILS_PATH,instancesEntity.getId()));
         }
         return routePathDto;
     }

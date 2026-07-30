@@ -41,7 +41,7 @@ public class ExportInstancesObjectService {
         var instancesEntity = instancesRepository.findByUuid(uuid)
                 .orElseThrow(() -> new InstancesNotFoundException(String.format("Instances [%s] not found", uuid)));
         var lastExportInstancesObject =
-                exportInstancesObjectRepository.findFirstByInstancesUuidOrderByCreatedDesc(uuid);
+                exportInstancesObjectRepository.findFirstByInstancesEntityOrderByCreatedDesc(instancesEntity);
         if (lastExportInstancesObject == null) {
             log.info("No one export instances [{}] object has been found. Starting to export new instances", uuid);
             return exportValidInstances(instancesEntity);
@@ -62,6 +62,8 @@ public class ExportInstancesObjectService {
         var uploadInstancesResponseDto =
                 uploadInstancesObjectService.uploadInstances(instancesEntity.getUuid(), instancesModel);
         createAndSaveExportInstancesObject(instancesEntity, uploadInstancesResponseDto);
+        instancesEntity.setLastExportedDate(LocalDateTime.now());
+        instancesRepository.save(instancesEntity);
         log.info("Instances [{}] has been exported with external uuid [{}]", instancesEntity.getUuid(),
                 uploadInstancesResponseDto.getUuid());
         return ExportInstancesResponseDto.builder()
@@ -72,7 +74,7 @@ public class ExportInstancesObjectService {
     private void createAndSaveExportInstancesObject(InstancesEntity instancesEntity,
                                                     UploadInstancesResponseDto uploadInstancesResponseDto) {
         var exportInstancesObjectEntity = new ExportInstancesObjectEntity();
-        exportInstancesObjectEntity.setInstancesUuid(instancesEntity.getUuid());
+        exportInstancesObjectEntity.setInstancesEntity(instancesEntity);
         exportInstancesObjectEntity.setExternalDataUuid(uploadInstancesResponseDto.getUuid());
         exportInstancesObjectEntity.setMd5Hash(uploadInstancesResponseDto.getMd5Hash());
         exportInstancesObjectEntity.setUpdatesCounter(instancesEntity.getUpdatesCounter());

@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+        logicalFilePath="db/changelog/v10-add-instances-last-exported-date-column.xml"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="add_instances_relation_name_column" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="instances"/>
+            <not>
+                <columnExists tableName="instances" columnName="last_exported_date"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="instances">
+            <column name="last_exported_date" type="timestamp"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="add_export_instances_object_instances_id_column" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="export_instances_object"/>
+            <not>
+                <columnExists tableName="export_instances_object" columnName="instances_id"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="export_instances_object">
+            <column name="instances_id" type="bigint">
+                <constraints foreignKeyName="fk_export_instances_object_instances_id"
+                             referencedTableName="instances" referencedColumnNames="id"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="update_export_instances_object_instances_id" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="instances"/>
+            <tableExists tableName="export_instances_object"/>
+            <columnExists tableName="export_instances_object" columnName="instances_id"/>
+            <columnExists tableName="export_instances_object" columnName="instances_uuid"/>
+        </preConditions>
+        <sql>
+            UPDATE export_instances_object AS e SET instances_id = (select ins.id FROM instances AS ins WHERE e.instances_uuid = ins.uuid)
+        </sql>
+    </changeSet>
+
+    <changeSet id="update_instances_last_exported_date" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="instances"/>
+            <tableExists tableName="export_instances_object"/>
+            <columnExists tableName="export_instances_object" columnName="creation_date"/>
+            <columnExists tableName="instances" columnName="last_exported_date"/>
+        </preConditions>
+        <sql>
+            UPDATE instances AS ins SET last_exported_date = (select max(e.creation_date) FROM export_instances_object e WHERE ins.id = e.instances_id)
+        </sql>
+    </changeSet>
+
+    <changeSet id="drop_export_instances_object_instances_uuid_column" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="export_instances_object"/>
+            <columnExists tableName="export_instances_object" columnName="instances_uuid"/>
+        </preConditions>
+        <dropColumn tableName="export_instances_object" columnName="instances_uuid"/>
+    </changeSet>
+
+    <changeSet id="add_export_instances_object_instances_id_column_not_null" author="roman.batygin@email.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="export_instances_object"/>
+            <columnExists tableName="export_instances_object" columnName="instances_id"/>
+        </preConditions>
+        <addNotNullConstraint tableName="export_instances_object" columnName="instances_id"/>
+    </changeSet>
+</databaseChangeLog>
