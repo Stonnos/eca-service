@@ -103,7 +103,7 @@
                 id="tfaCode"
                 name="tfaCode"
                 type="text"
-                placeholder="Введите код подтверждения"
+                placeholder="Введите код подтверждения из email"
                 [(ngModel)]="tfaVerificationCode"
                 #tfaCode="ngModel"
                 [disabled]="loading || codeExpired"
@@ -126,7 +126,7 @@
                 pButton
                 type="submit"
                 [disabled]="!tfaVerificationCode || loading"
-                class="auth-button w-100 mb-1 mb-sm-3">
+                class="auth-button w-100 mb-1 mt-1 mb-sm-3">
                 <span class="button-text" *ngIf="!loading">Подтвердить</span>
                 <p-progressSpinner
                   *ngIf="loading"
@@ -149,27 +149,12 @@
         </p-panel>
       </form>
 
-      <form *ngIf="changePasswordRequiredStep" class="form d-flex flex-column justify-content-center m-auto">
-        <div class="ui-g-10 text-center mx-auto">
-          <img class="eca-icon" src="assets/images/eca-icon.jpg">
-          <h4 class="eca-service-text">ECA - SERVICE</h4>
-        </div>
-        <div class="ui-g ui-fluid">
-          <div class="ui-g-10 mx-auto d-flex align-items-center justify-content-center text-center text-danger">
-            Вам был выдан временный пароль. Его необходимо изменить.
-          </div>
-          <div class="ui-g-10 mx-auto mt-1 d-flex align-items-center justify-content-center">
-            <button
-              pButton
-              [routerLink]="['/create-reset-password-request']"
-              type="button"
-              label="Изменить"
-              class="w-50 mb-1 mb-sm-2">
-            </button>
-          </div>
-        </div>
-      </form>
-
+      <div *ngIf="forceSetPasswordRequiredStep" class="d-flex flex-column justify-content-center m-auto">
+        <app-set-password [token]="token"
+                          (passwordChanged)="setLoginStep($event)"
+                          (returnEvent)="setLoginStep($event)">
+        </app-set-password>
+      </div>
     </div>
   </div>
 </div>

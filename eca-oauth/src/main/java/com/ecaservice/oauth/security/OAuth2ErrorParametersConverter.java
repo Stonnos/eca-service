@@ -1,6 +1,7 @@
 package com.ecaservice.oauth.security;
 
 import com.ecaservice.oauth.security.model.Oauth2TfaRequiredError;
+import com.ecaservice.oauth.security.model.SetPasswordRequiredError;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.security.oauth2.core.OAuth2Error;
 import org.springframework.security.oauth2.core.endpoint.OAuth2ParameterNames;
@@ -30,6 +31,9 @@ public class OAuth2ErrorParametersConverter implements Converter<OAuth2Error, Ma
         if (oauth2Error instanceof Oauth2TfaRequiredError oauth2TfaRequiredError) {
             parameters.put(TOKEN_PARAM_NAME, oauth2TfaRequiredError.getToken());
             parameters.put(EXPIRES_IN_PARAM_NAME, String.valueOf(oauth2TfaRequiredError.getExpiresIn()));
+        }
+        if (oauth2Error instanceof SetPasswordRequiredError setPasswordRequiredError) {
+            parameters.put(TOKEN_PARAM_NAME, setPasswordRequiredError.getToken());
         }
         return parameters;
     }

@@ -94,9 +94,9 @@ public class ResetPasswordService {
     @Transactional
     public ResetPasswordRequestEntity resetPassword(ResetPasswordRequest resetPasswordRequest) {
         log.info("Starting to reset password for token [{}]", mask(resetPasswordRequest.getToken()));
-        String md5Hash = md5Hex(resetPasswordRequest.getToken());
+        String md5HashToken = md5Hex(resetPasswordRequest.getToken());
         ResetPasswordRequestEntity resetPasswordRequestEntity =
-                resetPasswordRequestRepository.findByTokenAndExpireDateAfterAndResetDateIsNull(md5Hash,
+                resetPasswordRequestRepository.findByTokenAndExpireDateAfterAndResetDateIsNull(md5HashToken,
                         LocalDateTime.now())
                         .orElseThrow(InvalidTokenException::new);
         UserEntity userEntity = resetPasswordRequestEntity.getUserEntity();
@@ -110,7 +110,6 @@ public class ResetPasswordService {
         }
         userEntity.setPassword(passwordEncoder.encode(resetPasswordRequest.getPassword().trim()));
         userEntity.setPasswordChangeDate(LocalDateTime.now());
-        userEntity.setForceChangePassword(false);
         resetPasswordRequestEntity.setResetDate(LocalDateTime.now());
         userEntityRepository.save(userEntity);
         resetPasswordRequestRepository.save(resetPasswordRequestEntity);

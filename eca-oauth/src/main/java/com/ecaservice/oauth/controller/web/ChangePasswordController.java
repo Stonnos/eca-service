@@ -32,6 +32,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.security.Principal;
 
+import static com.ecaservice.common.web.util.MaskUtils.mask;
 import static com.ecaservice.config.swagger.OpenApi30Configuration.ECA_AUTHENTICATION_SECURITY_SCHEME;
 import static com.ecaservice.config.swagger.OpenApi30Configuration.SCOPE_WEB;
 import static com.ecaservice.web.dto.util.FieldConstraints.MAX_LENGTH_255;
@@ -117,7 +118,7 @@ public class ChangePasswordController {
         log.info("Received change password request for user [{}]", principal.getName());
         var tokenModel = changePasswordService.createChangePasswordRequest(principal.getName(), changePasswordRequest);
         applicationEventPublisher.publishEvent(new ChangePasswordRequestEmailEvent(this, tokenModel));
-        log.info("Change password request [{}] has been processed for user [{}]", tokenModel.getToken(),
+        log.info("Change password request [{}] has been processed for user [{}]", tokenModel.getTokenId(),
                 principal.getName());
         return ChangePasswordRequestStatusDto.builder()
                 .token(tokenModel.getToken())
@@ -168,11 +169,11 @@ public class ChangePasswordController {
             @Parameter(description = "Token value", required = true) @RequestParam String token,
             @Size(min = VALUE_1, max = MAX_LENGTH_255)
             @Parameter(description = "Confirmation code", required = true) @RequestParam String confirmationCode) {
-        log.info("Received change password request [{}] confirmation", token);
+        log.info("Received change password request [{}] confirmation", mask(token));
         var changePasswordRequest = changePasswordService.confirmChangePassword(token, confirmationCode);
         applicationEventPublisher.publishEvent(
-                new PasswordChangedEmailEvent(this, changePasswordRequest.getUserEntity(), changePasswordRequest));
-        log.info("Change password request confirmation [{}] has been processed", token);
+                new PasswordChangedEmailEvent(this, changePasswordRequest.getUserEntity()));
+        log.info("Change password request confirmation [{}] has been processed", changePasswordRequest.getId());
     }
 
     /**

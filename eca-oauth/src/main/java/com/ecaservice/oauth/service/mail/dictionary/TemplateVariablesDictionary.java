@@ -49,4 +49,9 @@ public class TemplateVariablesDictionary {
      * New email
      */
     public static final String NEW_EMAIL = "newEmail";
+
+    /**
+     * Revoke change email request url
+     */
+    public static final String REVOKE_CHANGE_EMAIL_REQUEST_URL = "revokeChangeEmailRequestUrl";
 }

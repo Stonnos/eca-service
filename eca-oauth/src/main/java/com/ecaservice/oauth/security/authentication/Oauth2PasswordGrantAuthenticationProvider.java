@@ -1,6 +1,7 @@
 package com.ecaservice.oauth.security.authentication;
 
 import com.ecaservice.oauth.config.TfaConfig;
+import com.ecaservice.oauth.event.model.ForceSetPasswordRequestConfirmationCodeEmailEvent;
 import com.ecaservice.oauth.event.model.TfaCodeEmailEvent;
 import com.ecaservice.oauth.exception.ChangePasswordRequiredException;
 import com.ecaservice.oauth.exception.TfaRequiredException;
@@ -8,7 +9,9 @@ import com.ecaservice.oauth.repository.UserEntityRepository;
 import com.ecaservice.oauth.security.Oauth2AccessTokenService;
 import com.ecaservice.oauth.security.model.Oauth2PasswordAuthenticationToken;
 import com.ecaservice.oauth.security.model.Oauth2TfaRequiredError;
+import com.ecaservice.oauth.security.model.SetPasswordRequiredError;
 import com.ecaservice.oauth.security.model.TfaCodeAuthenticationRequest;
+import com.ecaservice.oauth.service.ForceSetPasswordService;
 import com.ecaservice.oauth.service.tfa.TfaCodeService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -26,7 +29,6 @@ import org.springframework.security.oauth2.core.OAuth2ErrorCodes;
 import org.springframework.security.oauth2.server.authorization.authentication.OAuth2ClientAuthenticationToken;
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClient;
 
-import static com.ecaservice.oauth.security.OAuth2AdditionalErrorCodes.CHANGE_PASSWORD_REQUIRED;
 import static com.ecaservice.oauth.util.Oauth2Utils.getAuthenticatedClientElseThrowInvalidClient;
 
 /**
@@ -44,6 +46,7 @@ public class Oauth2PasswordGrantAuthenticationProvider implements Authentication
     private final UserEntityRepository userEntityRepository;
     private final ApplicationEventPublisher applicationEventPublisher;
     private final Oauth2AccessTokenService oauth2AccessTokenService;
+    private final ForceSetPasswordService forceSetPasswordService;
 
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
@@ -91,8 +94,12 @@ public class Oauth2PasswordGrantAuthenticationProvider implements Authentication
                                                       OAuth2ClientAuthenticationToken clientPrincipal) {
         var userEntity = userEntityRepository.findUser(authentication.getName());
         if (userEntity.isForceChangePassword()) {
-            log.info("Password must be change for user [{}]", userEntity.getLogin());
-            throw new ChangePasswordRequiredException();
+            log.info("Password must be force change for user [{}]", userEntity.getLogin());
+            var forceSetPasswordRequest = forceSetPasswordService.createForceSetPasswordRequest(userEntity);
+            applicationEventPublisher.publishEvent(
+                    new ForceSetPasswordRequestConfirmationCodeEmailEvent(this, forceSetPasswordRequest));
+            var setPasswordRequiredError = new SetPasswordRequiredError(forceSetPasswordRequest.getToken());
+            throw new ChangePasswordRequiredException(setPasswordRequiredError);
         }
         if (Boolean.TRUE.equals(tfaConfig.getEnabled()) && userEntity.isTfaEnabled()) {
             log.info("Tfa required for user [{}]. Starting to sent authorization code", userEntity.getLogin());

@@ -188,6 +188,13 @@ export class InstancesDetailsComponent extends BaseListComponent<string[]> {
     this.getInstancesDetails();
   }
 
+  public getDeleteButtonTooltip(): string {
+    if (this.instancesDto && !this.instancesDto.deleteAllowed) {
+      return 'Невозможно удалить датасет, т.к. он использовался для построения моделей';
+    }
+    return null;
+  }
+
   private setClassIfAbsent(): void {
     if (this.instancesDto.className) {
       this.classAttribute = this.attributes.filter((attr: AttributeDto) => attr.name == this.instancesDto.className).pop();

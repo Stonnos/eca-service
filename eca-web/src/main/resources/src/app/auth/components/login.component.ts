@@ -33,7 +33,7 @@ export class LoginComponent implements BaseForm, OnInit, OnDestroy {
   public loading: boolean = false;
   public loginStep: boolean = true;
   public tfaCodeVerificationStep: boolean = false;
-  public changePasswordRequiredStep: boolean = false;
+  public forceSetPasswordRequiredStep: boolean = false;
 
   public userModel: UserModel = new UserModel();
 
@@ -94,6 +94,12 @@ export class LoginComponent implements BaseForm, OnInit, OnDestroy {
       }
       this.clear();
     }
+  }
+
+  public setLoginStep(event): void {
+    this.forceSetPasswordRequiredStep = false;
+    this.tfaCodeVerificationStep = false;
+    this.loginStep = true;
   }
 
   public resetTfaCodeVerification(): void {
@@ -177,7 +183,8 @@ export class LoginComponent implements BaseForm, OnInit, OnDestroy {
       case LoginComponent.CHANGE_PASSWORD_REQUIRED_ERROR_CODE:
         this.errorMessage = null;
         this.loginStep = false;
-        this.changePasswordRequiredStep = true;
+        this.token = error.error.token;
+        this.forceSetPasswordRequiredStep = true;
         break;
       default:
         this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: error.message });

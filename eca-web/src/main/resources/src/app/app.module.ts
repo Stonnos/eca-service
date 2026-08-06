@@ -62,6 +62,7 @@ import { EvaluationResultsRequestPathModule } from './evaluation-results-request
 import { AttributesScatterPlotDialogModule } from './attributes-scatter-plot-dialog/attributes-scatter-plot-dialog.module';
 import { ContingencyTableDialogModule } from './continjency-table-dialog/contingency-table-dialog.module';
 import { InstancesInfoDetailsModule } from './instances-info-details/instances-info-details.module';
+import { SetPasswordModule } from './set-password/set-password.module';
 
 export function eventSubscribe(eventHandler: EventHandler) {
   return () => eventHandler.eventSubscribe();
@@ -130,7 +131,8 @@ export function eventSubscribe(eventHandler: EventHandler) {
     EvaluationResultsRequestPathModule,
     AttributesScatterPlotDialogModule,
     ContingencyTableDialogModule,
-    InstancesInfoDetailsModule
+    InstancesInfoDetailsModule,
+    SetPasswordModule
   ],
   providers: [
     CookieService,

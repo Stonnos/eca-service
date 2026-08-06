@@ -1,6 +1,7 @@
 package com.ecaservice.data.storage.service.impl;
 
 import com.ecaservice.common.web.exception.EntityNotFoundException;
+import com.ecaservice.common.web.exception.InvalidOperationException;
 import com.ecaservice.core.audit.annotation.Audit;
 import com.ecaservice.core.filter.service.FilterTemplateService;
 import com.ecaservice.core.lock.annotation.Locked;
@@ -14,7 +15,6 @@ import com.ecaservice.data.storage.exception.InvalidClassAttributeTypeException;
 import com.ecaservice.data.storage.filter.InstancesFilter;
 import com.ecaservice.data.storage.mapping.AttributeMapper;
 import com.ecaservice.data.storage.repository.AttributeRepository;
-import com.ecaservice.data.storage.repository.ExportInstancesObjectRepository;
 import com.ecaservice.data.storage.repository.InstancesRepository;
 import com.ecaservice.data.storage.service.AttributeService;
 import com.ecaservice.data.storage.service.InstancesService;
@@ -75,7 +75,6 @@ public class StorageServiceImpl implements StorageService {
     private final AttributeMapper attributeMapper;
     private final InstancesRepository instancesRepository;
     private final AttributeRepository attributeRepository;
-    private final ExportInstancesObjectRepository exportInstancesObjectRepository;
 
     @Override
     public Page<InstancesEntity> getNextPage(PageRequestDto pageRequestDto) {
@@ -125,10 +124,12 @@ public class StorageServiceImpl implements StorageService {
     public String deleteData(long id) {
         log.info("Starting to delete instances with id [{}]", id);
         InstancesEntity instancesEntity = getById(id);
+        if (instancesEntity.getLastExportedDate() != null) {
+            throw new InvalidOperationException("Delete operation not allowed. Instances was used to build models");
+        }
         instancesService.deleteInstances(instancesEntity.getTableName());
         unsetClassAttribute(instancesEntity);
         attributeService.deleteAttributes(instancesEntity);
-        exportInstancesObjectRepository.deleteByInstancesUuid(instancesEntity.getUuid());
         instancesRepository.deleteById(id);
         log.info("Instances [{}] with id [{}] has been deleted", instancesEntity.getRelationName(), id);
         return instancesEntity.getRelationName();

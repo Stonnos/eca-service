@@ -31,7 +31,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Import({AppProperties.class, ChangeEmailRequestEmailEventHandler.class})
 class ChangeEmailRequestEmailEventHandlerTest {
 
-    private static final long MINUTES_IN_HOUR = 60L;
     private static final String CONFIRMATION_CODE = "token";
     private static final long USER_ID = 1L;
 
@@ -51,6 +50,7 @@ class ChangeEmailRequestEmailEventHandlerTest {
                 .confirmationCode(CONFIRMATION_CODE)
                 .tokenId(changeEmailRequestEntity.getId())
                 .login(changeEmailRequestEntity.getUserEntity().getLogin())
+                .revocationToken(UUID.randomUUID().toString())
                 .email(changeEmailRequestEntity.getUserEntity().getEmail())
                 .build();
         var changeEmailNotificationEvent = new ChangeEmailRequestEmailEvent(this, tokenModel, NEW_EMAIL);
@@ -59,11 +59,13 @@ class ChangeEmailRequestEmailEventHandlerTest {
         assertThat(actual.getTemplateCode()).isEqualTo(Templates.CHANGE_EMAIL);
         assertThat(actual.getReceiver()).isEqualTo(changeEmailRequestEntity.getUserEntity().getEmail());
         assertThat(actual.getVariables()).isNotEmpty();
-        Long validityHours = appProperties.getChangeEmail().getValidityMinutes() / MINUTES_IN_HOUR;
-        assertThat(actual.getVariables()).containsEntry(TemplateVariablesDictionary.VALIDITY_HOURS_KEY,
-                String.valueOf(validityHours));
-        assertThat(actual.getVariables()).containsEntry(TemplateVariablesDictionary.CONFIRMATION_CODE_KEY,
-                tokenModel.getConfirmationCode());
+        assertThat(actual.getVariables()).containsEntry(TemplateVariablesDictionary.NEW_EMAIL, NEW_EMAIL);
+        String tokenRevocationEndpoint =
+                String.format(appProperties.getChangeEmail().getRevocationUrl(), tokenModel.getRevocationToken());
+        String expectedChangeEmailRevocationUrl =
+                String.format("%s%s", appProperties.getWebExternalBaseUrl(), tokenRevocationEndpoint);
+        assertThat(actual.getVariables()).containsEntry(TemplateVariablesDictionary.REVOKE_CHANGE_EMAIL_REQUEST_URL,
+                expectedChangeEmailRevocationUrl);
         assertThat(actual.getPriority()).isEqualTo(MEDIUM);
     }
 }

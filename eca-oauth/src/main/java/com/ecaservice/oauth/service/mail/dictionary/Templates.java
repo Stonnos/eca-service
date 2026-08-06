@@ -34,11 +34,20 @@ public class Templates {
      * Change email request template
      */
     public static final String CHANGE_EMAIL = "CHANGE_EMAIL";
+    /**
+     * Change email request confirm new email template
+     */
+    public static final String CHANGE_EMAIL_CONFIRM_NEW_EMAIL = "CHANGE_EMAIL_CONFIRM_NEW_EMAIL";
 
     /**
      * Email changed template
      */
     public static final String EMAIL_CHANGED = "EMAIL_CHANGED";
+
+    /**
+     * Email changed new email confirmed template
+     */
+    public static final String EMAIL_CHANGED_NEW_EMAIL_CONFIRMED = "EMAIL_CHANGED_NEW_EMAIL_CONFIRMED";
 
     /**
      * Password changed template
@@ -59,4 +68,9 @@ public class Templates {
      * User unlocked template
      */
     public static final String USER_UNLOCKED = "USER_UNLOCKED";
+
+    /**
+     * Set password confirmation code template
+     */
+    public static final String SET_PASSWORD_CONFIRMATION_CODE = "SET_PASSWORD_CONFIRMATION_CODE";
 }

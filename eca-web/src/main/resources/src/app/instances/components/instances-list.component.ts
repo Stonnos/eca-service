@@ -103,6 +103,13 @@ export class InstancesListComponent extends BaseListComponent<InstancesDto> impl
     this.exportInstancesDialogVisibility = visible;
   }
 
+  public getDeleteButtonTooltip(item: InstancesDto): string {
+    if (!item.deleteAllowed) {
+      return 'Невозможно удалить датасет, т.к. он использовался для построения моделей';
+    }
+    return null;
+  }
+
   private deleteInstances(item: InstancesDto): void {
     this.loading = true;
     this.instancesService.deleteInstances(item.id)

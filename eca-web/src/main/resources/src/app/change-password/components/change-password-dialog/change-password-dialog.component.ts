@@ -123,6 +123,8 @@ export class ChangePasswordDialogComponent extends BaseCreateDialogComponent<Cha
       const error = errors.pop();
       const passwordValidationError = error as PasswordValidationErrorDto;
       this.passwordValidationRuleDetails = passwordValidationError.details;
+    } else {
+      this.notSafePassword = false;
     }
   }
 

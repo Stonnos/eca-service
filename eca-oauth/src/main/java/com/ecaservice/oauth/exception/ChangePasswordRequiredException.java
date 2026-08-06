@@ -1,8 +1,7 @@
 package com.ecaservice.oauth.exception;
 
+import com.ecaservice.oauth.security.model.SetPasswordRequiredError;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
-
-import static com.ecaservice.oauth.security.OAuth2AdditionalErrorCodes.CHANGE_PASSWORD_REQUIRED;
 
 /**
  * Change password required exception.
@@ -13,8 +12,10 @@ public class ChangePasswordRequiredException extends OAuth2AuthenticationExcepti
 
     /**
      * Change password required exception.
+     *
+     * @param error - error code
      */
-    public ChangePasswordRequiredException() {
-        super(CHANGE_PASSWORD_REQUIRED);
+    public ChangePasswordRequiredException(SetPasswordRequiredError error) {
+        super(error);
     }
 }

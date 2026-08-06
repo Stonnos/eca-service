@@ -181,6 +181,7 @@
 
 <app-update-user-email [visible]="changeEmailDialogVisibility"
                        [step]="changeEmailStep"
+                       [item]="changeEmailRequest"
                        [token]="changeEmailRequestStatusDto?.token"
                        (visibilityChange)="onChangeEmailDialogVisibility($event)"
                        (itemEvent)="onChangeEmail($event)">

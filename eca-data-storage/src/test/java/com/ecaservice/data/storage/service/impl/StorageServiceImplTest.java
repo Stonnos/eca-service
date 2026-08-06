@@ -1,6 +1,7 @@
 package com.ecaservice.data.storage.service.impl;
 
 import com.ecaservice.common.web.exception.EntityNotFoundException;
+import com.ecaservice.common.web.exception.InvalidOperationException;
 import com.ecaservice.core.filter.service.FilterTemplateService;
 import com.ecaservice.data.storage.AbstractJpaTest;
 import com.ecaservice.data.storage.config.StorageTestConfiguration;
@@ -32,6 +33,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.Page;
 import weka.core.Instances;
 
+import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
@@ -138,6 +140,14 @@ class StorageServiceImplTest extends AbstractJpaTest {
         assertThat(instancesRepository.existsById(instances.getId())).isFalse();
         assertThat(attributeRepository.count()).isZero();
         assertThat(attributeValueRepository.count()).isZero();
+    }
+
+    @Test
+    void testDeleteDataNotAllowed() {
+        var instances = internalSaveData(TEST_RELATION_NAME);
+        instances.setLastExportedDate(LocalDateTime.now());
+        instancesRepository.save(instances);
+        assertThrows(InvalidOperationException.class, () -> storageService.deleteData(instances.getId()));
     }
 
     @Test

@@ -36,4 +36,8 @@ public class TokenModel {
      * Token id in database
      */
     private Long tokenId;
+    /**
+     * Revocation token
+     */
+    private String revocationToken;
 }

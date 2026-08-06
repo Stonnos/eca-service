@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+        logicalFilePath="db/changelog/v42-add-revocation-token-to-change-email-request-table.xml"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="add_revocation_token_column_to_change_email_request_table" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="change_email_request" columnName="revocation_token"/>
+            </not>
+        </preConditions>
+
+        <addColumn tableName="change_email_request">
+            <column name="revocation_token" type="varchar(255)">
+                <constraints nullable="false" unique="true"
+                             uniqueConstraintName="change_email_request_revocation_token_unique_index"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="add_revocation_date_column_to_change_email_request_table" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="change_email_request" columnName="revocation_date"/>
+            </not>
+        </preConditions>
+
+        <addColumn tableName="change_email_request">
+            <column name="revocation_date" type="timestamp"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="add_revocation_expire_at_column_to_change_email_request_table" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="change_email_request" columnName="revocation_expire_at"/>
+            </not>
+        </preConditions>
+
+        <addColumn tableName="change_email_request">
+            <column name="revocation_expire_at" type="timestamp">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="add_old_email_column_to_change_email_request_table" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="change_email_request" columnName="old_email"/>
+            </not>
+        </preConditions>
+
+        <addColumn tableName="change_email_request">
+            <column name="old_email" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+    
+</databaseChangeLog>

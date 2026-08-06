@@ -41,6 +41,8 @@
     <button pButton
             type="button"
             label="Удалить"
+            [disabled]="!instancesDto?.deleteAllowed"
+            [pTooltip]="getDeleteButtonTooltip()"
             (click)="onDeleteInstances()"
             class="ui-button-danger ml-2 mt-2 mb-2"
             icon="pi pi-fw pi-trash">

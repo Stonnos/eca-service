@@ -1,6 +1,7 @@
 package com.ecaservice.data.storage.repository;
 
 import com.ecaservice.data.storage.entity.ExportInstancesObjectEntity;
+import com.ecaservice.data.storage.entity.InstancesEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 /**
@@ -13,10 +14,10 @@ public interface ExportInstancesObjectRepository extends JpaRepository<ExportIns
     /**
      * Finds last export instances object entity.
      *
-     * @param instancesUuid - instances uuid
+     * @param instancesEntity - instances entity
      * @return export instances object entity
      */
-    ExportInstancesObjectEntity findFirstByInstancesUuidOrderByCreatedDesc(String instancesUuid);
+    ExportInstancesObjectEntity findFirstByInstancesEntityOrderByCreatedDesc(InstancesEntity instancesEntity);
 
     /**
      * Finds export instances object entity by external uuid.
@@ -25,11 +26,4 @@ public interface ExportInstancesObjectRepository extends JpaRepository<ExportIns
      * @return export instances object entity
      */
     ExportInstancesObjectEntity findFirstByExternalDataUuid(String externalDataUuid);
-
-    /**
-     * Deletes all export instances objects with specified instances uuid.
-     *
-     * @param instancesUuid - instances uuid
-     */
-    void deleteByInstancesUuid(String instancesUuid);
 }

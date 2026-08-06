@@ -52,7 +52,11 @@ app:
   changePassword:
     validityMinutes: 15
   changeEmail:
-    validityMinutes: 2880
+    validityMinutes: 30
+    revocationValidityMinutes: 7200
+    revocationUrl: /revoke-change-email/?token=%s
+  forceSetPassword:
+    validityMinutes: 15
   security:
     writeTokenInCookie: true
     refreshTokenCookiePath: /eca-oauth/oauth2/token
@@ -60,6 +64,7 @@ app:
       - eca_web
     whitelistUrls:
       - /reset-password/**
+      - /force-set-password/**
 
 mail:
   client:

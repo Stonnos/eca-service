@@ -8,13 +8,12 @@ import org.springframework.stereotype.Component;
 
 import java.util.Map;
 
-import static com.ecaservice.oauth.service.mail.dictionary.TemplateVariablesDictionary.CONFIRMATION_CODE_KEY;
 import static com.ecaservice.oauth.service.mail.dictionary.TemplateVariablesDictionary.NEW_EMAIL;
-import static com.ecaservice.oauth.service.mail.dictionary.TemplateVariablesDictionary.VALIDITY_HOURS_KEY;
+import static com.ecaservice.oauth.service.mail.dictionary.TemplateVariablesDictionary.REVOKE_CHANGE_EMAIL_REQUEST_URL;
 import static com.google.common.collect.Maps.newHashMap;
 
 /**
- * Implements change email email event handler.
+ * Implements change email event handler.
  *
  * @author Roman Batygin
  */
@@ -22,8 +21,6 @@ import static com.google.common.collect.Maps.newHashMap;
 @Component
 public class ChangeEmailRequestEmailEventHandler
         extends AbstractTokenEmailEventHandler<ChangeEmailRequestEmailEvent> {
-
-    private static final long MINUTES_IN_HOUR = 60L;
 
     private final AppProperties appProperties;
 
@@ -43,17 +40,13 @@ public class ChangeEmailRequestEmailEventHandler
     }
 
     @Override
-    public String getCorrelationId(ChangeEmailRequestEmailEvent emailEvent) {
-        return emailEvent.getTokenModel().getToken();
-    }
-
-    @Override
     public Map<String, String> createVariables(ChangeEmailRequestEmailEvent event) {
-        Long validityHours = appProperties.getChangeEmail().getValidityMinutes() / MINUTES_IN_HOUR;
         Map<String, String> templateVariables = newHashMap();
-        templateVariables.put(CONFIRMATION_CODE_KEY, event.getTokenModel().getConfirmationCode());
+        String revokeEndpoint = String.format(appProperties.getChangeEmail().getRevocationUrl(),
+                event.getTokenModel().getRevocationToken());
+        String revokeChangeEmailUrl = String.format("%s%s", appProperties.getWebExternalBaseUrl(), revokeEndpoint);
         templateVariables.put(NEW_EMAIL, event.getNewEmail());
-        templateVariables.put(VALIDITY_HOURS_KEY, String.valueOf(validityHours));
+        templateVariables.put(REVOKE_CHANGE_EMAIL_REQUEST_URL, revokeChangeEmailUrl);
         return templateVariables;
     }
 }

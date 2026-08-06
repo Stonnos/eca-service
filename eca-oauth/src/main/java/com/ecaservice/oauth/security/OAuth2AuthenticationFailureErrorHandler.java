@@ -1,6 +1,7 @@
 package com.ecaservice.oauth.security;
 
 import com.ecaservice.oauth.security.model.Oauth2TfaRequiredError;
+import com.ecaservice.oauth.security.model.SetPasswordRequiredError;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.Getter;
@@ -37,8 +38,8 @@ public class OAuth2AuthenticationFailureErrorHandler implements AuthenticationFa
         ServletServerHttpResponse httpResponse = new ServletServerHttpResponse(response);
         if (authenticationException instanceof OAuth2AuthenticationException) {
             OAuth2Error error = ((OAuth2AuthenticationException) authenticationException).getError();
-            if (error instanceof Oauth2TfaRequiredError) {
-                // Returns 403 error code for tfa required
+            if (error instanceof Oauth2TfaRequiredError || error instanceof SetPasswordRequiredError) {
+                // Returns 403 error code
                 httpResponse.setStatusCode(HttpStatus.FORBIDDEN);
             } else {
                 httpResponse.setStatusCode(HttpStatus.BAD_REQUEST);

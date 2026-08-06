@@ -89,6 +89,12 @@ public class InstancesEntity {
     private int updatesCounter;
 
     /**
+     * Instances last exported date to central data storage
+     */
+    @Column(name = "last_exported_date")
+    private LocalDateTime lastExportedDate;
+
+    /**
      * Increases updates counter.
      */
     public void increaseUpdatesCounter() {

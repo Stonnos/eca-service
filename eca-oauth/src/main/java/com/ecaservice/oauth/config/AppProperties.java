@@ -60,6 +60,12 @@ public class AppProperties {
     private TokenValidityProperties changeEmail = new TokenValidityProperties();
 
     /**
+     * Force set password properties
+     */
+    @NotNull
+    private TokenValidityProperties forceSetPassword = new TokenValidityProperties();
+
+    /**
      * Security properties
      */
     @NotNull
@@ -83,6 +89,16 @@ public class AppProperties {
          */
         @NotNull
         private Long validityMinutes;
+
+        /**
+         * Revocation token validity minutes
+         */
+        private Long revocationValidityMinutes;
+
+        /**
+         * Revocation url
+         */
+        private String revocationUrl;
 
         /**
          * Token url

@@ -20,6 +20,7 @@ import { EvaluationLogDetailsComponent } from '../evaluation-log-details/compone
 import { ExperimentResultsDetailsComponent } from '../experiment-results-details/components/experiment-results-details.component';
 import { EvaluationResultsRequestPathComponent } from '../evaluation-results-request-path/components/evaluation-results-request-path.component';
 import { ClassifiersConfigurationsComponent } from '../classifiers-configurations/components/classifiers-configurations.component';
+import { RevokeChangeEmailComponent } from '../update-user-email/components/revoke-change-email/revoke-change-email.component';
 
 const routes: Routes = [
   {
@@ -103,6 +104,10 @@ const routes: Routes = [
   {
     path: 'evaluation-results-request-path/:id',
     component: EvaluationResultsRequestPathComponent
+  },
+  {
+    path: 'revoke-change-email',
+    component: RevokeChangeEmailComponent
   },
   {
     path: '',

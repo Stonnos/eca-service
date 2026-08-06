@@ -55,8 +55,8 @@ class ExportInstancesObjectServiceTest extends AbstractJpaTest {
 
     @Override
     public void deleteAll() {
-        instancesRepository.deleteAll();
         exportInstancesObjectRepository.deleteAll();
+        instancesRepository.deleteAll();
     }
 
     @Test
@@ -67,8 +67,10 @@ class ExportInstancesObjectServiceTest extends AbstractJpaTest {
         assertThat(exportInstancesResponseDto).isNotNull();
         var exportInstancesObjects = exportInstancesObjectRepository.findAll();
         assertThat(exportInstancesObjects.size()).isOne();
-        var exportInstancesObjectEntity = exportInstancesObjects.iterator().next();
-        assertThat(exportInstancesObjectEntity.getInstancesUuid()).isEqualTo(instancesEntity.getUuid());
+        var exportInstancesObjectEntity = exportInstancesObjects.getFirst();
+        assertThat(exportInstancesObjectEntity.getInstancesEntity()).isNotNull();
+        assertThat(exportInstancesObjectEntity.getInstancesEntity().getId()).isEqualTo(instancesEntity.getId());
+        assertThat(exportInstancesObjectEntity.getInstancesEntity().getLastExportedDate()).isNotNull();
         assertThat(exportInstancesObjectEntity.getExternalDataUuid()).isNotNull();
         assertThat(exportInstancesObjectEntity.getUpdatesCounter()).isEqualTo(instancesEntity.getUpdatesCounter());
     }

@@ -18,7 +18,6 @@ import com.ecaservice.oauth.repository.UserEntityRepository;
 import com.ecaservice.web.dto.model.ChangePasswordRequestStatusDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,10 +25,10 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-import static com.ecaservice.common.web.util.LogHelper.TX_ID;
-import static com.ecaservice.common.web.util.LogHelper.putMdc;
+import static com.ecaservice.common.web.util.MaskUtils.mask;
 import static com.ecaservice.oauth.config.audit.AuditCodes.CONFIRM_CHANGE_PASSWORD_REQUEST;
 import static com.ecaservice.oauth.config.audit.AuditCodes.CREATE_CHANGE_PASSWORD_REQUEST;
+import static com.ecaservice.oauth.util.RandomUtils.randomString;
 import static org.apache.commons.codec.digest.DigestUtils.md5Hex;
 
 /**
@@ -59,7 +58,6 @@ public class ChangePasswordService {
     @Audit(CREATE_CHANGE_PASSWORD_REQUEST)
     public TokenModel createChangePasswordRequest(String user, ChangePasswordRequest changePasswordRequest) {
         String token = UUID.randomUUID().toString();
-        putMdc(TX_ID, token);
         log.info("Starting to create change password request for user [{}]", user);
         UserEntity userEntity = userEntityRepository.findByLogin(user)
                 .orElseThrow(() -> new EntityNotFoundException(UserEntity.class, user));
@@ -81,12 +79,11 @@ public class ChangePasswordService {
         if (changePasswordRequestEntity != null) {
             throw new ChangePasswordRequestAlreadyExistsException();
         }
-        String confirmationCode =
-                RandomStringUtils.random(appProperties.getChangePassword().getConfirmationCodeLength(), false, true);
+        String confirmationCode = randomString(appProperties.getChangePassword().getConfirmationCodeLength());
         LocalDateTime expireDate = now.plusMinutes(appProperties.getChangePassword().getValidityMinutes());
         changePasswordRequestEntity =
                 saveChangePasswordRequest(changePasswordRequest, userEntity, token, confirmationCode, expireDate);
-        log.info("Change password request [{}] has been created for user [{}]", changePasswordRequestEntity.getToken(),
+        log.info("Change password request [{}] has been created for user [{}]", changePasswordRequestEntity.getId(),
                 user);
         return TokenModel.builder()
                 .token(changePasswordRequestEntity.getToken())
@@ -106,8 +103,7 @@ public class ChangePasswordService {
     @Audit(value = CONFIRM_CHANGE_PASSWORD_REQUEST)
     @Transactional
     public ChangePasswordRequestEntity confirmChangePassword(String token, String confirmationCode) {
-        putMdc(TX_ID, token);
-        log.info("Starting to change password for token [{}]", token);
+        log.info("Starting to change password for token [{}]", mask(token));
         ChangePasswordRequestEntity changePasswordRequestEntity =
                 changePasswordRequestRepository.findByTokenAndExpireDateAfterAndConfirmationDateIsNull(token,
                         LocalDateTime.now()).orElseThrow(InvalidTokenException::new);
@@ -123,7 +119,7 @@ public class ChangePasswordService {
         changePasswordRequestRepository.save(changePasswordRequestEntity);
         oauth2RevokeTokenService.revokeTokens(userEntity);
         log.info("New password has been set for user [{}], change password request [{}]", userEntity.getId(),
-                changePasswordRequestEntity.getToken());
+                changePasswordRequestEntity.getId());
         return changePasswordRequestEntity;
     }
 
@@ -147,7 +143,7 @@ public class ChangePasswordService {
                     .build();
         } else {
             log.info("Active change password request [{}] has been found for user [{}]",
-                    changePasswordRequestEntity.getToken(), user);
+                    changePasswordRequestEntity.getId(), user);
             return ChangePasswordRequestStatusDto.builder()
                     .token(changePasswordRequestEntity.getToken())
                     .active(true)
