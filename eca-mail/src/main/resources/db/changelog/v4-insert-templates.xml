@@ -224,7 +224,7 @@
         </insert>
     </changeSet>
 
-    <changeSet id="update_tfa_code_template_body_2" author="roman.batygin@mail.ru" context="data">
+    <changeSet id="update_tfa_code_template_body_3" author="roman.batygin@mail.ru" context="data">
         <update tableName="template">
             <column name="template_body" valueClobFile="templates/tfa-code-template.html"/>
             <column name="template_subject" value="Код подтверждения для входа в Eca - service"/>
