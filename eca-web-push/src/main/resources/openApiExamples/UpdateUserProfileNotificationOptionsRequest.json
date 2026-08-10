@@ -1,0 +1,21 @@
+{
+  "emailEnabled": true,
+  "webPushEnabled": true,
+  "notificationEventOptions": [
+    {
+      "eventType": "EXPERIMENT_STATUS_CHANGE",
+      "emailEnabled": true,
+      "webPushEnabled": true
+    },
+    {
+      "eventType": "CLASSIFIER_STATUS_CHANGE",
+      "emailEnabled": false,
+      "webPushEnabled": true
+    },
+    {
+      "eventType": "CLASSIFIER_CONFIGURATION_CHANGE",
+      "emailEnabled": false,
+      "webPushEnabled": true
+    }
+  ]
+}

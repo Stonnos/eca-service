@@ -1,0 +1,30 @@
+{
+  "emailEnabled": true,
+  "webPushEnabled": true,
+  "notificationEventOptions": [
+    {
+      "eventType": "EXPERIMENT_STATUS_CHANGE",
+      "eventDescription": "Изменение статуса заявки на эксперимент",
+      "emailEnabled": true,
+      "webPushEnabled": true,
+      "emailSupported": true,
+      "webPushSupported": true
+    },
+    {
+      "eventType": "CLASSIFIER_STATUS_CHANGE",
+      "eventDescription": "Изменение статуса построения модели классификатора",
+      "emailEnabled": false,
+      "webPushEnabled": true,
+      "emailSupported": false,
+      "webPushSupported": true
+    },
+    {
+      "eventType": "CLASSIFIER_CONFIGURATION_CHANGE",
+      "eventDescription": "Изменение данных конфигурации классификаторов для экспериментов",
+      "emailEnabled": false,
+      "webPushEnabled": true,
+      "emailSupported": false,
+      "webPushSupported": true
+    }
+  ]
+}

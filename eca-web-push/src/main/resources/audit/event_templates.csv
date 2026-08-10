@@ -1,0 +1,2 @@
+id;event_type;message_template;audit_code_id
+1;SUCCESS;Изменены настроки уведомлений в личном кабинете;UPDATE_USER_PROFILE_NOTIFICATION_OPTIONS

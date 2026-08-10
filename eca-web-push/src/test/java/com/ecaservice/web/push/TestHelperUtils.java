@@ -3,9 +3,14 @@ package com.ecaservice.web.push;
 import com.ecaservice.web.dto.model.EnumDto;
 import com.ecaservice.web.dto.model.UserNotificationDto;
 import com.ecaservice.web.push.dto.SystemPushRequest;
+import com.ecaservice.web.push.dto.UpdateUserNotificationEventOptionsDto;
+import com.ecaservice.web.push.dto.UpdateUserNotificationOptionsDto;
 import com.ecaservice.web.push.dto.UserPushNotificationRequest;
 import com.ecaservice.web.push.entity.MessageStatus;
 import com.ecaservice.web.push.entity.NotificationEntity;
+import com.ecaservice.web.push.entity.NotificationEventOptionsEntity;
+import com.ecaservice.web.push.entity.NotificationEventType;
+import com.ecaservice.web.push.entity.NotificationOptionsEntity;
 import com.ecaservice.web.push.entity.NotificationParameter;
 import com.ecaservice.web.push.entity.PushTokenEntity;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -17,6 +22,8 @@ import java.io.InputStream;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.UUID;
+
+import static com.google.common.collect.Lists.newArrayList;
 
 /**
  * Test helper utility class.
@@ -139,5 +146,72 @@ public class TestHelperUtils {
         pushTokenEntity.setTokenId(tokenId);
         pushTokenEntity.setExpireAt(expireAt);
         return pushTokenEntity;
+    }
+
+    /**
+     * Create notification options entity.
+     *
+     * @param user - user
+     * @return notification options entity
+     */
+    public static NotificationOptionsEntity createUserProfileOptionsEntity(String user) {
+        var userProfileOptionsEntity = new NotificationOptionsEntity();
+        userProfileOptionsEntity.setEmailEnabled(true);
+        userProfileOptionsEntity.setWebPushEnabled(true);
+        userProfileOptionsEntity.setUser(user);
+        userProfileOptionsEntity.setNotificationEventOptions(
+                Collections.singletonList(createUserNotificationEventOptionsEntity(userProfileOptionsEntity)));
+        userProfileOptionsEntity.setCreated(LocalDateTime.now());
+        return userProfileOptionsEntity;
+    }
+
+    /**
+     * Creates user notification event options entity.
+     *
+     * @param notificationOptionsEntity - user profile options entity
+     * @return user notification event options entity
+     */
+    public static NotificationEventOptionsEntity createUserNotificationEventOptionsEntity(
+            NotificationOptionsEntity notificationOptionsEntity) {
+        var userNotificationEventOptionsEntity = new NotificationEventOptionsEntity();
+        userNotificationEventOptionsEntity.setEventType(NotificationEventType.EXPERIMENT_STATUS_CHANGE);
+        userNotificationEventOptionsEntity.setEmailSupported(true);
+        userNotificationEventOptionsEntity.setWebPushSupported(true);
+        userNotificationEventOptionsEntity.setEmailEnabled(true);
+        userNotificationEventOptionsEntity.setEmailSupported(true);
+        userNotificationEventOptionsEntity.setNotificationOptions(notificationOptionsEntity);
+        return userNotificationEventOptionsEntity;
+    }
+
+    /**
+     * Creates update user notification options.
+     *
+     * @return update user notification options
+     */
+    public static UpdateUserNotificationOptionsDto createUpdateUserNotificationOptionsDto() {
+        var userNotificationOptionsDto = new UpdateUserNotificationOptionsDto();
+        userNotificationOptionsDto.setWebPushEnabled(false);
+        userNotificationOptionsDto.setEmailEnabled(false);
+        userNotificationOptionsDto.setNotificationEventOptions(newArrayList());
+        userNotificationOptionsDto.getNotificationEventOptions().add(
+                createUpdateUserNotificationEventOptionsDto(NotificationEventType.EXPERIMENT_STATUS_CHANGE));
+        userNotificationOptionsDto.getNotificationEventOptions().add(
+                createUpdateUserNotificationEventOptionsDto(NotificationEventType.CLASSIFIER_STATUS_CHANGE));
+        return userNotificationOptionsDto;
+    }
+
+    /**
+     * Creates update user notification event options dto.
+     *
+     * @param eventType - event type
+     * @return update user notification event options dto
+     */
+    public static UpdateUserNotificationEventOptionsDto createUpdateUserNotificationEventOptionsDto(
+            NotificationEventType eventType) {
+        var updateUserNotificationEventOptionsDto = new UpdateUserNotificationEventOptionsDto();
+        updateUserNotificationEventOptionsDto.setEventType(eventType);
+        updateUserNotificationEventOptionsDto.setEmailEnabled(false);
+        updateUserNotificationEventOptionsDto.setWebPushEnabled(false);
+        return updateUserNotificationEventOptionsDto;
     }
 }

@@ -1,0 +1,2 @@
+id;title;enabled;audit_group_id
+UPDATE_USER_PROFILE_NOTIFICATION_OPTIONS;Изменение настроек уведомлений в личном кабинете;true;USER_PROFILE_ACTIONS

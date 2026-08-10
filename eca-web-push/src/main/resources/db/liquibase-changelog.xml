@@ -7,4 +7,6 @@
     <include file="db/changelog/v0-init-schema.xml"/>
     <include file="db/changelog/v1-create-push-token-table.xml"/>
     <include file="db/changelog/v2-drop-notification-initiator-not-null-constraint.xml"/>
+    <include file="db/changelog/v3-create-notification-options-table.xml"/>
+    <include file="db/changelog/v4-insert-audit-codes-and-events.xml"/>
 </databaseChangeLog>

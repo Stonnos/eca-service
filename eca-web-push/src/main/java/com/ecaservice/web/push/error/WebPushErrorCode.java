@@ -16,7 +16,17 @@ public enum WebPushErrorCode implements ErrorDetails {
     /**
      * Invalid notifications ids
      */
-    INVALID_NOTIFICATIONS_IDS("InvalidNotificationsIds");
+    INVALID_NOTIFICATIONS_IDS("InvalidNotificationsIds"),
+
+    /**
+     * Duplicate notification event to update
+     */
+    DUPLICATE_NOTIFICATION_EVENT_TO_UPDATE("DuplicateNotificationEventToUpdate"),
+
+    /**
+     * Notification event not found
+     */
+    NOTIFICATION_EVENT_NOT_FOUND("NotificationEventNotFound");
 
     /**
      * Error code
