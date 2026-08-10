@@ -1,0 +1,164 @@
+spring:
+  application:
+    name: eca-web-push
+  ## Email properties
+  mail:
+    host: smtp.gmail.com
+    port: 25
+    username: rbatsw@gmail.com
+    password: changeit
+    properties:
+      mail.transport.protocol: smtp
+      mail.smtp.auth: true
+      mail.smtp.starttls.enable: true
+      mail.debug: false
+  ## Datasource properties
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/eca_web_push
+    username: postgres
+    password: postgres
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        id:
+          ## Use one hibernate_sequence for all entities
+          db_structure_naming_strategy: legacy
+        jdbc:
+          lob:
+            non_contextual_creation: true
+        order_by:
+          default_null_ordering: last
+  liquibase:
+    contexts: schema,data
+    change-log: classpath:db/liquibase-changelog.xml
+  cache:
+    cache-names: global-filters, filter-templates, filter-dictionaries, sort-fields
+    caffeine:
+      spec: maximumSize=100, expireAfterWrite=18000s
+
+eureka:
+  instance:
+    metadata-map:
+      metrics.path: /actuator/prometheus
+      health.path: /actuator/health
+      management.context-path: /actuator
+  client:
+    registerWithEureka: false
+    fetchRegistry: false
+
+## Application properties
+app:
+  encrypt:
+    password: pa66word!
+    salt: s@lt#
+
+auth-server:
+  baseUrl: http://localhost:8085/eca-oauth
+  clientId: eca_service_tech
+  clientSecret: 02#eca_service_tech6
+
+queues:
+  pushQueue: /push
+
+## Swagger properties
+open-api:
+  basePath: /
+  title: Notifications microservice
+  description: API provides operations with notifications
+  author: Roman Batygin
+  email: roman.batygin@mail.ru
+  projectVersion: @project.version@
+  tokenBaseUrl: http://localhost:8080
+  apiAuth:
+    PASSWORD:
+      scopes: web
+
+springdoc:
+  swagger-ui:
+    oauth:
+      client-id: swagger
+      client-secret: swagger_secret
+    disable-swagger-default-url: true
+
+user-notification:
+  emailEnabled: true
+  webPushEnabled: true
+  notificationEventOptions:
+    - eventType: EXPERIMENT_STATUS_CHANGE
+      emailEnabled: true
+      webPushEnabled: true
+      emailSupported: true
+      webPushSupported: true
+    - eventType: CLASSIFIER_STATUS_CHANGE
+      emailEnabled: false
+      webPushEnabled: true
+      emailSupported: false
+      webPushSupported: true
+    - eventType: CLASSIFIER_CONFIGURATION_CHANGE
+      emailEnabled: false
+      webPushEnabled: true
+      emailSupported: false
+      webPushSupported: true
+
+lock:
+  enabled: true
+
+web-push:
+  notificationLifeTimeDays: 7
+  pushTokenValidityMinutes: 240
+  rabbit:
+    enabled: true
+    queueName: queue-push-events
+
+mail:
+  maxFailedAttemptsToSent: 25
+  pageSize: 10
+  delaySeconds: 3
+  sender: rbatsw@gmail.com
+  rabbit:
+    enabled: true
+    queueName: queue-email-events
+
+table:
+  data:
+    clean:
+      enabled: true
+      tables:
+        - tableName: email
+          creationTimestampColumnName: save_date
+          storagePeriodInDays: 30
+
+management:
+  observations:
+    annotations:
+      ## Enables span annotations processing
+      enabled: true
+  tracing:
+    sampling:
+      probability: 0
+    baggage:
+      correlation:
+        fields:
+          - tx.id
+      remote-fields:
+        - tx.id
+  metrics:
+    tags:
+      application: ${spring.application.name}
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+  endpoint:
+    health:
+      show-details: always
+  info:
+    git:
+      enabled: true
+      mode: full
+
+server:
+  forward-headers-strategy: framework

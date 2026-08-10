@@ -1,0 +1,77 @@
+package com.ecaservice.notification.scheduler;
+
+import com.ecaservice.notification.config.MailProperties;
+import com.ecaservice.notification.entity.Email;
+import com.ecaservice.notification.entity.EmailStatus;
+import com.ecaservice.notification.metrics.MetricsService;
+import com.ecaservice.notification.repository.EmailRepository;
+import com.ecaservice.notification.service.MailSenderService;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Service;
+
+import java.time.LocalDateTime;
+import java.util.Arrays;
+import java.util.List;
+
+import static com.ecaservice.common.web.util.LogHelper.TX_ID;
+import static com.ecaservice.common.web.util.LogHelper.putMdc;
+import static com.ecaservice.notification.entity.Email_.PRIORITY;
+import static com.ecaservice.notification.entity.Email_.SAVE_DATE;
+
+/**
+ * Email scheduler.
+ *
+ * @author Roman Batygin
+ */
+@Slf4j
+@Service
+@RequiredArgsConstructor
+public class MailScheduler {
+
+    private final MailProperties mailProperties;
+    private final MetricsService metricsService;
+    private final MailSenderService mailSenderService;
+    private final EmailRepository emailRepository;
+
+    /**
+     * Processes not sent emails.
+     */
+    @Scheduled(fixedDelayString = "${mail.delaySeconds}000")
+    public void sendEmails() {
+        Sort sort = Sort.by(Sort.Order.desc(PRIORITY), Sort.Order.asc(SAVE_DATE));
+        List<Email> emails = emailRepository.findByStatusNotIn(Arrays.asList(EmailStatus.SENT, EmailStatus.EXCEEDED),
+                PageRequest.of(0, mailProperties.getPageSize(), sort));
+        log.trace("{} not sent emails has been found.", emails.size());
+        for (Email email : emails) {
+            putMdc(TX_ID, email.getTxId());
+            try {
+                mailSenderService.sendEmail(email);
+                email.setStatus(EmailStatus.SENT);
+                email.setSentDate(LocalDateTime.now());
+                metricsService.trackSendingEmailMessageSuccessTotalCounter();
+            } catch (Exception ex) {
+                log.error("There was an error while sending email [{}]: {} ", email.getId(), ex.getMessage(), ex);
+                metricsService.trackSendingEmailMessageErrorTotalCounter();
+                handleErrorSent(email, ex.getMessage());
+            } finally {
+                emailRepository.save(email);
+            }
+        }
+        log.trace("Email sending has been finished.");
+    }
+
+    private void handleErrorSent(Email email, String errorMessage) {
+        int failedAttemptsToSent = email.getFailedAttemptsToSent() + 1;
+        if (failedAttemptsToSent >= mailProperties.getMaxFailedAttemptsToSent()) {
+            email.setStatus(EmailStatus.EXCEEDED);
+        } else {
+            email.setStatus(EmailStatus.NOT_SENT);
+            email.setErrorMessage(errorMessage);
+        }
+        email.setFailedAttemptsToSent(failedAttemptsToSent);
+    }
+}

@@ -1,0 +1,39 @@
+package com.ecaservice.notification.service.handler;
+
+import com.ecaservice.notification.service.UserNotificationService;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.context.annotation.Import;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
+
+import static com.ecaservice.notification.TestHelperUtils.createUserPushNotificationRequest;
+import static org.mockito.Mockito.atLeastOnce;
+import static org.mockito.Mockito.verify;
+
+/**
+ * Unit tests for {@link UserNotificationService} class.
+ *
+ * @author Roman Batygin
+ */
+@ExtendWith(SpringExtension.class)
+@Import(UserNotificationPushRequestHandler.class)
+class UserNotificationPushRequestHandlerTest {
+
+    @MockBean
+    private UserNotificationService userNotificationService;
+    @MockBean
+    private ApplicationEventPublisher applicationEventPublisher;
+
+    @Autowired
+    private UserNotificationPushRequestHandler userNotificationPushRequestHandler;
+
+    @Test
+    void testHandleUserNotification() {
+        var userPushNotificationRequest = createUserPushNotificationRequest();
+        userNotificationPushRequestHandler.handle(userPushNotificationRequest);
+        verify(userNotificationService, atLeastOnce()).save(userPushNotificationRequest);
+    }
+}

@@ -29,7 +29,7 @@
 * classifiers-options - модуль содержит модельные классы для настроек входных параметров классификаторов
 * eca-ers-transport - модуль содержит dto классы для сервиса ERS
 * eca-ds-transport - модуль содержит dto классы для сервиса Data storage
-* eca-web-push-transport - модуль содержит dto классы для сервиса eca web push
+* eca-web-push-transport - модуль содержит dto классы для push уведомлений в приложении
 * eca-data-loader-transport - модуль содержит dto классы для сервиса eca data loader
 * eca-external-api-transport - модуль содержит dto классы для внешнего API
 * eca-audit-transport - модуль содержит dto классы для сервиса журнала аудита
@@ -64,7 +64,7 @@
 * eca-ers - сервис для хранения и анализа результатов классификации
 * eca-data-storage - модуль для хранения обучающих выборок в виде таблиц БД
 * eca-data-loader - модуль для загрузки обучающих выборок для последующей классификации
-* eca-web-push - модуль для отправки веб - пушей с поддержкой web sockets
+* eca-notification-service - модуль для отправки уведомлений
 * eca-audit-log - модуль для сбора и хранения событий аудита
 * eca-external-api - предоставляет внешний API (web proxy) для обучения моделей классификаторов
 * eca-web - реализует web клиент для администрирования
