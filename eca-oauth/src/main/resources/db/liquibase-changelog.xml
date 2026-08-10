@@ -53,4 +53,5 @@
     <include file="db/changelog/v41-create-personal-access-token-table.xml"/>
     <include file="db/changelog/v42-add-revocation-token-to-change-email-request-table.xml"/>
     <include file="db/changelog/v43-create-force-set-password-request-table.xml"/>
+    <include file="db/changelog/v44-drop-user-profile-options-tables.xml"/>
 </databaseChangeLog>

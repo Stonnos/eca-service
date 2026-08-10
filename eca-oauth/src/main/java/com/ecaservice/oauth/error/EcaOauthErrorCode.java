@@ -64,16 +64,6 @@ public enum EcaOauthErrorCode implements ErrorDetails {
     NOT_SAFE_PASSWORD("NotSafePassword"),
 
     /**
-     * Duplicate notification event to update
-     */
-    DUPLICATE_NOTIFICATION_EVENT_TO_UPDATE("DuplicateNotificationEventToUpdate"),
-
-    /**
-     * Notification event not found
-     */
-    NOTIFICATION_EVENT_NOT_FOUND("NotificationEventNotFound"),
-
-    /**
      * Invalid confirmation code
      */
     INVALID_CONFIRMATION_CODE("InvalidConfirmationCode"),

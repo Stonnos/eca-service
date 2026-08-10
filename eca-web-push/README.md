@@ -49,6 +49,12 @@
 6) logging.mode - режим логирования
    * text - текстовый формат
    * json - логи в формате json
+9) user-notification - дефолтные настройки для уведомлений пользователя
+   * user-notification.emailEnabled - глобальный флаг вкл./выкл. отправки email сообщений
+   * user-notification.webPushEnabled - глобальный флаг вкл./выкл. отправки пуш уведомлений в приложении
+   * user-notification.notificationEventOptions - настройки событий уведомлений
+   * user-notification.dataEventRetryIntervalSeconds - интервал в сек. между запуском scheduler для повторной отправки событий изменений настроек профиля пользователя
+   * user-notification.rabbit.exchangeName - название exchange для отправки событий изменений настроек профиля пользователя
     
 Инструкция по развертыванию
 ----------------------------------------

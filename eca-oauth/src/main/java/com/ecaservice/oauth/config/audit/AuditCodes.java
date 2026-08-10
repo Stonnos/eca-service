@@ -81,11 +81,6 @@ public class AuditCodes {
     public static final String CONFIRM_CHANGE_EMAIL_REQUEST = "CONFIRM_CHANGE_EMAIL_REQUEST";
 
     /**
-     * Updates user profile notification options
-     */
-    public static final String UPDATE_USER_PROFILE_NOTIFICATION_OPTIONS = "UPDATE_USER_PROFILE_NOTIFICATION_OPTIONS";
-
-    /**
      * User login
      */
     public static final String LOGIN = "LOGIN";

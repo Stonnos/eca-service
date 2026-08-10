@@ -72,8 +72,6 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
     private final UserMapper userMapper;
     private final Oauth2RevokeTokenService oauth2RevokeTokenService;
-    private final UserProfileOptionsConfigurationService userProfileOptionsConfigurationService;
-    private final UserProfileOptionsDataEventService userProfileOptionsDataEventService;
     private final FilterTemplateService filterTemplateService;
     private final UserEntityRepository userEntityRepository;
     private final RoleRepository roleRepository;
@@ -142,9 +140,9 @@ public class UserService {
         userEntity.setCreationDate(LocalDateTime.now());
         userEntityRepository.save(userEntity);
         //Also creates user profile options with default settings
-        var userProfileOptionsEntity =
-                userProfileOptionsConfigurationService.createAndSaveDefaultProfileOptions(userEntity);
-        userProfileOptionsDataEventService.saveEvent(userProfileOptionsEntity);
+      //  var userProfileOptionsEntity =
+      //          userProfileOptionsConfigurationService.createAndSaveDefaultProfileOptions(userEntity);
+      //  userProfileOptionsDataEventService.saveEvent(userProfileOptionsEntity);
         log.info("User {} has been created", userEntity.getId());
         return userEntity;
     }

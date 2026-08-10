@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+        logicalFilePath="db/changelog/v44-drop-user-profile-options-tables.xml"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="drop_user_notification_event_options_table" author="roman.batygin@mail.ru">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="user_notification_event_options"/>
+        </preConditions>
+        <dropTable tableName="user_notification_event_options"/>
+    </changeSet>
+
+    <changeSet id="drop_user_profile_options_table" author="roman.batygin@mail.ru">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="user_profile_options"/>
+        </preConditions>
+        <dropTable tableName="user_profile_options"/>
+    </changeSet>
+
+    <changeSet id="delete_update_user_profile_notification_options_audit_event_template" author="roman.batygin@mail.ru" context="data">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="1">
+                select count(*) from audit_event_template where audit_code_id = 'UPDATE_USER_PROFILE_NOTIFICATION_OPTIONS'
+            </sqlCheck>
+        </preConditions>
+        <delete tableName="audit_event_template">
+            <where>audit_code_id = 'UPDATE_USER_PROFILE_NOTIFICATION_OPTIONS'</where>
+        </delete>
+    </changeSet>
+
+    <changeSet id="delete_update_user_profile_notification_options_audit_code" author="roman.batygin@mail.ru" context="data">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="1">
+                select count(*) from audit_code where id = 'UPDATE_USER_PROFILE_NOTIFICATION_OPTIONS'
+            </sqlCheck>
+        </preConditions>
+        <delete tableName="audit_code">
+            <where>id = 'UPDATE_USER_PROFILE_NOTIFICATION_OPTIONS'</where>
+        </delete>
+    </changeSet>
+</databaseChangeLog>

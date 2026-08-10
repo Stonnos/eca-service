@@ -1,21 +1,17 @@
-package com.ecaservice.oauth.controller.web;
+package com.ecaservice.web.push.controller.web;
 
-import com.ecaservice.oauth.dto.UpdateUserNotificationOptionsDto;
-import com.ecaservice.oauth.entity.UserProfileOptionsEntity;
-import com.ecaservice.oauth.mapping.RoleMapperImpl;
-import com.ecaservice.oauth.mapping.UserMapperImpl;
-import com.ecaservice.oauth.service.UserProfileOptionsService;
 import com.ecaservice.oauth2.test.controller.AbstractControllerTest;
 import com.ecaservice.web.dto.model.UserProfileNotificationOptionsDto;
+import com.ecaservice.web.push.dto.UpdateUserNotificationOptionsDto;
+import com.ecaservice.web.push.entity.NotificationOptionsEntity;
+import com.ecaservice.web.push.service.NotificationOptionsService;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 
-import static com.ecaservice.oauth.TestHelperUtils.createUpdateUserNotificationOptionsDto;
+import static com.ecaservice.web.push.TestHelperUtils.createUpdateUserNotificationOptionsDto;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
@@ -25,34 +21,29 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 /**
- * Unit tests for checking {@link UserProfileOptionsController} functionality.
+ * Unit tests for checking {@link NotificationOptionsController} functionality.
  *
  * @author Roman Batygin
  */
-@WebMvcTest(controllers = UserProfileOptionsController.class)
-@Import({UserMapperImpl.class, RoleMapperImpl.class})
-class UserProfileOptionsControllerTest extends AbstractControllerTest {
+@WebMvcTest(controllers = NotificationOptionsController.class)
+class NotificationOptionsControllerTest extends AbstractControllerTest {
 
-    private static final String BASE_URL = "/user/profile/options";
-    private static final String GET_USER_PROFILE_NOTIFICATIONS_URL = BASE_URL + "/notifications";
-    private static final String UPDATE_USER_PROFILE_NOTIFICATIONS_URL = BASE_URL + "/update-notifications";
+    private static final String BASE_URL = "/notification/options";
 
     @MockBean
-    private UserProfileOptionsService userProfileOptionsService;
-    @MockBean
-    private ApplicationEventPublisher applicationEventPublisher;
+    private NotificationOptionsService notificationOptionsService;
 
     @Test
     void testGetUserProfileNotificationOptionsUnauthorized() throws Exception {
-        mockMvc.perform(get(GET_USER_PROFILE_NOTIFICATIONS_URL))
+        mockMvc.perform(get(BASE_URL))
                 .andExpect(status().isUnauthorized());
     }
 
     @Test
     void testUserProfileNotificationOptionsOk() throws Exception {
         UserProfileNotificationOptionsDto expected = new UserProfileNotificationOptionsDto();
-        when(userProfileOptionsService.getUserNotificationOptions(anyString())).thenReturn(expected);
-        mockMvc.perform(get(GET_USER_PROFILE_NOTIFICATIONS_URL)
+        when(notificationOptionsService.getUserNotificationOptions(anyString())).thenReturn(expected);
+        mockMvc.perform(get(BASE_URL)
                         .header(HttpHeaders.AUTHORIZATION, getBearerToken()))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
@@ -62,7 +53,7 @@ class UserProfileOptionsControllerTest extends AbstractControllerTest {
     @Test
     void testUpdateUserProfileNotificationOptionsUnauthorized() throws Exception {
         var updateUserNotificationOptionsDto = createUpdateUserNotificationOptionsDto();
-        mockMvc.perform(put(UPDATE_USER_PROFILE_NOTIFICATIONS_URL)
+        mockMvc.perform(put(BASE_URL)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(updateUserNotificationOptionsDto)))
                 .andExpect(status().isUnauthorized());
@@ -71,10 +62,10 @@ class UserProfileOptionsControllerTest extends AbstractControllerTest {
     @Test
     void testUpdateUserProfileNotificationOptionsOk() throws Exception {
         var updateUserNotificationOptionsDto = createUpdateUserNotificationOptionsDto();
-        when(userProfileOptionsService.updateUserNotificationOptions(anyString(),
+        when(notificationOptionsService.updateUserNotificationOptions(anyString(),
                 any(UpdateUserNotificationOptionsDto.class)))
-                .thenReturn(new UserProfileOptionsEntity());
-        mockMvc.perform(put(UPDATE_USER_PROFILE_NOTIFICATIONS_URL)
+                .thenReturn(new NotificationOptionsEntity());
+        mockMvc.perform(put(BASE_URL)
                         .header(HttpHeaders.AUTHORIZATION, getBearerToken())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(updateUserNotificationOptionsDto)))
@@ -85,7 +76,7 @@ class UserProfileOptionsControllerTest extends AbstractControllerTest {
     void testUpdateUserProfileNotificationOptionsWithEmptyEventType() throws Exception {
         var updateUserNotificationOptionsDto = createUpdateUserNotificationOptionsDto();
         updateUserNotificationOptionsDto.getNotificationEventOptions().iterator().next().setEventType(null);
-        mockMvc.perform(put(UPDATE_USER_PROFILE_NOTIFICATIONS_URL)
+        mockMvc.perform(put(BASE_URL)
                         .header(HttpHeaders.AUTHORIZATION, getBearerToken())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(updateUserNotificationOptionsDto)))

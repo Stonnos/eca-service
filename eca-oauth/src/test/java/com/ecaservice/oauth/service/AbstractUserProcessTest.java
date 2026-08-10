@@ -11,8 +11,6 @@ import com.ecaservice.oauth.repository.ChangePasswordRequestRepository;
 import com.ecaservice.oauth.repository.ResetPasswordRequestRepository;
 import com.ecaservice.oauth.repository.RoleRepository;
 import com.ecaservice.oauth.repository.UserEntityRepository;
-import com.ecaservice.oauth.repository.UserNotificationEventOptionsRepository;
-import com.ecaservice.oauth.repository.UserProfileOptionsRepository;
 import lombok.Getter;
 import lombok.SneakyThrows;
 import org.apache.commons.lang3.StringUtils;
@@ -83,10 +81,6 @@ abstract class AbstractUserProcessTest {
     @Getter
     private UserEntityRepository userEntityRepository;
     @Autowired
-    private UserNotificationEventOptionsRepository userNotificationEventOptionsRepository;
-    @Autowired
-    private UserProfileOptionsRepository userProfileOptionsRepository;
-    @Autowired
     private RoleRepository roleRepository;
     @Autowired
     private ResetPasswordRequestRepository resetPasswordRequestRepository;
@@ -136,8 +130,6 @@ abstract class AbstractUserProcessTest {
     void clear() {
         changePasswordRequestRepository.deleteAll();
         resetPasswordRequestRepository.deleteAll();
-        userNotificationEventOptionsRepository.deleteAll();
-        userProfileOptionsRepository.deleteAll();
         userEntityRepository.deleteAll();
         roleRepository.deleteAll();
     }
