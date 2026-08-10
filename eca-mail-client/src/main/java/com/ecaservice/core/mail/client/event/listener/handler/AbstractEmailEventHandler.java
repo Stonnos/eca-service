@@ -53,6 +53,14 @@ public abstract class AbstractEmailEventHandler<T extends AbstractEmailEvent> {
     public abstract String getTemplateCode(T emailEvent);
 
     /**
+     * Gets email user context.
+     *
+     * @param emailEvent - email event
+     * @return user login
+     */
+    public abstract String getUser(T emailEvent);
+
+    /**
      * Can handle notification event?
      *
      * @param event - notification event
@@ -70,6 +78,7 @@ public abstract class AbstractEmailEventHandler<T extends AbstractEmailEvent> {
     public EmailRequest handle(T event) {
         EmailRequest emailRequest = new EmailRequest();
         emailRequest.setRequestId(UUID.randomUUID().toString());
+        emailRequest.setUser(getUser(event));
         emailRequest.setCorrelationId(getCorrelationId(event));
         emailRequest.setTemplateCode(getTemplateCode(event));
         emailRequest.setReceiver(getReceiver(event));

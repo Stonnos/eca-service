@@ -20,4 +20,9 @@ public abstract class AbstractTokenEmailEventHandler<T extends AbstractTokenEmai
     public String getReceiver(AbstractTokenEmailEvent event) {
         return event.getTokenModel().getEmail();
     }
+
+    @Override
+    public String getUser(AbstractTokenEmailEvent event) {
+        return event.getTokenModel().getLogin();
+    }
 }

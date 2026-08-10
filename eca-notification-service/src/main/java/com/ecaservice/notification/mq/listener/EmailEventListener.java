@@ -2,6 +2,7 @@ package com.ecaservice.notification.mq.listener;
 
 import com.ecaservice.notification.dto.EmailRequest;
 import com.ecaservice.notification.service.EmailService;
+import com.ecaservice.notification.service.NotificationOptionsEmailChecker;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -27,6 +28,7 @@ import static com.ecaservice.common.web.util.LogHelper.putMdc;
 public class EmailEventListener {
 
     private final EmailService emailService;
+    private final NotificationOptionsEmailChecker notificationOptionsEmailChecker;
 
 
     /**
@@ -38,6 +40,8 @@ public class EmailEventListener {
     public void handleEmailEvent(@Valid @RequestBody EmailRequest emailRequest) {
         putMdc(TX_ID, emailRequest.getCorrelationId());
         log.info("Received email request message [{}]", emailRequest.getRequestId());
-        emailService.saveEmail(emailRequest);
+        if (notificationOptionsEmailChecker.isEnabled(emailRequest.getUser(), emailRequest.getTemplateCode())) {
+            emailService.saveEmail(emailRequest);
+        }
     }
 }

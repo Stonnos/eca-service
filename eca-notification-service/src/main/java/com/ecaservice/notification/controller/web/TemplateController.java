@@ -42,7 +42,7 @@ import static com.ecaservice.config.swagger.OpenApi30Configuration.SCOPE_WEB;
 @Slf4j
 @Tag(name = "Email template API for web application")
 @RestController
-@RequestMapping("/templates")
+@RequestMapping("/email/templates")
 @RequiredArgsConstructor
 public class TemplateController {
 

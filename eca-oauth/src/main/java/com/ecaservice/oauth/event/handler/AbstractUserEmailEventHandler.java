@@ -20,4 +20,9 @@ public abstract class AbstractUserEmailEventHandler<T extends AbstractUserEmailE
     public String getReceiver(AbstractUserEmailEvent event) {
         return event.getUserEntity().getEmail();
     }
+
+    @Override
+    public String getUser(AbstractUserEmailEvent event) {
+        return event.getUserEntity().getLogin();
+    }
 }

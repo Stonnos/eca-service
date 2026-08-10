@@ -55,4 +55,9 @@ public class ExperimentEmailEventHandler extends AbstractEmailEventHandler<Exper
     public String getTemplateCode(ExperimentEmailEvent emailEvent) {
         return emailEvent.getTemplateCode();
     }
+
+    @Override
+    public String getUser(ExperimentEmailEvent emailEvent) {
+        return emailEvent.getExperiment().getCreatedBy();
+    }
 }

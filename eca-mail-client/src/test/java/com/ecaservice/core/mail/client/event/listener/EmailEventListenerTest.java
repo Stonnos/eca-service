@@ -34,7 +34,7 @@ class EmailEventListenerTest {
     @Captor
     private ArgumentCaptor<EmailRequest> emailRequestArgumentCaptor;
 
-    private TestEmailEventHandler testEmailEventHandler = new TestEmailEventHandler();
+    private final TestEmailEventHandler testEmailEventHandler = new TestEmailEventHandler();
 
     @BeforeEach
     void init() {
@@ -51,5 +51,6 @@ class EmailEventListenerTest {
         assertThat(emailRequest).isNotNull();
         assertThat(emailRequest.getRequestId()).isNotNull();
         assertThat(emailRequest.getTemplateCode()).isEqualTo(testEmailEventHandler.getTemplateCode(testEmailEvent));
+        assertThat(emailRequest.getUser()).isEqualTo(testEmailEventHandler.getUser(testEmailEvent));
     }
 }

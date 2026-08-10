@@ -22,4 +22,9 @@ public class TestEmailEventHandler extends AbstractEmailEventHandler<TestEmailEv
     public String getTemplateCode(TestEmailEvent emailEvent) {
         return "test_template_code";
     }
+
+    @Override
+    public String getUser(TestEmailEvent emailEvent) {
+        return "user";
+    }
 }

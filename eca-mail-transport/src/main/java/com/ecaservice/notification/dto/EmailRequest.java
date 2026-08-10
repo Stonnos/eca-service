@@ -83,4 +83,11 @@ public class EmailRequest {
     @Max(HIGHEST)
     @Schema(description = "Delivery priority", example = "0")
     private Integer priority;
+
+    /**
+     * User login
+     */
+    @Size(max = MAX_LENGTH_255)
+    @Schema(description = "User login", example = "admin")
+    private String user;
 }

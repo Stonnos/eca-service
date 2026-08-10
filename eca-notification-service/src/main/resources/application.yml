@@ -54,6 +54,26 @@ app:
   encrypt:
     password: pa66word!
     salt: s@lt#
+  emailCodesMapping:
+    - messageCode: NEW_EXPERIMENT
+      eventType: EXPERIMENT_STATUS_CHANGE
+    - messageCode: IN_PROGRESS_EXPERIMENT
+      eventType: EXPERIMENT_STATUS_CHANGE
+    - messageCode: FINISHED_EXPERIMENT
+      eventType: EXPERIMENT_STATUS_CHANGE
+    - messageCode: ERROR_EXPERIMENT
+      eventType: EXPERIMENT_STATUS_CHANGE
+    - messageCode: TIMEOUT_EXPERIMENT
+      eventType: EXPERIMENT_STATUS_CHANGE
+    - messageCode: CANCEL_EXPERIMENT
+      eventType: EXPERIMENT_STATUS_CHANGE
+  webPushCodesMapping:
+    - messageCode: EXPERIMENT_STATUS
+      eventType: EXPERIMENT_STATUS_CHANGE
+    - messageCode: EVALUATION_STATUS
+      eventType: CLASSIFIER_STATUS_CHANGE
+    - messageCode: CLASSIFIER_CONFIGURATION_CHANGE
+      eventType: CLASSIFIER_CONFIGURATION_CHANGE
 
 auth-server:
   baseUrl: http://localhost:8085/eca-oauth

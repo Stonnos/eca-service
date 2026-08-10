@@ -38,7 +38,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @Import(TemplateMapperImpl.class)
 class TemplateControllerTest extends AbstractControllerTest {
 
-    private static final String BASE_URL = "/templates";
+    private static final String BASE_URL = "/email/templates";
     private static final String LIST_URL = BASE_URL + "/list";
 
     private static final int PAGE = 0;

@@ -28,6 +28,8 @@
 2) app — основные настройки модуля:
    * app.encrypt.password - пароль для алгоритма генерации ключа PBKDF2WithHmacSHA1
    * app.encrypt.salt - соль для алгоритма генерации ключа PBKDF2WithHmacSHA1
+   * app.emailCodesMapping - маппинг кодов шаблонов email сообщений в тип события
+   * app.webPushCodesMapping - маппинг кодов уведомлений приложения в тип события
 3) queues - настройки ws очередей для веб - сокетов
     * pushQueue - название ws очереди для отправки пушей
 4) open-api - настройки Swagger
