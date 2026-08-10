@@ -5,7 +5,7 @@ import com.ecaservice.web.dto.model.UserNotificationDto;
 import com.ecaservice.web.dto.model.push.PushRequestDto;
 import com.ecaservice.web.push.dto.SystemPushRequest;
 import com.ecaservice.web.push.dto.UserPushNotificationRequest;
-import com.ecaservice.web.push.entity.NotificationEntity;
+import com.ecaservice.web.push.entity.UserNotificationEntity;
 import com.ecaservice.web.push.entity.NotificationParameter;
 import org.mapstruct.AfterMapping;
 import org.mapstruct.Mapper;
@@ -30,16 +30,16 @@ public interface NotificationMapper {
      * @param userPushNotificationRequest - user push notification request
      * @return notification entity
      */
-    NotificationEntity map(UserPushNotificationRequest userPushNotificationRequest);
+    UserNotificationEntity map(UserPushNotificationRequest userPushNotificationRequest);
 
     /**
      * Maps user notification entity to dto model.
      *
-     * @param notificationEntity - notification entity
+     * @param userNotificationEntity - notification entity
      * @return user notification dto
      */
     @Mapping(target = "messageStatus", ignore = true)
-    UserNotificationDto map(NotificationEntity notificationEntity);
+    UserNotificationDto map(UserNotificationEntity userNotificationEntity);
 
     /**
      * Maps user notifications entities to dto list.
@@ -47,7 +47,7 @@ public interface NotificationMapper {
      * @param notifications - user notifications entities
      * @return user notifications dto list
      */
-    List<UserNotificationDto> map(List<NotificationEntity> notifications);
+    List<UserNotificationDto> map(List<UserNotificationEntity> notifications);
 
     /**
      * Maps system push request to push request dto,
@@ -71,11 +71,11 @@ public interface NotificationMapper {
      * Maps notification parameters
      *
      * @param userPushNotificationRequest - user push notification request
-     * @param notificationEntity          - notification entity
+     * @param userNotificationEntity          - notification entity
      */
     @AfterMapping
     default void mapParameters(UserPushNotificationRequest userPushNotificationRequest,
-                               @MappingTarget NotificationEntity notificationEntity) {
+                               @MappingTarget UserNotificationEntity userNotificationEntity) {
         if (!CollectionUtils.isEmpty(userPushNotificationRequest.getAdditionalProperties())) {
             var parameters = userPushNotificationRequest.getAdditionalProperties().entrySet()
                     .stream()
@@ -86,21 +86,21 @@ public interface NotificationMapper {
                         return notificationParameter;
                     })
                     .collect(Collectors.toList());
-            notificationEntity.setParameters(parameters);
+            userNotificationEntity.setParameters(parameters);
         }
     }
 
     /**
      * Maps message status.
      *
-     * @param notificationEntity  - notification entity
+     * @param userNotificationEntity  - notification entity
      * @param userNotificationDto - user notification dto
      */
     @AfterMapping
-    default void mapMessageStatus(NotificationEntity notificationEntity,
+    default void mapMessageStatus(UserNotificationEntity userNotificationEntity,
                                   @MappingTarget UserNotificationDto userNotificationDto) {
-        var messageStatusDto = new EnumDto(notificationEntity.getMessageStatus().name(),
-                notificationEntity.getMessageStatus().getDescription());
+        var messageStatusDto = new EnumDto(userNotificationEntity.getMessageStatus().name(),
+                userNotificationEntity.getMessageStatus().getDescription());
         userNotificationDto.setMessageStatus(messageStatusDto);
     }
 }

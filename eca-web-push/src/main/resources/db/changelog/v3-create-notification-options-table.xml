@@ -62,4 +62,14 @@
                              columnNames="notification_options_id, event_type"
                              constraintName="notification_options_id_event_type_unique_idx"/>
     </changeSet>
+
+    <changeSet id="rename_notification_table" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="notification"/>
+            <not>
+                <tableExists tableName="user_notification"/>
+            </not>
+        </preConditions>
+        <renameTable oldTableName="notification" newTableName="user_notification"/>
+    </changeSet>
 </databaseChangeLog>

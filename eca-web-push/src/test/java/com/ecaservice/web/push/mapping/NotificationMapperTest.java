@@ -2,7 +2,7 @@ package com.ecaservice.web.push.mapping;
 
 import com.ecaservice.web.dto.model.push.PushType;
 import com.ecaservice.web.push.dto.UserPushNotificationRequest;
-import com.ecaservice.web.push.entity.NotificationEntity;
+import com.ecaservice.web.push.entity.UserNotificationEntity;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -85,8 +85,8 @@ class NotificationMapperTest {
                 systemPushRequest.getAdditionalProperties());
     }
 
-    private void verifyParameters(UserPushNotificationRequest request, NotificationEntity notificationEntity) {
-        notificationEntity.getParameters().forEach(notificationParameter -> {
+    private void verifyParameters(UserPushNotificationRequest request, UserNotificationEntity userNotificationEntity) {
+        userNotificationEntity.getParameters().forEach(notificationParameter -> {
             String value = request.getAdditionalProperties().get(notificationParameter.getName());
             assertThat(value).isNotNull();
             assertThat(notificationParameter.getValue()).isEqualTo(value);

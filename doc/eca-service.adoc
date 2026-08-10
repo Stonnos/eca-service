@@ -846,7 +846,7 @@ image::./images/eca-web-push-db-schema.png[alt=Схема базы данных 
 |expire_at               |timestamp         |-|+|-                               |Дата истечения срока действия токена
 |===
 
-==== Таблица 3.{counter:db-table-id} - 'notification' - содержит данные об уведомлениях пользователей
+==== Таблица 3.{counter:db-table-id} - 'user_notification' - содержит данные об уведомлениях пользователей
 [cols="^20%,^14%,^8%,^8%,^8%,^30%",options="header"]
 |===
 |Название колонки|Тип|Unique|Not NULL|Индекс|Описание

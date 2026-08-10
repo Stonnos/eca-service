@@ -1,7 +1,7 @@
 package com.ecaservice.web.push;
 
-import com.ecaservice.web.push.entity.NotificationEntity;
-import com.ecaservice.web.push.repository.NotificationRepository;
+import com.ecaservice.web.push.entity.UserNotificationEntity;
+import com.ecaservice.web.push.repository.UserNotificationRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -19,8 +19,8 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
  */
 @ExtendWith(SpringExtension.class)
 @AutoConfigureDataJpa
-@EnableJpaRepositories(basePackageClasses = NotificationRepository.class)
-@EntityScan(basePackageClasses = NotificationEntity.class)
+@EnableJpaRepositories(basePackageClasses = UserNotificationRepository.class)
+@EntityScan(basePackageClasses = UserNotificationEntity.class)
 @EnableConfigurationProperties
 @TestPropertySource("classpath:application.properties")
 public abstract class AbstractJpaTest {

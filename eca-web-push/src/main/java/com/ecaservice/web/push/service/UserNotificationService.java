@@ -8,10 +8,10 @@ import com.ecaservice.web.dto.model.UserNotificationStatisticsDto;
 import com.ecaservice.web.push.config.AppProperties;
 import com.ecaservice.web.push.dto.UserPushNotificationRequest;
 import com.ecaservice.web.push.entity.MessageStatus;
-import com.ecaservice.web.push.entity.NotificationEntity;
+import com.ecaservice.web.push.entity.UserNotificationEntity;
 import com.ecaservice.web.push.exception.InvalidNotificationsIdsException;
 import com.ecaservice.web.push.mapping.NotificationMapper;
-import com.ecaservice.web.push.repository.NotificationRepository;
+import com.ecaservice.web.push.repository.UserNotificationRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
@@ -36,7 +36,7 @@ public class UserNotificationService {
     private final AppProperties appProperties;
     private final UserService userService;
     private final NotificationMapper notificationMapper;
-    private final NotificationRepository notificationRepository;
+    private final UserNotificationRepository userNotificationRepository;
 
     /**
      * Saves user push notification request.
@@ -48,7 +48,7 @@ public class UserNotificationService {
                 userPushNotificationRequest.getRequestId(), userPushNotificationRequest.getMessageType(),
                 userPushNotificationRequest.getInitiator(), userPushNotificationRequest.getReceivers());
         var notifications = createNotifications(userPushNotificationRequest);
-        notificationRepository.saveAll(notifications);
+        userNotificationRepository.saveAll(notifications);
         log.info("[{}] notifications has been saved for push notification request [{}]", notifications.size(),
                 userPushNotificationRequest.getRequestId());
     }
@@ -65,7 +65,7 @@ public class UserNotificationService {
         LocalDateTime date = LocalDateTime.now().minusDays(appProperties.getNotificationLifeTimeDays());
         var pageRequest = PageRequest.of(pageRequestDto.getPage(), pageRequestDto.getSize());
         var notificationsPage =
-                notificationRepository.findByReceiverAndCreatedIsAfterOrderByCreatedDesc(currentUser, date,
+                userNotificationRepository.findByReceiverAndCreatedIsAfterOrderByCreatedDesc(currentUser, date,
                         pageRequest);
         log.info("User [{}] notifications page [{} of {}] with size [{}] has been fetched for page request [{}]",
                 currentUser, notificationsPage.getNumber(), notificationsPage.getTotalPages(),
@@ -83,7 +83,7 @@ public class UserNotificationService {
         String currentUser = userService.getCurrentUser();
         log.info("Gets not read notification count for user [{}]", currentUser);
         LocalDateTime date = LocalDateTime.now().minusDays(appProperties.getNotificationLifeTimeDays());
-        long notReadCount = notificationRepository.getNotReadNotificationsCount(currentUser, date);
+        long notReadCount = userNotificationRepository.getNotReadNotificationsCount(currentUser, date);
         log.info("[{}] not read notification count has been calculated for user [{}]", notReadCount, currentUser);
         return UserNotificationStatisticsDto.builder()
                 .notReadCount(notReadCount)
@@ -101,24 +101,24 @@ public class UserNotificationService {
         var ids = readNotificationsDto.getIds();
         log.info("Starting to read user [{}] notifications size [{}], ids {}", currentUser, ids.size(), ids);
         if (!CollectionUtils.isEmpty(ids)) {
-            var fetchedIds = notificationRepository.getNotifications(ids, currentUser);
+            var fetchedIds = userNotificationRepository.getNotifications(ids, currentUser);
             var invalidIds = ids.stream()
                     .filter(id -> !fetchedIds.contains(id))
                     .collect(Collectors.toList());
             if (!CollectionUtils.isEmpty(invalidIds)) {
                 throw new InvalidNotificationsIdsException(invalidIds);
             }
-            long readCount = notificationRepository.readNotifications(currentUser, ids);
+            long readCount = userNotificationRepository.readNotifications(currentUser, ids);
             log.info("[{}] notifications has been read for user [{}]", readCount, currentUser);
         } else {
             log.info("Starting to read all not read notifications for user [{}]", currentUser);
             LocalDateTime date = LocalDateTime.now().minusDays(appProperties.getNotificationLifeTimeDays());
-            long readCount = notificationRepository.readAllNotifications(currentUser, date);
+            long readCount = userNotificationRepository.readAllNotifications(currentUser, date);
             log.info("[{}] notifications has been read for user [{}]", readCount, currentUser);
         }
     }
 
-    private List<NotificationEntity> createNotifications(UserPushNotificationRequest userPushNotificationRequest) {
+    private List<UserNotificationEntity> createNotifications(UserPushNotificationRequest userPushNotificationRequest) {
         return userPushNotificationRequest.getReceivers()
                 .stream()
                 .map(receiver -> {

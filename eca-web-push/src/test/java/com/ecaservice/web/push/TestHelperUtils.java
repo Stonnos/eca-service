@@ -7,7 +7,7 @@ import com.ecaservice.web.push.dto.UpdateUserNotificationEventOptionsDto;
 import com.ecaservice.web.push.dto.UpdateUserNotificationOptionsDto;
 import com.ecaservice.web.push.dto.UserPushNotificationRequest;
 import com.ecaservice.web.push.entity.MessageStatus;
-import com.ecaservice.web.push.entity.NotificationEntity;
+import com.ecaservice.web.push.entity.UserNotificationEntity;
 import com.ecaservice.web.push.entity.NotificationEventOptionsEntity;
 import com.ecaservice.web.push.entity.NotificationEventType;
 import com.ecaservice.web.push.entity.NotificationOptionsEntity;
@@ -78,18 +78,18 @@ public class TestHelperUtils {
      * @param created       - created date
      * @return notification entity
      */
-    public static NotificationEntity createNotificationEntity(String receiver,
-                                                              MessageStatus messageStatus,
-                                                              LocalDateTime created) {
-        NotificationEntity notificationEntity = new NotificationEntity();
-        notificationEntity.setCreated(created);
-        notificationEntity.setMessageStatus(messageStatus);
-        notificationEntity.setReceiver(receiver);
-        notificationEntity.setInitiator(INITIATOR);
-        notificationEntity.setMessageType(EXPERIMENT_STATUS);
-        notificationEntity.setMessageText(MESSAGE_TEXT);
-        notificationEntity.setParameters(Collections.singletonList(createNotificationParameter(PARAM, VALUE)));
-        return notificationEntity;
+    public static UserNotificationEntity createNotificationEntity(String receiver,
+                                                                  MessageStatus messageStatus,
+                                                                  LocalDateTime created) {
+        UserNotificationEntity userNotificationEntity = new UserNotificationEntity();
+        userNotificationEntity.setCreated(created);
+        userNotificationEntity.setMessageStatus(messageStatus);
+        userNotificationEntity.setReceiver(receiver);
+        userNotificationEntity.setInitiator(INITIATOR);
+        userNotificationEntity.setMessageType(EXPERIMENT_STATUS);
+        userNotificationEntity.setMessageText(MESSAGE_TEXT);
+        userNotificationEntity.setParameters(Collections.singletonList(createNotificationParameter(PARAM, VALUE)));
+        return userNotificationEntity;
     }
 
     /**
@@ -111,7 +111,7 @@ public class TestHelperUtils {
      *
      * @return notification entity
      */
-    public static NotificationEntity createNotificationEntity() {
+    public static UserNotificationEntity createNotificationEntity() {
         return createNotificationEntity(RECEIVER, MessageStatus.NOT_READ, LocalDateTime.now());
     }
 

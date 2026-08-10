@@ -1,6 +1,6 @@
 package com.ecaservice.web.push.repository;
 
-import com.ecaservice.web.push.entity.NotificationEntity;
+import com.ecaservice.web.push.entity.UserNotificationEntity;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -13,11 +13,11 @@ import java.util.Collection;
 import java.util.List;
 
 /**
- * Repository to manage with {@link NotificationEntity} persistence entity.
+ * Repository to manage with {@link UserNotificationEntity} persistence entity.
  *
  * @author Roman Batygin
  */
-public interface NotificationRepository extends JpaRepository<NotificationEntity, Long> {
+public interface UserNotificationRepository extends JpaRepository<UserNotificationEntity, Long> {
 
     /**
      * Finds user notifications page.
@@ -27,8 +27,9 @@ public interface NotificationRepository extends JpaRepository<NotificationEntity
      * @param pageable - pageable
      * @return user notifications page
      */
-    Page<NotificationEntity> findByReceiverAndCreatedIsAfterOrderByCreatedDesc(String receiver, LocalDateTime dateTime,
-                                                                               Pageable pageable);
+    Page<UserNotificationEntity> findByReceiverAndCreatedIsAfterOrderByCreatedDesc(String receiver,
+                                                                                   LocalDateTime dateTime,
+                                                                                   Pageable pageable);
 
     /**
      * Gets not read notifications count.
@@ -37,7 +38,7 @@ public interface NotificationRepository extends JpaRepository<NotificationEntity
      * @param dateTime - date time bound for search
      * @return not read notifications count
      */
-    @Query("select count(n) from NotificationEntity n where n.receiver = :receiver " +
+    @Query("select count(n) from UserNotificationEntity n where n.receiver = :receiver " +
             "and n.created > :dateTime " +
             "and n.messageStatus = 'NOT_READ'"
     )
@@ -52,7 +53,7 @@ public interface NotificationRepository extends JpaRepository<NotificationEntity
      * @return read notifications count
      */
     @Modifying
-    @Query("update NotificationEntity n set n.messageStatus = 'READ' " +
+    @Query("update UserNotificationEntity n set n.messageStatus = 'READ' " +
             "where n.receiver = :receiver and n.created > :dateTime and n.messageStatus = 'NOT_READ'")
     int readAllNotifications(@Param("receiver") String receiver,
                               @Param("dateTime") LocalDateTime dateTime);
@@ -65,7 +66,7 @@ public interface NotificationRepository extends JpaRepository<NotificationEntity
      * @return read notifications count
      */
     @Modifying
-    @Query("update NotificationEntity n set n.messageStatus = 'READ' " +
+    @Query("update UserNotificationEntity n set n.messageStatus = 'READ' " +
             "where n.receiver = :receiver and n.id in (:ids)")
     int readNotifications(@Param("receiver") String receiver,
                            @Param("ids") Collection<Long> ids);
@@ -77,6 +78,6 @@ public interface NotificationRepository extends JpaRepository<NotificationEntity
      * @param receiver - receiver user
      * @return notification ids contains in db
      */
-    @Query("select n.id from NotificationEntity n where n.id in (:ids) and n.receiver = :receiver")
+    @Query("select n.id from UserNotificationEntity n where n.id in (:ids) and n.receiver = :receiver")
     List<Long> getNotifications(@Param("ids") Collection<Long> ids, @Param("receiver") String receiver);
 }
