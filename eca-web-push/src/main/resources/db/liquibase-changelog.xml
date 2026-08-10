@@ -9,4 +9,8 @@
     <include file="db/changelog/v2-drop-notification-initiator-not-null-constraint.xml"/>
     <include file="db/changelog/v3-create-notification-options-table.xml"/>
     <include file="db/changelog/v4-insert-audit-codes-and-events.xml"/>
+    <include file="db/changelog/v5-create-template-tables.xml"/>
+    <include file="db/changelog/v6-insert-email-templates.xml"/>
+    <include file="../filter-template-changelog.xml" relativeToChangelogFile="true"/>
+    <include file="db/changelog/v7-update-filter-templates.xml"/>
 </databaseChangeLog>

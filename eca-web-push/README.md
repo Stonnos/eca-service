@@ -24,12 +24,8 @@
 Настройки для проекта находятся в файле application.yml. Ниже приведены основные параметры:
 1) spring.datasource - настройки БД для хранения информации
 2) app — основные настройки модуля:
-   * app.notificationLifeTimeDays - время жизни уведомления для пользователя (в днях)
-   * app.pushTokenValidityMinutes - время жизни токена для пуш уведомлений
    * app.encrypt.password - пароль для алгоритма генерации ключа PBKDF2WithHmacSHA1
    * app.encrypt.salt - соль для алгоритма генерации ключа PBKDF2WithHmacSHA1
-   * app.rabbit.enabled - вкл./выкл. обработки пушей из rabbit mq
-   * app.rabbit.queueName - очередь для получения и сохранения пушей
 3) queues - настройки ws очередей для веб - сокетов
     * pushQueue - название ws очереди для отправки пушей
 4) open-api - настройки Swagger
@@ -55,6 +51,16 @@
    * user-notification.notificationEventOptions - настройки событий уведомлений
    * user-notification.dataEventRetryIntervalSeconds - интервал в сек. между запуском scheduler для повторной отправки событий изменений настроек профиля пользователя
    * user-notification.rabbit.exchangeName - название exchange для отправки событий изменений настроек профиля пользователя
+10) mail - настройки для отправки email
+   * maxFailedAttemptsToSent - максимальное число попыток для отправки email
+   * pageSize - число писем для отправки за один раз
+   * delaySeconds - интервал в сек. между отправками писем
+   * sender - Email отправителя
+11) web-push — настройки для уведомлений приложения:
+   * notificationLifeTimeDays - время жизни уведомления для пользователя (в днях)
+   * pushTokenValidityMinutes - время жизни токена для пуш уведомлений
+   * rabbit.enabled - вкл./выкл. обработки пушей из rabbit mq
+   * rabbit.queueName - очередь для получения и сохранения пушей
     
 Инструкция по развертыванию
 ----------------------------------------

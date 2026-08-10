@@ -1,6 +1,17 @@
 spring:
   application:
     name: eca-web-push
+  ## Email properties
+  mail:
+    host: smtp.gmail.com
+    port: 25
+    username: rbatsw@gmail.com
+    password: changeit
+    properties:
+      mail.transport.protocol: smtp
+      mail.smtp.auth: true
+      mail.smtp.starttls.enable: true
+      mail.debug: false
   ## Datasource properties
   datasource:
     driver-class-name: org.postgresql.Driver
@@ -23,6 +34,10 @@ spring:
   liquibase:
     contexts: schema,data
     change-log: classpath:db/liquibase-changelog.xml
+  cache:
+    cache-names: global-filters, filter-templates, filter-dictionaries, sort-fields
+    caffeine:
+      spec: maximumSize=100, expireAfterWrite=18000s
 
 eureka:
   instance:
@@ -36,14 +51,9 @@ eureka:
 
 ## Application properties
 app:
-  notificationLifeTimeDays: 7
-  pushTokenValidityMinutes: 240
   encrypt:
     password: pa66word!
     salt: s@lt#
-  rabbit:
-    enabled: true
-    queueName: queue-push-events
 
 auth-server:
   baseUrl: http://localhost:8085/eca-oauth
@@ -95,6 +105,31 @@ user-notification:
 
 lock:
   enabled: true
+
+web-push:
+  notificationLifeTimeDays: 7
+  pushTokenValidityMinutes: 240
+  rabbit:
+    enabled: true
+    queueName: queue-push-events
+
+mail:
+  maxFailedAttemptsToSent: 25
+  pageSize: 10
+  delaySeconds: 3
+  sender: rbatsw@gmail.com
+  rabbit:
+    enabled: true
+    queueName: queue-email-events
+
+table:
+  data:
+    clean:
+      enabled: true
+      tables:
+        - tableName: email
+          creationTimestampColumnName: save_date
+          storagePeriodInDays: 30
 
 management:
   observations:

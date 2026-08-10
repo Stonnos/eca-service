@@ -1,0 +1,2 @@
+id;created;regex_code;regex;description
+1;2026-05-28 16:51:18.741;INTEGER;[0-9]+;Регулярное выражение для целого числа

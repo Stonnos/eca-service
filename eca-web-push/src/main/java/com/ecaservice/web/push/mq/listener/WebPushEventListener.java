@@ -23,7 +23,7 @@ import static com.ecaservice.common.web.util.LogHelper.putMdc;
 @Slf4j
 @Validated
 @Component
-@ConditionalOnProperty(value = "app.rabbit.enabled", havingValue = "true")
+@ConditionalOnProperty(value = "web-push.rabbit.enabled", havingValue = "true")
 @RequiredArgsConstructor
 public class WebPushEventListener {
 
@@ -34,7 +34,7 @@ public class WebPushEventListener {
      *
      * @param pushRequest - push request
      */
-    @RabbitListener(queues = "${app.rabbit.queueName}")
+    @RabbitListener(queues = "${web-push.rabbit.queueName}")
     @SuppressWarnings("unchecked")
     public void handlePushEvent(@Valid AbstractPushRequest pushRequest) {
         putMdc(TX_ID, pushRequest.getCorrelationId());

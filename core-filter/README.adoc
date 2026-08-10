@@ -46,8 +46,6 @@ public class AppConfiguration {
     <!-- your change sets -->
     <include file="../filter-template-changelog.xml" relativeToChangelogFile="true"/>
     <!-- your change sets -->
-    <!-- rename filter dictionary columns migration changeset -->
-    <include file="../rename-filter-dictionary-columns-changelog.xml" relativeToChangelogFile="true"/>
 </databaseChangeLog>
 ----
 

@@ -26,7 +26,12 @@ public enum WebPushErrorCode implements ErrorDetails {
     /**
      * Notification event not found
      */
-    NOTIFICATION_EVENT_NOT_FOUND("NotificationEventNotFound");
+    NOTIFICATION_EVENT_NOT_FOUND("NotificationEventNotFound"),
+
+    /**
+     * Duplicate request id
+     */
+    DUPLICATE_REQUEST_ID("DuplicateRequestId");
 
     /**
      * Error code

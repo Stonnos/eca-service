@@ -1,0 +1,20 @@
+id;created;template_code;description;template_subject;template_body
+14;2026-05-28 16:51:19.075;TIMEOUT_EXPERIMENT;Сообщение о таймауте эксперимента;Таймаут при построении эксперимента;/templates/timeout-experiment-template.html
+15;2026-05-28 16:51:19.140;FINISHED_EXPERIMENT;Сообщение о завершенном эксперименте;Эксперимент завершен;/templates/finished-experiment-template.html
+19;2026-05-28 16:51:19.279;IN_PROGRESS_EXPERIMENT;Сообщение о поступлении эксперимента в работу;Заявка поступила в работу;/templates/in-progress-experiment-template.html
+17;2026-05-28 16:51:19.222;TFA_CODE;Сообщение с кодом подтверждения для 2FA;Код подтверждения для входа в Eca - service;/templates/tfa-code-template.html
+12;2026-05-28 16:51:18.925;NEW_EXPERIMENT;Сообщение о новом эксперименте;Создан новый эксперимент;/templates/new-experiment-template.html
+18;2026-05-28 16:51:19.245;NEW_USER;Сообщение с учетными данными нового пользователя;Доступ к Eca - service;/templates/new-user-template.html
+25;2026-05-28 16:51:19.607;EMAIL_CHANGED;Уведомление на старую почту об успешном изменении Email в личном кабинете Eca - service;Уведомление об успешном изменении Email в личном кабинете Eca - service;/templates/email-changed-template.html
+20;2026-05-28 16:51:19.314;CHANGE_PASSWORD;Сообщение с подтверждением изменения пароля в личном кабинете Eca - service;Подтверждение изменения пароля в личном кабинете Eca - service;/templates/change-password-template.html
+13;2026-05-28 16:51:19.008;ERROR_EXPERIMENT;Сообщение о завершении эксперимента с ошибкой;Ошибка при построении эксперимента;/templates/error-experiment-template.html
+26;2026-05-28 16:51:19.621;PASSWORD_CHANGED;Сообщение с успешным изменением пароля в личном кабинете Eca - service;Изменен пароль от вашего аккаунта;/templates/password-changed-template.html
+27;2026-05-28 16:51:19.639;PASSWORD_RESET;Сообщение с успешным сбросом пароля в личном кабинете Eca - service;Сброшен пароль от вашего аккаунта;/templates/password-reset-template.html
+28;2026-05-28 16:51:19.806;USER_LOCKED;Сообщение о блокировке учетной записи;Блокировка учетной записи;/templates/user-locked-template.html
+29;2026-05-28 16:51:19.813;USER_UNLOCKED;Сообщение о снятии блокировки учетной записи;Блокировка учетной записи снята;/templates/user-unlocked-template.html
+32;2026-05-28 16:51:20.438;CANCEL_EXPERIMENT;Сообщение о прерывании построения эксперимента;Прервано построение эксперимента;/templates/cancel-experiment-template.html
+22;2026-05-28 16:51:19.511;CHANGE_EMAIL;Уведомление на старую почту о запросе изменения Email в личном кабинете Eca - service;Уведомление о запросе изменения Email в личном кабинете Eca - service;/templates/change-email-template.html
+16;2026-05-28 16:51:19.185;RESET_PASSWORD;Сообщение со ссылкой для сброса пароля;Сброс пароля;/templates/reset-password-template.html
+40;2026-07-27 21:53:54.259;CHANGE_EMAIL_CONFIRM_NEW_EMAIL;Сообщение с подтверждением изменения Email в личном кабинете Eca - service;Подтверждение изменения Email в личном кабинете Eca - service;/templates/change-email-confirm-new-email-template.html
+41;2026-07-28 16:07:57.480;EMAIL_CHANGED_NEW_EMAIL_CONFIRMED;Сообщение с успешным подтверждением изменения Email в личном кабинете Eca - service;Подтверждено изменение Email в личном кабинете Eca - service;/templates/change-email-new-email-confirmed-template.html
+52;2026-07-28 22:44:32.966;SET_PASSWORD_CONFIRMATION_CODE;Сообщение с кодом подтверждения для установки постоянного пароля;Код подтверждения для установки постоянного пароля;/templates/set-password-confirmation-code-template.html

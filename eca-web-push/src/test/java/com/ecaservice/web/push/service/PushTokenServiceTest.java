@@ -5,6 +5,7 @@ import com.ecaservice.web.dto.model.PushTokenDto;
 import com.ecaservice.web.push.AbstractJpaTest;
 import com.ecaservice.web.push.config.AppProperties;
 import com.ecaservice.web.push.config.EncryptConfiguration;
+import com.ecaservice.web.push.config.WebPushProperties;
 import com.ecaservice.web.push.repository.PushTokenRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -24,7 +25,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  * @author Roman Batygin
  */
 @ExtendWith(SpringExtension.class)
-@Import({EncryptConfiguration.class, AppProperties.class, PushTokenService.class})
+@Import({EncryptConfiguration.class, AppProperties.class, WebPushProperties.class, PushTokenService.class})
 class PushTokenServiceTest extends AbstractJpaTest {
 
     private static final String USER = "user";
@@ -34,7 +35,7 @@ class PushTokenServiceTest extends AbstractJpaTest {
     @Autowired
     private EncryptorBase64AdapterService encryptorBase64AdapterService;
     @Autowired
-    private AppProperties appProperties;
+    private WebPushProperties webPushProperties;
 
     @Autowired
     private PushTokenService pushTokenService;
@@ -78,7 +79,7 @@ class PushTokenServiceTest extends AbstractJpaTest {
 
     private void createAndSaveExpiredToken() {
         var pushTokenEntity = createPushTokenEntity(USER, UUID.randomUUID().toString(),
-                LocalDateTime.now().minusMinutes(appProperties.getPushTokenValidityMinutes() + 1));
+                LocalDateTime.now().minusMinutes(webPushProperties.getPushTokenValidityMinutes() + 1));
         pushTokenRepository.save(pushTokenEntity);
     }
 }

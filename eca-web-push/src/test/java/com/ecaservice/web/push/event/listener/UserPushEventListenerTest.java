@@ -5,6 +5,7 @@ import com.ecaservice.web.dto.model.push.PushRequestDto;
 import com.ecaservice.web.push.AbstractJpaTest;
 import com.ecaservice.web.push.config.AppProperties;
 import com.ecaservice.web.push.config.EncryptConfiguration;
+import com.ecaservice.web.push.config.WebPushProperties;
 import com.ecaservice.web.push.config.ws.QueueConfig;
 import com.ecaservice.web.push.event.model.UserPushEvent;
 import com.ecaservice.web.push.mapping.NotificationMapperImpl;
@@ -36,7 +37,7 @@ import static org.mockito.Mockito.verify;
  */
 @ExtendWith(SpringExtension.class)
 @Import({EncryptConfiguration.class, AppProperties.class, UserPushEventListener.class, NotificationMapperImpl.class,
-        QueueConfig.class})
+        QueueConfig.class, WebPushProperties.class})
 class UserPushEventListenerTest extends AbstractJpaTest {
 
     private static final String USER = "user";
@@ -52,7 +53,7 @@ class UserPushEventListenerTest extends AbstractJpaTest {
     @Autowired
     private EncryptorBase64AdapterService encryptorBase64AdapterService;
     @Autowired
-    private AppProperties appProperties;
+    private WebPushProperties webPushProperties;
 
     @Autowired
     private UserPushEventListener userPushEventListener;
@@ -64,8 +65,9 @@ class UserPushEventListenerTest extends AbstractJpaTest {
 
     @Override
     public void init() {
-        createAndSavePushToken(USER, LocalDateTime.now().plusMinutes(appProperties.getPushTokenValidityMinutes()));
-        createAndSavePushToken(USER_2, LocalDateTime.now().plusMinutes(appProperties.getPushTokenValidityMinutes()));
+        createAndSavePushToken(USER, LocalDateTime.now().plusMinutes(webPushProperties.getPushTokenValidityMinutes()));
+        createAndSavePushToken(USER_2,
+                LocalDateTime.now().plusMinutes(webPushProperties.getPushTokenValidityMinutes()));
         createAndSavePushToken(USER_3, LocalDateTime.now().minusMinutes(1L));
     }
 

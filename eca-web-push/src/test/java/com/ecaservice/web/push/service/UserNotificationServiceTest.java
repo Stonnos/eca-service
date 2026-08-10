@@ -4,6 +4,7 @@ import com.ecaservice.web.dto.model.ReadNotificationsDto;
 import com.ecaservice.web.dto.model.SimplePageRequestDto;
 import com.ecaservice.web.push.AbstractJpaTest;
 import com.ecaservice.web.push.config.AppProperties;
+import com.ecaservice.web.push.config.WebPushProperties;
 import com.ecaservice.web.push.entity.MessageStatus;
 import com.ecaservice.web.push.entity.UserNotificationEntity;
 import com.ecaservice.web.push.exception.InvalidNotificationsIdsException;
@@ -34,7 +35,7 @@ import static org.mockito.Mockito.when;
  * @author Roman Batygin
  */
 @ExtendWith(SpringExtension.class)
-@Import({UserNotificationService.class, AppProperties.class, NotificationMapperImpl.class})
+@Import({UserNotificationService.class, AppProperties.class, WebPushProperties.class, NotificationMapperImpl.class})
 class UserNotificationServiceTest extends AbstractJpaTest {
 
     private static final String CURRENT_USER = "currentUser";
@@ -42,7 +43,7 @@ class UserNotificationServiceTest extends AbstractJpaTest {
     private static final int PAGE_SIZE = 25;
 
     @Autowired
-    private AppProperties appProperties;
+    private WebPushProperties webPushProperties;
     @Autowired
     private UserNotificationRepository userNotificationRepository;
     @MockBean
@@ -160,7 +161,7 @@ class UserNotificationServiceTest extends AbstractJpaTest {
         var notifications = List.of(
                 createNotificationEntity(OTHER_USER, MessageStatus.NOT_READ, LocalDateTime.now()),
                 createNotificationEntity(CURRENT_USER, MessageStatus.NOT_READ,
-                        LocalDateTime.now().minusDays(appProperties.getNotificationLifeTimeDays() + 1))
+                        LocalDateTime.now().minusDays(webPushProperties.getNotificationLifeTimeDays() + 1))
         );
         userNotificationRepository.saveAll(notifications);
     }
@@ -170,7 +171,7 @@ class UserNotificationServiceTest extends AbstractJpaTest {
                 createNotificationEntity(OTHER_USER, MessageStatus.NOT_READ, LocalDateTime.now()),
                 createNotificationEntity(CURRENT_USER, MessageStatus.READ, LocalDateTime.now()),
                 createNotificationEntity(CURRENT_USER, MessageStatus.NOT_READ,
-                        LocalDateTime.now().minusDays(appProperties.getNotificationLifeTimeDays() + 1))
+                        LocalDateTime.now().minusDays(webPushProperties.getNotificationLifeTimeDays() + 1))
         );
         userNotificationRepository.saveAll(notifications);
     }

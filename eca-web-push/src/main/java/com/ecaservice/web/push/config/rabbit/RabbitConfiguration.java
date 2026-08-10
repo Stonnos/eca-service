@@ -1,7 +1,8 @@
 package com.ecaservice.web.push.config.rabbit;
 
 import com.ecaservice.rabbit.config.RabbitListenerConfiguration;
-import com.ecaservice.web.push.config.AppProperties;
+import com.ecaservice.web.push.config.MailProperties;
+import com.ecaservice.web.push.config.WebPushProperties;
 import lombok.RequiredArgsConstructor;
 import org.springframework.amqp.core.Binding;
 import org.springframework.amqp.core.BindingBuilder;
@@ -25,7 +26,28 @@ import org.springframework.context.annotation.Configuration;
 @RequiredArgsConstructor
 public class RabbitConfiguration extends RabbitListenerConfiguration {
 
-    public final AppProperties appProperties;
+    public final WebPushProperties webPushProperties;
+    public final MailProperties mailProperties;
+
+    /**
+     * Creates email event queue bean.
+     *
+     * @return email event queue bean
+     */
+    @Bean
+    public Queue emailEventQueue() {
+        return QueueBuilder.durable(mailProperties.getRabbit().getQueueName()).build();
+    }
+
+    /**
+     * Creates email event queue bindings bean.
+     *
+     * @return email event queue bindings bean
+     */
+    @Bean
+    public Binding bindingEmailEventQueue() {
+        return BindingBuilder.bind(emailEventQueue()).to(DirectExchange.DEFAULT).withQueueName();
+    }
 
     /**
      * Creates push event queue bean.
@@ -34,7 +56,7 @@ public class RabbitConfiguration extends RabbitListenerConfiguration {
      */
     @Bean
     public Queue pushEventQueue() {
-        return QueueBuilder.durable(appProperties.getRabbit().getQueueName()).build();
+        return QueueBuilder.durable(webPushProperties.getRabbit().getQueueName()).build();
     }
 
     /**

@@ -1,0 +1,55 @@
+package com.ecaservice.web.push.service;
+
+import com.ecaservice.core.filter.service.FilterTemplateService;
+import com.ecaservice.core.filter.validation.annotations.ValidPageRequest;
+import com.ecaservice.web.dto.model.PageRequestDto;
+import com.ecaservice.web.push.entity.TemplateEntity;
+import com.ecaservice.web.push.filter.TemplateFilter;
+import com.ecaservice.web.push.repository.TemplateRepository;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.stereotype.Service;
+import org.springframework.validation.annotation.Validated;
+
+import static com.ecaservice.core.filter.util.FilterUtils.buildSort;
+import static com.ecaservice.web.push.dictionary.FilterDictionaries.EMAIL_TEMPLATES;
+import static com.ecaservice.web.push.entity.BaseEntity_.CREATED;
+
+/**
+ * Email template service.
+ *
+ * @author Roman Batygin
+ */
+@Slf4j
+@Validated
+@Service
+@RequiredArgsConstructor
+public class TemplateService {
+
+    private final FilterTemplateService filterTemplateService;
+    private final TemplateRepository templateRepository;
+
+    /**
+     * Gets the next page for specified page request.
+     *
+     * @param pageRequestDto - page request
+     * @return entities page
+     */
+    public Page<TemplateEntity> getNextPage(
+            @ValidPageRequest(filterTemplateName = EMAIL_TEMPLATES) PageRequestDto pageRequestDto) {
+        log.info("Gets email templates next page: {}", pageRequestDto);
+        Sort sort = buildSort(pageRequestDto.getSortFields(), CREATED, true);
+        var globalFilterFields = filterTemplateService.getGlobalFilterFields(EMAIL_TEMPLATES);
+        TemplateFilter filter =
+                new TemplateFilter(pageRequestDto.getSearchQuery(), globalFilterFields, pageRequestDto.getFilters());
+        var pageRequest = PageRequest.of(pageRequestDto.getPage(), pageRequestDto.getSize(), sort);
+        var templatesPage = templateRepository.findAll(filter, pageRequest);
+        log.info("Email templates page [{} of {}] with size [{}] has been fetched for page request [{}]",
+                templatesPage.getNumber(), templatesPage.getTotalPages(), templatesPage.getNumberOfElements(),
+                pageRequestDto);
+        return templatesPage;
+    }
+}

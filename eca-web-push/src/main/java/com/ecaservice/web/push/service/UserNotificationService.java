@@ -6,6 +6,7 @@ import com.ecaservice.web.dto.model.SimplePageRequestDto;
 import com.ecaservice.web.dto.model.UserNotificationDto;
 import com.ecaservice.web.dto.model.UserNotificationStatisticsDto;
 import com.ecaservice.web.push.config.AppProperties;
+import com.ecaservice.web.push.config.WebPushProperties;
 import com.ecaservice.web.push.dto.UserPushNotificationRequest;
 import com.ecaservice.web.push.entity.MessageStatus;
 import com.ecaservice.web.push.entity.UserNotificationEntity;
@@ -33,7 +34,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class UserNotificationService {
 
-    private final AppProperties appProperties;
+    private final WebPushProperties webPushProperties;
     private final UserService userService;
     private final NotificationMapper notificationMapper;
     private final UserNotificationRepository userNotificationRepository;
@@ -62,7 +63,7 @@ public class UserNotificationService {
     public PageDto<UserNotificationDto> getNextPage(SimplePageRequestDto pageRequestDto) {
         String currentUser = userService.getCurrentUser();
         log.info("Gets user [{}] notifications next page: {}", currentUser, pageRequestDto);
-        LocalDateTime date = LocalDateTime.now().minusDays(appProperties.getNotificationLifeTimeDays());
+        LocalDateTime date = LocalDateTime.now().minusDays(webPushProperties.getNotificationLifeTimeDays());
         var pageRequest = PageRequest.of(pageRequestDto.getPage(), pageRequestDto.getSize());
         var notificationsPage =
                 userNotificationRepository.findByReceiverAndCreatedIsAfterOrderByCreatedDesc(currentUser, date,
@@ -82,7 +83,7 @@ public class UserNotificationService {
     public UserNotificationStatisticsDto getNotificationStatistics() {
         String currentUser = userService.getCurrentUser();
         log.info("Gets not read notification count for user [{}]", currentUser);
-        LocalDateTime date = LocalDateTime.now().minusDays(appProperties.getNotificationLifeTimeDays());
+        LocalDateTime date = LocalDateTime.now().minusDays(webPushProperties.getNotificationLifeTimeDays());
         long notReadCount = userNotificationRepository.getNotReadNotificationsCount(currentUser, date);
         log.info("[{}] not read notification count has been calculated for user [{}]", notReadCount, currentUser);
         return UserNotificationStatisticsDto.builder()
@@ -112,7 +113,7 @@ public class UserNotificationService {
             log.info("[{}] notifications has been read for user [{}]", readCount, currentUser);
         } else {
             log.info("Starting to read all not read notifications for user [{}]", currentUser);
-            LocalDateTime date = LocalDateTime.now().minusDays(appProperties.getNotificationLifeTimeDays());
+            LocalDateTime date = LocalDateTime.now().minusDays(webPushProperties.getNotificationLifeTimeDays());
             long readCount = userNotificationRepository.readAllNotifications(currentUser, date);
             log.info("[{}] notifications has been read for user [{}]", readCount, currentUser);
         }

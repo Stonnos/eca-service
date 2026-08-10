@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+        logicalFilePath="db/changelog/v6-insert-email-templates.xml"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet author="roman.batygin@mail.ru" id="insert_email_temaplates_1" context="data">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="regex"/>
+            <tableExists tableName="template"/>
+            <tableExists tableName="template_parameter"/>
+            <tableExists tableName="templates_parameters"/>
+        </preConditions>
+        <sql>
+            delete from templates_parameters;
+            delete from template;
+            delete from template_parameter;
+            delete from regex;
+        </sql>
+        <loadUpdateData
+                tableName="regex"
+                primaryKey="id"
+                separator=";"
+                file="email-templates/regex.csv">
+            <column name="template_body" type="clobFile"/>
+        </loadUpdateData>
+        <loadUpdateData
+                tableName="template"
+                primaryKey="id"
+                separator=";"
+                file="email-templates/templates.csv">
+            <column name="template_body" type="clobFile"/>
+        </loadUpdateData>
+        <loadUpdateData
+                tableName="template_parameter"
+                primaryKey="id"
+                separator=";"
+                file="email-templates/template_parameter.csv"/>
+        <loadUpdateData
+                tableName="templates_parameters"
+                primaryKey="template_id,param_id"
+                separator=";"
+                file="email-templates/templates_parameters.csv"/>
+    </changeSet>
+
+</databaseChangeLog>

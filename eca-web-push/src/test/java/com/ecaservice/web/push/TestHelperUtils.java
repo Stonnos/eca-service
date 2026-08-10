@@ -1,12 +1,20 @@
 package com.ecaservice.web.push;
 
+import com.ecaservice.notification.dto.EmailRequest;
 import com.ecaservice.web.dto.model.EnumDto;
+import com.ecaservice.web.dto.model.PageRequestDto;
 import com.ecaservice.web.dto.model.UserNotificationDto;
+import com.ecaservice.web.push.config.MailProperties;
 import com.ecaservice.web.push.dto.SystemPushRequest;
 import com.ecaservice.web.push.dto.UpdateUserNotificationEventOptionsDto;
 import com.ecaservice.web.push.dto.UpdateUserNotificationOptionsDto;
 import com.ecaservice.web.push.dto.UserPushNotificationRequest;
+import com.ecaservice.web.push.entity.Email;
+import com.ecaservice.web.push.entity.EmailStatus;
 import com.ecaservice.web.push.entity.MessageStatus;
+import com.ecaservice.web.push.entity.RegexEntity;
+import com.ecaservice.web.push.entity.TemplateEntity;
+import com.ecaservice.web.push.entity.TemplateParameterEntity;
 import com.ecaservice.web.push.entity.UserNotificationEntity;
 import com.ecaservice.web.push.entity.NotificationEventOptionsEntity;
 import com.ecaservice.web.push.entity.NotificationEventType;
@@ -23,7 +31,10 @@ import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.UUID;
 
+import static com.ecaservice.notification.util.Priority.LOW;
+import static com.ecaservice.notification.util.Priority.MEDIUM;
 import static com.google.common.collect.Lists.newArrayList;
+import static com.google.common.collect.Maps.newHashMap;
 
 /**
  * Test helper utility class.
@@ -43,6 +54,129 @@ public class TestHelperUtils {
     private static final String VALUE = "Value";
     private static final String PARAM = "Param";
     private static final long ID = 1L;
+    private static final String MESSAGE = "message";
+    private static final String SUBJECT = "subject";
+    private static final String SENDER_MAIL_RU = "sender@mail.ru";
+    private static final String RECEIVER_MAIL_RU = "receiver@mail.ru";
+    private static final String TEST_TEMPLATE_CODE = "testTemplate";
+    private static final String TEMPLATE_CODE = "testTemplate";
+    private static final String TEMPLATE_DESCRIPTION = "Test template";
+    private static final String TEST_REGEX = "testRegex";
+    private static final String REGEX_DESCRIPTION = "Test regex";
+    private static final int PAGE = 0;
+    private static final int SIZE = 10;
+
+    /**
+     * Creates email request.
+     *
+     * @return email request
+     */
+    public static EmailRequest createEmailRequest() {
+        EmailRequest emailRequest = new EmailRequest();
+        emailRequest.setRequestId(UUID.randomUUID().toString());
+        emailRequest.setCorrelationId(UUID.randomUUID().toString());
+        emailRequest.setReceiver(RECEIVER_MAIL_RU);
+        emailRequest.setTemplateCode(TEST_TEMPLATE_CODE);
+        emailRequest.setVariables(newHashMap());
+        emailRequest.setPriority(LOW);
+        return emailRequest;
+    }
+
+    /**
+     * Create mail config.
+     *
+     * @return mail config
+     */
+    public static MailProperties createMailConfig() {
+        MailProperties mailProperties = new MailProperties();
+        mailProperties.setSender(SENDER_MAIL_RU);
+        return mailProperties;
+    }
+
+    /**
+     * Creates email.
+     *
+     * @param saveDate - save date
+     * @param status   - email status
+     * @return email object
+     */
+    public static Email createEmail(LocalDateTime saveDate, EmailStatus status) {
+        Email email = new Email();
+        email.setUuid(UUID.randomUUID().toString());
+        email.setSaveDate(saveDate);
+        email.setStatus(status);
+        email.setSender(SENDER_MAIL_RU);
+        email.setReceiver(RECEIVER_MAIL_RU);
+        email.setSubject(SUBJECT);
+        email.setMessage(MESSAGE);
+        email.setPriority(MEDIUM);
+        return email;
+    }
+
+    /**
+     * Creates template entity.
+     *
+     * @return template entity
+     */
+    public static TemplateEntity createTemplateEntity() {
+        TemplateEntity templateEntity = new TemplateEntity();
+        templateEntity.setCode(TEMPLATE_CODE);
+        templateEntity.setDescription(TEMPLATE_DESCRIPTION);
+        templateEntity.setBody(MESSAGE);
+        templateEntity.setSubject(SUBJECT);
+        templateEntity.setCreated(LocalDateTime.now());
+        templateEntity.setParameters(newArrayList());
+        return templateEntity;
+    }
+
+    /**
+     * Creates template entity.
+     *
+     * @param code - template code
+     * @return template entity
+     */
+    public static TemplateEntity createTemplateEntity(String code) {
+        var templateEntity = createTemplateEntity();
+        templateEntity.setCode(code);
+        return templateEntity;
+    }
+
+    /**
+     * Creates template parameter entity.
+     *
+     * @param name - parameter name
+     * @return template parameter entity
+     */
+    public static TemplateParameterEntity createTemplateParameterEntity(String name) {
+        TemplateParameterEntity templateParameterEntity = new TemplateParameterEntity();
+        templateParameterEntity.setParameterName(name);
+        templateParameterEntity.setCreated(LocalDateTime.now());
+        return templateParameterEntity;
+    }
+
+    /**
+     * Creates regex entity.
+     *
+     * @param value - regex string
+     * @return regex entity
+     */
+    public static RegexEntity createRegex(String value) {
+        RegexEntity regex = new RegexEntity();
+        regex.setRegexCode(TEST_REGEX);
+        regex.setDescription(REGEX_DESCRIPTION);
+        regex.setRegex(value);
+        regex.setCreated(LocalDateTime.now());
+        return regex;
+    }
+
+    /**
+     * Creates page request dto.
+     *
+     * @return page request dto
+     */
+    public static PageRequestDto createPageRequestDto() {
+        return new PageRequestDto(PAGE, SIZE, Collections.emptyList(), null, Collections.emptyList());
+    }
 
     /**
      * Creates system push request dto.

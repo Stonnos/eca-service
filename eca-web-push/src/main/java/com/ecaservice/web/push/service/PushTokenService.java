@@ -2,7 +2,7 @@ package com.ecaservice.web.push.service;
 
 import com.ecaservice.common.web.crypto.EncryptorBase64AdapterService;
 import com.ecaservice.web.dto.model.PushTokenDto;
-import com.ecaservice.web.push.config.AppProperties;
+import com.ecaservice.web.push.config.WebPushProperties;
 import com.ecaservice.web.push.entity.PushTokenEntity;
 import com.ecaservice.web.push.repository.PushTokenRepository;
 import lombok.RequiredArgsConstructor;
@@ -22,7 +22,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class PushTokenService {
 
-    private final AppProperties appProperties;
+    private final WebPushProperties webPushProperties;
     private final EncryptorBase64AdapterService encryptorBase64AdapterService;
     private final PushTokenRepository pushTokenRepository;
 
@@ -54,7 +54,7 @@ public class PushTokenService {
         String tokenId = UUID.randomUUID().toString();
         pushTokenEntity.setTokenId(encryptorBase64AdapterService.encrypt(tokenId));
         pushTokenEntity.setUser(user);
-        pushTokenEntity.setExpireAt(LocalDateTime.now().plusMinutes(appProperties.getPushTokenValidityMinutes()));
+        pushTokenEntity.setExpireAt(LocalDateTime.now().plusMinutes(webPushProperties.getPushTokenValidityMinutes()));
         pushTokenRepository.save(pushTokenEntity);
         log.info("New push token has been created for user [{}]", user);
         return PushTokenDto.builder()

@@ -4,8 +4,6 @@ import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.validation.annotation.Validated;
 
-import jakarta.validation.constraints.NotNull;
-
 /**
  * Application properties.
  *
@@ -17,43 +15,9 @@ import jakarta.validation.constraints.NotNull;
 public class AppProperties {
 
     /**
-     * User notification life time in days
-     */
-    @NotNull
-    private Integer notificationLifeTimeDays;
-
-    /**
-     * Push token validity time in minutes
-     */
-    @NotNull
-    private Integer pushTokenValidityMinutes;
-
-    /**
      * Encrypt properties
      */
-    private EncryptProperties encrypt;
-
-    /**
-     * Rabbit properties
-     */
-    private RabbitProperties rabbit = new RabbitProperties();
-
-    /**
-     * RabbitMQ properties.
-     */
-    @Data
-    public static class RabbitProperties {
-
-        /**
-         * Rabbit enabled?
-         */
-        private boolean enabled;
-
-        /**
-         * Queue name to receive audit events
-         */
-        private String queueName;
-    }
+    private EncryptProperties encrypt = new EncryptProperties();
 
     /**
      * Encrypt properties.
