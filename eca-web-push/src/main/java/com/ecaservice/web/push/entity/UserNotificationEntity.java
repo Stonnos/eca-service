@@ -24,8 +24,8 @@ import java.util.List;
  */
 @Data
 @Entity
-@Table(name = "notification", indexes = @Index(columnList = "receiver", name = "notification_receiver_idx"))
-public class NotificationEntity {
+@Table(name = "user_notification", indexes = @Index(columnList = "receiver", name = "notification_receiver_idx"))
+public class UserNotificationEntity {
 
     @Id
     @GeneratedValue
