@@ -86,10 +86,4 @@ export class UsersService {
     formData.append('userId', userId.toString());
     return this.http.post(this.serviceUrl + '/unlock', formData)
   }
-
-  public setPushEnabled(enabled: boolean) {
-    const formData = new FormData();
-    formData.append('enabled', enabled.toString());
-    return this.http.post(this.serviceUrl + '/push-notifications/enabled', formData)
-  }
 }

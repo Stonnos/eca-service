@@ -9,7 +9,7 @@ import { environment } from "../../../environments/environment";
 @Injectable()
 export class PushTokenService {
 
-  private serviceUrl = environment.webPushUrl + '/push/token';
+  private serviceUrl = environment.notificationsUrl + '/push/token';
 
   public constructor(private http: HttpClient) {
   }

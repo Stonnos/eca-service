@@ -9,7 +9,7 @@ import { environment } from "../../../environments/environment";
 @Injectable()
 export class UserNotificationsService {
 
-  private serviceUrl = environment.webPushUrl + '/notifications';
+  private serviceUrl = environment.notificationsUrl + '/notifications';
 
   public constructor(private http: HttpClient) {
   }

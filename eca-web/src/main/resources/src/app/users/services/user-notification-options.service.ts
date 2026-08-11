@@ -8,9 +8,9 @@ import { environment } from "../../../environments/environment";
 import { UpdateUserProfileNotificationOptionsRequest } from "../model/update-user-profile-notification-options-request.model";
 
 @Injectable()
-export class UserProfileOptionsService {
+export class UserNotificationOptionsService {
 
-  private serviceUrl = environment.oauthUrl + '/user/profile/options';
+  private serviceUrl = environment.notificationsUrl + '/notification/options';
 
   public constructor(private http: HttpClient) {
   }
@@ -19,13 +19,13 @@ export class UserProfileOptionsService {
     const headers = new HttpHeaders({
       'Content-type': 'application/json; charset=utf-8'
     });
-    return this.http.get<UserProfileNotificationOptionsDto>(this.serviceUrl + '/notifications', { headers: headers });
+    return this.http.get<UserProfileNotificationOptionsDto>(this.serviceUrl, { headers: headers });
   }
 
   public updateUserProfileNotificationOptions(updateUserProfileNotificationOptionsRequest: UpdateUserProfileNotificationOptionsRequest) {
     const headers = new HttpHeaders({
       'Content-type': 'application/json; charset=utf-8'
     });
-    return this.http.put(this.serviceUrl + '/update-notifications', updateUserProfileNotificationOptionsRequest, { headers: headers })
+    return this.http.put(this.serviceUrl, updateUserProfileNotificationOptionsRequest, { headers: headers })
   }
 }

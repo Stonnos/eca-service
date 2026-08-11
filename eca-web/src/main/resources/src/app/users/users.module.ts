@@ -6,7 +6,7 @@ import { SharedModule } from "../common/shared.module";
 import { UsersListComponent } from "./components/users-list.component";
 import { UsersService } from "./services/users.service";
 import { CreateUserModule } from "../create-user/create-user.module";
-import { UserProfileOptionsService } from "./services/user-profile-options.service";
+import { UserNotificationOptionsService } from "./services/user-notification-options.service";
 
 @NgModule({
   imports: [
@@ -24,7 +24,7 @@ import { UserProfileOptionsService } from "./services/user-profile-options.servi
   ],
   providers: [
     UsersService,
-    UserProfileOptionsService
+    UserNotificationOptionsService
   ]
 })
 export class UsersModule {

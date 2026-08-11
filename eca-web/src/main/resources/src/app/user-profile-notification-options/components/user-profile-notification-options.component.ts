@@ -4,7 +4,7 @@ import {
 } from "../../../../../../../target/generated-sources/typescript/eca-web-dto";
 import { MessageService } from "primeng/api";
 import { finalize } from "rxjs/internal/operators";
-import { UserProfileOptionsService } from "../../users/services/user-profile-options.service";
+import { UserNotificationOptionsService } from "../../users/services/user-notification-options.service";
 import { UpdateUserProfileNotificationOptionsModel } from "../../users/model/update-user-profile-notification-options.model";
 import {
   UpdateUserNotificationEventOptionsRequest,
@@ -27,7 +27,7 @@ export class UserProfileNotificationOptionsComponent implements OnInit {
 
   public loading: boolean = false;
 
-  public constructor(private userProfileOptionsService: UserProfileOptionsService,
+  public constructor(private userNotificationOptionsService: UserNotificationOptionsService,
                      private messageService: MessageService) {
   }
 
@@ -79,7 +79,7 @@ export class UserProfileNotificationOptionsComponent implements OnInit {
 
   private getUserProfileNotificationOptions(): void {
     this.loading = true;
-    this.userProfileOptionsService.getUserNotificationOptions()
+    this.userNotificationOptionsService.getUserNotificationOptions()
       .pipe(
         finalize(() => {
           this.loading = false;
@@ -112,7 +112,7 @@ export class UserProfileNotificationOptionsComponent implements OnInit {
   private updateUserProfileNotificationOptions(updateUserProfileNotificationOptionsRequest: UpdateUserProfileNotificationOptionsRequest): void {
     Logger.debug(`Starting to update user profile notification options: ${JSON.stringify(updateUserProfileNotificationOptionsRequest)}`);
     this.loading = true;
-    this.userProfileOptionsService.updateUserProfileNotificationOptions(updateUserProfileNotificationOptionsRequest)
+    this.userNotificationOptionsService.updateUserProfileNotificationOptions(updateUserProfileNotificationOptionsRequest)
       .pipe(
         finalize(() => {
           this.loading = false;

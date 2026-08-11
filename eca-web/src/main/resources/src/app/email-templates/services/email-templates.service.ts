@@ -11,7 +11,7 @@ import { environment } from "../../../environments/environment";
 @Injectable()
 export class EmailTemplatesService {
 
-  private serviceUrl = environment.mailUrl + '/templates';
+  private serviceUrl = environment.notificationsUrl + '/email/templates';
 
   public constructor(private http: HttpClient) {
   }
