@@ -32,22 +32,16 @@ spring:
             - Path=/external-api/**
           filters:
             - StripPrefix=1
-        - id: eca-mail
-          uri: lb://eca-mail
-          predicates:
-            - Path=/eca-mail/**
-          filters:
-            - StripPrefix=1
         - id: eca-ers
           uri: lb://eca-ers
           predicates:
             - Path=/eca-ers/**
           filters:
             - StripPrefix=1
-        - id: eca-web-push
-          uri: lb://eca-web-push
+        - id: eca-notification-service
+          uri: lb://eca-notification-service
           predicates:
-            - Path=/eca-web-push/**
+            - Path=/eca-notification-service/**
           filters:
             - StripPrefix=1
         - id: eca-audit-log
