@@ -139,6 +139,7 @@ public class UserService {
         userEntity.setForceChangePassword(true);
         userEntity.setCreationDate(LocalDateTime.now());
         userEntityRepository.save(userEntity);
+        //TODO impl user created event
         //Also creates user profile options with default settings
       //  var userProfileOptionsEntity =
       //          userProfileOptionsConfigurationService.createAndSaveDefaultProfileOptions(userEntity);
