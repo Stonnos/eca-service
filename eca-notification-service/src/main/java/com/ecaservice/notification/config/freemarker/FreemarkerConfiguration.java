@@ -19,7 +19,7 @@ import static freemarker.template.Configuration.LOCALIZED_LOOKUP_KEY;
 @RequiredArgsConstructor
 public class FreemarkerConfiguration {
 
-    private final DatabaseTemplateLoader databaseTemplateLoader;
+    private final DatabaseEmailTemplateLoader databaseEmailTemplateLoader;
 
     /**
      * Creates freemarker configuration bean.
@@ -34,7 +34,7 @@ public class FreemarkerConfiguration {
         Properties properties = new Properties();
         properties.put(LOCALIZED_LOOKUP_KEY, Boolean.FALSE.toString());
         freeMarkerConfigurationFactoryBean.setFreemarkerSettings(properties);
-        freeMarkerConfigurationFactoryBean.setPreTemplateLoaders(databaseTemplateLoader);
+        freeMarkerConfigurationFactoryBean.setPreTemplateLoaders(databaseEmailTemplateLoader);
         return freeMarkerConfigurationFactoryBean;
     }
 }

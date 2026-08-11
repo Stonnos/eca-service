@@ -17,7 +17,7 @@ import java.io.StringReader;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class DatabaseTemplateLoader implements TemplateLoader {
+public class DatabaseEmailTemplateLoader implements TemplateLoader {
 
     private final TemplateRepository templateRepository;
 
