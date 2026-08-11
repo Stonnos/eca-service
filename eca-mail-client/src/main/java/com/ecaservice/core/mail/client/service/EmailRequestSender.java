@@ -10,7 +10,7 @@ import com.ecaservice.notification.dto.EmailRequest;
 public interface EmailRequestSender {
 
     /**
-     * Sends email request to eca-mail service.
+     * Sends email request.
      *
      * @param emailRequest - email request
      */

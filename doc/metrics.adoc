@@ -13,15 +13,15 @@
 |*http://[host]:[port]/actuator/prometheus*
 |Получение всех метрик приложения в формате prometheus
 a|
-`tomcat_sessions_active_current_sessions{application="eca-mail",} 0.0`
+`tomcat_sessions_active_current_sessions{application="eca-notification-service",} 0.0`
 
-`jvm_buffer_memory_used_bytes{application="eca-mail",id="direct",} 8192.0`
+`jvm_buffer_memory_used_bytes{application="eca-notification-service",id="direct",} 8192.0`
 
-`jvm_buffer_memory_used_bytes{application="eca-mail",id="mapped",} 0.0`
+`jvm_buffer_memory_used_bytes{application="eca-notification-service",id="mapped",} 0.0`
 
-`jvm_memory_max_bytes{application="eca-mail",area="heap",id="G1 Survivor Space",} -1.0`
+`jvm_memory_max_bytes{application="eca-notification-service",area="heap",id="G1 Survivor Space",} -1.0`
 
-`jvm_memory_max_bytes{application="eca-mail",area="heap",id="G1 Old Gen",} 4.158652416E9`
+`jvm_memory_max_bytes{application="eca-notification-service",area="heap",id="G1 Old Gen",} 4.158652416E9`
 
 ...
 |*http://[host]:[port]/actuator/info*
@@ -95,10 +95,10 @@ a|
 |*Название метрики*|*Описание*|*Примеры*
 |*eca_mail_sending_message_success_total*
 |Счетчик числа успешно отправленых email сообщений
-a|`eca_mail_sending_message_success_total{application="eca-mail",} 0.0`
+a|`eca_mail_sending_message_success_total{application="eca-notification-service",} 0.0`
 |*eca_mail_sending_message_error_total*
 |Счетчик числа ошибок при отправке email сообщений
-a|`eca_mail_sending_message_error_total{application="eca-mail",} 0.0`
+a|`eca_mail_sending_message_error_total{application="eca-notification-service",} 0.0`
 |*core_lock_success_total{application="appName",lockName="processNotSentRetryRequests",}*
 |Счетчик числа успешных блокировок processNotSentRetryRequests (для application: eca-server, eca-oauth, eca-data-storage)
 a|`core_lock_success_total{application="appName",lockName="processNotSentRetryRequests",} 2.0`
@@ -153,18 +153,18 @@ a|`core_lock_acquire_error_total{application="eca-data-storage",lockName="saveOr
 |*core_unlock_error_total{application="eca-data-storage",lockName="saveOrUpdateDataset",}*
 |Счетчик числа ошибок при попытке снять блокировку saveOrUpdateDataset
 a|`core_unlock_error_total{application="eca-data-storage",lockName="saveOrUpdateDataset",} 2.0`
-|*core_lock_success_total{application="eca-mail",lockName="saveEmail",}*
+|*core_lock_success_total{application="eca-notification-service",lockName="saveEmail",}*
 |Счетчик числа успешных блокировок saveEmail (сохранение запроса на отправку email)
-a|`core_lock_success_total{application="eca-mail",lockName="saveEmail",} 2.0`
-|*core_unlock_success_total{application="eca-mail",lockName="saveEmail",}*
+a|`core_lock_success_total{application="eca-notification-service",lockName="saveEmail",} 2.0`
+|*core_unlock_success_total{application="eca-notification-service",lockName="saveEmail",}*
 |Счетчик числа успешных операций снятия блокировок saveEmail
-a|`core_unlock_success_total{application="eca-mail",lockName="saveEmail",} 2.0`
-|*core_lock_acquire_error_total{application="eca-mail",lockName="saveEmail",}*
+a|`core_unlock_success_total{application="eca-notification-service",lockName="saveEmail",} 2.0`
+|*core_lock_acquire_error_total{application="eca-notification-service",lockName="saveEmail",}*
 |Счетчик числа ошибок при получении блокировки saveEmail
-a|`core_lock_acquire_error_total{application="eca-mail",lockName="saveEmail",} 2.0`
-|*core_unlock_error_total{application="eca-mail",lockName="saveEmail",}*
+a|`core_lock_acquire_error_total{application="eca-notification-service",lockName="saveEmail",} 2.0`
+|*core_unlock_error_total{application="eca-notification-service",lockName="saveEmail",}*
 |Счетчик числа ошибок при попытке снять блокировку saveEmail
-a|`core_unlock_error_total{application="eca-mail",lockName="saveEmail",} 2.0`
+a|`core_unlock_error_total{application="eca-notification-service",lockName="saveEmail",} 2.0`
 |*core_lock_success_total{application="eca-ers",lockName="saveEvaluationResults",}*
 |Счетчик числа успешных блокировок saveEvaluationResults (сохранение результатов классификации в ERS)
 a|`core_lock_success_total{application="eca-ers",lockName="saveEvaluationResults",} 2.0`
@@ -406,7 +406,7 @@ a|
 |*feign_Client_seconds_max*
 |Макс. время выполнения http запроса.
 a|
-`feign_Client_seconds_max{application="eca-server",client="com.ecaservice.server.service.experiment.mail.EmailClient",host="eca-mail",method="sendEmail",} 0.0`
+`feign_Client_seconds_max{application="eca-server",client="com.ecaservice.server.service.experiment.mail.EmailClient",host="eca-notification-service",method="sendEmail",} 0.0`
 
 `feign_Client_seconds_max{application="eca-server",client="com.ecaservice.core.audit.service.AuditEventClient",host="eca-audit-log",method="sendEvent",} 0.0`
 

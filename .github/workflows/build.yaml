@@ -44,8 +44,6 @@ jobs:
           docker push ${{ secrets.DOCKERHUB_USERNAME }}/${{ vars.DOCKER_REPOSITORY }}:eca-oauth
           docker tag eca-server ${{ secrets.DOCKERHUB_USERNAME }}/${{ vars.DOCKER_REPOSITORY }}:eca-server
           docker push ${{ secrets.DOCKERHUB_USERNAME }}/${{ vars.DOCKER_REPOSITORY }}:eca-server
-          docker tag eca-mail ${{ secrets.DOCKERHUB_USERNAME }}/${{ vars.DOCKER_REPOSITORY }}:eca-mail
-          docker push ${{ secrets.DOCKERHUB_USERNAME }}/${{ vars.DOCKER_REPOSITORY }}:eca-mail
           docker tag eca-data-storage ${{ secrets.DOCKERHUB_USERNAME }}/${{ vars.DOCKER_REPOSITORY }}:eca-data-storage
           docker push ${{ secrets.DOCKERHUB_USERNAME }}/${{ vars.DOCKER_REPOSITORY }}:eca-data-storage
           docker tag eca-ers ${{ secrets.DOCKERHUB_USERNAME }}/${{ vars.DOCKER_REPOSITORY }}:eca-ers
@@ -56,8 +54,8 @@ jobs:
           docker push ${{ secrets.DOCKERHUB_USERNAME }}/${{ vars.DOCKER_REPOSITORY }}:api-gateway
           docker tag discovery-server ${{ secrets.DOCKERHUB_USERNAME }}/${{ vars.DOCKER_REPOSITORY }}:discovery-server
           docker push ${{ secrets.DOCKERHUB_USERNAME }}/${{ vars.DOCKER_REPOSITORY }}:discovery-server
-          docker tag eca-web-push ${{ secrets.DOCKERHUB_USERNAME }}/${{ vars.DOCKER_REPOSITORY }}:eca-web-push
-          docker push ${{ secrets.DOCKERHUB_USERNAME }}/${{ vars.DOCKER_REPOSITORY }}:eca-web-push
+          docker tag eca-notification-service ${{ secrets.DOCKERHUB_USERNAME }}/${{ vars.DOCKER_REPOSITORY }}:eca-notification-service
+          docker push ${{ secrets.DOCKERHUB_USERNAME }}/${{ vars.DOCKER_REPOSITORY }}:eca-notification-service
           docker tag eca-audit-log ${{ secrets.DOCKERHUB_USERNAME }}/${{ vars.DOCKER_REPOSITORY }}:eca-audit-log
           docker push ${{ secrets.DOCKERHUB_USERNAME }}/${{ vars.DOCKER_REPOSITORY }}:eca-audit-log
           docker tag eca-data-loader ${{ secrets.DOCKERHUB_USERNAME }}/${{ vars.DOCKER_REPOSITORY }}:eca-data-loader

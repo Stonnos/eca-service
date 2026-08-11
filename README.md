@@ -25,7 +25,7 @@
 * core-tracing - общая библиотека для распределенной трассировки
 * eca-model - модуль содержит модель сообщений с классификаторами для передачи через rabbit mq
 * eca-oauth-transport - модуль содержит dto классы для сервиса eca-oauth
-* eca-mail-transport - модуль содержит dto классы для сервиса eca-mail
+* eca-mail-transport - модуль содержит dto классы для отправки email
 * classifiers-options - модуль содержит модельные классы для настроек входных параметров классификаторов
 * eca-ers-transport - модуль содержит dto классы для сервиса ERS
 * eca-ds-transport - модуль содержит dto классы для сервиса Data storage
