@@ -51,6 +51,8 @@ eureka:
 
 ## Application properties
 app:
+  rabbit:
+    enabled: true
   encrypt:
     password: pa66word!
     salt: s@lt#
