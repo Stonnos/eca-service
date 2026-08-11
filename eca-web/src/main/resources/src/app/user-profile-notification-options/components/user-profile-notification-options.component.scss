@@ -5,7 +5,12 @@
 
 .notification-events-table::ng-deep {
 
+  .ui-table-thead > tr > th {
+    width: 300px;
+  }
+
   .ui-table-tbody > tr > td {
+    width: 300px;
     &:first-child {
       font-weight: bold;
     }
