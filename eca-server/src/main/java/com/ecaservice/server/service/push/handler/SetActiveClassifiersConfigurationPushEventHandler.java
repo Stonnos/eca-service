@@ -3,7 +3,6 @@ package com.ecaservice.server.service.push.handler;
 import com.ecaservice.core.message.template.service.MessageTemplateProcessor;
 import com.ecaservice.server.event.model.push.SetActiveClassifiersConfigurationPushEvent;
 import com.ecaservice.server.repository.ClassifiersConfigurationHistoryRepository;
-import com.ecaservice.user.profile.options.client.service.UserProfileOptionsProvider;
 import org.springframework.stereotype.Component;
 
 import java.util.Collections;
@@ -26,14 +25,12 @@ public class SetActiveClassifiersConfigurationPushEventHandler
      *
      * @param classifiersConfigurationHistoryRepository - classifiers configuration history repository
      * @param messageTemplateProcessor                  - message template processor
-     * @param userProfileOptionsProvider                - user profile options provider
      */
     public SetActiveClassifiersConfigurationPushEventHandler(
             ClassifiersConfigurationHistoryRepository classifiersConfigurationHistoryRepository,
-            MessageTemplateProcessor messageTemplateProcessor,
-            UserProfileOptionsProvider userProfileOptionsProvider) {
+            MessageTemplateProcessor messageTemplateProcessor) {
         super(SetActiveClassifiersConfigurationPushEvent.class, classifiersConfigurationHistoryRepository,
-                messageTemplateProcessor, userProfileOptionsProvider);
+                messageTemplateProcessor);
     }
 
     @Override

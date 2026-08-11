@@ -4,17 +4,12 @@ import com.ecaservice.core.message.template.service.MessageTemplateProcessor;
 import com.ecaservice.core.push.client.event.listener.handler.AbstractUserPushNotificationEventHandler;
 import com.ecaservice.server.event.model.push.AbstractChangeClassifiersConfigurationPushEvent;
 import com.ecaservice.server.repository.ClassifiersConfigurationHistoryRepository;
-import com.ecaservice.user.profile.options.client.service.UserProfileOptionsProvider;
-import com.ecaservice.user.profile.options.dto.UserNotificationEventOptionsDto;
-import com.ecaservice.user.profile.options.dto.UserNotificationEventType;
-import com.ecaservice.user.profile.options.dto.UserProfileOptionsDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.CollectionUtils;
 
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import static com.ecaservice.server.service.push.dictionary.PushProperties.CLASSIFIERS_CONFIGURATION_ID_PROPERTY;
 import static com.ecaservice.server.service.push.dictionary.PushProperties.CLASSIFIER_CONFIGURATION_CHANGE_MESSAGE_TYPE;
@@ -31,7 +26,6 @@ public abstract class AbstractChangeClassifiersConfigurationPushEventHandler<E e
 
     private final ClassifiersConfigurationHistoryRepository classifiersConfigurationHistoryRepository;
     private final MessageTemplateProcessor messageTemplateProcessor;
-    private final UserProfileOptionsProvider userProfileOptionsProvider;
 
     /**
      * Constructor with parameters.
@@ -39,16 +33,14 @@ public abstract class AbstractChangeClassifiersConfigurationPushEventHandler<E e
      * @param clazz                                     - push event class
      * @param classifiersConfigurationHistoryRepository - classifiers configuration history repository
      * @param messageTemplateProcessor                  - message template processor
-     * @param userProfileOptionsProvider                - user profile options provider
      */
     protected AbstractChangeClassifiersConfigurationPushEventHandler(
             Class<E> clazz,
             ClassifiersConfigurationHistoryRepository classifiersConfigurationHistoryRepository,
-            MessageTemplateProcessor messageTemplateProcessor, UserProfileOptionsProvider userProfileOptionsProvider) {
+            MessageTemplateProcessor messageTemplateProcessor) {
         super(clazz);
         this.classifiersConfigurationHistoryRepository = classifiersConfigurationHistoryRepository;
         this.messageTemplateProcessor = messageTemplateProcessor;
-        this.userProfileOptionsProvider = userProfileOptionsProvider;
     }
 
     @Override
@@ -65,12 +57,9 @@ public abstract class AbstractChangeClassifiersConfigurationPushEventHandler<E e
         }
         log.info("[{}] receivers has been fetched for classifiers configuration [{}] event [{}]", allModifiers.size(),
                 classifiersConfiguration.getId(), event.getClass().getSimpleName());
-        List<String> resultReceivers = allModifiers.stream()
-                .filter(this::isWebPushEnabled)
-                .collect(Collectors.toList());
         log.info("Classifiers configuration [{}] event [{}] result receivers: {}", classifiersConfiguration.getId(),
-                event.getClass().getSimpleName(), resultReceivers);
-        return resultReceivers;
+                event.getClass().getSimpleName(), allModifiers);
+        return allModifiers;
     }
 
     @Override
@@ -104,24 +93,4 @@ public abstract class AbstractChangeClassifiersConfigurationPushEventHandler<E e
      * @return message template params
      */
     protected abstract Map<String, Object> createMessageTemplateParams(E event);
-
-    private boolean isWebPushEnabled(String user) {
-        try {
-            UserProfileOptionsDto userProfileOptionsDto = userProfileOptionsProvider.getUserProfileOptions(user);
-            log.info("User profile [{}] options has been fetched: {}", user, userProfileOptionsDto);
-            boolean classifiersConfigurationChangeNotificationEventEnabled =
-                    userProfileOptionsDto.getNotificationEventOptions()
-                            .stream()
-                            .filter(eventOptionsDto -> UserNotificationEventType.CLASSIFIER_CONFIGURATION_CHANGE.equals(
-                                    eventOptionsDto.getEventType()))
-                            .findFirst()
-                            .map(UserNotificationEventOptionsDto::isWebPushEnabled)
-                            .orElse(false);
-            return userProfileOptionsDto.isWebPushEnabled() && classifiersConfigurationChangeNotificationEventEnabled;
-        } catch (Exception ex) {
-            log.error("Error while get user [{}] profile options. Disabled web push by default. Error details: {}",
-                    user, ex.getMessage(), ex);
-            return false;
-        }
-    }
 }

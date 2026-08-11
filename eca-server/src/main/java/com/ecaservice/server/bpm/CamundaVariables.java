@@ -106,11 +106,6 @@ public class CamundaVariables {
     public static final String EVALUATION_STATUS = "evaluationStatus";
 
     /**
-     * User profile options
-     */
-    public static final String USER_PROFILE_OPTIONS = "userProfileOptions";
-
-    /**
      * User login
      */
     public static final String USER_LOGIN = "userLogin";

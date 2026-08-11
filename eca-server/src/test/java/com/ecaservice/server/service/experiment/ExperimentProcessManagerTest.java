@@ -40,7 +40,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 
 /**
@@ -123,24 +122,6 @@ class ExperimentProcessManagerTest extends AbstractEvaluationProcessManagerTest<
     }
 
     @Test
-    void testCreateExperimentWebRequestWithDisabledNotifications() {
-        var experimentRequestModel = createExperimentWebRequestModel();
-        mockGetUserProfileOptions(false);
-        experimentProcessManager.createExperimentRequest(experimentRequestModel);
-        verify(getWebPushSender(), atLeastOnce()).sendPush(pushRequestArgumentCaptor.capture());
-
-        verify(getEmailRequestSender(), never()).sendEmail(any(EmailRequest.class));
-        assertThat(pushRequestArgumentCaptor.getAllValues()).hasSize(1);
-
-        var experiment = getExperiment(experimentRequestModel.getRequestId());
-
-        verifyTestSteps(experiment,
-                new EvaluationRequestStatusVerifier(RequestStatus.NEW),
-                new PushRequestVerifier(PushType.SYSTEM, RequestStatus.NEW, 0)
-        );
-    }
-
-    @Test
     void testCreateExperimentMessageRequest() {
         var experimentRequestModel = createExperimentMessageRequestModel();
         experimentProcessManager.createExperimentRequest(experimentRequestModel);
@@ -203,27 +184,6 @@ class ExperimentProcessManagerTest extends AbstractEvaluationProcessManagerTest<
                 new FinishedEmailRequestVerifier(),
                 new PushRequestVerifier(PushType.SYSTEM, RequestStatus.FINISHED, 2),
                 new PushRequestVerifier(PushType.USER_NOTIFICATION, RequestStatus.FINISHED, 3),
-                new EvaluationResultsRequestsVerifier()
-        );
-    }
-
-    @Test
-    void testProcessExperimentWithWebChannelWithDisabledNotifications() {
-        Experiment experiment = createAndSaveExperiment(Channel.WEB);
-        mockGetUserProfileOptions(false);
-        experimentProcessManager.processExperiment(experiment);
-        verify(getWebPushSender(), atLeastOnce()).sendPush(pushRequestArgumentCaptor.capture());
-        verify(getErsClient(), atLeastOnce()).save(evaluationResultsRequestArgumentCaptor.capture());
-
-        var actualExperiment = getExperiment(experiment.getRequestId());
-
-        verify(getEmailRequestSender(), never()).sendEmail(any(EmailRequest.class));
-        assertThat(pushRequestArgumentCaptor.getAllValues()).hasSize(2);
-
-        verifyTestSteps(actualExperiment,
-                new EvaluationRequestStatusVerifier(RequestStatus.FINISHED),
-                new PushRequestVerifier(PushType.SYSTEM, RequestStatus.IN_PROGRESS, 0),
-                new PushRequestVerifier(PushType.SYSTEM, RequestStatus.FINISHED, 1),
                 new EvaluationResultsRequestsVerifier()
         );
     }
