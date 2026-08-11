@@ -23,7 +23,6 @@
                 primaryKey="id"
                 separator=";"
                 file="email-templates/regex.csv">
-            <column name="template_body" type="clobFile"/>
         </loadUpdateData>
         <loadUpdateData
                 tableName="template"
