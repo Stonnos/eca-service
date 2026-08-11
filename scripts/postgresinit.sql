@@ -1,12 +1,11 @@
 ALTER SYSTEM SET max_connections = 500;
 create database eca;
 create database eca_oauth;
-create database mail;
 create database data_storage;
 create database eca_external_api;
 create database evaluation_results_storage;
 create database audit_log;
-create database eca_web_push;
+create database eca_notification_service;
 create database eca_load_tests;
 create database eca_auto_tests;
 create database eca_camunda;
