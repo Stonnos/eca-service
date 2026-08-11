@@ -19,6 +19,11 @@ import java.util.List;
 public class AppProperties {
 
     /**
+     * Rabbit properties
+     */
+    private RabbitProperties rabbit = new RabbitProperties();
+
+    /**
      * Encrypt properties
      */
     private EncryptProperties encrypt = new EncryptProperties();
@@ -65,5 +70,17 @@ public class AppProperties {
          * Notification event type
          */
         private NotificationEventType eventType;
+    }
+
+    /**
+     * RabbitMQ properties.
+     */
+    @Data
+    public static class RabbitProperties {
+
+        /**
+         * Rabbit enabled?
+         */
+        private boolean enabled;
     }
 }
