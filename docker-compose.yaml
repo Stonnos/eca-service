@@ -151,31 +151,6 @@ services:
       collect_logs_with_filebeat: "true"
       decode_log_event_to_json_object: "true"
 
-  eca-mail:
-    image: eca-mail
-    container_name: eca-mail
-    restart: always
-    environment:
-      TZ: ${TIME_ZONE}
-      SPRING_PROFILES_ACTIVE: "docker"
-      JAVA_OPTS: "-Xmx384m -XX:MaxMetaspaceSize=256m"
-      OPENAPI_BASEPATH: "/eca-mail"
-      MANAGEMENT_TRACING_SAMPLING_PROBABILITY: ${TRACING_SAMPLING}
-      MANAGEMENT_ZIPKIN_TRACING_ENDPOINT: ${ZIPKIN_URL}
-      LOGGING_MODE: ${LOGGING_MODE}
-    networks:
-      - default
-    deploy:
-      resources:
-        limits:
-          memory: 512M
-    depends_on:
-      - eca-db
-      - discovery-server
-    labels:
-      collect_logs_with_filebeat: "true"
-      decode_log_event_to_json_object: "true"
-
   eca-data-storage:
     image: eca-data-storage
     container_name: eca-data-storage
