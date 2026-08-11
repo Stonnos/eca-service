@@ -1,20 +1,20 @@
-id;template_code;description;template_subject;template_body
-14;TIMEOUT_EXPERIMENT;Сообщение о таймауте эксперимента;Таймаут при построении эксперимента;/templates/timeout-experiment-template.html
-15;FINISHED_EXPERIMENT;Сообщение о завершенном эксперименте;Эксперимент завершен;/templates/finished-experiment-template.html
-19;IN_PROGRESS_EXPERIMENT;Сообщение о поступлении эксперимента в работу;Заявка поступила в работу;/templates/in-progress-experiment-template.html
-17;TFA_CODE;Сообщение с кодом подтверждения для 2FA;Код подтверждения для входа в Eca - service;/templates/tfa-code-template.html
-12;NEW_EXPERIMENT;Сообщение о новом эксперименте;Создан новый эксперимент;/templates/new-experiment-template.html
-18;NEW_USER;Сообщение с учетными данными нового пользователя;Доступ к Eca - service;/templates/new-user-template.html
-25;EMAIL_CHANGED;Уведомление на старую почту об успешном изменении Email в личном кабинете Eca - service;Уведомление об успешном изменении Email в личном кабинете Eca - service;/templates/email-changed-template.html
-20;CHANGE_PASSWORD;Сообщение с подтверждением изменения пароля в личном кабинете Eca - service;Подтверждение изменения пароля в личном кабинете Eca - service;/templates/change-password-template.html
-13;ERROR_EXPERIMENT;Сообщение о завершении эксперимента с ошибкой;Ошибка при построении эксперимента;/templates/error-experiment-template.html
-26;PASSWORD_CHANGED;Сообщение с успешным изменением пароля в личном кабинете Eca - service;Изменен пароль от вашего аккаунта;/templates/password-changed-template.html
-27;PASSWORD_RESET;Сообщение с успешным сбросом пароля в личном кабинете Eca - service;Сброшен пароль от вашего аккаунта;/templates/password-reset-template.html
-28;USER_LOCKED;Сообщение о блокировке учетной записи;Блокировка учетной записи;/templates/user-locked-template.html
-29;USER_UNLOCKED;Сообщение о снятии блокировки учетной записи;Блокировка учетной записи снята;/templates/user-unlocked-template.html
-32;CANCEL_EXPERIMENT;Сообщение о прерывании построения эксперимента;Прервано построение эксперимента;/templates/cancel-experiment-template.html
-22;CHANGE_EMAIL;Уведомление на старую почту о запросе изменения Email в личном кабинете Eca - service;Уведомление о запросе изменения Email в личном кабинете Eca - service;/templates/change-email-template.html
-16;RESET_PASSWORD;Сообщение со ссылкой для сброса пароля;Сброс пароля;/templates/reset-password-template.html
-40;CHANGE_EMAIL_CONFIRM_NEW_EMAIL;Сообщение с подтверждением изменения Email в личном кабинете Eca - service;Подтверждение изменения Email в личном кабинете Eca - service;/templates/change-email-confirm-new-email-template.html
-41;EMAIL_CHANGED_NEW_EMAIL_CONFIRMED;Сообщение с успешным подтверждением изменения Email в личном кабинете Eca - service;Подтверждено изменение Email в личном кабинете Eca - service;/templates/change-email-new-email-confirmed-template.html
-52;SET_PASSWORD_CONFIRMATION_CODE;Сообщение с кодом подтверждения для установки постоянного пароля;Код подтверждения для установки постоянного пароля;/templates/set-password-confirmation-code-template.html
+id;template_code;description;template_subject
+14;TIMEOUT_EXPERIMENT;Сообщение о таймауте эксперимента;Таймаут при построении эксперимента
+15;FINISHED_EXPERIMENT;Сообщение о завершенном эксперименте;Эксперимент завершен
+19;IN_PROGRESS_EXPERIMENT;Сообщение о поступлении эксперимента в работу;Заявка поступила в работу
+17;TFA_CODE;Сообщение с кодом подтверждения для 2FA;Код подтверждения для входа в Eca - service
+12;NEW_EXPERIMENT;Сообщение о новом эксперименте;Создан новый эксперимент
+18;NEW_USER;Сообщение с учетными данными нового пользователя;Доступ к Eca - service
+25;EMAIL_CHANGED;Уведомление на старую почту об успешном изменении Email в личном кабинете Eca - service;Уведомление об успешном изменении Email в личном кабинете Eca - service
+20;CHANGE_PASSWORD;Сообщение с подтверждением изменения пароля в личном кабинете Eca - service;Подтверждение изменения пароля в личном кабинете Eca - service
+13;ERROR_EXPERIMENT;Сообщение о завершении эксперимента с ошибкой;Ошибка при построении эксперимента
+26;PASSWORD_CHANGED;Сообщение с успешным изменением пароля в личном кабинете Eca - service;Изменен пароль от вашего аккаунта
+27;PASSWORD_RESET;Сообщение с успешным сбросом пароля в личном кабинете Eca - service;Сброшен пароль от вашего аккаунта
+28;USER_LOCKED;Сообщение о блокировке учетной записи;Блокировка учетной записи
+29;USER_UNLOCKED;Сообщение о снятии блокировки учетной записи;Блокировка учетной записи снята
+32;CANCEL_EXPERIMENT;Сообщение о прерывании построения эксперимента;Прервано построение эксперимента
+22;CHANGE_EMAIL;Уведомление на старую почту о запросе изменения Email в личном кабинете Eca - service;Уведомление о запросе изменения Email в личном кабинете Eca - service
+16;RESET_PASSWORD;Сообщение со ссылкой для сброса пароля;Сброс пароля
+40;CHANGE_EMAIL_CONFIRM_NEW_EMAIL;Сообщение с подтверждением изменения Email в личном кабинете Eca - service;Подтверждение изменения Email в личном кабинете Eca - service
+41;EMAIL_CHANGED_NEW_EMAIL_CONFIRMED;Сообщение с успешным подтверждением изменения Email в личном кабинете Eca - service;Подтверждено изменение Email в личном кабинете Eca - service
+52;SET_PASSWORD_CONFIRMATION_CODE;Сообщение с кодом подтверждения для установки постоянного пароля;Код подтверждения для установки постоянного пароля

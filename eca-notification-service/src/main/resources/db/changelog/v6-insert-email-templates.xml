@@ -5,7 +5,7 @@
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
 
-    <changeSet author="roman.batygin@mail.ru" id="insert_email_temaplates_1" context="data">
+    <changeSet author="roman.batygin@mail.ru" id="insert_email_temaplates_5" context="data">
         <preConditions onFail="MARK_RAN">
             <tableExists tableName="regex"/>
             <tableExists tableName="template"/>
@@ -41,6 +41,84 @@
                 primaryKey="template_id,param_id"
                 separator=";"
                 file="email-templates/templates_parameters.csv"/>
+
+        <!-- Insert html templates from files-->
+        <update tableName="template">
+            <column name="template_body" valueClobFile="templates/timeout-experiment-template.html"/>
+            <where>template_code = 'TIMEOUT_EXPERIMENT'</where>
+        </update>
+        <update tableName="template">
+            <column name="template_body" valueClobFile="templates/finished-experiment-template.html"/>
+            <where>template_code = 'FINISHED_EXPERIMENT'</where>
+        </update>
+        <update tableName="template">
+            <column name="template_body" valueClobFile="templates/in-progress-experiment-template.html"/>
+            <where>template_code = 'IN_PROGRESS_EXPERIMENT'</where>
+        </update>
+        <update tableName="template">
+            <column name="template_body" valueClobFile="templates/tfa-code-template.html"/>
+            <where>template_code = 'TFA_CODE'</where>
+        </update>
+        <update tableName="template">
+            <column name="template_body" valueClobFile="templates/new-experiment-template.html"/>
+            <where>template_code = 'NEW_EXPERIMENT'</where>
+        </update>
+        <update tableName="template">
+            <column name="template_body" valueClobFile="templates/new-user-template.html"/>
+            <where>template_code = 'NEW_USER'</where>
+        </update>
+        <update tableName="template">
+            <column name="template_body" valueClobFile="templates/email-changed-template.html"/>
+            <where>template_code = 'EMAIL_CHANGED'</where>
+        </update>
+        <update tableName="template">
+            <column name="template_body" valueClobFile="templates/change-password-template.html"/>
+            <where>template_code = 'CHANGE_PASSWORD'</where>
+        </update>
+        <update tableName="template">
+            <column name="template_body" valueClobFile="templates/error-experiment-template.html"/>
+            <where>template_code = 'ERROR_EXPERIMENT'</where>
+        </update>
+        <update tableName="template">
+            <column name="template_body" valueClobFile="templates/password-changed-template.html"/>
+            <where>template_code = 'PASSWORD_CHANGED'</where>
+        </update>
+        <update tableName="template">
+            <column name="template_body" valueClobFile="templates/password-reset-template.html"/>
+            <where>template_code = 'PASSWORD_RESET'</where>
+        </update>
+        <update tableName="template">
+            <column name="template_body" valueClobFile="templates/user-locked-template.html"/>
+            <where>template_code = 'USER_LOCKED'</where>
+        </update>
+        <update tableName="template">
+            <column name="template_body" valueClobFile="templates/user-unlocked-template.html"/>
+            <where>template_code = 'USER_UNLOCKED'</where>
+        </update>
+        <update tableName="template">
+            <column name="template_body" valueClobFile="templates/cancel-experiment-template.html"/>
+            <where>template_code = 'CANCEL_EXPERIMENT'</where>
+        </update>
+        <update tableName="template">
+            <column name="template_body" valueClobFile="templates/change-email-template.html"/>
+            <where>template_code = 'CHANGE_EMAIL'</where>
+        </update>
+        <update tableName="template">
+            <column name="template_body" valueClobFile="templates/reset-password-template.html"/>
+            <where>template_code = 'RESET_PASSWORD'</where>
+        </update>
+        <update tableName="template">
+            <column name="template_body" valueClobFile="templates/change-email-confirm-new-email-template.html"/>
+            <where>template_code = 'CHANGE_EMAIL_CONFIRM_NEW_EMAIL'</where>
+        </update>
+        <update tableName="template">
+            <column name="template_body" valueClobFile="templates/change-email-new-email-confirmed-template.html"/>
+            <where>template_code = 'EMAIL_CHANGED_NEW_EMAIL_CONFIRMED'</where>
+        </update>
+        <update tableName="template">
+            <column name="template_body" valueClobFile="templates/set-password-confirmation-code-template.html"/>
+            <where>template_code = 'SET_PASSWORD_CONFIRMATION_CODE'</where>
+        </update>
     </changeSet>
 
 </databaseChangeLog>
