@@ -406,8 +406,6 @@ a|
 |*feign_Client_seconds_max*
 |Макс. время выполнения http запроса.
 a|
-`feign_Client_seconds_max{application="eca-server",client="com.ecaservice.server.service.experiment.mail.EmailClient",host="eca-notification-service",method="sendEmail",} 0.0`
-
 `feign_Client_seconds_max{application="eca-server",client="com.ecaservice.core.audit.service.AuditEventClient",host="eca-audit-log",method="sendEvent",} 0.0`
 
 `feign_Client_seconds_max{application="eca-server",client="com.ecaservice.server.service.ers.ErsClient",host="eca-ers",method="save",} 1.991423887`
@@ -415,8 +413,6 @@ a|
 `feign_Client_seconds_max{application="eca-server",client="com.ecaservice.server.service.ers.ErsClient",host="eca-ers",method="getEvaluationResults",} 0.080737109`
 
 `feign_Client_seconds_max{application="eca-server",client="com.ecaservice.server.service.auth.UsersClient",host="eca-oauth",method="getUserInfo",} 0.0`
-
-`feign_Client_seconds_max{application="eca-server",client="com.ecaservice.server.service.push.WebPushClient",host="eca-web-push",method="push",} 0.070433362`
 |===
 
 == 4. Метрики http запросов

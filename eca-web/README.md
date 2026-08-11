@@ -22,8 +22,8 @@
 * oauthUrl - url сервера авторизации
 * dsUrl - url модуля eca-data-storage
 * auditLogUrl - url модуля eca-audit-log
-* notificationUrl - url REST API модуля eca-notificaton-service
-* wsUrl - url сервера веб - сокетов (модуль notificaton-service)
+* notificationUrl - url REST API модуля eca-notification-service
+* wsUrl - url сервера веб - сокетов (модуль notification-service)
 * clientId - идентификатор клиента
 * secret - секретный ключ или пароль клиента
 * pushQueue - название очереди для web sockets для получения пушей

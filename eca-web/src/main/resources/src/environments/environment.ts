@@ -11,7 +11,7 @@ export const environment = {
   auditLogUrl: `http://${window.location.hostname}:${window.location.port}/eca-audit-log`,
   notificationsUrl: `http://${window.location.hostname}:${window.location.port}/eca-notification-service`,
   ersUrl: `http://${window.location.hostname}:${window.location.port}/eca-ers`,
-  wsUrl: `ws://${window.location.hostname}:${window.location.port}/eca-web-push/socket`,
+  wsUrl: `ws://${window.location.hostname}:${window.location.port}/eca-notification-service/socket`,
   clientId: "eca_web",
   secret: "web_secret",
   pushQueue: "/push",
