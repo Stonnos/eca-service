@@ -230,50 +230,54 @@
 [options="header"]
 |===
 |Название параметра|Тип|Regex выражение|Описание
-|experimentType
+|revokeChangeEmailRequestUrl
 |string
 |-
-|Тип эксперимента
-|requestId
+|Ссылка для отмены изменения email
+|confirmationCode
 |string
 |-
-|Идентификатор заявки
-|downloadUrl
-|string
-|-
-|Ссылка на скачивание результатов эксперимента
-|timeout
-|string
-|[0-9]+
-|Таймаут эксперимента
-|tfaCode
-|string
-|-
-|Код подтверждения для двухфакторной аутентификации
-|userName
-|string
-|-
-|Логин пользователя
+|Код подтверждения
 |password
 |string
 |-
 |Пароль пользователя
+|tfaCode
+|string
+|-
+|Код двухфакторной аутентификации
+|requestId
+|string
+|-
+|Идентификатор заявки
 |resetPasswordUrl
 |string
 |-
-|Ссылка на восстановление пароля
+|Ссылка на сброс пароля
+|downloadUrl
+|string
+|-
+|Ссылка на скачивание результатов эксперимента
 |validityMinutes
 |string
 |[0-9]+
 |Время действия ссылки в минутах
-|validityHours
-|string
-|[0-9]+
-|Время действия ссылки в часах
-|confirmationCode
+|newEmail
 |string
 |-
-|Код подтвежднения
+|Новый почтовый адрес
+|userName
+|string
+|-
+|Логин пользователя
+|timeout
+|string
+|[0-9]+
+|Таймаут для эксперимента
+|experimentType
+|string
+|-
+|Тип эксперимента
 |===
 
 == 5. Описание шаблонов email сообщений
@@ -281,51 +285,63 @@
 [options="header"]
 |===
 |Код шаблона|Описание|Обязательные параметры
-|NEW_EXPERIMENT
-|Сообщение о новом эксперименте
-|experimentType, requestId
-|IN_PROGRESS_EXPERIMENT
-|Сообщение о поступлении эксперимента в работу
-|experimentType, requestId
-|ERROR_EXPERIMENT
-|Сообщение о завершении эксперимента с ошибкой
-|experimentType, requestId
 |TIMEOUT_EXPERIMENT
 |Сообщение о таймауте эксперимента
 |experimentType, requestId, timeout
 |FINISHED_EXPERIMENT
 |Сообщение о завершенном эксперименте
 |experimentType, requestId, downloadUrl
-|RESET_PASSWORD
-|Сообщение со ссылкой для сброса пароля
-|resetPasswordUrl, validityMinutes
+|IN_PROGRESS_EXPERIMENT
+|Сообщение о поступлении эксперимента в работу
+|experimentType, requestId
 |TFA_CODE
-|Сообщение с кодом подтверждения для двухфакторной аутентификации
+|Сообщение с кодом подтверждения для 2FA
 |tfaCode
+|NEW_EXPERIMENT
+|Сообщение о новом эксперименте
+|experimentType, requestId
+|USER_LOCKED
+|Сообщение о блокировке учетной записи
+|-
 |NEW_USER
 |Сообщение с учетными данными нового пользователя
 |userName, password
+|EMAIL_CHANGED
+|Уведомление на старую почту об успешном изменении Email в личном кабинете Eca - service
+|newEmail
 |CHANGE_PASSWORD
 |Сообщение с подтверждением изменения пароля в личном кабинете Eca - service
-|confirmationCode, validityMinutes
-|CHANGE_EMAIL
-|Сообщение с подтверждением изменения Email в личном кабинете Eca - service
-|newEmail, confirmationCode, validityHours
-|EMAIL_CHANGED
-|Сообщение с успешным изменением Email в личном кабинете Eca - service
-|-
+|validityMinutes, confirmationCode
+|ERROR_EXPERIMENT
+|Сообщение о завершении эксперимента с ошибкой
+|experimentType, requestId
 |PASSWORD_CHANGED
 |Сообщение с успешным изменением пароля в личном кабинете Eca - service
 |-
 |PASSWORD_RESET
 |Сообщение с успешным сбросом пароля в личном кабинете Eca - service
 |-
-|USER_LOCKED
-|Сообщение о блокировке учетной записи
-|-
 |USER_UNLOCKED
 |Сообщение о снятии блокировки учетной записи
 |-
+|CANCEL_EXPERIMENT
+|Сообщение о прерывании построения эксперимента
+|experimentType, requestId
+|CHANGE_EMAIL
+|Уведомление на старую почту о запросе изменения Email в личном кабинете Eca - service
+|newEmail, revokeChangeEmailRequestUrl
+|RESET_PASSWORD
+|Сообщение со ссылкой для сброса пароля
+|validityMinutes, resetPasswordUrl
+|CHANGE_EMAIL_CONFIRM_NEW_EMAIL
+|Сообщение с подтверждением изменения Email в личном кабинете Eca - service
+|validityMinutes, confirmationCode
+|EMAIL_CHANGED_NEW_EMAIL_CONFIRMED
+|Сообщение с успешным подтверждением изменения Email в личном кабинете Eca - service
+|-
+|SET_PASSWORD_CONFIRMATION_CODE
+|Сообщение с кодом подтверждения для установки постоянного пароля
+|confirmationCode
 |===
 
 == Справочник кодов ошибок
