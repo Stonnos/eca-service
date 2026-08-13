@@ -1,0 +1,29 @@
+{
+  "name": "requestStatus",
+  "values": [
+    {
+      "label": "Новая",
+      "value": "NEW"
+    },
+    {
+      "label": "Завершена",
+      "value": "FINISHED"
+    },
+    {
+      "label": "Ошибка",
+      "value": "ERROR"
+    },
+    {
+      "label": "Таймаут",
+      "value": "TIMEOUT"
+    },
+    {
+      "label": "Прервана",
+      "value": "CANCELED"
+    },
+    {
+      "label": "В работе",
+      "value": "IN_PROGRESS"
+    }
+  ]
+}

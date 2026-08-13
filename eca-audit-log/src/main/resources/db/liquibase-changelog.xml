@@ -5,10 +5,8 @@
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
     <include file="db/changelog/v0-init-schema.xml"/>
-    <include file="../filter-template-changelog.xml" relativeToChangelogFile="true"/>
     <include file="db/changelog/v2-add-correlation-id-column.xml"/>
     <include file="db/changelog/v4-add-event-id-unique-idx.xml"/>
-    <include file="db/changelog/v9-clear-filter-templates.xml"/>
-    <include file="db/changelog/v10-update-filter-templates.xml"/>
     <include file="db/changelog/v11-add-event-date-index.xml"/>
+    <include file="db/changelog/drop-filter-template-changelog.xml"/>
 </databaseChangeLog>

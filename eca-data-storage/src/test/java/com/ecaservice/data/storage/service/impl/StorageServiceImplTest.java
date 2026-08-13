@@ -2,13 +2,13 @@ package com.ecaservice.data.storage.service.impl;
 
 import com.ecaservice.common.web.exception.EntityNotFoundException;
 import com.ecaservice.common.web.exception.InvalidOperationException;
-import com.ecaservice.core.filter.service.FilterTemplateService;
+import com.ecaservice.core.filter.config.CoreFilterConfiguration;
+import com.ecaservice.core.filter.mapping.FilterTemplateMapperImpl;
 import com.ecaservice.data.storage.AbstractJpaTest;
 import com.ecaservice.data.storage.config.StorageTestConfiguration;
 import com.ecaservice.data.storage.entity.AttributeEntity;
 import com.ecaservice.data.storage.entity.AttributeType;
 import com.ecaservice.data.storage.entity.InstancesEntity;
-import com.ecaservice.data.storage.entity.InstancesEntity_;
 import com.ecaservice.data.storage.exception.ClassAttributeValuesIsTooLowException;
 import com.ecaservice.data.storage.exception.InvalidClassAttributeTypeException;
 import com.ecaservice.data.storage.mapping.AttributeMapperImpl;
@@ -35,7 +35,6 @@ import weka.core.Instances;
 
 import java.time.LocalDateTime;
 import java.util.Collections;
-import java.util.List;
 import java.util.UUID;
 
 import static com.ecaservice.data.storage.AssertionUtils.assertDataList;
@@ -46,7 +45,6 @@ import static com.ecaservice.data.storage.TestHelperUtils.createAttributeValueEn
 import static com.ecaservice.data.storage.TestHelperUtils.createInstancesEntity;
 import static com.ecaservice.data.storage.TestHelperUtils.createPageRequestDto;
 import static com.ecaservice.data.storage.TestHelperUtils.loadInstances;
-import static com.ecaservice.data.storage.dictionary.FilterDictionaries.INSTANCES_TEMPLATE;
 import static com.ecaservice.data.storage.entity.InstancesEntity_.CREATED;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -58,9 +56,9 @@ import static org.mockito.Mockito.when;
  * @author Roman Batygin
  */
 @Import({StorageServiceImpl.class, InstancesService.class, InstancesBatchService.class,
-        StorageTestConfiguration.class, AttributeService.class,
+        StorageTestConfiguration.class, AttributeService.class, CoreFilterConfiguration.class,
         AttributeMapperImpl.class, SearchQueryCreator.class, InstancesTransformer.class,
-        InstancesResultSetConverter.class, InstancesExtractor.class})
+        InstancesResultSetConverter.class, InstancesExtractor.class, FilterTemplateMapperImpl.class})
 class StorageServiceImplTest extends AbstractJpaTest {
 
     private static final String TEST_RELATION_NAME = "test_relation_name";
@@ -87,8 +85,6 @@ class StorageServiceImplTest extends AbstractJpaTest {
 
     @MockBean
     private UserService userService;
-    @MockBean
-    private FilterTemplateService filterTemplateService;
 
     private Instances instances;
 
@@ -97,13 +93,6 @@ class StorageServiceImplTest extends AbstractJpaTest {
     @Override
     public void init() {
         createAndSaveInstancesEntity();
-        when(filterTemplateService.getGlobalFilterFields(INSTANCES_TEMPLATE)).thenReturn(
-                List.of(
-                        InstancesEntity_.ID,
-                        InstancesEntity_.RELATION_NAME,
-                        InstancesEntity_.CREATED_BY
-                )
-        );
     }
 
     @Override

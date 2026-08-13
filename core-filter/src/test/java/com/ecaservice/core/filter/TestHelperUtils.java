@@ -1,17 +1,12 @@
 package com.ecaservice.core.filter;
 
-import com.ecaservice.core.filter.entity.FilterDictionaryValue;
-import com.ecaservice.core.filter.entity.FilterField;
-import com.ecaservice.core.filter.entity.FilterTemplate;
-import com.ecaservice.core.filter.entity.GlobalFilterField;
-import com.ecaservice.core.filter.entity.GlobalFilterTemplate;
-import com.ecaservice.core.filter.entity.SortField;
-import com.ecaservice.core.filter.entity.SortTemplate;
+import com.ecaservice.core.filter.model.FilterDictionaryValue;
+import com.ecaservice.core.filter.model.FilterField;
+import com.ecaservice.core.filter.model.FilterTemplate;
 import com.ecaservice.web.dto.model.FilterFieldType;
 import com.ecaservice.web.dto.model.MatchMode;
 import lombok.experimental.UtilityClass;
 
-import java.time.LocalDateTime;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -45,14 +40,12 @@ public class TestHelperUtils {
      * Creates filter field.
      *
      * @param name  - field name
-     * @param order - field order
      * @return filter field
      */
-    public static FilterField createFilterField(String name, int order) {
+    public static FilterField createFilterField(String name) {
         FilterField filterField = new FilterField();
         filterField.setFieldName(name);
         filterField.setDescription(DESCRIPTION);
-        filterField.setFieldOrder(order);
         filterField.setFilterFieldType(FilterFieldType.TEXT);
         filterField.setMatchMode(MatchMode.LIKE);
         return filterField;
@@ -68,62 +61,8 @@ public class TestHelperUtils {
         FilterTemplate filterTemplate = new FilterTemplate();
         filterTemplate.setTemplateName(FILTER_NAME);
         filterTemplate.setTemplateType(filterTemplateType);
-        filterTemplate.setCreated(LocalDateTime.now());
         filterTemplate.setFields(IntStream.range(0, FILTER_TEMPLATE_FIELDS).mapToObj(
-                i -> createFilterField(String.valueOf(i), i)).collect(Collectors.toList()));
+                i -> createFilterField(String.valueOf(i))).collect(Collectors.toList()));
         return filterTemplate;
-    }
-
-    /**
-     * Creates global filter template.
-     *
-     * @param filterTemplateType - filter template type
-     * @return global filter template
-     */
-    public static GlobalFilterTemplate createGlobalFilterTemplate(String filterTemplateType) {
-        GlobalFilterTemplate filterTemplate = new GlobalFilterTemplate();
-        filterTemplate.setFilterName(FILTER_NAME);
-        filterTemplate.setTemplateType(filterTemplateType);
-        filterTemplate.setFields(IntStream.range(0, FILTER_TEMPLATE_FIELDS).mapToObj(
-                i -> createGlobalFilterField(String.valueOf(i))).collect(Collectors.toList()));
-        return filterTemplate;
-    }
-
-    /**
-     * Creates global filter field.
-     *
-     * @param name - field name
-     * @return global filter field
-     */
-    public static GlobalFilterField createGlobalFilterField(String name) {
-        GlobalFilterField filterField = new GlobalFilterField();
-        filterField.setFieldName(name);
-        return filterField;
-    }
-
-    /**
-     * Creates sort template.
-     *
-     * @param templateType - filter template type
-     * @return global filter template
-     */
-    public static SortTemplate createSortTemplate(String templateType) {
-        SortTemplate filterTemplate = new SortTemplate();
-        filterTemplate.setTemplateType(templateType);
-        filterTemplate.setSortFields(IntStream.range(0, FILTER_TEMPLATE_FIELDS).mapToObj(
-                i -> createSortFilterField(String.valueOf(i))).collect(Collectors.toList()));
-        return filterTemplate;
-    }
-
-    /**
-     * Creates sort field.
-     *
-     * @param name - field name
-     * @return sort field
-     */
-    public static SortField createSortFilterField(String name) {
-        SortField sortField = new SortField();
-        sortField.setFieldName(name);
-        return sortField;
     }
 }

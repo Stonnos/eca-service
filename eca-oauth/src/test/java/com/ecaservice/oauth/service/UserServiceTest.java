@@ -3,6 +3,8 @@ package com.ecaservice.oauth.service;
 import com.ecaservice.common.web.exception.EntityNotFoundException;
 import com.ecaservice.common.web.exception.InvalidFileException;
 import com.ecaservice.common.web.exception.InvalidOperationException;
+import com.ecaservice.core.filter.config.CoreFilterConfiguration;
+import com.ecaservice.core.filter.mapping.FilterTemplateMapperImpl;
 import com.ecaservice.core.filter.service.FilterTemplateService;
 import com.ecaservice.oauth.AbstractJpaTest;
 import com.ecaservice.oauth.TestHelperUtils;
@@ -11,7 +13,6 @@ import com.ecaservice.oauth.dto.CreateUserDto;
 import com.ecaservice.oauth.dto.UpdateUserInfoDto;
 import com.ecaservice.oauth.entity.RoleEntity;
 import com.ecaservice.oauth.entity.UserEntity;
-import com.ecaservice.oauth.entity.UserEntity_;
 import com.ecaservice.oauth.entity.UserPhoto;
 import com.ecaservice.oauth.exception.UserLockNotAllowedException;
 import com.ecaservice.oauth.exception.UserLockedException;
@@ -39,13 +40,11 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.Iterator;
-import java.util.List;
 
 import static com.ecaservice.oauth.TestHelperUtils.createRoleEntity;
 import static com.ecaservice.oauth.TestHelperUtils.createUpdateUserInfoDto;
 import static com.ecaservice.oauth.TestHelperUtils.createUserDto;
 import static com.ecaservice.oauth.TestHelperUtils.createUserEntity;
-import static com.ecaservice.oauth.dictionary.FilterDictionaries.USERS_TEMPLATE;
 import static com.ecaservice.oauth.entity.UserEntity_.CREATION_DATE;
 import static com.ecaservice.oauth.entity.UserEntity_.FULL_NAME;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -61,7 +60,8 @@ import static org.mockito.Mockito.when;
  *
  * @author Roman Batygin
  */
-@Import({AppProperties.class, UserMapperImpl.class, RoleMapperImpl.class})
+@Import({AppProperties.class, UserMapperImpl.class, RoleMapperImpl.class,
+        CoreFilterConfiguration.class, FilterTemplateMapperImpl.class})
 class UserServiceTest extends AbstractJpaTest {
 
     private static final String PASSWORD = "pa66word!";
@@ -81,11 +81,11 @@ class UserServiceTest extends AbstractJpaTest {
     private RoleRepository roleRepository;
     @Autowired
     private UserPhotoRepository userPhotoRepository;
+    @Autowired
+    private FilterTemplateService filterTemplateService;
 
     @MockBean
     private Oauth2RevokeTokenService oauth2RevokeTokenService;
-    @MockBean
-    private FilterTemplateService filterTemplateService;
 
     private UserService userService;
 
@@ -95,11 +95,6 @@ class UserServiceTest extends AbstractJpaTest {
         PasswordEncoder passwordEncoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
         userService = new UserService(appProperties, passwordEncoder, userMapper, oauth2RevokeTokenService,
                 filterTemplateService, userEntityRepository, roleRepository, userPhotoRepository);
-        when(filterTemplateService.getGlobalFilterFields(USERS_TEMPLATE)).thenReturn(
-                List.of(UserEntity_.LOGIN,
-                        UserEntity_.EMAIL,
-                        UserEntity_.FULL_NAME)
-        );
     }
 
     @Override

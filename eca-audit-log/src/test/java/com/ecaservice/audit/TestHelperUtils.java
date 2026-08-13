@@ -76,9 +76,9 @@ public class TestHelperUtils {
         auditLogEntity.setEventType(EventType.SUCCESS);
         auditLogEntity.setInitiator(INITIATOR);
         auditLogEntity.setCode(code);
-        auditLogEntity.setCodeTitle(CODE_TITLE);
+        auditLogEntity.setCodeTitle(code);
         auditLogEntity.setGroupCode(groupCode);
-        auditLogEntity.setGroupTitle(GROUP_TITLE);
+        auditLogEntity.setGroupTitle(groupCode);
         auditLogEntity.setMessage(MESSAGE);
         auditLogEntity.setEventDate(LocalDateTime.now());
         return auditLogEntity;
@@ -101,7 +101,6 @@ public class TestHelperUtils {
     public static FilterFieldDto createFilterFieldDto() {
         FilterFieldDto filterField = new FilterFieldDto();
         filterField.setDescription(FILTER_DESCRIPTION);
-        filterField.setFieldOrder(1);
         filterField.setFieldName(FILTER_NAME);
         filterField.setFilterFieldType(FilterFieldType.REFERENCE);
         filterField.setMatchMode(MatchMode.EQUALS);

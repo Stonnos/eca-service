@@ -1,0 +1,16 @@
+{
+  "templateName": "Фильтр по конфигурациям классификаторов",
+  "templateType": "CLASSIFIERS_CONFIGURATION",
+  "fields": [],
+  "globalFilterFields": [
+    "configurationName",
+    "createdBy",
+    "id"
+  ],
+  "sortFields": [
+    "configurationName",
+    "creationDate",
+    "updated",
+    "id"
+  ]
+}

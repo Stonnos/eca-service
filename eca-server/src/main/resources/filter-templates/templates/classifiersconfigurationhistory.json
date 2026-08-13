@@ -1,0 +1,44 @@
+{
+  "templateName": "Фильтр истории конфигурации классификаторов",
+  "templateType": "CLASSIFIERS_CONFIGURATION_HISTORY",
+  "fields": [
+    {
+      "fieldName": "createdBy",
+      "description": "Пользователь",
+      "filterFieldType": "LAZY_REFERENCE",
+      "matchMode": "EQUALS",
+      "multiple": false,
+      "dictionary": null
+    },
+    {
+      "fieldName": "actionType",
+      "description": "Тип события",
+      "filterFieldType": "REFERENCE",
+      "matchMode": "EQUALS",
+      "multiple": true,
+      "dictionary": {
+        "name": "classifiersConfigurationActionType",
+        "values": null
+      }
+    },
+    {
+      "fieldName": "createdAt",
+      "description": "Дата события",
+      "filterFieldType": "DATE",
+      "matchMode": "RANGE",
+      "multiple": true,
+      "dictionary": null
+    }
+  ],
+  "globalFilterFields": [
+    "actionType",
+    "messageText",
+    "createdBy"
+  ],
+  "sortFields": [
+    "actionType",
+    "createdBy",
+    "createdAt",
+    "messageText"
+  ]
+}

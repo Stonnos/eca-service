@@ -1,6 +1,6 @@
 package com.ecaservice.core.filter.util;
 
-import com.ecaservice.core.filter.entity.FilterField;
+import com.ecaservice.core.filter.model.FilterField;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 

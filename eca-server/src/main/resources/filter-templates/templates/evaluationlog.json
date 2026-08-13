@@ -1,0 +1,87 @@
+{
+  "templateName": "Фильтр классификаторов",
+  "templateType": "EVALUATION_LOG",
+  "fields": [
+    {
+      "fieldName": "requestId",
+      "description": "UUID заявки",
+      "filterFieldType": "TEXT",
+      "matchMode": "EQUALS",
+      "multiple": false,
+      "dictionary": null
+    },
+    {
+      "fieldName": "createdBy",
+      "description": "Пользователь",
+      "filterFieldType": "LAZY_REFERENCE",
+      "matchMode": "EQUALS",
+      "multiple": false,
+      "dictionary": null
+    },
+    {
+      "fieldName": "classifierName",
+      "description": "Классификатор",
+      "filterFieldType": "REFERENCE",
+      "matchMode": "EQUALS",
+      "multiple": true,
+      "dictionary": {
+        "name": "classifier",
+        "values": null
+      }
+    },
+    {
+      "fieldName": "instancesInfo.id",
+      "description": "Обучающая выборка",
+      "filterFieldType": "LAZY_REFERENCE",
+      "matchMode": "EQUALS",
+      "multiple": false,
+      "dictionary": null
+    },
+    {
+      "fieldName": "evaluationMethod",
+      "description": "Метод оценки точности",
+      "filterFieldType": "REFERENCE",
+      "matchMode": "EQUALS",
+      "multiple": false,
+      "dictionary": {
+        "name": "evaluationMethod",
+        "values": null
+      }
+    },
+    {
+      "fieldName": "requestStatus",
+      "description": "Статус заявки",
+      "filterFieldType": "REFERENCE",
+      "matchMode": "EQUALS",
+      "multiple": false,
+      "dictionary": {
+        "name": "requestStatus",
+        "values": null
+      }
+    },
+    {
+      "fieldName": "creationDate",
+      "description": "Дата создания заявки",
+      "filterFieldType": "DATE",
+      "matchMode": "RANGE",
+      "multiple": true,
+      "dictionary": null
+    }
+  ],
+  "globalFilterFields": [
+    "requestId",
+    "relationName",
+    "evaluationMethod",
+    "classifierName",
+    "requestStatus",
+    "createdBy"
+  ],
+  "sortFields": [
+    "requestId",
+    "classifierName",
+    "pctCorrect",
+    "relationName",
+    "creationDate",
+    "createdBy"
+  ]
+}

@@ -1,6 +1,7 @@
 package com.ecaservice.server.service;
 
-import com.ecaservice.core.filter.service.FilterTemplateService;
+import com.ecaservice.core.filter.config.CoreFilterConfiguration;
+import com.ecaservice.core.filter.mapping.FilterTemplateMapperImpl;
 import com.ecaservice.s3.client.minio.model.GetPresignedUrlObject;
 import com.ecaservice.s3.client.minio.service.ObjectStorageService;
 import com.ecaservice.server.config.AppProperties;
@@ -30,7 +31,6 @@ import java.util.stream.IntStream;
 
 import static com.ecaservice.server.PageRequestUtils.PAGE_NUMBER;
 import static com.ecaservice.server.PageRequestUtils.PAGE_SIZE;
-import static com.ecaservice.server.model.entity.FilterTemplateType.INSTANCES_INFO;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
@@ -40,7 +40,8 @@ import static org.mockito.Mockito.when;
  *
  * @author Roman Batygin
  */
-@Import({InstancesInfoService.class, InstancesInfoMapperImpl.class, InstancesProvider.class, AppProperties.class})
+@Import({InstancesInfoService.class, InstancesInfoMapperImpl.class, InstancesProvider.class, AppProperties.class,
+        CoreFilterConfiguration.class, FilterTemplateMapperImpl.class})
 class InstancesInfoServiceTest extends AbstractJpaTest {
 
     private static final List<AttributeMetaInfo> ATTRIBUTE_META_INFO_LIST = Arrays.asList(
@@ -55,8 +56,6 @@ class InstancesInfoServiceTest extends AbstractJpaTest {
     private static final String OBJECT_PATH = "instances";
     private static final String DOWNLOAD_URL = "http://localhost:9000/instances";
 
-    @MockBean
-    private FilterTemplateService filterTemplateService;
     @MockBean
     private InstancesMetaDataService instancesMetaDataService;
     @MockBean
@@ -81,8 +80,6 @@ class InstancesInfoServiceTest extends AbstractJpaTest {
 
     @Override
     public void init() {
-        when(filterTemplateService.getGlobalFilterFields(INSTANCES_INFO)).thenReturn(
-                Collections.singletonList(InstancesInfo_.RELATION_NAME));
         var instancesDataModel =
                 new InstancesMetaDataModel(dataUuid, RELATION_NAME, NUM_INSTANCES, NUM_ATTRIBUTES,
                         NUM_CLASSES, CLASS_NAME, OBJECT_PATH, ATTRIBUTE_META_INFO_LIST);

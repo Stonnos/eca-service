@@ -1,0 +1,13 @@
+{
+  "name": "evaluationMethod",
+  "values": [
+    {
+      "label": "Использование обучающего множества",
+      "value": "TRAINING_DATA"
+    },
+    {
+      "label": "V-блочная кросс-проверка",
+      "value": "CROSS_VALIDATION"
+    }
+  ]
+}

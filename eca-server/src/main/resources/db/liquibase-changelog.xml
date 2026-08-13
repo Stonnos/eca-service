@@ -36,7 +36,6 @@
     <include file="../redelivery-changelog.xml" relativeToChangelogFile="true"/>
     <include file="../audit-changelog.xml" relativeToChangelogFile="true"/>
     <include file="db/changelog/v42-insert-audit-codes-and-events.xml"/>
-    <include file="../filter-template-changelog.xml" relativeToChangelogFile="true"/>
     <include file="db/changelog/v44-drop-app-instance-table.xml"/>
     <include file="db/changelog/v45-add-channel-type-column.xml"/>
     <include file="../mail-client-changelog.xml" relativeToChangelogFile="true"/>
@@ -62,8 +61,6 @@
     <include file="db/changelog/v73-drop-experiment-class-index-column.xml"/>
     <include file="db/changelog/v74-add-evaluation-log-train-data-uuid-column.xml"/>
     <include file="../insert-classifier-form-templates.xml" relativeToChangelogFile="true"/>
-    <include file="db/changelog/v78-clear-filter-templates.xml"/>
-    <include file="db/changelog/v79-update-filter-templates.xml"/>
     <include file="db/changelog/v80-add-indexes.xml"/>
     <include file="db/changelog/v81-create-attributes-info-table.xml"/>
     <include file="db/changelog/v82-drop-instances-data-md5-hash-column.xml"/>
@@ -77,4 +74,5 @@
     <include file="db/changelog/v90-create-evaluation-results-attachment-table.xml"/>
     <include file="db/changelog/v91-add-auc-predictions-path-column.xml"/>
     <include file="db/changelog/v92-drop-user-profile-options-table.xml"/>
+    <include file="db/changelog/drop-filter-template-changelog.xml"/>
 </databaseChangeLog>

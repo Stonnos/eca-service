@@ -1,6 +1,7 @@
 package com.ecaservice.ers.service;
 
-import com.ecaservice.core.filter.service.FilterTemplateService;
+import com.ecaservice.core.filter.config.CoreFilterConfiguration;
+import com.ecaservice.core.filter.mapping.FilterTemplateMapperImpl;
 import com.ecaservice.ers.AbstractJpaTest;
 import com.ecaservice.ers.mapping.InstancesMapperImpl;
 import com.ecaservice.ers.model.InstancesInfo_;
@@ -9,7 +10,6 @@ import com.ecaservice.web.dto.model.PageRequestDto;
 import com.ecaservice.web.dto.model.SortFieldRequestDto;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 
 import java.util.Arrays;
@@ -17,25 +17,21 @@ import java.util.Collections;
 import java.util.UUID;
 
 import static com.ecaservice.ers.TestHelperUtils.buildInstancesInfo;
-import static com.ecaservice.ers.dictionary.FilterDictionaries.INSTANCES_INFO;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.when;
 
 /**
  * Unit tests for {@link InstancesService} class.
  *
  * @author Roman Batygin
  */
-@Import({InstancesService.class, InstancesMapperImpl.class, InstancesProvider.class})
+@Import({InstancesService.class, InstancesMapperImpl.class, InstancesProvider.class,
+        CoreFilterConfiguration.class, FilterTemplateMapperImpl.class})
 class InstancesServiceTest extends AbstractJpaTest {
 
     private static final int PAGE_NUMBER = 0;
     private static final int PAGE_SIZE = 10;
     private static final String RELATION_1 = "relation1";
     private static final String RELATION_2 = "relation2";
-
-    @MockBean
-    private FilterTemplateService filterTemplateService;
 
     @Autowired
     private InstancesInfoRepository instancesInfoRepository;
@@ -52,8 +48,6 @@ class InstancesServiceTest extends AbstractJpaTest {
     @Override
     public void init() {
         saveInstancesInfoData();
-        when(filterTemplateService.getGlobalFilterFields(INSTANCES_INFO)).thenReturn(
-                Collections.singletonList(InstancesInfo_.RELATION_NAME));
     }
 
     @Test

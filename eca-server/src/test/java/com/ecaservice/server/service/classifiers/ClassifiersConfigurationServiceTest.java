@@ -5,7 +5,8 @@ import com.ecaservice.classifier.template.processor.service.ClassifierOptionsPro
 import com.ecaservice.classifier.template.processor.service.ClassifiersTemplateProvider;
 import com.ecaservice.common.web.exception.EntityNotFoundException;
 import com.ecaservice.common.web.exception.InvalidOperationException;
-import com.ecaservice.core.filter.service.FilterTemplateService;
+import com.ecaservice.core.filter.config.CoreFilterConfiguration;
+import com.ecaservice.core.filter.mapping.FilterTemplateMapperImpl;
 import com.ecaservice.core.form.template.service.FormTemplateProvider;
 import com.ecaservice.core.lock.config.CoreLockAutoConfiguration;
 import com.ecaservice.core.lock.metrics.LockMeterService;
@@ -18,7 +19,6 @@ import com.ecaservice.server.mapping.ClassifiersConfigurationMapperImpl;
 import com.ecaservice.server.mapping.DateTimeConverter;
 import com.ecaservice.server.model.entity.ClassifiersConfiguration;
 import com.ecaservice.server.model.entity.ClassifiersConfigurationActionType;
-import com.ecaservice.server.model.entity.FilterTemplateType;
 import com.ecaservice.server.report.model.ClassifiersConfigurationBean;
 import com.ecaservice.server.repository.ClassifierOptionsDatabaseModelRepository;
 import com.ecaservice.server.repository.ClassifiersConfigurationHistoryRepository;
@@ -79,7 +79,8 @@ import static org.mockito.Mockito.when;
         DateTimeConverter.class, ClassifierOptionsDatabaseModelMapperImpl.class,
         CoreLockAutoConfiguration.class, ClassifierOptionsInfoProcessor.class, ClassifierOptionsProcessor.class,
         ClassifiersTemplateProperties.class, ClassifiersTemplateProvider.class,
-        ClassifiersConfigurationHistoryService.class, ClassifiersConfigurationHistoryMapperImpl.class})
+        ClassifiersConfigurationHistoryService.class, ClassifiersConfigurationHistoryMapperImpl.class,
+        CoreFilterConfiguration.class, FilterTemplateMapperImpl.class})
 class ClassifiersConfigurationServiceTest extends AbstractJpaTest {
 
     private static final int NUM_THREADS = 4;
@@ -102,8 +103,6 @@ class ClassifiersConfigurationServiceTest extends AbstractJpaTest {
     private ClassifiersConfigurationRepository classifiersConfigurationRepository;
     @Autowired
     private ClassifiersConfigurationService classifiersConfigurationService;
-    @MockBean
-    private FilterTemplateService filterTemplateService;
     @MockBean
     private UserService userService;
     @MockBean
@@ -300,8 +299,6 @@ class ClassifiersConfigurationServiceTest extends AbstractJpaTest {
 
     @Test
     void testGetClassifiersConfigurations() {
-        when(filterTemplateService.getGlobalFilterFields(FilterTemplateType.CLASSIFIERS_CONFIGURATION))
-                .thenReturn(Collections.emptyList());
         ClassifiersConfiguration firstConfiguration = saveConfiguration(true, true);
         ClassifiersConfiguration secondConfiguration = saveConfiguration(false, false);
         classifierOptionsDatabaseModelRepository.save(

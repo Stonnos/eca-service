@@ -1,0 +1,12 @@
+{
+  "templateName": "Фильтр по настройкам классификаторов",
+  "templateType": "CLASSIFIER_OPTIONS",
+  "fields": [],
+  "globalFilterFields": null,
+  "sortFields": [
+    "id",
+    "optionsName",
+    "creationDate",
+    "createdBy"
+  ]
+}

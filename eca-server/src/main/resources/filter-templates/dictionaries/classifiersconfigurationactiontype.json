@@ -1,0 +1,29 @@
+{
+  "name": "classifiersConfigurationActionType",
+  "values": [
+    {
+      "label": "Создана новая конфигурация",
+      "value": "CREATE_CONFIGURATION"
+    },
+    {
+      "label": "Данные конфигурации изменены",
+      "value": "UPDATE_CONFIGURATION"
+    },
+    {
+      "label": "Конфигурация сделана активной",
+      "value": "SET_ACTIVE"
+    },
+    {
+      "label": "Конфигурация перестала быть активной",
+      "value": "DEACTIVATE"
+    },
+    {
+      "label": "Добавлены новые настройки классификатора",
+      "value": "ADD_CLASSIFIER_OPTIONS"
+    },
+    {
+      "label": "Удалены настройки классификатора",
+      "value": "REMOVE_CLASSIFIER_OPTIONS"
+    }
+  ]
+}

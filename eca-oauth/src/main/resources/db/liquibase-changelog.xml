@@ -36,8 +36,6 @@
     <include file="db/changelog/v26-assign-internal-api-scope.xml"/>
     <include file="db/changelog/v27-create-push-enabled-column.xml"/>
     <include file="db/changelog/v28-added-code-column-to-tfa-code-table.xml"/>
-    <include file="../filter-template-changelog.xml" relativeToChangelogFile="true"/>
-    <include file="db/changelog/v29-update-filter-templates.xml"/>
     <include file="db/changelog/v30-assign-data-loader-api-scope.xml"/>
     <include file="db/changelog/v31-create-user-profile-options-table.xml"/>
     <include file="db/changelog/v32-drop-user-push-enabled-column.xml"/>
@@ -54,4 +52,5 @@
     <include file="db/changelog/v42-add-revocation-token-to-change-email-request-table.xml"/>
     <include file="db/changelog/v43-create-force-set-password-request-table.xml"/>
     <include file="db/changelog/v44-drop-user-profile-options-tables.xml"/>
+    <include file="db/changelog/drop-filter-template-changelog.xml"/>
 </databaseChangeLog>

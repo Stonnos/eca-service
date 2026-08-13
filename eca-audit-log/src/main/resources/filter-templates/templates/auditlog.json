@@ -1,0 +1,62 @@
+{
+  "templateName": "Фильтр событий аудита",
+  "templateType": "AUDIT_LOG",
+  "fields": [
+    {
+      "fieldName": "eventId",
+      "description": "ID события",
+      "filterFieldType": "TEXT",
+      "matchMode": "EQUALS",
+      "multiple": false,
+      "dictionary": null
+    },
+    {
+      "fieldName": "correlationId",
+      "description": "ID корреляции",
+      "filterFieldType": "TEXT",
+      "matchMode": "EQUALS",
+      "multiple": false,
+      "dictionary": null
+    },
+    {
+      "fieldName": "groupCode",
+      "description": "Группа событий",
+      "filterFieldType": "REFERENCE",
+      "matchMode": "EQUALS",
+      "multiple": false,
+      "dictionary": {
+        "name": "auditGroup",
+        "values": null
+      }
+    },
+    {
+      "fieldName": "initiator",
+      "description": "Инициатор события",
+      "filterFieldType": "LAZY_REFERENCE",
+      "matchMode": "EQUALS",
+      "multiple": false,
+      "dictionary": null
+    },
+    {
+      "fieldName": "eventDate",
+      "description": "Дата события",
+      "filterFieldType": "DATE",
+      "matchMode": "RANGE",
+      "multiple": true,
+      "dictionary": null
+    }
+  ],
+  "globalFilterFields": [
+    "eventId",
+    "message",
+    "initiator",
+    "groupTitle",
+    "codeTitle",
+    "correlationId"
+  ],
+  "sortFields": [
+    "eventId",
+    "eventDate",
+    "initiator"
+  ]
+}

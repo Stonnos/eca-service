@@ -1,0 +1,59 @@
+{
+  "templateName": "Фильтр для истории результатов классификации",
+  "templateType": "EVALUATION_RESULTS_HISTORY_TEMPLATE",
+  "fields": [
+    {
+      "fieldName": "classifierName",
+      "description": "Классификатор",
+      "filterFieldType": "REFERENCE",
+      "matchMode": "EQUALS",
+      "multiple": true,
+      "dictionary": {
+        "name": "classifier",
+        "values": null
+      }
+    },
+    {
+      "fieldName": "instancesInfo.id",
+      "description": "Обучающая выборка",
+      "filterFieldType": "LAZY_REFERENCE",
+      "matchMode": "EQUALS",
+      "multiple": false,
+      "dictionary": null
+    },
+    {
+      "fieldName": "evaluationMethod",
+      "description": "Метод оценки точности",
+      "filterFieldType": "REFERENCE",
+      "matchMode": "EQUALS",
+      "multiple": false,
+      "dictionary": {
+        "name": "evaluationMethod",
+        "values": null
+      }
+    },
+    {
+      "fieldName": "saveDate",
+      "description": "Дата сохранения результатов",
+      "filterFieldType": "DATE",
+      "matchMode": "RANGE",
+      "multiple": true,
+      "dictionary": null
+    }
+  ],
+  "globalFilterFields": [
+    "relationName",
+    "evaluationMethod",
+    "classifierName"
+  ],
+  "sortFields": [
+    "saveDate",
+    "relationName",
+    "classifierName",
+    "statistics.pctCorrect",
+    "statistics.meanAbsoluteError",
+    "statistics.rootMeanSquaredError",
+    "statistics.maxAucValue",
+    "statistics.varianceError"
+  ]
+}

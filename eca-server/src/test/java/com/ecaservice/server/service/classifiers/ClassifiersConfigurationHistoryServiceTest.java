@@ -1,12 +1,12 @@
 package com.ecaservice.server.service.classifiers;
 
-import com.ecaservice.core.filter.service.FilterTemplateService;
+import com.ecaservice.core.filter.config.CoreFilterConfiguration;
+import com.ecaservice.core.filter.mapping.FilterTemplateMapperImpl;
 import com.ecaservice.core.message.template.service.MessageTemplateProcessor;
 import com.ecaservice.server.config.AppProperties;
 import com.ecaservice.server.mapping.ClassifiersConfigurationHistoryMapperImpl;
 import com.ecaservice.server.model.entity.ClassifiersConfiguration;
 import com.ecaservice.server.model.entity.ClassifiersConfigurationActionType;
-import com.ecaservice.server.model.entity.FilterTemplateType;
 import com.ecaservice.server.repository.ClassifiersConfigurationHistoryRepository;
 import com.ecaservice.server.repository.ClassifiersConfigurationRepository;
 import com.ecaservice.server.service.AbstractJpaTest;
@@ -20,14 +20,10 @@ import org.springframework.context.annotation.Import;
 
 import java.time.LocalDateTime;
 import java.util.Collections;
-import java.util.List;
 
 import static com.ecaservice.server.TestHelperUtils.createClassifiersConfiguration;
 import static com.ecaservice.server.TestHelperUtils.createClassifiersConfigurationHistory;
-import static com.ecaservice.server.model.entity.ClassifiersConfigurationHistoryEntity_.ACTION_TYPE;
 import static com.ecaservice.server.model.entity.ClassifiersConfigurationHistoryEntity_.CREATED_AT;
-import static com.ecaservice.server.model.entity.ClassifiersConfigurationHistoryEntity_.CREATED_BY;
-import static com.ecaservice.server.model.entity.ClassifiersConfigurationHistoryEntity_.MESSAGE_TEXT;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
@@ -37,7 +33,8 @@ import static org.mockito.Mockito.when;
  * @author Roman Batygin
  */
 @Import({AppProperties.class, ClassifiersConfigurationHistoryService.class,
-        ClassifiersConfigurationHistoryMapperImpl.class})
+        ClassifiersConfigurationHistoryMapperImpl.class, CoreFilterConfiguration.class,
+        FilterTemplateMapperImpl.class})
 class ClassifiersConfigurationHistoryServiceTest extends AbstractJpaTest {
 
     private static final String USER_NAME = "user";
@@ -51,8 +48,6 @@ class ClassifiersConfigurationHistoryServiceTest extends AbstractJpaTest {
     private ClassifiersConfigurationRepository classifiersConfigurationRepository;
     @Autowired
     private ClassifiersConfigurationHistoryService classifiersConfigurationHistoryService;
-    @MockBean
-    private FilterTemplateService filterTemplateService;
     @MockBean
     private UserService userService;
     @MockBean
@@ -73,8 +68,6 @@ class ClassifiersConfigurationHistoryServiceTest extends AbstractJpaTest {
 
     @Test
     void testGetClassifiersConfigurationHistory() {
-        when(filterTemplateService.getGlobalFilterFields(FilterTemplateType.CLASSIFIERS_CONFIGURATION_HISTORY))
-                .thenReturn(List.of(CREATED_BY, MESSAGE_TEXT, ACTION_TYPE));
         var classifiersConfiguration = createAndSaveConfiguration();
         saveClassifiersConfigurationHistory(classifiersConfiguration,
                 ClassifiersConfigurationActionType.CREATE_CONFIGURATION);

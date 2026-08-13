@@ -16,7 +16,7 @@ spring:
           ## Use one hibernate_sequence for all entities
           db_structure_naming_strategy: legacy
   cache:
-    cache-names: instances, global-filters, filter-templates, filter-dictionaries, sort-fields, evaluationResultsHistoryCountQuery
+    cache-names: instances, evaluationResultsHistoryCountQuery
     caffeine:
       spec: maximumSize=256, expireAfterWrite=3600s
   liquibase:

@@ -1,0 +1,27 @@
+{
+  "templateName": "Фильтр для обучающих выборок",
+  "templateType": "INSTANCES",
+  "fields": [
+    {
+      "fieldName": "relationName",
+      "description": "Название данных",
+      "filterFieldType": "TEXT",
+      "matchMode": "LIKE",
+      "multiple": false,
+      "dictionary": null
+    }
+  ],
+  "globalFilterFields": [
+    "id",
+    "relationName",
+    "createdBy"
+  ],
+  "sortFields": [
+    "id",
+    "relationName",
+    "numInstances",
+    "numAttributes",
+    "created",
+    "createdBy"
+  ]
+}

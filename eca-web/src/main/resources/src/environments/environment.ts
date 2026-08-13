@@ -7,7 +7,6 @@ export const environment = {
   serverUrl: `http://${window.location.hostname}:${window.location.port}/eca-server`,
   oauthUrl: `http://${window.location.hostname}:${window.location.port}/eca-oauth`,
   dsUrl: `http://${window.location.hostname}:${window.location.port}/eca-ds`,
-  mailUrl: `http://${window.location.hostname}:${window.location.port}/eca-mail`,
   auditLogUrl: `http://${window.location.hostname}:${window.location.port}/eca-audit-log`,
   notificationsUrl: `http://${window.location.hostname}:${window.location.port}/eca-notification-service`,
   ersUrl: `http://${window.location.hostname}:${window.location.port}/eca-ers`,

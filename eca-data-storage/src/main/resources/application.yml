@@ -22,7 +22,7 @@ spring:
     contexts: schema,data
     change-log: classpath:db/liquibase-changelog.xml
   cache:
-    cache-names: attributes, attributes-statistics, global-filters, filter-templates, filter-dictionaries, sort-fields
+    cache-names: attributes, attributes-statistics
     caffeine:
       spec: maximumSize=100, expireAfterWrite=1800s
   servlet:

@@ -1,5 +1,7 @@
 package com.ecaservice.server.service.evaluation;
 
+import com.ecaservice.core.filter.config.CoreFilterConfiguration;
+import com.ecaservice.core.filter.mapping.FilterTemplateMapperImpl;
 import com.ecaservice.core.filter.service.FilterTemplateService;
 import com.ecaservice.s3.client.minio.model.GetPresignedUrlObject;
 import com.ecaservice.s3.client.minio.service.ObjectStorageService;
@@ -14,7 +16,6 @@ import com.ecaservice.server.model.entity.ErsResponseStatus;
 import com.ecaservice.server.model.entity.EvaluationLog;
 import com.ecaservice.server.model.entity.EvaluationLog_;
 import com.ecaservice.server.model.entity.EvaluationResultsRequestEntity;
-import com.ecaservice.server.model.entity.FilterTemplateType;
 import com.ecaservice.server.model.entity.InstancesInfo;
 import com.ecaservice.server.model.entity.RequestStatus;
 import com.ecaservice.server.repository.EvaluationLogRepository;
@@ -23,13 +24,10 @@ import com.ecaservice.server.repository.InstancesInfoRepository;
 import com.ecaservice.server.service.AbstractJpaTest;
 import com.ecaservice.server.service.classifiers.ClassifierOptionsInfoProcessor;
 import com.ecaservice.server.service.ers.ErsService;
-import com.ecaservice.server.service.filter.dictionary.FilterDictionaries;
 import com.ecaservice.web.dto.model.ChartDataDto;
 import com.ecaservice.web.dto.model.EvaluationLogDetailsDto;
 import com.ecaservice.web.dto.model.EvaluationResultsDto;
 import com.ecaservice.web.dto.model.EvaluationResultsStatus;
-import com.ecaservice.web.dto.model.FilterDictionaryDto;
-import com.ecaservice.web.dto.model.FilterDictionaryValueDto;
 import com.ecaservice.web.dto.model.FilterRequestDto;
 import com.ecaservice.web.dto.model.MatchMode;
 import com.ecaservice.web.dto.model.PageRequestDto;
@@ -39,14 +37,13 @@ import eca.neural.NeuralNetwork;
 import eca.trees.C45;
 import eca.trees.CART;
 import eca.trees.ID3;
+import jakarta.persistence.EntityManager;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.Page;
-
-import jakarta.persistence.EntityManager;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -68,18 +65,15 @@ import static org.mockito.Mockito.when;
  */
 @Import({AppProperties.class, EvaluationLogMapperImpl.class,
         InstancesInfoMapperImpl.class, DateTimeConverter.class, ClassifiersProperties.class,
-        EvaluationLogCountQueryExecutor.class})
+        EvaluationLogCountQueryExecutor.class, CoreFilterConfiguration.class, FilterTemplateMapperImpl.class})
 class EvaluationLogDataServiceTest extends AbstractJpaTest {
 
     private static final String MODEL_DOWNLOAD_URL = "http://localhost:9000/classifier";
 
     private static final int PAGE_NUMBER = 0;
     private static final int PAGE_SIZE = 10;
-    private static final String INSTANCES_INFO_RELATION_NAME = "relationName";
     private static final String INSTANCES_INFO_ID = "instancesInfo.id";
     private static final String CLASSIFIER_NAME = "classifierName";
-    private static final String CART_DESCRIPTION = "Алгоритм CART";
-    private static final String C45_DESCRIPTION = "Алгоритм C45";
 
     @Autowired
     private EvaluationLogRepository evaluationLogRepository;
@@ -97,9 +91,9 @@ class EvaluationLogDataServiceTest extends AbstractJpaTest {
     private EvaluationLogMapper evaluationLogMapper;
     @Autowired
     private EvaluationLogCountQueryExecutor evaluationLogCountQueryExecutor;
-
-    @Mock
+    @Autowired
     private FilterTemplateService filterTemplateService;
+
     @Mock
     private ErsService ersService;
     @Mock
@@ -247,10 +241,6 @@ class EvaluationLogDataServiceTest extends AbstractJpaTest {
                 newArrayList());
         pageRequestDto.getFilters().add(new FilterRequestDto(EvaluationLog_.REQUEST_STATUS,
                 Collections.singletonList(RequestStatus.FINISHED.name()), MatchMode.EQUALS));
-        when(filterTemplateService.getGlobalFilterFields(FilterTemplateType.EVALUATION_LOG)).thenReturn(
-                Arrays.asList(CLASSIFIER_NAME, EvaluationLog_.REQUEST_ID,
-                        INSTANCES_INFO_RELATION_NAME));
-        mockClassifiersDictionary();
         var evaluationLogPage = evaluationLogDataService.getEvaluationLogsPage(pageRequestDto);
         assertThat(evaluationLogPage).isNotNull();
         assertThat(evaluationLogPage.getTotalCount()).isOne();
@@ -323,7 +313,6 @@ class EvaluationLogDataServiceTest extends AbstractJpaTest {
     @Test
     void testGetClassifiersStatisticsData() {
         var evaluationLogs = createAndSaveTestDataForGetClassifiersStatisticsData();
-        mockClassifiersDictionary();
         var statisticsData = evaluationLogDataService.getClassifiersStatisticsData(LocalDate.now(), LocalDate.now());
         assertThat(statisticsData).isNotNull();
         assertThat(statisticsData.getTotal()).isEqualTo(evaluationLogs.size());
@@ -410,18 +399,5 @@ class EvaluationLogDataServiceTest extends AbstractJpaTest {
         evaluationLogRepository.save(evaluationLog);
         evaluationResultsRequestEntityRepository.save(evaluationResultsRequestEntity);
         return evaluationLog;
-    }
-
-    private void mockClassifiersDictionary() {
-        var classifiersDictionary = new FilterDictionaryDto();
-        classifiersDictionary.setValues(newArrayList());
-        classifiersDictionary.getValues().add(
-                new FilterDictionaryValueDto(CART_DESCRIPTION, CART.class.getSimpleName()));
-        classifiersDictionary.getValues().add(new FilterDictionaryValueDto(C45_DESCRIPTION, C45.class.getSimpleName()));
-        classifiersDictionary.getValues().add(new FilterDictionaryValueDto(KNearestNeighbours.class.getSimpleName(),
-                KNearestNeighbours.class.getSimpleName()));
-        classifiersDictionary.getValues().add(new FilterDictionaryValueDto(NeuralNetwork.class.getSimpleName(),
-                NeuralNetwork.class.getSimpleName()));
-        when(filterTemplateService.getFilterDictionary(FilterDictionaries.CLASSIFIER_NAME)).thenReturn(classifiersDictionary);
     }
 }

@@ -11,11 +11,10 @@
     <include file="db/changelog/v3-add-class-attribute-column.xml"/>
     <include file="db/changelog/v4-add-id-column-name-column.xml"/>
     <include file="db/changelog/v5-add-instances-relation-name-column.xml"/>
-    <include file="../filter-template-changelog.xml" relativeToChangelogFile="true"/>
-    <include file="db/changelog/v6-update-filter-templates.xml"/>
     <include file="db/changelog/v7-add-instances-updates-counter-column.xml"/>
     <include file="db/changelog/v8-create-export-instances-object-table.xml"/>
     <include file="../redelivery-changelog.xml" relativeToChangelogFile="true"/>
     <include file="db/changelog/v9-drop-export-instances-object-expire-at-column.xml"/>
     <include file="db/changelog/v10-add-instances-last-exported-date-column.xml"/>
+    <include file="db/changelog/drop-filter-template-changelog.xml"/>
 </databaseChangeLog>

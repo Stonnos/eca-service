@@ -1,0 +1,25 @@
+{
+  "templateName": "Фильтр для пользователей",
+  "templateType": "USERS",
+  "fields": [
+    {
+      "fieldName": "login",
+      "description": "Логин",
+      "filterFieldType": "TEXT",
+      "matchMode": "LIKE",
+      "multiple": false,
+      "dictionary": null
+    }
+  ],
+  "globalFilterFields": [
+    "login",
+    "email",
+    "fullName"
+  ],
+  "sortFields": [
+    "creationDate",
+    "login",
+    "email",
+    "fullName"
+  ]
+}

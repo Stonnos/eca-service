@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+        logicalFilePath="db/changelog/drop-filter-template-changelog.xml"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="drop_global_filter_field_table" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="global_filter_field"/>
+        </preConditions>
+        <dropTable tableName="global_filter_field"/>
+    </changeSet>
+
+    <changeSet id="drop_global_filter_template_table" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="global_filter_template"/>
+        </preConditions>
+        <dropTable tableName="global_filter_template"/>
+    </changeSet>
+
+    <changeSet id="drop_filter_field_table" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="filter_field"/>
+        </preConditions>
+        <dropTable tableName="filter_field"/>
+    </changeSet>
+
+    <changeSet id="drop_filter_dictionary_value_table" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="filter_dictionary_value"/>
+        </preConditions>
+        <dropTable tableName="filter_dictionary_value"/>
+    </changeSet>
+
+    <changeSet id="drop_filter_dictionary_table" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="filter_dictionary"/>
+        </preConditions>
+        <dropTable tableName="filter_dictionary"/>
+    </changeSet>
+
+    <changeSet id="drop_filter_template_table" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="filter_template"/>
+        </preConditions>
+        <dropTable tableName="filter_template"/>
+    </changeSet>
+
+    <changeSet id="drop_sort_field_table" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="sort_field"/>
+        </preConditions>
+        <dropTable tableName="sort_field"/>
+    </changeSet>
+
+    <changeSet id="drop_sort_template_table" author="roman.batygin@mail.ru" context="schema">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="sort_template"/>
+        </preConditions>
+        <dropTable tableName="sort_template"/>
+    </changeSet>
+
+</databaseChangeLog>

@@ -13,6 +13,5 @@
     <include file="db/changelog/v4-insert-audit-codes-and-events.xml"/>
     <include file="db/changelog/v5-create-template-tables.xml"/>
     <include file="db/changelog/v6-insert-email-templates.xml"/>
-    <include file="../filter-template-changelog.xml" relativeToChangelogFile="true"/>
-    <include file="db/changelog/v7-update-filter-templates.xml"/>
+    <include file="db/changelog/drop-filter-template-changelog.xml"/>
 </databaseChangeLog>
