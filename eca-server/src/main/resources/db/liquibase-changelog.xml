@@ -47,7 +47,6 @@
     <include file="db/changelog/v51-add-classifier-options-column.xml"/>
     <include file="db/changelog/v53-create-classifiers-configuration-history-table.xml"/>
     <include file="db/changelog/v56-create-message-template-table.xml"/>
-    <include file="db/changelog/v57-insert-message-templates.xml"/>
     <include file="db/changelog/v58-add-experiment-download-url-column.xml"/>
     <include file="db/changelog/v60-create-experiment-step-table.xml"/>
     <include file="db/changelog/v61-drop-experiment-first-name-column.xml"/>
@@ -75,4 +74,5 @@
     <include file="db/changelog/v91-add-auc-predictions-path-column.xml"/>
     <include file="db/changelog/v92-drop-user-profile-options-table.xml"/>
     <include file="db/changelog/drop-filter-template-changelog.xml"/>
+    <include file="db/changelog/v93-drop-message-template-table.xml"/>
 </databaseChangeLog>

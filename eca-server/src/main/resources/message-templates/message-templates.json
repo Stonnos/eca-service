@@ -1,29 +1,3 @@
-= Библиотека для работы с шаблонами текстовых сообщений
-:toc:
-:toc-title: Оглавление
-
-== Введение
-
-В данном документе приведена инструкция для подключения библиотеки к spring boot приложению.
-
-== 1. Подключение библиотеки
-
-Для начала, необходимо добавить зависимость в pom.xml
-
-[source,xml]
-----
-<dependency>
-    <groupId>eca.service</groupId>
-    <artifactId>core-message-template</artifactId>
-    <version>${project.version}</version>
-</dependency>
-----
-
-
-Добавить конфигурационный файл message-templates/message-templates.json
-
-[source,json]
-----
 [
   {
     "code": "CREATE_CONFIGURATION",
@@ -110,25 +84,3 @@
     "templateText": "Таймаут при построении модели классификатора [${evaluationLog.classifierDescription}]. Идентификатор заявки ${evaluationLog.requestId}"
   }
 ]
-----
-
-== 4. Примеры использования
-
-Ниже приведен пример кода с использованием класса MessageTemplateProcessor для формирования сообщения по заданному шаблону:
-
-[source,java]
-----
-@Slf4j
-@Service
-@RequiredArgsConstructor
-public class AppService {
-
-    private final MessageTemplateProcessor messageTemplateProcessor;
-
-    public String processMessage() {
-        return messageTemplateProcessor.process("templateCode", Collections.singletonMap("templateVariable", "value");
-    }
-}
-----
-
-Для обработки шаблонов сообщений используется бибилиотека freemarker.

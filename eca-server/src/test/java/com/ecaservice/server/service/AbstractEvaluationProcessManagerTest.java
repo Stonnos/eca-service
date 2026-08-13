@@ -23,7 +23,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.jdbc.Sql;
 import weka.core.Instances;
 
 import java.util.Collections;
@@ -40,7 +39,6 @@ import static org.mockito.Mockito.when;
  * @author Roman Batygin
  */
 @TestPropertySource("classpath:application-camunda.properties")
-@Sql("/sql/message-templates.sql")
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 public abstract class AbstractEvaluationProcessManagerTest<T extends AbstractEvaluationEntity> {
 

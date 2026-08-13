@@ -1,14 +1,10 @@
 package com.ecaservice.core.message.template.service;
 
-import com.ecaservice.common.web.exception.EntityNotFoundException;
-import com.ecaservice.core.message.template.entity.MessageTemplateEntity;
-import com.ecaservice.core.message.template.repository.MessageTemplateRepository;
+import com.ecaservice.core.message.template.config.MessageTemplateConfig;
+import com.ecaservice.core.message.template.model.MessageTemplate;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
-
-import static com.ecaservice.core.message.template.config.cache.MessageTemplateCacheNames.MESSAGE_TEMPLATES_CACHE_NAME;
 
 /**
  * Message templates service.
@@ -20,20 +16,23 @@ import static com.ecaservice.core.message.template.config.cache.MessageTemplateC
 @RequiredArgsConstructor
 public class MessageTemplateService {
 
-    private final MessageTemplateRepository messageTemplateRepository;
+    private final MessageTemplateConfig messageTemplateConfig;
 
     /**
-     * Gets message template by id.
+     * Gets message template by code.
      *
-     * @param id - template id
-     * @return message template entity
+     * @param code - template code
+     * @return message template
      */
-    @Cacheable(MESSAGE_TEMPLATES_CACHE_NAME)
-    public MessageTemplateEntity getTemplate(String id) {
-        log.info("Starting to load message template [{}]", id);
-        var messageTemplate = messageTemplateRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException(MessageTemplateEntity.class, id));
-        log.info("Message template [{}] has been loaded", id);
+    public MessageTemplate getTemplate(String code) {
+        log.debug("Starting to load message template [{}]", code);
+        var messageTemplate = messageTemplateConfig.getTemplates()
+                .stream()
+                .filter(template -> template.getCode().equals(code))
+                .findFirst()
+                .orElseThrow(
+                        () -> new IllegalStateException(String.format("Can't find template with code [%s]", code)));
+        log.debug("Message template [{}] has been loaded", code);
         return messageTemplate;
     }
 }
