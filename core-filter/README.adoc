@@ -22,11 +22,17 @@
 Добавить шаблоны фильтров в папку resources:
 
 resources/
+
    filter-templates/
+
       templates/
+
          evaluationresultshistorytemplate.json
+
       dictionaries/
+
          classifier.json
+
          evaluationmethod.json
 
 Привер json кофигурации с шаблоном фильтра:
