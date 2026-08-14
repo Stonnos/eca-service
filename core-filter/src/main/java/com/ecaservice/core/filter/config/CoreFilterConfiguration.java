@@ -7,6 +7,7 @@ import com.ecaservice.core.filter.model.FilterTemplate;
 import com.ecaservice.core.filter.service.FilterTemplateRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -21,6 +22,7 @@ import java.util.List;
  */
 @Slf4j
 @Configuration
+@EnableConfigurationProperties(CoreFilterProperties.class)
 @ComponentScan({"com.ecaservice.core.filter"})
 public class CoreFilterConfiguration {
 
@@ -28,10 +30,6 @@ public class CoreFilterConfiguration {
      * Page request cache key generator
      */
     public static final String PAGE_REQUEST_KEY_GENERATOR = "pageRequestKeyGenerator";
-
-    private static final String FILTER_TEMPLATES_DICTIONARIES_JSON =
-            "classpath*:filter-templates/dictionaries/**/*.json";
-    private static final String FILTER_TEMPLATES_JSON = "classpath*:filter-templates/templates/**/*.json";
 
     private final JsonResourceLoader jsonResourceLoader = new JsonResourceLoader();
 
@@ -50,12 +48,14 @@ public class CoreFilterConfiguration {
     /**
      * Creates filter template repository bean.
      *
+     * @param coreFilterProperties - core filter properties
      * @return filter template repository bea
      */
     @Bean
-    public FilterTemplateRepository filterTemplateRepository() {
-        var dictionaries = jsonResourceLoader.loadAll(FILTER_TEMPLATES_DICTIONARIES_JSON, FilterDictionary.class);
-        var templates = jsonResourceLoader.loadAll(FILTER_TEMPLATES_JSON, FilterTemplate.class);
+    public FilterTemplateRepository filterTemplateRepository(CoreFilterProperties coreFilterProperties) {
+        var dictionaries =
+                jsonResourceLoader.loadAll(coreFilterProperties.getDictionariesLocation(), FilterDictionary.class);
+        var templates = jsonResourceLoader.loadAll(coreFilterProperties.getTemplatesLocation(), FilterTemplate.class);
         setDictionaries(dictionaries, templates);
         FilterTemplateRepository filterTemplateRepository = new FilterTemplateRepository(dictionaries, templates);
         log.info("Filter templates repository has been initialized");
@@ -70,13 +70,10 @@ public class CoreFilterConfiguration {
                 .filter(field -> field.getDictionary() != null)
                 .forEach(field -> {
                     String dictionaryName = field.getDictionary().getName();
-                    FilterDictionary dictionaryConfig = dictionaries.stream()
+                    dictionaries.stream()
                             .filter(dictionary -> dictionary.getName().equals(dictionaryName))
                             .findFirst()
-                            .orElseThrow(() -> new IllegalStateException(
-                                    String.format("Can't set dictionary [%s]", dictionaryName))
-                            );
-                    field.setDictionary(dictionaryConfig);
+                            .ifPresent(field::setDictionary);
                 });
     }
 }

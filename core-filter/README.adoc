@@ -19,6 +19,17 @@
 </dependency>
 ----
 
+В файле application.yml добавить настройки библиотеки
+
+[source,yml]
+----
+filter:
+  ## Путь к шаблонам фильтров
+  templatesLocation: classpath*:filter-templates/templates/**/*.json
+  ## Путь к шаблонам справочников для фильтров
+  dictionariesLocation: classpath*:filter-templates/dictionaries/**/*.json
+----
+
 Добавить шаблоны фильтров в папку resources:
 
 [source,none]
@@ -119,6 +130,9 @@ resources/
   ]
 }
 ----
+
+Справочники необходимо выносить в отдельные json конфигурации, когда они встречаются в нескольких шаблонах.
+В целом можно задавть и в самом конфиге шаблона фильтра (поле field.dictionary)
 
 == 3. Примеры использования
 
