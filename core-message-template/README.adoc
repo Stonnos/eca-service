@@ -19,6 +19,14 @@
 </dependency>
 ----
 
+В файле application.yml добавить настройки библиотеки
+
+[source,yml]
+----
+message-templates:
+  ## Путь к шаблонам сообщений
+  location: message-templates/message-templates.json
+----
 
 Добавить конфигурационный файл message-templates/message-templates.json
 

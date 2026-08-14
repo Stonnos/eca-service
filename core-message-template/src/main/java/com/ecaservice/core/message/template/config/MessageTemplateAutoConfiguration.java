@@ -6,6 +6,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -23,11 +24,10 @@ import static freemarker.template.Configuration.LOCALIZED_LOOKUP_KEY;
  */
 @Slf4j
 @Configuration
+@EnableConfigurationProperties(MessageTemplateProperties.class)
 @ComponentScan({"com.ecaservice.core.message.template"})
 @RequiredArgsConstructor
 public class MessageTemplateAutoConfiguration {
-
-    private static final String MESSAGE_TEMPLATES_JSON = "message-templates/message-templates.json";
 
     private final JsonResourceLoader jsonResourceLoader = new JsonResourceLoader();
 
@@ -38,8 +38,9 @@ public class MessageTemplateAutoConfiguration {
      */
     @Bean
     @SneakyThrows
-    public MessageTemplateConfig messageTemplateConfig() {
-        List<MessageTemplate> templates = jsonResourceLoader.load(MESSAGE_TEMPLATES_JSON, new TypeReference<>() {
+    public MessageTemplateConfig messageTemplateConfig(MessageTemplateProperties messageTemplateProperties) {
+        String location = messageTemplateProperties.getLocation();
+        List<MessageTemplate> templates = jsonResourceLoader.load(location, new TypeReference<>() {
         });
         MessageTemplateConfig messageTemplateConfig = new MessageTemplateConfig(templates);
         log.info("[{}] message templates has been loaded", templates.size());
