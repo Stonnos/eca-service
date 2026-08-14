@@ -24,7 +24,7 @@
 [source,yml]
 ----
 message-templates:
-  ## Путь к шаблонам сообщений
+  ## Путь к шаблонам сообщений (опционально)
   location: message-templates/message-templates.json
 ----
 

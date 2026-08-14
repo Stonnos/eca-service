@@ -24,9 +24,9 @@
 [source,yml]
 ----
 filter:
-  ## Путь к шаблонам фильтров
+  ## Путь к шаблонам фильтров (опционально)
   templatesLocation: classpath*:filter-templates/templates/**/*.json
-  ## Путь к шаблонам справочников для фильтров
+  ## Путь к шаблонам справочников для фильтров (опционально)
   dictionariesLocation: classpath*:filter-templates/dictionaries/**/*.json
 ----
 
