@@ -44,12 +44,12 @@ public class FilterTemplateService {
      * @return filter field dto list
      */
     public List<FilterFieldDto> getFilterFields(String templateType) {
-        log.info("Fetch filter fields for template type [{}]", templateType);
+        log.debug("Fetch filter fields for template type [{}]", templateType);
         var filterTemplate = getFilterTemplate(templateType);
         var filterFields = Optional.ofNullable(filterTemplate.getFields())
                 .map(filterTemplateMapper::mapFields)
                 .orElse(Collections.emptyList());
-        log.info("Filter fields has been fetched for template type [{}]", templateType);
+        log.debug("Filter fields has been fetched for template type [{}]", templateType);
         return filterFields;
     }
 
@@ -60,7 +60,7 @@ public class FilterTemplateService {
      * @return filter dictionary dto
      */
     public FilterDictionaryDto getFilterDictionary(String name) {
-        log.info("Fetch filter dictionary with name [{}]", name);
+        log.debug("Fetch filter dictionary with name [{}]", name);
         return filterTemplateRepository.getDictionaries().stream()
                 .filter(dictionary -> dictionary.getName().equals(name))
                 .findFirst()
@@ -76,10 +76,10 @@ public class FilterTemplateService {
      * @return sort fields list
      */
     public List<String> getSortFields(String templateType) {
-        log.info("Gets sort fields with template [{}]", templateType);
+        log.debug("Gets sort fields with template [{}]", templateType);
         var filterTemplate = getFilterTemplate(templateType);
         var sortFieldsList = Optional.ofNullable(filterTemplate.getSortFields()).orElse(Collections.emptyList());
-        log.info("{} sort fields has been fetched for template [{}]", sortFieldsList, templateType);
+        log.debug("{} sort fields has been fetched for template [{}]", sortFieldsList, templateType);
         return sortFieldsList;
     }
 
