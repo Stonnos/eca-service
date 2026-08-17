@@ -176,9 +176,6 @@ cache:
     evaluation-results:
       expireAfterWriteSeconds: 1200
       maxSize: 50
-    message-templates:
-      expireAfterWriteSeconds: 18000
-      maxSize: 100
     evaluationLogsTotalCountQuery:
       expireAfterWriteSeconds: 1200
       maxSize: 512
