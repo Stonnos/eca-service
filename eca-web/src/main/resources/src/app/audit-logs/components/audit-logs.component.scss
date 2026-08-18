@@ -7,6 +7,10 @@
       width: 330px;
       font-weight: bold;
     }
+
+    &:nth-child(6) {
+      width: 400px;
+    }
   }
 
   .ui-table-thead > tr > th {
@@ -14,6 +18,10 @@
 
     &:first-child {
       width: 330px;
+    }
+
+    &:nth-child(6) {
+      width: 400px;
     }
   }
 }
