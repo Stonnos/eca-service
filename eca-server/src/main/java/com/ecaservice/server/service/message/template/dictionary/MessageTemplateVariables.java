@@ -24,4 +24,9 @@ public class MessageTemplateVariables {
      * Classifier options description
      */
     public static final String CLASSIFIER_OPTIONS_DESCRIPTION = "classifierOptionsDescription";
+
+    /**
+     * Classifier input options details
+     */
+    public static final String CLASSIFIER_INPUT_OPTIONS_DETAILS = "classifierInputOptionsDetails";
 }

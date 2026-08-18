@@ -54,6 +54,8 @@ class ClassifiersConfigurationHistoryServiceTest extends AbstractJpaTest {
     private MessageTemplateProcessor messageTemplateProcessor;
     @MockBean
     private ClassifiersFormTemplateProvider classifiersFormTemplateProvider;
+    @MockBean
+    private ClassifierOptionsInfoProcessor classifierOptionsInfoProcessor;
 
     @Override
     public void init() {

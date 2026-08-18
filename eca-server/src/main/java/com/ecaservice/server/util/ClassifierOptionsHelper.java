@@ -7,6 +7,7 @@ import com.ecaservice.server.exception.ClassifierOptionsException;
 import com.ecaservice.server.exception.InvalidClassifierOptionsFormatException;
 import com.ecaservice.server.model.entity.ClassifierOptionsDatabaseModel;
 import com.ecaservice.server.model.entity.ClassifiersConfiguration;
+import com.ecaservice.web.dto.model.ClassifierInfoDto;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
@@ -16,6 +17,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
+import java.util.stream.Collectors;
 
 /**
  * Classifier options helper.
@@ -27,6 +29,7 @@ import java.time.LocalDateTime;
 public class ClassifierOptionsHelper {
 
     private static final ObjectMapper objectMapper = new ObjectMapper();
+    private static final String COMMA = ",";
 
     /**
      * Creates classifier options database model.
@@ -101,5 +104,19 @@ public class ClassifierOptionsHelper {
      */
     public static boolean isEnsembleClassifierOptions(ClassifierOptions classifierOptions) {
         return classifierOptions instanceof IterativeEnsembleOptions || classifierOptions instanceof StackingOptions;
+    }
+
+    /**
+     * Gets comma separated classifier input options.
+     *
+     * @param classifierInfoDto - classifier options info
+     * @return comma separated classifier input options string
+     */
+    public static String getCommaSeparatedOptions(ClassifierInfoDto classifierInfoDto) {
+        return classifierInfoDto.getInputOptions()
+                .stream()
+                .map(inputOptionDto -> String.format("%s: %s", inputOptionDto.getOptionName(),
+                        inputOptionDto.getOptionValue()))
+                .collect(Collectors.joining(COMMA));
     }
 }

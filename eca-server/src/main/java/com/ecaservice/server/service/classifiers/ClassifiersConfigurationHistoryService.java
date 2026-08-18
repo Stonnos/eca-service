@@ -24,17 +24,19 @@ import org.springframework.validation.annotation.Validated;
 
 import java.time.LocalDateTime;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import static com.ecaservice.core.filter.util.FilterUtils.buildSort;
 import static com.ecaservice.server.model.entity.ClassifiersConfigurationHistoryEntity_.CREATED_AT;
 import static com.ecaservice.server.model.entity.FilterTemplateType.CLASSIFIERS_CONFIGURATION_HISTORY;
 import static com.ecaservice.server.service.message.template.dictionary.MessageTemplateVariables.CLASSIFIERS_CONFIGURATION_PARAM;
+import static com.ecaservice.server.service.message.template.dictionary.MessageTemplateVariables.CLASSIFIER_INPUT_OPTIONS_DETAILS;
 import static com.ecaservice.server.service.message.template.dictionary.MessageTemplateVariables.CLASSIFIER_OPTIONS_DESCRIPTION;
 import static com.ecaservice.server.service.message.template.dictionary.MessageTemplateVariables.CLASSIFIER_OPTIONS_ID;
+import static com.ecaservice.server.util.ClassifierOptionsHelper.getCommaSeparatedOptions;
 
 /**
  * Classifiers configuration history service.
@@ -51,6 +53,7 @@ public class ClassifiersConfigurationHistoryService {
     private final FilterTemplateService filterTemplateService;
     private final ClassifiersConfigurationHistoryMapper classifiersConfigurationHistoryMapper;
     private final MessageTemplateProcessor messageTemplateProcessor;
+    private final ClassifierOptionsInfoProcessor classifierOptionsInfoProcessor;
     private final ClassifiersFormTemplateProvider classifiersFormTemplateProvider;
     private final ClassifiersConfigurationRepository classifiersConfigurationRepository;
     private final ClassifiersConfigurationHistoryRepository classifiersConfigurationHistoryRepository;
@@ -61,8 +64,10 @@ public class ClassifiersConfigurationHistoryService {
      * @param classifiersConfiguration - classifiers configuration entity
      */
     public void saveCreateConfigurationAction(ClassifiersConfiguration classifiersConfiguration) {
-        saveToHistory(ClassifiersConfigurationActionType.CREATE_CONFIGURATION, classifiersConfiguration,
-                () -> Collections.singletonMap(CLASSIFIERS_CONFIGURATION_PARAM, classifiersConfiguration));
+        Map<String, Object> messageParams =
+                Collections.singletonMap(CLASSIFIERS_CONFIGURATION_PARAM, classifiersConfiguration);
+        saveHistoryEntity(ClassifiersConfigurationActionType.CREATE_CONFIGURATION, classifiersConfiguration,
+                messageParams);
     }
 
     /**
@@ -71,8 +76,10 @@ public class ClassifiersConfigurationHistoryService {
      * @param classifiersConfiguration - classifiers configuration entity
      */
     public void saveUpdateConfigurationAction(ClassifiersConfiguration classifiersConfiguration) {
-        saveToHistory(ClassifiersConfigurationActionType.UPDATE_CONFIGURATION, classifiersConfiguration,
-                () -> Collections.singletonMap(CLASSIFIERS_CONFIGURATION_PARAM, classifiersConfiguration));
+        Map<String, Object> messageParams =
+                Collections.singletonMap(CLASSIFIERS_CONFIGURATION_PARAM, classifiersConfiguration);
+        saveHistoryEntity(ClassifiersConfigurationActionType.UPDATE_CONFIGURATION, classifiersConfiguration,
+                messageParams);
     }
 
     /**
@@ -81,7 +88,8 @@ public class ClassifiersConfigurationHistoryService {
      * @param classifiersConfiguration - classifiers configuration entity
      */
     public void saveSetActiveConfigurationAction(ClassifiersConfiguration classifiersConfiguration) {
-        saveToHistory(ClassifiersConfigurationActionType.SET_ACTIVE, classifiersConfiguration, Collections::emptyMap);
+        saveHistoryEntity(ClassifiersConfigurationActionType.SET_ACTIVE, classifiersConfiguration,
+                Collections.emptyMap());
     }
 
     /**
@@ -90,7 +98,8 @@ public class ClassifiersConfigurationHistoryService {
      * @param classifiersConfiguration - classifiers configuration entity
      */
     public void saveDeactivateConfigurationAction(ClassifiersConfiguration classifiersConfiguration) {
-        saveToHistory(ClassifiersConfigurationActionType.DEACTIVATE, classifiersConfiguration, Collections::emptyMap);
+        saveHistoryEntity(ClassifiersConfigurationActionType.DEACTIVATE, classifiersConfiguration,
+                Collections.emptyMap());
     }
 
     /**
@@ -99,9 +108,9 @@ public class ClassifiersConfigurationHistoryService {
      * @param classifierOptionsDatabaseModel - classifier options entity
      */
     public void saveAddClassifierOptionsAction(ClassifierOptionsDatabaseModel classifierOptionsDatabaseModel) {
-        saveToHistory(ClassifiersConfigurationActionType.ADD_CLASSIFIER_OPTIONS,
-                classifierOptionsDatabaseModel.getConfiguration(),
-                () -> buildClassifierOptionsParams(classifierOptionsDatabaseModel));
+        var messageParams = buildAddClassifierOptionsParams(classifierOptionsDatabaseModel);
+        saveHistoryEntity(ClassifiersConfigurationActionType.ADD_CLASSIFIER_OPTIONS,
+                classifierOptionsDatabaseModel.getConfiguration(), messageParams);
     }
 
     /**
@@ -114,10 +123,10 @@ public class ClassifiersConfigurationHistoryService {
                 classifierOptionsDatabaseModels.size());
         var classifierOptionsHistory = classifierOptionsDatabaseModels
                 .stream()
-                .map(classifierOptionsDatabaseModel -> createHistory(
+                .map(classifierOptionsDatabaseModel -> createHistoryEntity(
                         ClassifiersConfigurationActionType.ADD_CLASSIFIER_OPTIONS,
                         classifierOptionsDatabaseModel.getConfiguration(),
-                        () -> buildClassifierOptionsParams(classifierOptionsDatabaseModel)))
+                        buildAddClassifierOptionsParams(classifierOptionsDatabaseModel)))
                 .collect(Collectors.toList());
         classifiersConfigurationHistoryRepository.saveAll(classifierOptionsHistory);
         log.info("Classifier options list with size [{}] has been saved to history",
@@ -130,9 +139,9 @@ public class ClassifiersConfigurationHistoryService {
      * @param classifierOptionsDatabaseModel - classifier options entity
      */
     public void saveRemoveClassifierOptionsAction(ClassifierOptionsDatabaseModel classifierOptionsDatabaseModel) {
-        saveToHistory(ClassifiersConfigurationActionType.REMOVE_CLASSIFIER_OPTIONS,
-                classifierOptionsDatabaseModel.getConfiguration(),
-                () -> buildClassifierOptionsParams(classifierOptionsDatabaseModel));
+        var messageParams = buildClassifierOptionsParams(classifierOptionsDatabaseModel);
+        saveHistoryEntity(ClassifiersConfigurationActionType.REMOVE_CLASSIFIER_OPTIONS,
+                classifierOptionsDatabaseModel.getConfiguration(), messageParams);
     }
 
     /**
@@ -178,20 +187,30 @@ public class ClassifiersConfigurationHistoryService {
 
     private Map<String, Object> buildClassifierOptionsParams(
             ClassifierOptionsDatabaseModel classifierOptionsDatabaseModel) {
+        Map<String, Object> messageParams = new HashMap<>();
         var classifierFormTemplate = classifiersFormTemplateProvider.getClassifierTemplateByClass(
                 classifierOptionsDatabaseModel.getOptionsName());
-        return Map.of(
-                CLASSIFIER_OPTIONS_ID, classifierOptionsDatabaseModel.getId(),
-                CLASSIFIER_OPTIONS_DESCRIPTION, classifierFormTemplate.getTemplateTitle()
-        );
+        messageParams.put(CLASSIFIER_OPTIONS_ID, classifierOptionsDatabaseModel.getId());
+        messageParams.put(CLASSIFIER_OPTIONS_DESCRIPTION, classifierFormTemplate.getTemplateTitle());
+        return messageParams;
     }
 
-    private ClassifiersConfigurationHistoryEntity createHistory(ClassifiersConfigurationActionType actionType,
-                                                                ClassifiersConfiguration classifiersConfiguration,
-                                                                Supplier<Map<String, Object>> messageParamsSupplier) {
+    private Map<String, Object> buildAddClassifierOptionsParams(
+            ClassifierOptionsDatabaseModel classifierOptionsDatabaseModel) {
+        var messageParams = buildClassifierOptionsParams(classifierOptionsDatabaseModel);
+        var classifierInfoDto =
+                classifierOptionsInfoProcessor.processClassifierInfo(classifierOptionsDatabaseModel.getConfig());
+        String commaSeparatedOptions = getCommaSeparatedOptions(classifierInfoDto);
+        messageParams.put(CLASSIFIER_INPUT_OPTIONS_DETAILS, commaSeparatedOptions);
+        return messageParams;
+    }
+
+    private ClassifiersConfigurationHistoryEntity createHistoryEntity(ClassifiersConfigurationActionType actionType,
+                                                                      ClassifiersConfiguration classifiersConfiguration,
+                                                                      Map<String, Object> messageParams) {
         var classifiersConfigurationHistory = new ClassifiersConfigurationHistoryEntity();
         classifiersConfigurationHistory.setActionType(actionType);
-        String messageText = messageTemplateProcessor.process(actionType.name(), messageParamsSupplier.get());
+        String messageText = messageTemplateProcessor.process(actionType.name(), messageParams);
         classifiersConfigurationHistory.setMessageText(messageText);
         classifiersConfigurationHistory.setConfiguration(classifiersConfiguration);
         classifiersConfigurationHistory.setCreatedBy(userService.getCurrentUser());
@@ -199,13 +218,13 @@ public class ClassifiersConfigurationHistoryService {
         return classifiersConfigurationHistory;
     }
 
-    private void saveToHistory(ClassifiersConfigurationActionType actionType,
-                               ClassifiersConfiguration classifiersConfiguration,
-                               Supplier<Map<String, Object>> messageParamsSupplier) {
+    private void saveHistoryEntity(ClassifiersConfigurationActionType actionType,
+                                   ClassifiersConfiguration classifiersConfiguration,
+                                   Map<String, Object> messageParams) {
         log.info("Starting to save classifiers configuration [{}] action [{}] to history",
                 classifiersConfiguration.getId(), actionType);
         var classifiersConfigurationHistory =
-                createHistory(actionType, classifiersConfiguration, messageParamsSupplier);
+                createHistoryEntity(actionType, classifiersConfiguration, messageParams);
         classifiersConfigurationHistoryRepository.save(classifiersConfigurationHistory);
         log.info("Classifiers configuration [{}] action [{}] has been saved to history",
                 classifiersConfiguration.getId(), actionType);
