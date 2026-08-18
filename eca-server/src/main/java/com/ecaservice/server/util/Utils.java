@@ -25,6 +25,8 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 
 /**
@@ -213,5 +215,20 @@ public class Utils {
         classificationModel.setData(evaluationResults.getEvaluation().getData());
         classificationModel.setEvaluation(evaluationResults.getEvaluation());
         return classificationModel;
+    }
+
+    /**
+     * Gets typed value from map.
+     *
+     * @param values     - values map
+     * @param key        - key value
+     * @param valueClass - value class
+     * @param <T>        - value type
+     * @return value
+     */
+    public static <T> T getTypedValue(Map<String, Object> values, String key, Class<T> valueClass) {
+        return Optional.ofNullable(values.get(key))
+                .map(valueClass::cast)
+                .orElse(null);
     }
 }

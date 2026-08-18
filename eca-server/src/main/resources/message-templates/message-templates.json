@@ -17,7 +17,7 @@
   },
   {
     "code": "ADD_CLASSIFIER_OPTIONS",
-    "templateText": "Добавлены настройки классификатора [${classifierOptionsDescription}]. Идентификатор настроек [${classifierOptionsId}]. Список настроек [${classifierInputOptionsDetails}]"
+    "templateText": "Добавлены настройки классификатора [${classifierOptionsDescription}]. Идентификатор настроек [${classifierOptionsId}]. Список параметров [${classifierInputOptionsDetails}]"
   },
   {
     "code": "REMOVE_CLASSIFIER_OPTIONS",

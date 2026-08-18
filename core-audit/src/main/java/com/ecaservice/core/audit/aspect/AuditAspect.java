@@ -6,6 +6,7 @@ import com.ecaservice.core.audit.annotation.Audit;
 import com.ecaservice.core.audit.annotation.Audits;
 import com.ecaservice.core.audit.event.AuditEvent;
 import com.ecaservice.core.audit.model.AuditContextParams;
+import com.ecaservice.core.audit.service.AuditContextParamsEvaluator;
 import com.ecaservice.core.audit.service.AuditEventInitiator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -14,6 +15,7 @@ import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.reflect.MethodSignature;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
@@ -45,6 +47,7 @@ public class AuditAspect {
 
     private final ApplicationEventPublisher applicationEventPublisher;
     private final AuditEventInitiator auditEventInitiator;
+    private final ApplicationContext applicationContext;
     private final SpelExpressionHelper spelExpressionHelper = new SpelExpressionHelper();
 
     /**
@@ -83,7 +86,8 @@ public class AuditAspect {
 
     private void publishAuditEvent(Audit audit, ProceedingJoinPoint joinPoint, Object result) {
         Map<String, Object> methodParams = getMethodParams(joinPoint);
-        AuditContextParams auditContextParams = new AuditContextParams(methodParams, result);
+        Map<String, Object> customParams = evaluateCustomParameters(audit, methodParams, result);
+        AuditContextParams auditContextParams = new AuditContextParams(methodParams, result, customParams);
         String eventInitiator = getInitiator(audit, joinPoint, result);
         String correlationId = getCorrelationId(audit, joinPoint, result);
         AuditEvent auditEvent = new AuditEvent(this, audit.value(), EventType.SUCCESS, correlationId,
@@ -97,6 +101,16 @@ public class AuditAspect {
         } else {
             return auditEventInitiator.getInitiator();
         }
+    }
+
+    private Map<String, Object> evaluateCustomParameters(Audit audit, Map<String, Object> methodParams,
+                                                         Object returnValue) {
+        if (StringUtils.isNotBlank(audit.parametersEvaluator())) {
+            var auditContextParamsEvaluator =
+                    applicationContext.getBean(audit.parametersEvaluator(), AuditContextParamsEvaluator.class);
+            return auditContextParamsEvaluator.evaluate(methodParams, returnValue);
+        }
+        return Collections.emptyMap();
     }
 
     private String getCorrelationId(Audit audit, ProceedingJoinPoint joinPoint, Object methodResult) {

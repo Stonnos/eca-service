@@ -25,4 +25,9 @@ public class AuditContextParams {
      * Audit method return value
      */
     private Object returnValue;
+
+    /**
+     * Audit method custom params
+     */
+    private Map<String, Object> customParams;
 }

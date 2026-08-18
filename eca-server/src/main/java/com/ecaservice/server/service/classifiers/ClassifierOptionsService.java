@@ -34,6 +34,7 @@ import static com.ecaservice.server.config.audit.AuditCodes.ADD_CLASSIFIER_OPTIO
 import static com.ecaservice.server.config.audit.AuditCodes.DELETE_CLASSIFIER_OPTIONS;
 import static com.ecaservice.server.model.entity.ClassifierOptionsDatabaseModel_.CREATION_DATE;
 import static com.ecaservice.server.model.entity.FilterTemplateType.CLASSIFIER_OPTIONS;
+import static com.ecaservice.server.service.audit.custom.AddClassifierOptionsAuditContextParamsEvaluator.ADD_CLASSIFIER_OPTIONS_AUDIT_CONTEXT_PARAMS_EVALUATOR;
 import static com.ecaservice.server.util.ClassifierOptionsHelper.createClassifierOptionsDatabaseModel;
 import static com.ecaservice.server.util.ClassifierOptionsHelper.isEnsembleClassifierOptions;
 import static com.ecaservice.server.util.ClassifierOptionsHelper.parseOptions;
@@ -63,7 +64,8 @@ public class ClassifierOptionsService {
      * @param configurationId   - configuration id
      * @param classifierOptions - classifier options
      */
-    @Audit(value = ADD_CLASSIFIER_OPTIONS, correlationIdKey = "#configurationId")
+    @Audit(value = ADD_CLASSIFIER_OPTIONS, correlationIdKey = "#configurationId",
+            parametersEvaluator = ADD_CLASSIFIER_OPTIONS_AUDIT_CONTEXT_PARAMS_EVALUATOR)
     @Transactional
     public ClassifierOptionsDto saveClassifierOptions(long configurationId,
                                                       @Valid ClassifierOptions classifierOptions) {

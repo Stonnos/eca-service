@@ -113,6 +113,9 @@ public class ClassifierOptionsHelper {
      * @return comma separated classifier input options string
      */
     public static String getCommaSeparatedOptions(ClassifierInfoDto classifierInfoDto) {
+        if (classifierInfoDto == null) {
+            return null;
+        }
         return classifierInfoDto.getInputOptions()
                 .stream()
                 .map(inputOptionDto -> String.format("%s: %s", inputOptionDto.getOptionName(),

@@ -57,6 +57,9 @@ public class FreemarkerAuditTemplateProcessorService implements AuditTemplatePro
             if (Optional.ofNullable(auditContextParams).map(AuditContextParams::getReturnValue).isPresent()) {
                 context.put(RETURN_VALUE_PARAM, auditContextParams.getReturnValue());
             }
+            if (auditContextParams != null && !CollectionUtils.isEmpty(auditContextParams.getCustomParams())) {
+                context.putAll(auditContextParams.getCustomParams());
+            }
             String message = processTemplateIntoString(template, context);
             log.debug("Message [{}] for template [{}] has been processed", message, templateCode);
             return message;

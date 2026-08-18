@@ -40,4 +40,11 @@ public @interface Audit {
      * Note that method returned value shortcut should start with #result prefix.
      */
     String correlationIdKey() default "";
+
+    /**
+     * The bean name of the custom {@link com.ecaservice.core.audit.service.AuditContextParamsEvaluator}.
+     *
+     * @return custom evaluator class
+     */
+    String parametersEvaluator() default "";
 }

@@ -10,11 +10,12 @@ import com.ecaservice.core.audit.repository.AuditCodeRepository;
 import com.ecaservice.core.audit.repository.AuditEventTemplateRepository;
 import com.ecaservice.core.audit.repository.AuditGroupRepository;
 import com.ecaservice.core.audit.service.store.DatabaseAuditEventTemplateStore;
-import com.google.common.collect.ImmutableMap;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.freemarker.FreeMarkerAutoConfiguration;
 import org.springframework.context.annotation.Import;
+
+import java.util.Map;
 
 import static com.ecaservice.core.audit.TestHelperUtils.createAuditEventTemplateEntity;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -28,13 +29,17 @@ import static org.assertj.core.api.Assertions.assertThat;
         FreemarkerAuditTemplateProcessorService.class, DatabaseAuditEventTemplateStore.class, AuditMapperImpl.class})
 class FreemarkerAuditTemplateProcessorServiceTest extends AbstractJpaTest {
 
-    private static final String MESSAGE_TEMPLATE = "Audit ${param1}, ${param2} with result ${returnValue}";
+    private static final String MESSAGE_TEMPLATE =
+            "Audit ${param1}, ${param2} with result ${returnValue}, custom params: ${param3}";
     private static final String RESULT_VALUE = "ResultValue";
     private static final String PARAM_1 = "param1";
     private static final String VALUE_1 = "value1";
     private static final String PARAM_2 = "param2";
     private static final String VALUE_2 = "value2";
-    private static final String EXPECTED_MESSAGE = "Audit value1, value2 with result ResultValue";
+    private static final String PARAM_3 = "param3";
+    private static final String VALUE_3 = "value3";
+    private static final String EXPECTED_MESSAGE =
+            "Audit value1, value2 with result ResultValue, custom params: value3";
 
     @Autowired
     private FreemarkerAuditTemplateProcessorService freemarkerAuditTemplateProcessorService;
@@ -68,8 +73,9 @@ class FreemarkerAuditTemplateProcessorServiceTest extends AbstractJpaTest {
     void testProcessTemplate() {
         String auditCode = auditEventTemplateEntity.getAuditCode().getId();
         var contextParams = new AuditContextParams();
-        contextParams.setInputParams(ImmutableMap.of(PARAM_1, VALUE_1, PARAM_2, VALUE_2));
+        contextParams.setInputParams(Map.of(PARAM_1, VALUE_1, PARAM_2, VALUE_2));
         contextParams.setReturnValue(RESULT_VALUE);
+        contextParams.setCustomParams(Map.of(PARAM_3, VALUE_3));
         String message =
                 freemarkerAuditTemplateProcessorService.process(auditCode, auditEventTemplateEntity.getEventType(),
                         contextParams);
