@@ -9,7 +9,7 @@
     }
 
     &:nth-child(6) {
-      width: 400px;
+      width: 500px;
     }
   }
 
@@ -21,7 +21,14 @@
     }
 
     &:nth-child(6) {
-      width: 400px;
+      width: 500px;
     }
+  }
+}
+
+.filter-panel::ng-deep {
+
+  .ui-overlaypanel-content {
+    width: 350px;
   }
 }

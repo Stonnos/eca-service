@@ -7,6 +7,10 @@
       width: 330px;
       font-weight: bold;
     }
+
+    &:nth-child(4) {
+      width: 650px;
+    }
   }
 
   .ui-table-thead > tr > th {
@@ -15,5 +19,16 @@
     &:first-child {
       width: 330px;
     }
+
+    &:nth-child(4) {
+      width: 650px;
+    }
+  }
+}
+
+.filter-panel::ng-deep {
+
+  .ui-overlaypanel-content {
+    width: 350px;
   }
 }

@@ -37,3 +37,10 @@
     overflow-y: scroll;
   }
 }
+
+.filter-panel::ng-deep {
+
+  .ui-overlaypanel-content {
+    width: 350px;
+  }
+}

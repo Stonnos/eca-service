@@ -10,107 +10,113 @@
         class="ml-2 mt-2 mb-2">
       </button>
     </div>
-    <div class="col-4">
-      <app-search-query (searchEvent)="onSearch($event)">
+    <div class="col-4 d-flex w-100">
+      <button
+        pButton
+        label="{{ getFiltersCountAsString() }}"
+        icon="pi pi-filter"
+        type="button"
+        (click)="filterPanel.toggle($event)"
+        class="m-2">
+      </button>
+      <app-search-query class="flex-grow-1 w-100"
+                        (searchEvent)="onSearch($event)">
       </app-search-query>
     </div>
   </div>
-  <div class="row">
-    <div class="filter-sidebar">
-      <app-filter [filters]="filters"
-                  [autoCompleteItemTemplate]="autoCompleteItemTemplate"
-                  (apply)="onApplyFilter()"
-                  (autocompleteField)="onFilterFieldAutocomplete($event)">
-        <ng-template #autoCompleteItemTemplate let-context="context">
-          <div [ngSwitch]="context.filterName">
-            <ng-container *ngSwitchCase="'instancesInfo.id'">
-              <app-instances-info [item]="context.itemValue.value">
-              </app-instances-info>
-            </ng-container>
-            <ng-container *ngSwitchDefault>
-              {{ context.itemValue.label }}
-            </ng-container>
+
+  <p-table
+    class="evaluation-results-history-table"
+    [columns]="columns"
+    [value]="items"
+    [rows]="pageSize"
+    [paginator]="true"
+    [scrollable]="true"
+    sortMode="multiple"
+    [sortField]="defaultSortField"
+    [sortOrder]="defaultSortOrder"
+    [lazy]="true"
+    [loading]="loading"
+    (onLazyLoad)="onLazyLoad($event)">
+
+    <ng-template pTemplate="header">
+      <tr>
+        <th></th>
+        <ng-container *ngFor="let column of columns">
+          <th *ngIf="!notSortable(column.name)" [pSortableColumn]="column.name">
+            {{ column.label }}
+            <p-sortIcon [field]="column.name"></p-sortIcon>
+          </th>
+          <th *ngIf="notSortable(column.name)">{{ column.label }}</th>
+        </ng-container>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-item>
+      <tr>
+        <td>
+          <button pButton
+                  type="button"
+                  class="ui-button-secondary link-button"
+                  pTooltip="Перейти к заявке"
+                  icon="pi pi-external-link" [disabled]="loading"
+                  (click)="onEvaluationResultsLink($event, item)">
+          </button>
+        </td>
+        <td *ngFor="let column of columns">
+          <a [routerLink]="" *ngIf="isLink(column.name, item)"
+             (click)="onSelect($event, item, column.name, infoPanel)">
+            {{ getColumnValue(column.name, item) }}
+          </a>
+          <div *ngIf="!isLink(column.name, item)">
+            <span>{{ getColumnValue(column.name, item) }}</span>
           </div>
-        </ng-template>
-      </app-filter>
-    </div>
-    <div class="data-table">
-      <p-table
-        class="evaluation-results-history-table"
-        [columns]="columns"
-        [value]="items"
-        [rows]="pageSize"
-        [paginator]="true"
-        [scrollable]="true"
-        sortMode="multiple"
-        [sortField]="defaultSortField"
-        [sortOrder]="defaultSortOrder"
-        [lazy]="true"
-        [loading]="loading"
-        (onLazyLoad)="onLazyLoad($event)">
+        </td>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="emptymessage" *ngIf="items.length == 0">
+      <tr>
+        <td [attr.colspan]="columns.length" class="text-center">
+          Результаты не найдены
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
 
-        <ng-template pTemplate="header">
-          <tr>
-            <th></th>
-            <ng-container *ngFor="let column of columns">
-              <th *ngIf="!notSortable(column.name)" [pSortableColumn]="column.name">
-                {{ column.label }}
-                <p-sortIcon [field]="column.name"></p-sortIcon>
-              </th>
-              <th *ngIf="notSortable(column.name)">{{ column.label }}</th>
-            </ng-container>
-          </tr>
-        </ng-template>
-        <ng-template pTemplate="body" let-item>
-          <tr>
-            <td>
-              <button pButton
-                      type="button"
-                      class="ui-button-secondary link-button"
-                      pTooltip="Перейти к заявке"
-                      icon="pi pi-external-link" [disabled]="loading"
-                      (click)="onEvaluationResultsLink($event, item)">
-              </button>
-            </td>
-            <td *ngFor="let column of columns">
-              <a [routerLink]="" *ngIf="isLink(column.name, item)"
-                 (click)="onSelect($event, item, column.name, infoPanel)">
-                {{ getColumnValue(column.name, item) }}
-              </a>
-              <div *ngIf="!isLink(column.name, item)">
-                <span>{{ getColumnValue(column.name, item) }}</span>
-              </div>
-            </td>
-          </tr>
-        </ng-template>
-        <ng-template pTemplate="emptymessage" *ngIf="items.length == 0">
-          <tr>
-            <td [attr.colspan]="columns.length" class="text-center">
-              Результаты не найдены
-            </td>
-          </tr>
-        </ng-template>
-      </p-table>
-    </div>
-
-    <p-overlayPanel #infoPanel [showCloseIcon]="true" class="info-panel">
-      <ng-container *ngIf="selectedEvaluationResults && selectedColumn" [ngSwitch]="selectedColumn">
-        <ng-container *ngSwitchCase="'classifierInfo.classifierDescription'">
-          <app-classifier-options-info [classifierInfo]="selectedEvaluationResults?.classifierInfo">
-          </app-classifier-options-info>
-        </ng-container>
-        <ng-container *ngSwitchCase="'evaluationMethod.description'">
-          <app-evaluation-method-info [item]="selectedEvaluationResults">
-          </app-evaluation-method-info>
-        </ng-container>
-        <ng-container *ngSwitchCase="'instancesInfo.relationName'">
-          <app-instances-info [item]="selectedEvaluationResults?.instancesInfo">
-          </app-instances-info>
-        </ng-container>
-        <ng-container *ngSwitchDefault>
-        </ng-container>
+  <p-overlayPanel #infoPanel [showCloseIcon]="true" class="info-panel">
+    <ng-container *ngIf="selectedEvaluationResults && selectedColumn" [ngSwitch]="selectedColumn">
+      <ng-container *ngSwitchCase="'classifierInfo.classifierDescription'">
+        <app-classifier-options-info [classifierInfo]="selectedEvaluationResults?.classifierInfo">
+        </app-classifier-options-info>
       </ng-container>
-    </p-overlayPanel>
+      <ng-container *ngSwitchCase="'evaluationMethod.description'">
+        <app-evaluation-method-info [item]="selectedEvaluationResults">
+        </app-evaluation-method-info>
+      </ng-container>
+      <ng-container *ngSwitchCase="'instancesInfo.relationName'">
+        <app-instances-info [item]="selectedEvaluationResults?.instancesInfo">
+        </app-instances-info>
+      </ng-container>
+      <ng-container *ngSwitchDefault>
+      </ng-container>
+    </ng-container>
+  </p-overlayPanel>
 
-  </div>
+  <p-overlayPanel #filterPanel [showCloseIcon]="true" class="filter-panel">
+    <app-filter [filters]="filters"
+                [autoCompleteItemTemplate]="autoCompleteItemTemplate"
+                (apply)="onApplyFilter()"
+                (autocompleteField)="onFilterFieldAutocomplete($event)">
+      <ng-template #autoCompleteItemTemplate let-context="context">
+        <div [ngSwitch]="context.filterName">
+          <ng-container *ngSwitchCase="'instancesInfo.id'">
+            <app-instances-info [item]="context.itemValue.value">
+            </app-instances-info>
+          </ng-container>
+          <ng-container *ngSwitchDefault>
+            {{ context.itemValue.label }}
+          </ng-container>
+        </div>
+      </ng-template>
+    </app-filter>
+  </p-overlayPanel>
 </div>

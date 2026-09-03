@@ -191,6 +191,13 @@ export abstract class BaseListComponent<T> {
     }
   }
 
+  public getFiltersCountAsString(): any {
+    if (this.filterRequests.length == 0) {
+      return ' ';
+    }
+    return `(${this.filterRequests.length})`;
+  }
+
   private getSortField(columnName: string): string {
     const column: ColumnModel = this.columns.find((column: ColumnModel) => columnName == column.name);
     if (column) {
