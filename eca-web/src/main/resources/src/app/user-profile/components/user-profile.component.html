@@ -134,7 +134,7 @@
           <div *ngIf="changeEmailRequestStatusDto?.active"
                class="ui-g ml-1 mr-1 alert alert-info">
             <div class="ui-g-12 text-bold justify-content-start mx-auto">
-              Вы запросили изменение email на {{ changeEmailRequestStatusDto?.newEmail }}. На ваш текущий email было отправлено письмо с кодом подтверждения.
+              Вы запросили изменение email. На новый почтовый ящик {{ changeEmailRequestStatusDto?.newEmail }} было отправлено письмо с кодом подтверждения.
             </div>
             <div class="ui-g-12 mx-auto d-flex align-items-start justify-content-start">
               <a class="link" [routerLink]="" (click)="confirmChangeEmail()">Подтвердить</a>
