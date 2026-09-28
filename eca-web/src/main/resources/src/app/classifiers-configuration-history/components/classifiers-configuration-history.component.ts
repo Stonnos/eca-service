@@ -38,6 +38,7 @@ export class ClassifiersConfigurationHistoryComponent extends BaseListComponent<
     super(injector.get(MessageService), injector.get(FieldService));
     this.configurationId = this.route.snapshot.params.id;
     this.defaultSortField = ClassifiersConfigurationHistoryFields.CREATED_AT;
+    this.notSortableColumns = [ClassifiersConfigurationHistoryFields.MESSAGE_TEXT];
     this.addLazyReferenceTransformers(new UserInfoFilterValueTransformer(ClassifiersConfigurationHistoryFields.CREATED_BY));
     this.addAutoCompleteHandler(new UserInfoAutocompleteHandler(ClassifiersConfigurationHistoryFields.CREATED_BY, this.usersService, this.messageService));
     this.currentUserFilterService = new CurrentUserFilterService(ClassifiersConfigurationHistoryFields.CREATED_BY, this.usersService, this.messageService);
@@ -73,7 +74,7 @@ export class ClassifiersConfigurationHistoryComponent extends BaseListComponent<
       { name: ClassifiersConfigurationHistoryFields.ACTION_TYPE_DESCRIPTION, label: "Тип события", sortBy: ClassifiersConfigurationHistoryFilterFields.ACTION_TYPE },
       { name: ClassifiersConfigurationHistoryFields.CREATED_BY, label: "Пользователь", sortBy: ClassifiersConfigurationHistoryFilterFields.CREATED_BY },
       { name: ClassifiersConfigurationHistoryFields.CREATED_AT, label: "Дата события", sortBy: ClassifiersConfigurationHistoryFilterFields.CREATED_AT },
-      { name: ClassifiersConfigurationHistoryFields.MESSAGE_TEXT, label: "Текст сообщения", sortBy: ClassifiersConfigurationHistoryFilterFields.MESSAGE_TEXT },
+      { name: ClassifiersConfigurationHistoryFields.MESSAGE_TEXT, label: "Текст сообщения" },
     ];
   }
 }

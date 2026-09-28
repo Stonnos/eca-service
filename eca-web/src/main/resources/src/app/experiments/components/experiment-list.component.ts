@@ -306,7 +306,7 @@ export class ExperimentListComponent extends BaseListComponent<ExperimentDto> im
       { name: ExperimentFields.MAX_PCT_CORRECT, label: "Точность лучшей модели, %", sortBy: ExperimentFilterFields.MAX_PCT_CORRECT },
       { name: ExperimentFields.RELATION_NAME, label: "Обучающая выборка", sortBy: ExperimentFilterFields.RELATION_NAME },
       { name: ExperimentFields.EVALUATION_METHOD_DESCRIPTION, label: "Метод оценки точности" },
-      { name: ExperimentFields.CREATED_BY, label: "Пользователь" },
+      { name: ExperimentFields.CREATED_BY, label: "Пользователь", sortBy: ExperimentFilterFields.CREATED_BY },
       { name: ExperimentFields.EVALUATION_TOTAL_TIME, label: "Время построения эксперимента" },
       { name: ExperimentFields.CREATION_DATE, label: "Дата создания", sortBy: ExperimentFilterFields.CREATION_DATE },
       { name: ExperimentFields.START_DATE, label: "Дата начала обработки" },

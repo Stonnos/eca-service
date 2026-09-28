@@ -38,7 +38,6 @@
   "sortFields": [
     "actionType",
     "createdBy",
-    "createdAt",
-    "messageText"
+    "createdAt"
   ]
 }
