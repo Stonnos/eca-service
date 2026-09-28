@@ -1961,7 +1961,7 @@ __array__
 
 
 a|
-link:./example/eca-data-storage/AttributesListResponse.json[AttributesListResponse.json]
+link:./examples/eca-data-storage/AttributesListResponse.json[AttributesListResponse.json]
 |401
 |Not authorized
 |*application/json*
