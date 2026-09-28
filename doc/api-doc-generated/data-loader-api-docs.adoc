@@ -37,7 +37,8 @@ __Scopes__:
 
 |===
 
-== Uploads train data file to storage
+== Operations for external API
+=== Uploads train data file to storage
 
 __POST__ */api/external/upload-train-data* - Uploads train data file to storage
 
@@ -185,8 +186,8 @@ a|
 } ]
 ----
 |===
-
-== Gets instances meta info
+== Operations for internal API
+=== Gets instances meta info
 
 __GET__ */api/internal/instances/meta-info/{uuid}* - Gets instances meta info
 
@@ -317,7 +318,6 @@ a|
 } ]
 ----
 |===
-
 
 == Components
 === UploadInstancesResponseDto

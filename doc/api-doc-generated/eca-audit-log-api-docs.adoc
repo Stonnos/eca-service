@@ -38,7 +38,8 @@ __Scopes__:
 
 |===
 
-== Downloads audit logs base report in xlsx format
+== Audit log API for web application
+=== Downloads audit logs base report in xlsx format
 
 __POST__ */audit-log/report/download* - Downloads audit logs base report in xlsx format
 
@@ -179,8 +180,7 @@ a|
 } ]
 ----
 |===
-
-== Finds audit logs with specified options such as filter, sorting and paging
+=== Finds audit logs with specified options such as filter, sorting and paging
 
 __POST__ */audit-log/list* - Finds audit logs with specified options such as filter, sorting and paging
 
@@ -354,8 +354,7 @@ a|
 } ]
 ----
 |===
-
-== Gets audit log filter fields
+=== Gets audit log filter fields
 
 __GET__ */audit-log/filter-templates/fields* - Gets audit log filter fields
 
@@ -383,68 +382,7 @@ a|
 |*application/json*
 |-
 a|
-[source,json]
-----
-[ {
-  "fieldName" : "eventId",
-  "description" : "ID события",
-  "fieldOrder" : 0,
-  "filterFieldType" : "TEXT",
-  "matchMode" : "LIKE",
-  "multiple" : false,
-  "dictionary" : null
-}, {
-  "fieldName" : "correlationId",
-  "description" : "ID корреляции",
-  "fieldOrder" : 1,
-  "filterFieldType" : "TEXT",
-  "matchMode" : "EQUALS",
-  "multiple" : false,
-  "dictionary" : null
-}, {
-  "fieldName" : "groupCode",
-  "description" : "Группа событий",
-  "fieldOrder" : 2,
-  "filterFieldType" : "REFERENCE",
-  "matchMode" : "EQUALS",
-  "multiple" : false,
-  "dictionary" : {
-    "name" : "auditGroup",
-    "values" : [ {
-      "label" : "Действия пользователя в личном кабинете",
-      "value" : "USER_PROFILE_ACTIONS"
-    }, {
-      "label" : "Действия с конфигурациями классификаторов",
-      "value" : "CLASSIFIERS_CONFIGURATIONS_ACTIONS"
-    }, {
-      "label" : "Действия с обучающими выборками",
-      "value" : "DATA_STORAGE_ACTIONS"
-    }, {
-      "label" : "Действия с заявками на построение моделей",
-      "value" : "EVALUATION_REQUESTS_ACTIONS"
-    }, {
-      "label" : "Действия с историей результатов классификации",
-      "value" : "EVALUATION_RESULTS_HISTORY_ACTIONS"
-    } ]
-  }
-}, {
-  "fieldName" : "initiator",
-  "description" : "Инициатор события",
-  "fieldOrder" : 3,
-  "filterFieldType" : "LAZY_REFERENCE",
-  "matchMode" : "EQUALS",
-  "multiple" : false,
-  "dictionary" : null
-}, {
-  "fieldName" : "eventDate",
-  "description" : "Дата события",
-  "fieldOrder" : 4,
-  "filterFieldType" : "DATE",
-  "matchMode" : "RANGE",
-  "multiple" : true,
-  "dictionary" : null
-} ]
-----
+link:./examples/eca-audit-log/AuditFilterFieldsResponse.json[AuditFilterFieldsResponse.json]
 |401
 |Not authorized
 |*application/json*
@@ -501,7 +439,6 @@ a|
 } ]
 ----
 |===
-
 
 == Components
 === ValidationErrorDto

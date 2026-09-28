@@ -38,7 +38,116 @@ __Scopes__:
 
 |===
 
-== Unselects attribute for classification
+== Data storage internal API
+=== Exports valid instances with selected attributes and assigned class attribute to central data storage
+
+__POST__ */api/internal/instances/export-valid-instances* - Exports valid instances with selected attributes and assigned class attribute to central data storage
+
+*Security requirement*
+
+[cols="^50%,^50%",options="header"]
+|===
+|*Name*|*Scopes*
+|
+<<EcaAuth>>
+a|
+
+* internal-api
+
+|===
+
+
+*Request parameters*
+[width=100%]
+|===
+|*Name*|*Description*|*Location*|*Schema*
+|*uuid**
+|Instances uuid
+|query
+a|
+__string__
+
+
+*Min. length*: 1
+
+*Max. length*: 36
+
+
+
+
+
+
+
+*Pattern*: `^[0-9a-f]{8}-[0-9a-f]{4}-[34][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$`
+
+
+|===
+
+*Api responses*
+[width=100%]
+|===
+|*Code*|*Description*|*Content type*|*Schema*|*Example*
+|200
+|OK
+|*application/json*
+|
+<<ExportInstancesResponseDto>>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+a|
+[source,json]
+----
+{
+  "externalDataUuid" : "1d2de514-3a87-4620-9b97-c260e24340de"
+}
+----
+|400
+|Bad request
+|*application/json*
+|
+__array__
+<<<ValidationErrorDto>>
+>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+a|
+[source,json]
+----
+[ {
+  "fieldName" : null,
+  "code" : "SelectedAttributesNumberIsTooLow",
+  "errorMessage" : "Selected attributes number must be greater than or equal to [2] for table [iris]"
+} ]
+----
+|===
+== Data storage API for web application
+=== Unselects attribute for classification
 
 __PUT__ */instances/unselect-attribute* - Unselects attribute for classification
 
@@ -139,8 +248,7 @@ a|
 } ]
 ----
 |===
-
-== Sets class attribute for specified instances
+=== Sets class attribute for specified instances
 
 __PUT__ */instances/set-class-attribute* - Sets class attribute for specified instances
 
@@ -241,8 +349,7 @@ a|
 } ]
 ----
 |===
-
-== Selects attribute for classification
+=== Selects attribute for classification
 
 __PUT__ */instances/select-attribute* - Selects attribute for classification
 
@@ -343,8 +450,7 @@ a|
 } ]
 ----
 |===
-
-== Selects all attributes for classification
+=== Selects all attributes for classification
 
 __PUT__ */instances/select-all-attributes* - Selects all attributes for classification
 
@@ -445,8 +551,7 @@ a|
 } ]
 ----
 |===
-
-== Renames data with specified id
+=== Renames data with specified id
 
 __PUT__ */instances/rename* - Renames data with specified id
 
@@ -567,8 +672,7 @@ a|
 } ]
 ----
 |===
-
-== Saves instances into database
+=== Saves instances into database
 
 __POST__ */instances/save* - Saves instances into database
 
@@ -744,8 +848,7 @@ a|
 } ]
 ----
 |===
-
-== Finds instances tables with specified options such as filter, sorting and paging
+=== Finds instances tables with specified options such as filter, sorting and paging
 
 __POST__ */instances/list* - Finds instances tables with specified options such as filter, sorting and paging
 
@@ -834,7 +937,8 @@ a|
     "numAttributes" : 5,
     "created" : "2021-07-01 14:00:00",
     "createdBy" : "admin",
-    "className" : "class"
+    "className" : "class",
+    "deleteAllowed" : true
   } ],
   "page" : 0,
   "totalCount" : 1
@@ -888,8 +992,7 @@ a|
 } ]
 ----
 |===
-
-== Finds data page for specified instances
+=== Finds data page for specified instances
 
 __POST__ */instances/data-page* - Finds data page for specified instances
 
@@ -1051,8 +1154,7 @@ a|
 } ]
 ----
 |===
-
-== Calculates contingency table report
+=== Calculates contingency table report
 
 __POST__ */instances/contingency-table-report* - Calculates contingency table report
 
@@ -1133,75 +1235,7 @@ a|
 
 
 a|
-[source,json]
-----
-{
-  "tableData" : [ [ 67, 160, 12, 13, 22, 274 ], [ 55, 146, 35, 18, 15, 269 ], [ 153, 187, 38, 7, 9, 394 ], [ 18, 37, 3, 2, 3, 63 ], [ 293, 530, 88, 40, 49, 1000 ] ],
-  "chiSquaredValue" : 60.3321,
-  "chiSquaredCriticalValue" : 21.0261,
-  "df" : 12,
-  "alpha" : 0.05,
-  "significant" : true,
-  "xattribute" : {
-    "id" : 1,
-    "name" : "checking_status",
-    "index" : 0,
-    "selected" : true,
-    "type" : {
-      "value" : "NOMINAL",
-      "description" : "Категориальный"
-    },
-    "values" : [ {
-      "id" : 1,
-      "index" : 0,
-      "value" : "<0"
-    }, {
-      "id" : 2,
-      "index" : 1,
-      "value" : "0<=X<200"
-    }, {
-      "id" : 3,
-      "index" : 2,
-      "value" : "no checking"
-    }, {
-      "id" : 4,
-      "index" : 3,
-      "value" : ">=200"
-    } ]
-  },
-  "yattribute" : {
-    "id" : 3,
-    "name" : "credit_history",
-    "index" : 2,
-    "selected" : true,
-    "type" : {
-      "value" : "NOMINAL",
-      "description" : "Категориальный"
-    },
-    "values" : [ {
-      "id" : 5,
-      "index" : 0,
-      "value" : "critical/other existing credit"
-    }, {
-      "id" : 6,
-      "index" : 1,
-      "value" : "existing paid"
-    }, {
-      "id" : 7,
-      "index" : 2,
-      "value" : "delayed previously"
-    }, {
-      "id" : 8,
-      "index" : 3,
-      "value" : "no credits/all paid"
-    }, {
-      "id" : 9,
-      "index" : 4,
-      "value" : "all paid"
-    } ]
-  }
-}
-----
+link:./examples/eca-data-storage/ContingencyTableResponse.json[ContingencyTableResponse.json]
 |401
 |Not authorized
 |*application/json*
@@ -1246,116 +1280,7 @@ a|
 } ]
 ----
 |===
-
-== Exports valid instances with selected attributes and assigned class attribute to central data storage
-
-__POST__ */api/internal/instances/export-valid-instances* - Exports valid instances with selected attributes and assigned class attribute to central data storage
-
-*Security requirement*
-
-[cols="^50%,^50%",options="header"]
-|===
-|*Name*|*Scopes*
-|
-<<EcaAuth>>
-a|
-
-* internal-api
-
-|===
-
-
-*Request parameters*
-[width=100%]
-|===
-|*Name*|*Description*|*Location*|*Schema*
-|*uuid**
-|Instances uuid
-|query
-a|
-__string__
-
-
-*Min. length*: 1
-
-*Max. length*: 36
-
-
-
-
-
-
-
-*Pattern*: `^[0-9a-f]{8}-[0-9a-f]{4}-[34][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$`
-
-
-|===
-
-*Api responses*
-[width=100%]
-|===
-|*Code*|*Description*|*Content type*|*Schema*|*Example*
-|200
-|OK
-|*application/json*
-|
-<<ExportInstancesResponseDto>>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-a|
-[source,json]
-----
-{
-  "externalDataUuid" : "1d2de514-3a87-4620-9b97-c260e24340de"
-}
-----
-|400
-|Bad request
-|*application/json*
-|
-__array__
-<<<ValidationErrorDto>>
->
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-a|
-[source,json]
-----
-[ {
-  "fieldName" : null,
-  "code" : "SelectedAttributesNumberIsTooLow",
-  "errorMessage" : "Selected attributes number must be greater than or equal to [2] for table [iris]"
-} ]
-----
-|===
-
-== Gets instances path by external data uuid from central storage
+=== Gets instances path by external data uuid from central storage
 
 __GET__ */instances/route-path/{externalDataUuid}* - Gets instances path by external data uuid from central storage
 
@@ -1474,8 +1399,7 @@ a|
 } ]
 ----
 |===
-
-== Gets instances reports info
+=== Gets instances reports info
 
 __GET__ */instances/reports-info* - Gets instances reports info
 
@@ -1566,8 +1490,7 @@ a|
 }
 ----
 |===
-
-== Gets instances statistics
+=== Gets instances statistics
 
 __GET__ */instances/instances-stats/{id}* - Gets instances statistics
 
@@ -1698,8 +1621,7 @@ a|
 } ]
 ----
 |===
-
-== Download instances report with specified type
+=== Download instances report with specified type
 
 __GET__ */instances/download* - Download instances report with specified type
 
@@ -1835,8 +1757,7 @@ a|
 } ]
 ----
 |===
-
-== Gets instances details
+=== Gets instances details
 
 __GET__ */instances/details/{id}* - Gets instances details
 
@@ -1918,7 +1839,8 @@ a|
   "numAttributes" : 5,
   "created" : "2021-07-01 14:00:00",
   "createdBy" : "admin",
-  "className" : "class"
+  "className" : "class",
+  "deleteAllowed" : true
 }
 ----
 |401
@@ -1965,8 +1887,7 @@ a|
 } ]
 ----
 |===
-
-== Gets attributes list for specified instances
+=== Gets attributes list for specified instances
 
 __GET__ */instances/attributes/{id}* - Gets attributes list for specified instances
 
@@ -2040,68 +1961,7 @@ __array__
 
 
 a|
-[source,json]
-----
-[ {
-  "id" : 1,
-  "name" : "x1",
-  "index" : 0,
-  "selected" : true,
-  "type" : {
-    "value" : "NUMERIC",
-    "description" : "Числовой"
-  }
-}, {
-  "id" : 2,
-  "name" : "x2",
-  "index" : 1,
-  "selected" : true,
-  "type" : {
-    "value" : "NUMERIC",
-    "description" : "Числовой"
-  }
-}, {
-  "id" : 3,
-  "name" : "x3",
-  "index" : 2,
-  "selected" : true,
-  "type" : {
-    "value" : "NUMERIC",
-    "description" : "Числовой"
-  }
-}, {
-  "id" : 4,
-  "name" : "x4",
-  "index" : 3,
-  "selected" : true,
-  "type" : {
-    "value" : "NUMERIC",
-    "description" : "Числовой"
-  }
-}, {
-  "id" : 5,
-  "name" : "class",
-  "index" : 4,
-  "selected" : true,
-  "type" : {
-    "value" : "NOMINAL",
-    "description" : "Категориальный"
-  },
-  "values" : [ {
-    "id" : 133,
-    "index" : 0,
-    "value" : "Iris-setosa"
-  }, {
-    "id" : 133,
-    "index" : 1,
-    "value" : "Iris-versicolor"
-  }, {
-    "id" : 133,
-    "index" : 2,
-    "value" : "Iris-verginica"
-  } ]
-} ]
-----
+link:./example/eca-data-storage/AttributesListResponse.json[AttributesListResponse.json]
 |401
 |Not authorized
 |*application/json*
@@ -2146,8 +2006,7 @@ a|
 } ]
 ----
 |===
-
-== Gets scatter plot data
+=== Gets scatter plot data
 
 __GET__ */instances/attributes-scatter-plot* - Gets scatter plot data
 
@@ -2265,92 +2124,7 @@ __(int64)__
 
 
 a|
-[source,json]
-----
-{
-  "dataSets" : [ {
-    "classValue" : "bad",
-    "items" : [ {
-      "classValue" : "bad",
-      "xvalue" : 1,
-      "ylabel" : null,
-      "xlabel" : "0<=X<200",
-      "yvalue" : 48.0
-    }, {
-      "classValue" : "bad",
-      "xvalue" : 0,
-      "ylabel" : null,
-      "xlabel" : "<0",
-      "yvalue" : 24.0
-    }, {
-      "classValue" : "bad",
-      "xvalue" : 1,
-      "ylabel" : null,
-      "xlabel" : "0<=X<200",
-      "yvalue" : 30.0
-    } ]
-  }, {
-    "classValue" : "good",
-    "items" : [ {
-      "classValue" : "good",
-      "xvalue" : 0,
-      "ylabel" : null,
-      "xlabel" : "<0",
-      "yvalue" : 6.0
-    }, {
-      "classValue" : "good",
-      "xvalue" : 2,
-      "ylabel" : null,
-      "xlabel" : "no checking",
-      "yvalue" : 12.0
-    }, {
-      "classValue" : "good",
-      "xvalue" : 0,
-      "ylabel" : null,
-      "xlabel" : "<0",
-      "yvalue" : 42.0
-    } ]
-  } ],
-  "yaxisAttribute" : {
-    "id" : 2,
-    "name" : "duration",
-    "index" : 1,
-    "selected" : true,
-    "type" : {
-      "value" : "NUMERIC",
-      "description" : "Числовой"
-    },
-    "values" : [ ]
-  },
-  "xaxisAttribute" : {
-    "id" : 1,
-    "name" : "checking_status",
-    "index" : 0,
-    "selected" : true,
-    "type" : {
-      "value" : "NOMINAL",
-      "description" : "Категориальный"
-    },
-    "values" : [ {
-      "id" : 1,
-      "index" : 0,
-      "value" : "<0"
-    }, {
-      "id" : 2,
-      "index" : 1,
-      "value" : "0<=X<200"
-    }, {
-      "id" : 3,
-      "index" : 2,
-      "value" : "no checking"
-    }, {
-      "id" : 4,
-      "index" : 3,
-      "value" : ">=200"
-    } ]
-  }
-}
-----
+link:./examples/eca-data-storage/AttributesScatterPlotResponse.json[AttributesScatterPlotResponse.json]
 |401
 |Not authorized
 |*application/json*
@@ -2395,8 +2169,7 @@ a|
 } ]
 ----
 |===
-
-== Gets attribute statistics
+=== Gets attribute statistics
 
 __GET__ */instances/attribute-stats/{id}* - Gets attribute statistics
 
@@ -2468,74 +2241,7 @@ __(int64)__
 
 
 a|
-[source,json]
-----
-{
-  "id" : 7,
-  "name" : "duration",
-  "index" : 1,
-  "type" : {
-    "value" : "NUMERIC",
-    "description" : "Числовой"
-  },
-  "minValue" : 4.0,
-  "maxValue" : 72.0,
-  "meanValue" : 20.903,
-  "varianceValue" : 145.415,
-  "stdDevValue" : 12.0588,
-  "frequencyDiagramValues" : [ {
-    "code" : null,
-    "frequency" : 171,
-    "lowerBound" : 4.0,
-    "upperBound" : 10.8
-  }, {
-    "code" : null,
-    "frequency" : 262,
-    "lowerBound" : 10.8,
-    "upperBound" : 17.6
-  }, {
-    "code" : null,
-    "frequency" : 337,
-    "lowerBound" : 17.6,
-    "upperBound" : 24.4
-  }, {
-    "code" : null,
-    "frequency" : 57,
-    "lowerBound" : 24.4,
-    "upperBound" : 31.2
-  }, {
-    "code" : null,
-    "frequency" : 86,
-    "lowerBound" : 31.2,
-    "upperBound" : 38.0
-  }, {
-    "code" : null,
-    "frequency" : 17,
-    "lowerBound" : 38.0,
-    "upperBound" : 44.8
-  }, {
-    "code" : null,
-    "frequency" : 54,
-    "lowerBound" : 44.8,
-    "upperBound" : 51.6
-  }, {
-    "code" : null,
-    "frequency" : 2,
-    "lowerBound" : 51.6,
-    "upperBound" : 58.4
-  }, {
-    "code" : null,
-    "frequency" : 13,
-    "lowerBound" : 58.4,
-    "upperBound" : 65.2
-  }, {
-    "code" : null,
-    "frequency" : 1,
-    "lowerBound" : 65.2,
-    "upperBound" : 72.0
-  } ]
-}
-----
+link:./examples/eca-data-storage/AttributeStatisticsResponse.json[AttributeStatisticsResponse.json]
 |401
 |Not authorized
 |*application/json*
@@ -2580,8 +2286,7 @@ a|
 } ]
 ----
 |===
-
-== Deletes instances with specified id
+=== Deletes instances with specified id
 
 __DELETE__ */instances/delete* - Deletes instances with specified id
 
@@ -2682,7 +2387,6 @@ a|
 } ]
 ----
 |===
-
 
 == Components
 === ValidationErrorDto
@@ -2992,6 +2696,25 @@ __string__
 
 
 *Max. length*: 255
+
+
+
+
+
+
+
+
+
+
+|*deleteAllowed*
+|Is instances delete allowed? The value is false if dataset was used to build models
+a|
+__boolean__
+
+
+
+
+
 
 
 
