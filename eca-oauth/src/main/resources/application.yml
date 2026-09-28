@@ -58,6 +58,7 @@ app:
     whitelistUrls:
       - /reset-password/**
       - /force-set-password/**
+      - /email/change/revoke/**
 
 mail:
   client:
