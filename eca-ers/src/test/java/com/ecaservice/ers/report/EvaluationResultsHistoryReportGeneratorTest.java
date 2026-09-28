@@ -4,7 +4,8 @@ import com.ecaservice.classifier.options.model.LogisticOptions;
 import com.ecaservice.classifier.template.processor.config.ClassifiersTemplateProperties;
 import com.ecaservice.classifier.template.processor.service.ClassifierOptionsProcessor;
 import com.ecaservice.classifier.template.processor.service.ClassifiersTemplateProvider;
-import com.ecaservice.core.filter.service.FilterTemplateService;
+import com.ecaservice.core.filter.config.CoreFilterConfiguration;
+import com.ecaservice.core.filter.mapping.FilterTemplateMapperImpl;
 import com.ecaservice.core.form.template.service.FormTemplateProvider;
 import com.ecaservice.ers.AbstractJpaTest;
 import com.ecaservice.ers.config.ErsConfig;
@@ -21,7 +22,6 @@ import com.ecaservice.ers.service.EvaluationResultsHistoryCountQueryExecutor;
 import com.ecaservice.ers.service.EvaluationResultsHistoryService;
 import com.ecaservice.report.model.BaseReportBean;
 import com.ecaservice.report.model.FilterBean;
-import com.ecaservice.web.dto.model.FilterDictionaryValueDto;
 import com.ecaservice.web.dto.model.FilterRequestDto;
 import com.ecaservice.web.dto.model.FormTemplateGroupDto;
 import com.ecaservice.web.dto.model.MatchMode;
@@ -38,23 +38,18 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.List;
 import java.util.UUID;
 
 import static com.ecaservice.classifier.template.processor.util.Utils.toJsonString;
 import static com.ecaservice.ers.TestHelperUtils.createDecisionTreeOptions;
 import static com.ecaservice.ers.TestHelperUtils.createEvaluationResultsInfo;
-import static com.ecaservice.ers.TestHelperUtils.createFilterDictionaryDto;
 import static com.ecaservice.ers.TestHelperUtils.loadClassifiersTemplates;
-import static com.ecaservice.ers.TestHelperUtils.loadEvaluationResultsHistoryFilterFields;
-import static com.ecaservice.ers.dictionary.FilterDictionaries.CLASSIFIER_NAME;
 import static com.ecaservice.ers.model.EvaluationResultsInfo_.SAVE_DATE;
 import static com.ecaservice.ers.report.ReportTemplates.EVALUATION_RESULTS_HISTORY_TEMPLATE_CODE;
 import static com.ecaservice.report.ReportGenerator.generateReport;
 import static com.google.common.collect.Lists.newArrayList;
 import static org.apache.commons.lang3.SystemUtils.USER_DIR;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
 /**
@@ -66,18 +61,16 @@ import static org.mockito.Mockito.when;
         ClassificationCostsReportMapperImpl.class, ConfusionMatrixMapperImpl.class,
         ClassifierOptionsProcessor.class, ClassifiersTemplateProperties.class, ClassifiersTemplateProvider.class,
         StatisticsReportMapperImpl.class, EvaluationResultsHistoryCountQueryExecutor.class, ErsConfig.class,
-        InstancesMapperImpl.class, RocCurveReportMapperImpl.class, EvaluationResultsHistoryReportDataFetcher.class})
+        InstancesMapperImpl.class, RocCurveReportMapperImpl.class, EvaluationResultsHistoryReportDataFetcher.class,
+        CoreFilterConfiguration.class, FilterTemplateMapperImpl.class})
 class EvaluationResultsHistoryReportGeneratorTest extends AbstractJpaTest {
 
     private static final int PAGE_NUMBER = 0;
     private static final int PAGE_SIZE = 10;
     private static final String INSTANCES_INFO_ID = "instancesInfo.id";
-    private static final String CART_LABEL = "Алгоритм CART";
-    private static final String CART_VALUE = "CART";
     private static final String CLASSIFIERS = "classifiers";
 
-    @MockBean
-    private FilterTemplateService filterTemplateService;
+
     @MockBean
     private FormTemplateProvider formTemplateProvider;
 
@@ -92,12 +85,6 @@ class EvaluationResultsHistoryReportGeneratorTest extends AbstractJpaTest {
     @Override
     public void init() {
         saveEvaluationResultsData();
-        when(filterTemplateService.getFilterFields(anyString())).thenReturn(loadEvaluationResultsHistoryFilterFields());
-        when(filterTemplateService.getFilterDictionary(CLASSIFIER_NAME)).thenReturn(
-                createFilterDictionaryDto(
-                        List.of(new FilterDictionaryValueDto(CART_LABEL, CART_VALUE))
-                )
-        );
         FormTemplateGroupDto templates = loadClassifiersTemplates();
         when(formTemplateProvider.getFormGroupDto(CLASSIFIERS)).thenReturn(templates);
     }
