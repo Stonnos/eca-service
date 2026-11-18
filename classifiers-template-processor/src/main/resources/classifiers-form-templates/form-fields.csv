@@ -1,6 +1,6 @@
 id;field_name;description;field_order;field_type;min_value;max_value;max_length;pattern;dictionary_id;default_value;template_id;invalid_pattern_message;place_holder;min_inclusive;max_inclusive;read_only;form_template_group_id;invalid_required_message;invalid_max_length_message
 
-# Logistic form fields template
+# KNN form fields template
 
 1;numNeighbours;Число ближайших соседей;0;INTEGER;1;2147483647;255;NULL;NULL;10;1;NULL;NULL;true;true;false;NULL;NULL;NULL
 2;weight;Вес ближайшего соседа;1;DECIMAL;0.5;1;255;NULL;NULL;1;1;NULL;NULL;true;true;false;NULL;NULL;NULL
@@ -14,22 +14,22 @@ id;field_name;description;field_order;field_type;min_value;max_value;max_length;
 # J48 tree form fields template
 
 6;minNumObj;Минимальное число объектов в листе;0;INTEGER;0;2147483647;255;NULL;NULL;2;3;NULL;NULL;true;true;false;NULL;NULL;NULL
-7;binarySplits;Бинарное дерево;1;BOOLEAN;NULL;NULL;NULL;NULL;NULL;false;3;NULL;NULL;true;true;false;NULL;NULL;NULL
-8;unpruned;Неусеченное дерево;2;BOOLEAN;NULL;NULL;NULL;NULL;NULL;false;3;NULL;NULL;true;true;false;NULL;NULL;NULL
-9;numFolds;Количество блоков;3;INTEGER;2;100;255;NULL;NULL;3;3;NULL;NULL;true;true;false;NULL;NULL;NULL
-10;alpha;Уровень значимости для теста хи - квадрат;9;DECIMAL;0;1;255;NULL;NULL;0.05;4;NULL;NULL;true;true;true;NULL;NULL;NULL
+7;numFolds;Количество блоков;1;INTEGER;2;100;255;NULL;NULL;3;3;NULL;NULL;true;true;false;NULL;NULL;NULL
+8;binarySplits;Бинарное дерево;2;BOOLEAN;NULL;NULL;NULL;NULL;NULL;false;3;NULL;NULL;true;true;false;NULL;NULL;NULL
+9;unpruned;Неусеченное дерево;3;BOOLEAN;NULL;NULL;NULL;NULL;NULL;false;3;NULL;NULL;true;true;false;NULL;NULL;NULL
 
 # Decision tree form fields template
 
-11;decisionTreeType;Алгоритм построения дерева;0;REFERENCE;NULL;NULL;NULL;NULL;2;CART;4;NULL;NULL;true;true;false;NULL;NULL;NULL
-12;minObj;Минимальное число объектов в листе;1;INTEGER;0;2147483647;255;NULL;NULL;2;4;NULL;NULL;true;true;false;NULL;NULL;NULL
-13;maxDepth;Максимальная глубина дерева;2;INTEGER;0;2147483647;255;NULL;NULL;0;4;NULL;NULL;true;true;false;NULL;NULL;NULL
-14;useBinarySplits;Бинарное дерево;3;BOOLEAN;NULL;NULL;NULL;NULL;NULL;false;4;NULL;NULL;true;true;false;NULL;NULL;NULL
-15;randomTree;Случайное дерево;4;BOOLEAN;NULL;NULL;NULL;NULL;NULL;false;4;NULL;NULL;true;true;false;NULL;NULL;NULL
-16;numRandomAttr;Число случайных атрибутов;5;INTEGER;0;2147483647;255;NULL;NULL;0;4;NULL;NULL;true;true;false;NULL;NULL;NULL
-17;useRandomSplits;Случайные расщепления атрибута;6;BOOLEAN;NULL;NULL;NULL;NULL;NULL;false;4;NULL;NULL;true;true;false;NULL;NULL;NULL
-18;numRandomSplits;Число случайных расщеплений атрибута;7;INTEGER;1;2147483647;255;NULL;NULL;1;4;NULL;NULL;true;true;false;NULL;NULL;NULL
-19;seed;Начальное значение (seed);8;INTEGER;0;2147483647;255;NULL;NULL;1;4;NULL;NULL;true;true;false;NULL;NULL;NULL
+10;decisionTreeType;Алгоритм построения дерева;0;REFERENCE;NULL;NULL;NULL;NULL;2;CART;4;NULL;NULL;true;true;false;NULL;NULL;NULL
+11;minObj;Минимальное число объектов в листе;1;INTEGER;0;2147483647;255;NULL;NULL;2;4;NULL;NULL;true;true;false;NULL;NULL;NULL
+12;maxDepth;Максимальная глубина дерева;2;INTEGER;0;2147483647;255;NULL;NULL;0;4;NULL;NULL;true;true;false;NULL;NULL;NULL
+13;numRandomAttr;Число случайных атрибутов;3;INTEGER;0;2147483647;255;NULL;NULL;0;4;NULL;NULL;true;true;false;NULL;NULL;NULL
+14;numRandomSplits;Число случайных расщеплений атрибута;4;INTEGER;1;2147483647;255;NULL;NULL;1;4;NULL;NULL;true;true;false;NULL;NULL;NULL
+15;seed;Начальное значение (seed);5;INTEGER;0;2147483647;255;NULL;NULL;1;4;NULL;NULL;true;true;false;NULL;NULL;NULL
+16;alpha;Уровень значимости для теста хи - квадрат;6;DECIMAL;0;1;255;NULL;NULL;0.05;4;NULL;NULL;true;true;true;NULL;NULL;NULL
+17;useBinarySplits;Бинарное дерево;7;BOOLEAN;NULL;NULL;NULL;NULL;NULL;false;4;NULL;NULL;true;true;false;NULL;NULL;NULL
+18;randomTree;Случайное дерево;8;BOOLEAN;NULL;NULL;NULL;NULL;NULL;false;4;NULL;NULL;true;true;false;NULL;NULL;NULL
+19;useRandomSplits;Случайные расщепления атрибута;9;BOOLEAN;NULL;NULL;NULL;NULL;NULL;false;4;NULL;NULL;true;true;false;NULL;NULL;NULL
 
 # Neural network form fields template
 
@@ -59,11 +59,11 @@ id;field_name;description;field_order;field_type;min_value;max_value;max_length;
 37;numThreads;Число потоков;1;INTEGER;1;10;255;NULL;NULL;1;7;NULL;NULL;true;true;false;NULL;NULL;NULL
 38;minError;Минимальная допустимая ошибка классификатора;2;DECIMAL;0;0.5;255;NULL;NULL;0;7;NULL;NULL;true;true;false;NULL;NULL;NULL
 39;maxError;Максимальная допустимая ошибка классификатора;3;DECIMAL;0;0.5;255;NULL;NULL;0.5;7;NULL;NULL;true;true;false;NULL;NULL;NULL
-40;useWeightedVotes;Метод взвешенного голосования;4;BOOLEAN;NULL;NULL;NULL;NULL;NULL;false;7;NULL;NULL;true;true;false;NULL;NULL;NULL
-41;useRandomClassifier;Случайный классификатор;5;BOOLEAN;NULL;NULL;NULL;NULL;NULL;true;7;NULL;NULL;true;true;false;NULL;NULL;NULL
-42;samplingMethod;Формирование обучающих выборок;6;REFERENCE;NULL;NULL;NULL;NULL;4;INITIAL;7;NULL;NULL;true;true;false;NULL;NULL;NULL
-43;useRandomSubspaces;Использование метода случайных подпространств;7;BOOLEAN;NULL;NULL;NULL;NULL;NULL;false;7;NULL;NULL;true;true;false;NULL;NULL;NULL
-44;seed;Начальное значение (seed);8;INTEGER;0;2147483647;255;NULL;NULL;1;7;NULL;NULL;true;true;false;NULL;NULL;NULL
+40;samplingMethod;Формирование обучающих выборок;4;REFERENCE;NULL;NULL;NULL;NULL;4;INITIAL;7;NULL;NULL;true;true;false;NULL;NULL;NULL
+41;seed;Начальное значение (seed);5;INTEGER;0;2147483647;255;NULL;NULL;1;7;NULL;NULL;true;true;false;NULL;NULL;NULL
+42;useWeightedVotes;Метод взвешенного голосования;6;BOOLEAN;NULL;NULL;NULL;NULL;NULL;false;7;NULL;NULL;true;true;false;NULL;NULL;NULL
+43;useRandomClassifier;Случайный классификатор;7;BOOLEAN;NULL;NULL;NULL;NULL;NULL;true;7;NULL;NULL;true;true;false;NULL;NULL;NULL
+44;useRandomSubspaces;Использование метода случайных подпространств;8;BOOLEAN;NULL;NULL;NULL;NULL;NULL;false;7;NULL;NULL;true;true;false;NULL;NULL;NULL
 45;classifierOptions;Базовые классификаторы;9;LIST_OBJECTS;NULL;NULL;25;NULL;NULL;NULL;7;NULL;NULL;true;true;false;1;Добавьте хотя бы один классификатор;Добавлено максимальное число классификаторов
 
 # Random forests form fields template
@@ -85,14 +85,14 @@ id;field_name;description;field_order;field_type;min_value;max_value;max_length;
 57;numRandomAttr;Число случайных атрибутов;4;INTEGER;0;2147483647;255;NULL;NULL;0;9;NULL;NULL;true;true;false;NULL;NULL;NULL
 58;numThreads;Число потоков;5;INTEGER;1;10;255;NULL;NULL;1;9;NULL;NULL;true;true;false;NULL;NULL;NULL
 59;numRandomSplits;Число случайных расщеплений атрибута;6;INTEGER;1;2147483647;255;NULL;NULL;1;9;NULL;NULL;true;true;false;NULL;NULL;NULL
-60;useBootstrapSamples;Использование бутстрэп-выборок;7;BOOLEAN;NULL;NULL;NULL;NULL;NULL;false;9;NULL;NULL;true;true;false;NULL;NULL;NULL
-61;seed;Начальное значение (seed);8;INTEGER;0;2147483647;255;NULL;NULL;1;9;NULL;NULL;true;true;false;NULL;NULL;NULL
+60;seed;Начальное значение (seed);7;INTEGER;0;2147483647;255;NULL;NULL;1;9;NULL;NULL;true;true;false;NULL;NULL;NULL
+61;useBootstrapSamples;Использование бутстрэп-выборок;8;BOOLEAN;NULL;NULL;NULL;NULL;NULL;false;9;NULL;NULL;true;true;false;NULL;NULL;NULL
 
 # Stacking form fields template
 
-62;useCrossValidation;V-блочная кросс-проверка для формирования мета-признаков;0;BOOLEAN;NULL;NULL;NULL;NULL;NULL;false;10;NULL;NULL;true;true;false;NULL;NULL;NULL
-63;numFolds;Количество блоков;1;INTEGER;2;100;255;NULL;NULL;10;10;NULL;NULL;true;true;false;NULL;NULL;NULL
-64;seed;Начальное значение (seed);2;INTEGER;0;2147483647;255;NULL;NULL;1;10;NULL;NULL;true;true;false;NULL;NULL;NULL
+62;numFolds;Количество блоков;0;INTEGER;2;100;255;NULL;NULL;10;10;NULL;NULL;true;true;false;NULL;NULL;NULL
+63;seed;Начальное значение (seed);1;INTEGER;0;2147483647;255;NULL;NULL;1;10;NULL;NULL;true;true;false;NULL;NULL;NULL
+64;useCrossValidation;V-блочная кросс-проверка для формирования мета-признаков;2;BOOLEAN;NULL;NULL;NULL;NULL;NULL;false;10;NULL;NULL;true;true;false;NULL;NULL;NULL
 65;classifierOptions;Базовые классификаторы;3;LIST_OBJECTS;NULL;NULL;25;NULL;NULL;NULL;10;NULL;NULL;true;true;false;1;Добавьте хотя бы один классификатор;Добавлено максимальное число классификаторов
 66;metaClassifierOptions;Мета классификатор;4;ONE_OF_OBJECT;NULL;NULL;NULL;NULL;NULL;NULL;10;NULL;NULL;true;true;false;1;Выберите мета-классификатор;NULL
 
@@ -102,5 +102,5 @@ id;field_name;description;field_order;field_type;min_value;max_value;max_length;
 68;numThreads;Число потоков;1;INTEGER;1;10;255;NULL;NULL;1;11;NULL;NULL;true;true;false;NULL;NULL;NULL
 69;minError;Минимальная допустимая ошибка классификатора;2;DECIMAL;0;0.5;255;NULL;NULL;0;11;NULL;NULL;true;true;false;NULL;NULL;NULL
 70;maxError;Максимальная допустимая ошибка классификатора;3;DECIMAL;0;0.5;255;NULL;NULL;0.5;11;NULL;NULL;true;true;false;NULL;NULL;NULL
-71;useBootstrapSamples;Использование бутстрэп - выборок;4;BOOLEAN;NULL;NULL;NULL;NULL;NULL;false;11;NULL;NULL;true;true;false;NULL;NULL;NULL
-72;seed;Начальное значение (seed);5;INTEGER;0;2147483647;255;NULL;NULL;1;11;NULL;NULL;true;true;false;NULL;NULL;NULL
+71;seed;Начальное значение (seed);4;INTEGER;0;2147483647;255;NULL;NULL;1;11;NULL;NULL;true;true;false;NULL;NULL;NULL
+72;useBootstrapSamples;Использование бутстрэп - выборок;5;BOOLEAN;NULL;NULL;NULL;NULL;NULL;false;11;NULL;NULL;true;true;false;NULL;NULL;NULL
