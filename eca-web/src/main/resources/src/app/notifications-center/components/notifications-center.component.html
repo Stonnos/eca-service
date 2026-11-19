@@ -25,13 +25,12 @@
         <div class="ui-g text-left created-date">
           {{ notification.created }}
         </div>
-        <div class="ui-g mx-auto d-flex align-items-center justify-content-center">
-          <button
-            pButton
-            (click)="onRoute(notification)"
-            label="Открыть конфигурацию"
-            type="button">
-          </button>
+        <div class="ui-g mx-auto d-flex align-items-start justify-content-start">
+          <a [routerLink]=""
+             class="text-bold link mt-2"
+             (click)="onRoute(notification)">
+            Открыть конфигурацию
+          </a>
         </div>
       </ng-container>
       <ng-container *ngSwitchCase="'EXPERIMENT_STATUS'">
@@ -41,13 +40,12 @@
         <div class="ui-g text-left created-date">
           {{ notification.created }}
         </div>
-        <div class="ui-g mx-auto d-flex align-items-center justify-content-center">
-          <button
-            pButton
-            (click)="onRoute(notification)"
-            label="Открыть заявку"
-            type="button">
-          </button>
+        <div class="ui-g mx-auto d-flex align-items-start justify-content-start">
+          <a [routerLink]=""
+             class="text-bold link mt-2"
+             (click)="onRoute(notification)">
+            Открыть заявку
+          </a>
         </div>
       </ng-container>
       <ng-container *ngSwitchCase="'EVALUATION_STATUS'">
@@ -57,13 +55,12 @@
         <div class="ui-g text-left created-date">
           {{ notification.created }}
         </div>
-        <div class="ui-g mx-auto d-flex align-items-center justify-content-center">
-          <button
-            pButton
-            (click)="onRoute(notification)"
-            label="Открыть заявку"
-            type="button">
-          </button>
+        <div class="ui-g mx-auto d-flex align-items-start justify-content-start">
+          <a [routerLink]=""
+             class="text-bold link mt-2"
+             (click)="onRoute(notification)">
+            Открыть заявку
+          </a>
         </div>
       </ng-container>
       <ng-container *ngSwitchDefault>
