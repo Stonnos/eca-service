@@ -6,6 +6,7 @@ import com.ecaservice.classifier.options.model.StackingOptions;
 import com.ecaservice.web.dto.model.ClassifierInfoDto;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.experimental.UtilityClass;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.util.CollectionUtils;
 
 import java.io.IOException;
@@ -93,6 +94,6 @@ public class Utils {
                         .append(LINE_BREAK);
             }
         });
-        return classifierOptions.toString();
+        return StringUtils.removeEnd(classifierOptions.toString(), LINE_BREAK);
     }
 }
