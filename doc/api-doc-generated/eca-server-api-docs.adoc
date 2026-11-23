@@ -1759,6 +1759,120 @@ a|
 } ]
 ----
 |===
+=== Returns aggregated experiment count grouped by day or month for the specified filter
+
+__POST__ */experiment/statistics/time-series* - Gets experiment requests time-series statistics
+
+*Security requirement*
+
+[cols="^50%,^50%",options="header"]
+|===
+|*Name*|*Scopes*
+|
+<<EcaAuth>>
+a|
+
+* web
+
+|===
+
+*Request body*
+
+[width=100%]
+|===
+|*Content type*|*Required*|*Schema*|*Example*
+|*application/json*
+|true
+|
+<<TimeSeriesStatisticsFilter>>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+a|
+[source,json]
+----
+{
+  "period" : "THREE_MONTHS",
+  "groupBy" : "MONTH"
+}
+----
+|===
+
+
+
+*Api responses*
+[width=100%]
+|===
+|*Code*|*Description*|*Content type*|*Schema*|*Example*
+|200
+|OK
+|*application/json*
+|
+<<ChartDto>>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+a|
+[source,json]
+----
+{
+  "total" : 145,
+  "dataItems" : [ {
+    "name" : "2026-08",
+    "label" : "2026-08\"",
+    "count" : 32
+  }, {
+    "name" : "2026-09",
+    "label" : "2026-09",
+    "count" : 0
+  }, {
+    "name" : "2026-10",
+    "label" : "2026-10",
+    "count" : 68
+  }, {
+    "name" : "2026-11",
+    "label" : "2026-11",
+    "count" : 45
+  } ]
+}
+----
+|401
+|Not authorized
+|*application/json*
+|-
+a|
+[source,json]
+----
+{
+  "error" : "unauthorized",
+  "error_description" : "Full authentication is required to access this resource"
+}
+----
+|===
 === Finds experiments with specified options
 
 __POST__ */experiment/list* - Finds experiments with specified options
@@ -5516,6 +5630,120 @@ a|
 }
 ----
 |===
+=== Returns aggregated evaluation logs count grouped by day or month for the specified filter
+
+__POST__ */evaluation/classifiers-statistics/time-series* - Gets evaluation requests time-series statistics
+
+*Security requirement*
+
+[cols="^50%,^50%",options="header"]
+|===
+|*Name*|*Scopes*
+|
+<<EcaAuth>>
+a|
+
+* web
+
+|===
+
+*Request body*
+
+[width=100%]
+|===
+|*Content type*|*Required*|*Schema*|*Example*
+|*application/json*
+|true
+|
+<<TimeSeriesStatisticsFilter>>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+a|
+[source,json]
+----
+{
+  "period" : "THREE_MONTHS",
+  "groupBy" : "MONTH"
+}
+----
+|===
+
+
+
+*Api responses*
+[width=100%]
+|===
+|*Code*|*Description*|*Content type*|*Schema*|*Example*
+|200
+|OK
+|*application/json*
+|
+<<ChartDto>>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+a|
+[source,json]
+----
+{
+  "total" : 145,
+  "dataItems" : [ {
+    "name" : "2026-08",
+    "label" : "2026-08\"",
+    "count" : 32
+  }, {
+    "name" : "2026-09",
+    "label" : "2026-09",
+    "count" : 0
+  }, {
+    "name" : "2026-10",
+    "label" : "2026-10",
+    "count" : 68
+  }, {
+    "name" : "2026-11",
+    "label" : "2026-11",
+    "count" : 45
+  } ]
+}
+----
+|401
+|Not authorized
+|*application/json*
+|-
+a|
+[source,json]
+----
+{
+  "error" : "unauthorized",
+  "error_description" : "Full authentication is required to access this resource"
+}
+----
+|===
 === Gets evaluation roc curve data
 
 __GET__ */evaluation/roc-curve* - Gets evaluation roc curve data
@@ -6858,6 +7086,204 @@ __(int64)__
 
 
 
+|===
+=== ChartDataDto
+:table-caption: Table
+.Chart data model
+[width=100%]
+|===
+|*Name*|*Description*|*Schema*
+|*name**
+|Chart item name
+a|
+__string__
+
+
+
+
+*Max. length*: 255
+
+
+
+
+
+
+
+
+
+
+|*label**
+|Chart item label
+a|
+__string__
+
+
+
+
+*Max. length*: 255
+
+
+
+
+
+
+
+
+
+
+|*count**
+|Chart item value
+a|
+__integer__
+__(int64)__
+
+
+
+
+
+
+*Minimum*: 0*
+
+*Maximum*: 9 223 372 036 854 775 807*
+
+
+
+
+
+
+
+
+|===
+=== ChartDto
+:table-caption: Table
+.Chart model
+[width=100%]
+|===
+|*Name*|*Description*|*Schema*
+|*total**
+|Total items
+a|
+__integer__
+__(int64)__
+
+
+
+
+
+
+*Minimum*: 0*
+
+*Maximum*: 9 223 372 036 854 775 807*
+
+
+
+
+
+
+
+
+|*dataItems*
+|Chart data items
+a|
+__array__
+<<<ChartDataDto>>
+>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|===
+=== TimeSeriesStatisticsFilter
+:table-caption: Table
+.Time series statistics filter
+[width=100%]
+|===
+|*Name*|*Description*|*Schema*
+|*period**
+|Predefined time period
+a|
+__string__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+*Values*:
+
+* DAY
+
+* MONTH
+
+* THREE_MONTHS
+
+* SIX_MONTHS
+
+* YEAR
+|*day*
+|Specific date for daily statistics (overrides period)
+a|
+__string__
+__(date)__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|*groupBy**
+|Grouping granularity
+a|
+__string__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+*Values*:
+
+* DAY
+
+* MONTH
 |===
 === EnumDto
 :table-caption: Table
@@ -11650,123 +12076,6 @@ __boolean__
 |-
 a|
 <<FilterDictionaryDto>>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-|===
-=== ChartDataDto
-:table-caption: Table
-.Chart data model
-[width=100%]
-|===
-|*Name*|*Description*|*Schema*
-|*name**
-|Chart item name
-a|
-__string__
-
-
-
-
-*Max. length*: 255
-
-
-
-
-
-
-
-
-
-
-|*label**
-|Chart item label
-a|
-__string__
-
-
-
-
-*Max. length*: 255
-
-
-
-
-
-
-
-
-
-
-|*count**
-|Chart item value
-a|
-__integer__
-__(int64)__
-
-
-
-
-
-
-*Minimum*: 0*
-
-*Maximum*: 9 223 372 036 854 775 807*
-
-
-
-
-
-
-
-
-|===
-=== ChartDto
-:table-caption: Table
-.Chart model
-[width=100%]
-|===
-|*Name*|*Description*|*Schema*
-|*total**
-|Total items
-a|
-__integer__
-__(int64)__
-
-
-
-
-
-
-*Minimum*: 0*
-
-*Maximum*: 9 223 372 036 854 775 807*
-
-
-
-
-
-
-
-
-|*dataItems*
-|Chart data items
-a|
-__array__
-<<<ChartDataDto>>
->
 
 
 
