@@ -24,11 +24,18 @@ public class TimeSeriesStatisticsFilter {
     private TimePeriod period;
 
     /**
-     * Specific date for daily statistics (overrides period if specified)
+     * rom date for CUSTOM period
      */
-    @Schema(description = "Specific date for daily statistics (overrides period)", example = "2026-11-20")
+    @Schema(description = "From date for CUSTOM period", example = "2026-11-20")
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
-    private LocalDate day;
+    private LocalDate from;
+
+    /**
+     * To date for CUSTOM period
+     */
+    @Schema(description = "To date for CUSTOM period", example = "2026-11-20")
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+    private LocalDate to;
 
     /**
      * Grouping granularity for aggregated data

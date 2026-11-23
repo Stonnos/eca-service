@@ -7231,7 +7231,7 @@ __string__
 
 *Values*:
 
-* DAY
+* CUSTOM
 
 * MONTH
 
@@ -7240,8 +7240,28 @@ __string__
 * SIX_MONTHS
 
 * YEAR
-|*day*
-|Specific date for daily statistics (overrides period)
+|*from*
+|From date for CUSTOM period
+a|
+__string__
+__(date)__
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+|*to*
+|To date for CUSTOM period
 a|
 __string__
 __(date)__

@@ -1,5 +1,7 @@
 package com.ecaservice.server.dto;
 
+import com.ecaservice.common.web.exception.InvalidOperationException;
+
 import java.time.LocalDateTime;
 
 /**
@@ -10,9 +12,9 @@ import java.time.LocalDateTime;
 public enum TimePeriod {
 
     /**
-     * Last 1 day
+     * Custom period
      */
-    DAY,
+    CUSTOM,
 
     /**
      * Last 1 month
@@ -49,7 +51,6 @@ public enum TimePeriod {
      */
     public LocalDateTime resolveStartDate(LocalDateTime now) {
         return switch (this) {
-            case DAY -> now;
             case MONTH -> now.withDayOfMonth(FIRST_DAY_OF_MONTH);
             case THREE_MONTHS -> now.minusMonths(THREE_MONTHS_COUNT - CURRENT_MONTH_OFFSET)
                     .withDayOfMonth(FIRST_DAY_OF_MONTH);
@@ -57,6 +58,7 @@ public enum TimePeriod {
                     .withDayOfMonth(FIRST_DAY_OF_MONTH);
             case YEAR -> now.minusMonths(TWELVE_MONTHS_COUNT - CURRENT_MONTH_OFFSET)
                     .withDayOfMonth(FIRST_DAY_OF_MONTH);
+            case CUSTOM -> throw new InvalidOperationException("Custom period requires explicit from and to dates");
         };
     }
 }

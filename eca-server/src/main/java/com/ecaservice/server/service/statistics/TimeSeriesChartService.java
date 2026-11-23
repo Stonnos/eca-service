@@ -46,23 +46,21 @@ public class TimeSeriesChartService {
         LocalDateTime now = LocalDateTime.now();
         LocalDateTime startDate;
         LocalDateTime endDate;
-        TimePeriodGroupBy groupBy = Optional.ofNullable(filter.getGroupBy()).orElse(TimePeriodGroupBy.DAY);
-        if (filter.getDay() != null) {
-            startDate = filter.getDay().atStartOfDay();
-            endDate = filter.getDay().atTime(LocalTime.MAX);
-            groupBy = TimePeriodGroupBy.DAY;
+        TimePeriod period = Optional.ofNullable(filter.getPeriod()).orElse(TimePeriod.MONTH);
+        if (TimePeriod.CUSTOM.equals(period)) {
+            startDate = Optional.ofNullable(filter.getFrom()).orElse(LocalDate.now()).atStartOfDay();
+            endDate = Optional.ofNullable(filter.getTo()).orElse(LocalDate.now()).atTime(LocalTime.MAX);
         } else {
-            TimePeriod period = Optional.ofNullable(filter.getPeriod()).orElse(TimePeriod.MONTH);
             startDate = period.resolveStartDate(now).with(LocalTime.MIN);
             endDate = now;
         }
-        List<TimeSeriesStatistics> rawStats = getTimeSeriesData(groupBy, startDate, endDate, dataFetcher);
+        List<TimeSeriesStatistics> rawStats = getTimeSeriesData(filter.getGroupBy(), startDate, endDate, dataFetcher);
         Map<LocalDate, Long> statsMap = rawStats.stream()
                 .collect(Collectors.toMap(
                         stat -> stat.getPeriodStart().toLocalDate(),
                         TimeSeriesStatistics::getRequestsCount
                 ));
-        return buildChartDto(startDate.toLocalDate(), endDate.toLocalDate(), groupBy, statsMap);
+        return buildChartDto(startDate.toLocalDate(), endDate.toLocalDate(), filter.getGroupBy(), statsMap);
     }
 
     private List<TimeSeriesStatistics> getTimeSeriesData(TimePeriodGroupBy groupBy,

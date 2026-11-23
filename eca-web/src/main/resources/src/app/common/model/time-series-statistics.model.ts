@@ -1,5 +1,5 @@
 export enum TimePeriod {
-  DAY = 'DAY',
+  CUSTOM = 'CUSTOM',
   MONTH = 'MONTH',
   THREE_MONTHS = 'THREE_MONTHS',
   SIX_MONTHS = 'SIX_MONTHS',
@@ -12,7 +12,8 @@ export enum TimePeriodGroupBy {
 }
 
 export class TimeSeriesStatisticsFilter {
-  period?: TimePeriod;
-  day?: string;
+  period: TimePeriod;
+  from?: string;
+  to?: string;
   groupBy: TimePeriodGroupBy;
 }

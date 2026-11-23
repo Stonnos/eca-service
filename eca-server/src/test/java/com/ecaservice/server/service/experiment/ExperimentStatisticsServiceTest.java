@@ -118,47 +118,71 @@ public class ExperimentStatisticsServiceTest extends AbstractJpaTest {
     }
 
     @Test
-    @DisplayName("Specific day filter: counts logs strictly from 00:00:00 to 23:59:59")
-    void testShouldCalculateStatisticsForSpecificDay() {
-        // Given: fixed past date (current system time does not affect specific day filtering)
-        LocalDate targetDay = LocalDate.of(2026, 5, 15);
-        saveExperiment(LocalDateTime.of(2026, 5, 14, 23, 59, 59)); // Previous day (exclude)
-        saveExperiment(LocalDateTime.of(2026, 5, 15, 0, 0, 0));    // Start of target day (include)
-        saveExperiment(LocalDateTime.of(2026, 5, 15, 23, 59, 59)); // End of target day (include)
-        saveExperiment(LocalDateTime.of(2026, 5, 16, 0, 0, 0));    // Next day (exclude)
+    @DisplayName("Custom period daily statistics: filters records within explicit date range and fills missing days with zeros")
+    void testShouldCalculateCustomPeriodDailyStatistics() {
+        // Given: explicit 3-day custom range with records before, inside, and after the range
+        LocalDate startDate = LocalDate.of(2026, 5, 10);
+        LocalDate middleDate = LocalDate.of(2026, 5, 11);
+        LocalDate endDate = LocalDate.of(2026, 5, 12);
+
+        saveExperiment(startDate.minusDays(1).atTime(23, 59)); // Excluded (before startDate)
+        saveExperiment(startDate.atStartOfDay());               // Included (exact start boundary)
+        saveExperiment(startDate.atTime(15, 30));               // Included
+        saveExperiment(endDate.atTime(23, 59, 59));             // Included (end of endDate)
+        saveExperiment(endDate.plusDays(1).atStartOfDay());     // Excluded (after endDate)
 
         TimeSeriesStatisticsFilter filter = new TimeSeriesStatisticsFilter();
-        filter.setDay(targetDay);
-        filter.setPeriod(TimePeriod.YEAR); // Ignored since specific day is provided
+        filter.setPeriod(TimePeriod.CUSTOM);
+        filter.setFrom(startDate);
+        filter.setTo(endDate);
+        filter.setGroupBy(TimePeriodGroupBy.DAY);
+
         // When
         var chartData = experimentStatisticsService.getTimeSeriesStatistics(filter);
         List<ChartDataDto> result = chartData.getDataItems();
-        // Then
-        assertThat(chartData.getTotal()).isEqualTo(2L);
+
+        // Then: strictly 3 days (startDate, middleDate with 0 count, endDate)
+        assertThat(chartData.getTotal()).isEqualTo(3L);
         assertThat(result)
-                .hasSize(1)
                 .extracting(ChartDataDto::getName, ChartDataDto::getLabel, ChartDataDto::getCount)
                 .containsExactly(
-                        tuple("2026-05-15", "2026-05-15", 2L)
+                        tuple(startDate.format(DAY_KEY_FORMATTER), startDate.format(DAY_KEY_FORMATTER), 2L),
+                        tuple(middleDate.format(DAY_KEY_FORMATTER), middleDate.format(DAY_KEY_FORMATTER), 0L),
+                        tuple(endDate.format(DAY_KEY_FORMATTER), endDate.format(DAY_KEY_FORMATTER), 1L)
                 );
     }
 
     @Test
-    @DisplayName("Empty database: returns zero-filled data points for the selected period")
-    void testShouldReturnZeroFilledPointsWhenDatabaseIsEmpty() {
-        // Given
+    @DisplayName("Custom period monthly statistics: groups records by months within explicit date range")
+    void testShouldCalculateCustomPeriodMonthlyStatistics() {
+        // Given: custom range spanning 3 calendar months (Jan - Mar 2026), skipping Feb
+        LocalDate startDate = LocalDate.of(2026, 1, 15);
+        LocalDate endDate = LocalDate.of(2026, 3, 20);
+
+        saveExperiment(LocalDate.of(2025, 12, 31).atTime(23, 59)); // Excluded (before startDate)
+        saveExperiment(LocalDate.of(2026, 1, 15).atTime(10, 0));   // Included (Jan)
+        saveExperiment(LocalDate.of(2026, 3, 5).atTime(12, 0));    // Included (Mar)
+        saveExperiment(LocalDate.of(2026, 3, 20).atTime(18, 0));   // Included (Mar)
+        saveExperiment(LocalDate.of(2026, 3, 21).atTime(9, 0));    // Excluded (after endDate)
+
         TimeSeriesStatisticsFilter filter = new TimeSeriesStatisticsFilter();
-        filter.setDay(LocalDate.of(2026, 4, 10));
+        filter.setPeriod(TimePeriod.CUSTOM);
+        filter.setFrom(startDate);
+        filter.setTo(endDate);
+        filter.setGroupBy(TimePeriodGroupBy.MONTH);
+
         // When
         var chartData = experimentStatisticsService.getTimeSeriesStatistics(filter);
         List<ChartDataDto> result = chartData.getDataItems();
-        // Then
-        assertThat(chartData.getTotal()).isEqualTo(0L);
+
+        // Then: strictly 3 months (2026-01, 2026-02 with 0 count, 2026-03)
+        assertThat(chartData.getTotal()).isEqualTo(3L);
         assertThat(result)
-                .hasSize(1)
                 .extracting(ChartDataDto::getName, ChartDataDto::getLabel, ChartDataDto::getCount)
                 .containsExactly(
-                        tuple("2026-04-10", "2026-04-10", 0L)
+                        tuple("2026-01", "2026-01", 1L),
+                        tuple("2026-02", "2026-02", 0L),
+                        tuple("2026-03", "2026-03", 2L)
                 );
     }
 

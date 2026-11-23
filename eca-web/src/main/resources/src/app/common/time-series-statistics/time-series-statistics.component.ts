@@ -16,7 +16,7 @@ export class TimeSeriesStatisticsComponent implements OnInit {
   public now: Date = new Date();
 
   public periodOptions: SelectItem[] = [
-    { label: '1 день', value: TimePeriod.DAY },
+    { label: 'Произвольный период', value: TimePeriod.CUSTOM },
     { label: 'Месяц', value: TimePeriod.MONTH },
     { label: '3 месяца', value: TimePeriod.THREE_MONTHS },
     { label: '6 месяцев', value: TimePeriod.SIX_MONTHS },
@@ -24,7 +24,7 @@ export class TimeSeriesStatisticsComponent implements OnInit {
   ];
 
   public selectedPeriod: TimePeriod = TimePeriod.MONTH;
-  public selectedSingleDate: Date = new Date();
+  public createdDateRange: Date[];
 
   public groupOptions: SelectItem[] = [
     { label: 'По дням', value: TimePeriodGroupBy.DAY, disabled: false },
@@ -57,10 +57,8 @@ export class TimeSeriesStatisticsComponent implements OnInit {
   }
 
   public onPeriodChange(): void {
-    const isSingleDayOrMonth = this.selectedPeriod === TimePeriod.DAY || this.selectedPeriod === TimePeriod.MONTH;
-
-    if (isSingleDayOrMonth) {
-      // Allow grouping by day only for 1 day and 1 month
+    if (this.selectedPeriod === TimePeriod.MONTH) {
+      // Allow grouping by day only for 1 month
       this.selectedGroup = TimePeriodGroupBy.DAY;
       this.groupOptions = [
         { label: 'По дням', value: TimePeriodGroupBy.DAY, disabled: false },
@@ -110,11 +108,11 @@ export class TimeSeriesStatisticsComponent implements OnInit {
     const filter: TimeSeriesStatisticsFilter = new TimeSeriesStatisticsFilter();
     filter.groupBy = this.selectedGroup;
     filter.period = this.selectedPeriod;
-    if (this.selectedPeriod === TimePeriod.DAY) {
-      if (!this.selectedSingleDate) {
-        this.selectedSingleDate = new Date();
-      }
-      filter.day = this.transformDate(this.selectedSingleDate);
+    if (this.selectedPeriod === TimePeriod.CUSTOM) {
+      const createdFrom: Date = this.createdDateRange && this.createdDateRange[0];
+      const createdTo: Date = this.createdDateRange && this.createdDateRange[1];
+      filter.from = this.transformDate(createdFrom);
+      filter.to = this.transformDate(createdTo);
     }
     return filter;
   }

@@ -23,12 +23,12 @@
 
           <div class="ui-g-12 ui-md-2">
             <label class="filter-label">Дата</label>
-            <p-calendar
-              [showIcon]="true"
-              [disabled]="loading || selectedPeriod !== 'DAY'"
-              [showButtonBar]="true"
-              [(ngModel)]="selectedSingleDate"
-              [maxDate]="now">
+            <p-calendar selectionMode="range"
+                        [showIcon]="true"
+                        [disabled]="loading || selectedPeriod !== 'CUSTOM'"
+                        [showButtonBar]="true"
+                        [(ngModel)]="createdDateRange"
+                        [maxDate]="now">
             </p-calendar>
           </div>
 
@@ -37,7 +37,7 @@
             <p-selectButton
               [options]="groupOptions"
               [(ngModel)]="selectedGroup"
-              [disabled]="loading || selectedPeriod === 'DAY'">
+              [disabled]="loading">
             </p-selectButton>
           </div>
 
