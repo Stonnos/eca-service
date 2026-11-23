@@ -11,7 +11,6 @@
       <p-header>
         <div class="ui-g ui-fluid" style="align-items: center;">
 
-          <!-- Выбор периода: 1 день | Месяц | 3 месяца -->
           <div class="ui-g-12 ui-md-2 ui-md-offset-2">
             <label class="filter-label">Период</label>
             <p-dropdown
@@ -22,7 +21,6 @@
             </p-dropdown>
           </div>
 
-          <!-- Выбор конкретного дня (показывается только в режиме '1 день') -->
           <div class="ui-g-12 ui-md-2">
             <label class="filter-label">Дата</label>
             <p-calendar
@@ -34,7 +32,6 @@
             </p-calendar>
           </div>
 
-          <!-- Выбор группировки: По дням | По месяцам -->
           <div class="ui-g-12 ui-md-3">
             <label class="filter-label">Группировка</label>
             <p-selectButton
@@ -44,7 +41,6 @@
             </p-selectButton>
           </div>
 
-          <!-- Кнопка Показать (как в левом графике) -->
           <div class="ui-g-12 ui-md-1" style="margin-top: 30px;">
             <button
               pButton
@@ -61,7 +57,6 @@
 
       <div class="ui-g">
         <div class="ui-g-12">
-          <!-- Высота 750px сохранена для ровного выравнивания с левым графиком -->
           <p-chart type="bar" height="725px" [data]="dataSet" [options]="barOptions"></p-chart>
         </div>
       </div>
