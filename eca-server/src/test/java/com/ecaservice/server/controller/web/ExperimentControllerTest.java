@@ -21,6 +21,7 @@ import com.ecaservice.server.service.experiment.ExperimentRequestWebApiService;
 import com.ecaservice.server.service.experiment.ExperimentResultsAttachmentUploader;
 import com.ecaservice.server.service.experiment.ExperimentResultsRocCurveDataProvider;
 import com.ecaservice.server.service.experiment.ExperimentResultsService;
+import com.ecaservice.server.service.experiment.ExperimentStatisticsService;
 import com.ecaservice.web.dto.model.ChartDataDto;
 import com.ecaservice.web.dto.model.ChartDto;
 import com.ecaservice.web.dto.model.CreateExperimentResultDto;
@@ -104,6 +105,8 @@ class ExperimentControllerTest extends PageRequestControllerTest {
     private ExperimentResultsReportDataFetcher experimentResultsReportDataFetcher;
     @MockBean
     private ExperimentResultsAttachmentUploader experimentResultsAttachmentUploader;
+    @MockBean
+    private ExperimentStatisticsService experimentStatisticsService;
 
     @Autowired
     private ExperimentMapper experimentMapper;

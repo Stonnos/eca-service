@@ -1,5 +1,6 @@
 package com.ecaservice.server.repository;
 
+import com.ecaservice.server.model.TimeSeriesStatistics;
 import com.ecaservice.server.model.entity.Experiment;
 import com.ecaservice.server.model.projections.RequestStatusStatistics;
 import jakarta.persistence.LockModeType;
@@ -94,4 +95,38 @@ public interface ExperimentRepository extends JpaRepository<Experiment, Long>, J
     @Modifying
     @Query("update Experiment e set e.lockedTtl = null where e.id = :id")
     void resetLock(@Param("id") Long id);
+
+    /**
+     * Calculates experiment requests statistics grouped by day within the specified date range.
+     *
+     * @param startDate - start date-time (inclusive)
+     * @param endDate   - end date-time (inclusive)
+     * @return daily statistics list ordered chronologically
+     */
+    @Query(value = """
+            SELECT DATE_TRUNC('day', creation_date) AS periodStart, COUNT(*) AS requestsCount
+            FROM experiment
+            WHERE creation_date >= :startDate AND creation_date <= :endDate
+            GROUP BY periodStart
+            ORDER BY periodStart
+            """, nativeQuery = true)
+    List<TimeSeriesStatistics> getDailyTimeSeriesStatistics(@Param("startDate") LocalDateTime startDate,
+                                                            @Param("endDate") LocalDateTime endDate);
+
+    /**
+     * Calculates experiment requests statistics grouped by month within the specified date range.
+     *
+     * @param startDate - start date-time (inclusive)
+     * @param endDate   - end date-time (inclusive)
+     * @return monthly statistics list ordered chronologically
+     */
+    @Query(value = """
+            SELECT DATE_TRUNC('month', creation_date) AS periodStart, COUNT(*) AS requestsCount
+            FROM experiment
+            WHERE creation_date >= :startDate AND creation_date <= :endDate
+            GROUP BY periodStart
+            ORDER BY periodStart
+            """, nativeQuery = true)
+    List<TimeSeriesStatistics> getMonthlyTimeSeriesStatistics(@Param("startDate") LocalDateTime startDate,
+                                                              @Param("endDate") LocalDateTime endDate);
 }

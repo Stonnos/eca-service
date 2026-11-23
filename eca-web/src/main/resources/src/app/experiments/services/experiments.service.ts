@@ -21,6 +21,7 @@ import { RocCurveService } from '../../common/services/roc-curve.service';
 import { UploadEvaluationResultsAttachmentService } from '../../common/services/upload-evaluation-results-attachment.service';
 import { EvaluationResultsAttachmentType } from '../../common/model/evaluation-results-attachment-type.enum';
 import { ClassifyInstanceService } from '../../common/services/classify-instance.service';
+import { TimeSeriesStatisticsFilter } from '../../common/model/time-series-statistics.model';
 
 @Injectable()
 export class ExperimentsService implements RocCurveService, ClassifyInstanceService, UploadEvaluationResultsAttachmentService {
@@ -108,6 +109,14 @@ export class ExperimentsService implements RocCurveService, ClassifyInstanceServ
     let params = new HttpParams().set('createdDateFrom', createdDateFrom).set('createdDateTo', createdDateTo);
     const options = { headers: headers, params: params };
     return this.http.get<ChartDto>(this.serviceUrl + '/statistics', options);
+  }
+
+  public getExperimentTimeSeriesStatistics(filter: TimeSeriesStatisticsFilter): Observable<ChartDto> {
+    const headers = new HttpHeaders({
+      'Content-type': 'application/json; charset=utf-8'
+    });
+    const options = { headers: headers };
+    return this.http.post<ChartDto>(this.serviceUrl + '/statistics/time-series', filter, options);
   }
 
   public createExperiment(experimentRequest: CreateExperimentRequestDto): Observable<CreateExperimentResultDto> {

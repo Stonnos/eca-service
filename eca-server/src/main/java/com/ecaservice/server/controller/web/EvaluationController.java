@@ -462,8 +462,7 @@ public class EvaluationController {
                                     examples = {
                                             @ExampleObject(
                                                     name = "ClassifiersTimeSeriesStatisticsResponse",
-                                                    ref = "#/components/examples/ClassifiersTimeSeriesStatisticsResponse",
-                                                    externalValue = CLASSIFIERS_STATISTICS_RESPONSE_JSON
+                                                    ref = "#/components/examples/ClassifiersTimeSeriesStatisticsResponse"
                                             )
                                     },
                                     schema = @Schema(implementation = ChartDto.class)

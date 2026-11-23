@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 /**
- * Service for calculating time-series statistics of evaluation logs.
+ * Service for calculating evaluation logs statistics.
  *
  * @author Roman Batygin
  */

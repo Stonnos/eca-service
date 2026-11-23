@@ -13,5 +13,10 @@
       </ng-template>
     </p-tabPanel>
 
+    <p-tabPanel header="Динамика" leftIcon="pi pi-calendar" [cache]="false">
+      <ng-template pTemplate="content">
+        <app-experiment-time-series-statistics></app-experiment-time-series-statistics>
+      </ng-template>
+    </p-tabPanel>
   </p-tabView>
 </div>

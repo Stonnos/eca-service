@@ -4,6 +4,7 @@ import com.ecaservice.common.error.model.ValidationErrorDto;
 import com.ecaservice.common.web.exception.EntityNotFoundException;
 import com.ecaservice.core.audit.annotation.Audit;
 import com.ecaservice.server.dto.CreateExperimentRequestDto;
+import com.ecaservice.server.dto.TimeSeriesStatisticsFilter;
 import com.ecaservice.server.mapping.ExperimentMapper;
 import com.ecaservice.server.mapping.ExperimentProgressMapper;
 import com.ecaservice.server.model.entity.EvaluationResultsAttachmentType;
@@ -19,6 +20,7 @@ import com.ecaservice.server.service.experiment.ExperimentRequestWebApiService;
 import com.ecaservice.server.service.experiment.ExperimentResultsAttachmentUploader;
 import com.ecaservice.server.service.experiment.ExperimentResultsRocCurveDataProvider;
 import com.ecaservice.server.service.experiment.ExperimentResultsService;
+import com.ecaservice.server.service.experiment.ExperimentStatisticsService;
 import com.ecaservice.web.dto.model.ChartDto;
 import com.ecaservice.web.dto.model.ClassifyInstanceRequestDto;
 import com.ecaservice.web.dto.model.ClassifyInstanceResultDto;
@@ -98,6 +100,7 @@ public class ExperimentController {
     private final ClassifyExperimentResultsInstanceService classifyExperimentResultsInstanceService;
     private final ExperimentResultsReportDataFetcher experimentResultsReportDataFetcher;
     private final ExperimentResultsAttachmentUploader experimentResultsAttachmentUploader;
+    private final ExperimentStatisticsService experimentStatisticsService;
     private final ExperimentResultsEntityRepository experimentResultsEntityRepository;
 
     /**
@@ -538,6 +541,57 @@ public class ExperimentController {
         log.info("Received request for experiment statistics calculation with creation date from [{}] to [{}]",
                 createdDateFrom, createdDateTo);
         return experimentDataService.getExperimentsStatistics(createdDateFrom, createdDateTo);
+    }
+
+    /**
+     * Gets experiment requests time-series statistics.
+     *
+     * @param filter - statistics filter criteria
+     * @return list of chart data points ordered chronologically
+     */
+    @PreAuthorize("hasAuthority('SCOPE_web')")
+    @Operation(
+            summary = "Gets experiment requests time-series statistics",
+            description = "Returns aggregated experiment count grouped by day or month for the specified filter",
+            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME, scopes = SCOPE_WEB),
+            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(content = {
+                    @Content(examples = {
+                            @ExampleObject(
+                                    name = "TimeSeriesStatisticsFilter",
+                                    ref = "#/components/examples/TimeSeriesStatisticsFilter"
+                            )
+                    })
+            }),
+            responses = {
+                    @ApiResponse(description = "OK", responseCode = "200",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    examples = {
+                                            @ExampleObject(
+                                                    name = "ExperimentsTimeSeriesStatisticsResponse",
+                                                    ref = "#/components/examples/ExperimentsTimeSeriesStatisticsResponse"
+                                            )
+                                    },
+                                    schema = @Schema(implementation = ChartDto.class)
+                            )
+                    ),
+                    @ApiResponse(description = "Not authorized", responseCode = "401",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    examples = {
+                                            @ExampleObject(
+                                                    name = "NotAuthorizedResponse",
+                                                    ref = "#/components/examples/NotAuthorizedResponse"
+                                            )
+                                    }
+                            )
+                    )
+            }
+    )
+    @PostMapping(value = "/statistics/time-series")
+    public ChartDto getTimeSeriesStatistics(@Valid @RequestBody TimeSeriesStatisticsFilter filter) {
+        log.info("Request experiments time series statistics: {}", filter);
+        return experimentStatisticsService.getTimeSeriesStatistics(filter);
     }
 
     /**

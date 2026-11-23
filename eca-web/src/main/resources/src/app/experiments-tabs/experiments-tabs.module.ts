@@ -5,6 +5,7 @@ import { UiComponentsModule } from "../ui-components.module";
 import { ExperimentStatisticsModule } from "../experiment-statistics/experiment-statistics.module";
 import { ExperimentTabsComponent } from "./components/experiment-tabs.component";
 import { ExperimentsModule } from "../experiments/experiments.module";
+import { ExperimentTimeSeriesStatisticsModule } from '../experiment-time-series-statistics/experiment-time-series-statistics.module';
 
 @NgModule({
   imports: [
@@ -12,6 +13,7 @@ import { ExperimentsModule } from "../experiments/experiments.module";
     FormsModule,
     UiComponentsModule,
     ExperimentStatisticsModule,
+    ExperimentTimeSeriesStatisticsModule,
     ExperimentsModule
   ],
   declarations: [
