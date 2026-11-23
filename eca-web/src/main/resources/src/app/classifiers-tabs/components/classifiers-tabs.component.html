@@ -7,9 +7,15 @@
       </ng-template>
     </p-tabPanel>
 
-    <p-tabPanel header="Статистика" leftIcon="pi pi-chart-bar" [cache]="false">
+    <p-tabPanel header="Статистика по типам" leftIcon="pi pi-chart-bar" [cache]="false">
       <ng-template pTemplate="content">
         <app-classifiers-statistics></app-classifiers-statistics>
+      </ng-template>
+    </p-tabPanel>
+
+    <p-tabPanel header="Динамика" leftIcon="pi pi-calendar" [cache]="false">
+      <ng-template pTemplate="content">
+        <app-classifiers-time-series-statistics></app-classifiers-time-series-statistics>
       </ng-template>
     </p-tabPanel>
 

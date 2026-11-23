@@ -19,7 +19,7 @@ import { MultiSelectModule } from 'primeng/multiselect';
 import { OverlayPanelModule } from 'primeng/overlaypanel';
 import { PanelModule } from 'primeng/panel';
 import { PasswordModule } from 'primeng/password';
-import { EditorModule, InputSwitchModule, ListboxModule, MenuModule, TooltipModule } from 'primeng/primeng';
+import { EditorModule, InputSwitchModule, ListboxModule, MenuModule, SelectButtonModule, TooltipModule } from 'primeng/primeng';
 import { ProgressBarModule } from 'primeng/progressbar';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { RadioButtonModule } from 'primeng/radiobutton';
@@ -41,6 +41,7 @@ import { ToastModule } from "primeng/toast";
   exports: [
     ButtonModule,
     InputTextModule,
+    SelectButtonModule,
     MenubarModule,
     PanelModule,
     PasswordModule,

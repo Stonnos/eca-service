@@ -63,6 +63,7 @@ import { AttributesScatterPlotDialogModule } from './attributes-scatter-plot-dia
 import { ContingencyTableDialogModule } from './continjency-table-dialog/contingency-table-dialog.module';
 import { InstancesInfoDetailsModule } from './instances-info-details/instances-info-details.module';
 import { SetPasswordModule } from './set-password/set-password.module';
+import { ClassifiersTimeSeriesStatisticsModule } from './classifiers-time-series-statistics/classifiers-time-series-statistics.module';
 
 export function eventSubscribe(eventHandler: EventHandler) {
   return () => eventHandler.eventSubscribe();
@@ -120,6 +121,7 @@ export function eventSubscribe(eventHandler: EventHandler) {
     ClassifiersConfigurationFullDetailsModule,
     NotificationsCenterModule,
     ClassifiersStatisticsModule,
+    ClassifiersTimeSeriesStatisticsModule,
     AttributesModule,
     EvaluationResultsHistoryModule,
     UserProfileTabsModule,

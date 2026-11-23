@@ -5,12 +5,14 @@ import com.ecaservice.common.web.exception.EntityNotFoundException;
 import com.ecaservice.core.audit.annotation.Audit;
 import com.ecaservice.server.dto.CreateEvaluationRequestDto;
 import com.ecaservice.server.dto.CreateOptimalEvaluationRequestDto;
+import com.ecaservice.server.dto.TimeSeriesStatisticsFilter;
 import com.ecaservice.server.model.entity.EvaluationLog;
 import com.ecaservice.server.model.entity.EvaluationResultsAttachmentType;
 import com.ecaservice.server.report.SimpleEvaluationResultsReportDataFetcher;
 import com.ecaservice.server.repository.EvaluationLogRepository;
 import com.ecaservice.server.service.evaluation.ClassifyEvaluationInstanceService;
 import com.ecaservice.server.service.evaluation.EvaluationLogDataService;
+import com.ecaservice.server.service.evaluation.EvaluationLogStatisticsService;
 import com.ecaservice.server.service.evaluation.EvaluationRequestWebApiService;
 import com.ecaservice.server.service.evaluation.EvaluationRocCurveDataProvider;
 import com.ecaservice.server.service.evaluation.SimpleEvaluationResultsAttachmentUploader;
@@ -88,6 +90,7 @@ public class EvaluationController {
     private final ClassifyEvaluationInstanceService classifyEvaluationInstanceService;
     private final SimpleEvaluationResultsReportDataFetcher simpleEvaluationResultsReportDataFetcher;
     private final SimpleEvaluationResultsAttachmentUploader simpleEvaluationResultsAttachmentUploader;
+    private final EvaluationLogStatisticsService evaluationLogStatisticsService;
     private final EvaluationLogRepository evaluationLogRepository;
 
     /**
@@ -431,6 +434,58 @@ public class EvaluationController {
         log.info("Received request to get classifiers statistics histogram data with created date from [{}] to [{}]",
                 createdDateFrom, createdDateTo);
         return evaluationLogDataService.getClassifiersStatisticsData(createdDateFrom, createdDateTo);
+    }
+
+    /**
+     * Gets evaluation requests time-series statistics.
+     *
+     * @param filter - statistics filter criteria
+     * @return list of chart data points ordered chronologically
+     */
+    @PreAuthorize("hasAuthority('SCOPE_web')")
+    @Operation(
+            summary = "Gets evaluation requests time-series statistics",
+            description = "Returns aggregated evaluation logs count grouped by day or month for the specified filter",
+            security = @SecurityRequirement(name = ECA_AUTHENTICATION_SECURITY_SCHEME, scopes = SCOPE_WEB),
+            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(content = {
+                    @Content(examples = {
+                            @ExampleObject(
+                                    name = "TimeSeriesStatisticsFilter",
+                                    ref = "#/components/examples/TimeSeriesStatisticsFilter"
+                            )
+                    })
+            }),
+            responses = {
+                    @ApiResponse(description = "OK", responseCode = "200",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    examples = {
+                                            @ExampleObject(
+                                                    name = "ClassifiersTimeSeriesStatisticsResponse",
+                                                    ref = "#/components/examples/ClassifiersTimeSeriesStatisticsResponse",
+                                                    externalValue = CLASSIFIERS_STATISTICS_RESPONSE_JSON
+                                            )
+                                    },
+                                    schema = @Schema(implementation = ChartDto.class)
+                            )
+                    ),
+                    @ApiResponse(description = "Not authorized", responseCode = "401",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    examples = {
+                                            @ExampleObject(
+                                                    name = "NotAuthorizedResponse",
+                                                    ref = "#/components/examples/NotAuthorizedResponse"
+                                            )
+                                    }
+                            )
+                    )
+            }
+    )
+    @PostMapping(value = "/classifiers-statistics/time-series")
+    public ChartDto getTimeSeriesStatistics(@Valid @RequestBody TimeSeriesStatisticsFilter filter) {
+        log.info("Request evaluation logs time series statistics: {}", filter);
+        return evaluationLogStatisticsService.getTimeSeriesStatistics(filter);
     }
 
     /**

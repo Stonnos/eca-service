@@ -23,6 +23,7 @@ import { RocCurveService } from '../../common/services/roc-curve.service';
 import { ClassifyInstanceService } from '../../common/services/classify-instance.service';
 import { EvaluationResultsAttachmentType } from '../../common/model/evaluation-results-attachment-type.enum';
 import { UploadEvaluationResultsAttachmentService } from '../../common/services/upload-evaluation-results-attachment.service';
+import {TimeSeriesStatisticsFilter} from '../../common/model/time-series-statistics.model';
 
 @Injectable()
 export class ClassifiersService implements RocCurveService, ClassifyInstanceService, UploadEvaluationResultsAttachmentService {
@@ -74,6 +75,14 @@ export class ClassifiersService implements RocCurveService, ClassifyInstanceServ
     let params = new HttpParams().set('createdDateFrom', createdDateFrom).set('createdDateTo', createdDateTo);
     const options = { headers: headers, params: params };
     return this.http.get<ChartDto>(this.serviceUrl + '/classifiers-statistics', options);
+  }
+
+  public getClassifiersTimeSeriesStatistics(filter: TimeSeriesStatisticsFilter): Observable<ChartDto> {
+    const headers = new HttpHeaders({
+      'Content-type': 'application/json; charset=utf-8'
+    });
+    const options = { headers: headers };
+    return this.http.post<ChartDto>(this.serviceUrl + '/classifiers-statistics/time-series', filter, options);
   }
 
   public getModelContentUrl(id: number): Observable<S3ContentResponseDto> {

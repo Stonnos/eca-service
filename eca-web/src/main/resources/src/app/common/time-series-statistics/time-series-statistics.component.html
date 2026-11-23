@@ -1,0 +1,80 @@
+<p-progressSpinner
+  class="app-progress-spinner"
+  strokeWidth="4"
+  animationDuration=".5s"
+  *ngIf="loading">
+</p-progressSpinner>
+
+<div class="ui-g">
+  <div class="ui-g-12">
+    <p-panel>
+      <p-header>
+        <div class="ui-g ui-fluid" style="align-items: center;">
+
+          <!-- Выбор периода: 1 день | Месяц | 3 месяца -->
+          <div class="ui-g-12 ui-md-2 ui-md-offset-2">
+            <label class="filter-label">Период</label>
+            <p-dropdown
+              [options]="periodOptions"
+              [(ngModel)]="selectedPeriod"
+              [disabled]="loading"
+              (onChange)="onPeriodChange()">
+            </p-dropdown>
+          </div>
+
+          <!-- Выбор конкретного дня (показывается только в режиме '1 день') -->
+          <div class="ui-g-12 ui-md-2">
+            <label class="filter-label">Дата</label>
+            <p-calendar
+              [showIcon]="true"
+              [disabled]="loading || selectedPeriod !== 'DAY'"
+              [showButtonBar]="true"
+              [(ngModel)]="selectedSingleDate"
+              [maxDate]="now">
+            </p-calendar>
+          </div>
+
+          <!-- Выбор группировки: По дням | По месяцам -->
+          <div class="ui-g-12 ui-md-3">
+            <label class="filter-label">Группировка</label>
+            <p-selectButton
+              [options]="groupOptions"
+              [(ngModel)]="selectedGroup"
+              [disabled]="loading || selectedPeriod === 'DAY'">
+            </p-selectButton>
+          </div>
+
+          <!-- Кнопка Показать (как в левом графике) -->
+          <div class="ui-g-12 ui-md-1" style="margin-top: 30px;">
+            <button
+              pButton
+              class="ml-4"
+              label="Показать"
+              type="button"
+              [disabled]="loading"
+              (click)="onShow()">
+            </button>
+          </div>
+
+        </div>
+      </p-header>
+
+      <div class="ui-g">
+        <div class="ui-g-12">
+          <!-- Высота 750px сохранена для ровного выравнивания с левым графиком -->
+          <p-chart type="bar" height="725px" [data]="dataSet" [options]="barOptions"></p-chart>
+        </div>
+      </div>
+
+      <p-footer>
+        <div class="ui-g">
+          <div class="ui-g-12 text-center">
+            <span class="total-count">{{ totalCountTitle }}</span>
+            {{ total }}
+          </div>
+        </div>
+      </p-footer>
+
+    </p-panel>
+  </div>
+</div>

@@ -2,9 +2,9 @@ package com.ecaservice.server.repository;
 
 import com.ecaservice.server.model.entity.EvaluationLog;
 import com.ecaservice.server.model.projections.RequestStatusStatistics;
+import com.ecaservice.server.model.TimeSeriesStatistics;
 import jakarta.persistence.LockModeType;
 import jakarta.persistence.QueryHint;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
@@ -99,4 +99,38 @@ public interface EvaluationLogRepository
     @Modifying
     @Query("update EvaluationLog ev set ev.lockedTtl = null where ev.id = :id")
     void resetLock(@Param("id") Long id);
+
+    /**
+     * Calculates evaluation requests statistics grouped by day within the specified date range.
+     *
+     * @param startDate - start date-time (inclusive)
+     * @param endDate   - end date-time (inclusive)
+     * @return daily statistics list ordered chronologically
+     */
+    @Query(value = """
+            SELECT DATE_TRUNC('day', creation_date) AS periodStart, COUNT(*) AS requestsCount
+            FROM evaluation_log
+            WHERE creation_date >= :startDate AND creation_date <= :endDate
+            GROUP BY periodStart
+            ORDER BY periodStart
+            """, nativeQuery = true)
+    List<TimeSeriesStatistics> getDailyTimeSeriesStatistics(@Param("startDate") LocalDateTime startDate,
+                                                            @Param("endDate") LocalDateTime endDate);
+
+    /**
+     * Calculates evaluation requests statistics grouped by month within the specified date range.
+     *
+     * @param startDate - start date-time (inclusive)
+     * @param endDate   - end date-time (inclusive)
+     * @return monthly statistics list ordered chronologically
+     */
+    @Query(value = """
+            SELECT DATE_TRUNC('month', creation_date) AS periodStart, COUNT(*) AS requestsCount
+            FROM evaluation_log
+            WHERE creation_date >= :startDate AND creation_date <= :endDate
+            GROUP BY periodStart
+            ORDER BY periodStart
+            """, nativeQuery = true)
+    List<TimeSeriesStatistics> getMonthlyTimeSeriesStatistics(@Param("startDate") LocalDateTime startDate,
+                                                              @Param("endDate") LocalDateTime endDate);
 }

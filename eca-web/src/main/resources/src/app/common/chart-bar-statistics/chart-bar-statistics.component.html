@@ -8,7 +8,32 @@
   <div class="ui-g-12">
     <p-panel>
       <p-header>
-        <div class="ui-g">
+
+        <div class="ui-g ui-fluid" style="align-items: center;">
+          <div class="ui-g-12 ui-md-3 ui-md-offset-4">
+            <label class="filter-label">Дата</label>
+            <p-calendar selectionMode="range"
+                        [showIcon]="true"
+                        [disabled]="loading"
+                        [showButtonBar]="true"
+                        [(ngModel)]="createdDateRange"
+                        [maxDate]="now">
+            </p-calendar>
+          </div>
+
+          <div class="ui-g-12 ui-md-1" style="margin-top: 30px;">
+            <button
+              pButton
+              class="ml-4"
+              label="Показать"
+              type="button"
+              [disabled]="loading"
+              (click)="onShow()">
+            </button>
+          </div>
+        </div>
+
+        <!--<div class="ui-g">
           <div class="ui-g-5 ui-g-offset-2">
             <label class="filter-label">{{ dateLabelTitle }}</label>
             <p-calendar selectionMode="range"
@@ -28,12 +53,12 @@
             </button>
           </div>
 
-        </div>
+        </div>-->
       </p-header>
 
       <div class="ui-g">
         <div class="ui-g-12">
-          <p-chart type="horizontalBar" height="750px" [data]="dataSet" [options]="barOptions"></p-chart>
+          <p-chart type="horizontalBar" height="725px" [data]="dataSet" [options]="barOptions"></p-chart>
         </div>
       </div>
 

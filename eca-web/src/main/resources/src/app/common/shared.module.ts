@@ -32,6 +32,7 @@ import { InstancesAutocompleteComponent } from "./instances-autocomplete/instanc
 import { InstancesInfoService } from "./instances-info/services/instances-info.service";
 import { RocCurveChartComponent } from './roc-curve-chart/roc-curve-chart.component';
 import { AttributesInfoMapper } from './instances-info/services/attributes-info.mapper';
+import { TimeSeriesStatisticsComponent } from './time-series-statistics/time-series-statistics.component';
 
 @NgModule({
   imports: [
@@ -56,6 +57,7 @@ import { AttributesInfoMapper } from './instances-info/services/attributes-info.
     InstancesInfo,
     PushMessageComponent,
     ChartBarStatisticsComponent,
+    TimeSeriesStatisticsComponent,
     InstancesAutocompleteComponent,
     RocCurveChartComponent,
   ],
@@ -77,7 +79,8 @@ import { AttributesInfoMapper } from './instances-info/services/attributes-info.
     PushMessageComponent,
     ChartBarStatisticsComponent,
     InstancesAutocompleteComponent,
-    RocCurveChartComponent
+    RocCurveChartComponent,
+    TimeSeriesStatisticsComponent
   ],
   providers: [
     FieldService,
