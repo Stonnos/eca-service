@@ -75,7 +75,6 @@ export class TimeSeriesStatisticsComponent implements OnInit {
 
   public onShow() {
     const filter = this.buildFilter();
-    console.log('TimeSeriesStatisticsFilter:', filter);
     this.loading = true;
     this.loadData(filter)
       .pipe(
