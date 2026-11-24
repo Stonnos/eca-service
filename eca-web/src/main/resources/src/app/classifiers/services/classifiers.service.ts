@@ -23,7 +23,7 @@ import { RocCurveService } from '../../common/services/roc-curve.service';
 import { ClassifyInstanceService } from '../../common/services/classify-instance.service';
 import { EvaluationResultsAttachmentType } from '../../common/model/evaluation-results-attachment-type.enum';
 import { UploadEvaluationResultsAttachmentService } from '../../common/services/upload-evaluation-results-attachment.service';
-import {TimeSeriesStatisticsFilter} from '../../common/model/time-series-statistics.model';
+import { TimeSeriesStatisticsFilter } from '../../common/model/time-series-statistics.model';
 
 @Injectable()
 export class ClassifiersService implements RocCurveService, ClassifyInstanceService, UploadEvaluationResultsAttachmentService {
