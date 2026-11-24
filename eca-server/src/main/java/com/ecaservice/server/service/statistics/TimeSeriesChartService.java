@@ -52,7 +52,7 @@ public class TimeSeriesChartService {
             endDate = Optional.ofNullable(filter.getTo()).orElse(LocalDate.now()).atTime(LocalTime.MAX);
         } else {
             startDate = period.resolveStartDate(now).with(LocalTime.MIN);
-            endDate = now;
+            endDate = now.with(LocalTime.MAX);
         }
         List<TimeSeriesStatistics> rawStats = getTimeSeriesData(filter.getGroupBy(), startDate, endDate, dataFetcher);
         Map<LocalDate, Long> statsMap = rawStats.stream()

@@ -27,8 +27,8 @@ export class TimeSeriesStatisticsComponent implements OnInit {
   public createdDateRange: Date[];
 
   public groupOptions: SelectItem[] = [
-    { label: 'По дням', value: TimePeriodGroupBy.DAY, disabled: false },
-    { label: 'По месяцам', value: TimePeriodGroupBy.MONTH, disabled: true }
+    { label: 'По дням', value: TimePeriodGroupBy.DAY },
+    { label: 'По месяцам', value: TimePeriodGroupBy.MONTH }
   ];
   public selectedGroup: TimePeriodGroupBy = TimePeriodGroupBy.DAY;
 
@@ -57,19 +57,8 @@ export class TimeSeriesStatisticsComponent implements OnInit {
   }
 
   public onPeriodChange(): void {
-    if (this.selectedPeriod === TimePeriod.MONTH) {
-      // Allow grouping by day only for 1 month
-      this.selectedGroup = TimePeriodGroupBy.DAY;
-      this.groupOptions = [
-        { label: 'По дням', value: TimePeriodGroupBy.DAY, disabled: false },
-        { label: 'По месяцам', value: TimePeriodGroupBy.MONTH, disabled: true }
-      ];
-    } else {
-      // Allow both grouping options for 3–12 months
-      this.groupOptions = [
-        { label: 'По дням', value: TimePeriodGroupBy.DAY, disabled: false },
-        { label: 'По месяцам', value: TimePeriodGroupBy.MONTH, disabled: false }
-      ];
+    if (this.selectedPeriod != TimePeriod.CUSTOM) {
+      this.createdDateRange = null;
     }
   }
 
@@ -91,7 +80,8 @@ export class TimeSeriesStatisticsComponent implements OnInit {
               {
                 backgroundColor: '#a51d36',
                 borderColor: '#a5a5a5',
-                data: chartData.dataItems.map((chartData: ChartDataDto) => chartData.count)
+                data: chartData.dataItems.map((chartData: ChartDataDto) => chartData.count),
+                maxBarThickness: 100
               }
             ]
           };
