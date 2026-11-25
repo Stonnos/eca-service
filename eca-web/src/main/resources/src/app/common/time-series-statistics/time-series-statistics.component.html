@@ -24,6 +24,7 @@
           <div class="ui-g-12 ui-md-2">
             <label class="filter-label">Дата</label>
             <p-calendar selectionMode="range"
+                        [dateFormat]="'yy-mm-dd'"
                         [showIcon]="true"
                         [disabled]="loading || selectedPeriod !== 'CUSTOM'"
                         [showButtonBar]="true"

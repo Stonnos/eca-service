@@ -13,6 +13,7 @@
           <div class="ui-g-12 ui-md-3 ui-md-offset-4">
             <label class="filter-label">Дата</label>
             <p-calendar selectionMode="range"
+                        [dateFormat]="'yy-mm-dd'"
                         [showIcon]="true"
                         [disabled]="loading"
                         [showButtonBar]="true"
