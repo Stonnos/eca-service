@@ -13,11 +13,7 @@
     <packaging>jar</packaging>
 
     <properties>
-        <sonar.coverage.exclusions>
-            **/model/**/*,
-            **/service/**/*,
-            **/config/**/*
-        </sonar.coverage.exclusions>
+        <sonar.coverage.exclusions>**/*.*</sonar.coverage.exclusions>
     </properties>
 
     <dependencies>
