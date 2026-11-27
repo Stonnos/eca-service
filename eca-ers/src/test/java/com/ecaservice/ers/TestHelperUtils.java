@@ -23,10 +23,12 @@ import com.ecaservice.ers.model.EvaluationResultsInfo;
 import com.ecaservice.ers.model.InstancesInfo;
 import com.ecaservice.ers.model.RocCurveInfo;
 import com.ecaservice.ers.model.StatisticsInfo;
-import com.ecaservice.web.dto.model.FilterDictionaryDto;
-import com.ecaservice.web.dto.model.FilterDictionaryValueDto;
+import com.ecaservice.web.dto.model.EvaluationResultsHistoryDto;
 import com.ecaservice.web.dto.model.FilterFieldDto;
 import com.ecaservice.web.dto.model.FormTemplateGroupDto;
+import com.ecaservice.web.dto.model.InstancesInfoDto;
+import com.ecaservice.web.dto.model.PageDto;
+import com.ecaservice.web.dto.model.PageRequestDto;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import eca.ensemble.forests.DecisionTreeType;
@@ -52,18 +54,25 @@ public class TestHelperUtils {
 
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
-    private static final int OPTIONS_SIZE = 5;
+    public static final int PAGE_SIZE = 10;
+    public static final int PAGE_NUMBER = 0;
+
+    private static final long ITEM_ID = 1L;
+    private static final long TOTAL_COUNT = 1L;
     private static final int NUM_FOLDS = 10;
     private static final int NUM_TESTS = 1;
     private static final int SEED = 1;
-    private static final String RELATION_NAME = "relation";
+    private static final int NUM_INSTANCES = 150;
+    private static final int NUM_ATTRIBUTES = 5;
+    private static final int NUM_CLASSES = 3;
+    private static final String RELATION_NAME = "iris";
     private static final String CLASS_NAME = "class";
+    private static final int OPTIONS_SIZE = 5;
     private static final String CLASSIFIER_NAME = "Classifier";
     private static final String OPTIONS = "options";
     private static final String EVALUATION_RESULTS_HISTORY_FILTER_FIELDS_JSON =
             "evaluation_results_history_filter_fields.json";
     private static final String CLASSIFIERS_TEMPLATES_JSON = "classifiers-templates.json";
-    private static final String FILTER_NAME = "filterName";
     private static final String OBJECT_PATH = "instances.json";
     private static final int MAX_DEPTH = 10;
     private static final int MIN_OBJ = 2;
@@ -79,6 +88,15 @@ public class TestHelperUtils {
     }
 
     /**
+     * Creates page request dto.
+     *
+     * @return page request dto
+     */
+    public static PageRequestDto createPageRequestDto() {
+        return createPageRequestDto(PAGE_NUMBER, PAGE_SIZE);
+    }
+
+    /**
      * Loads evaluation results filter fields.
      *
      * @return filter fields list
@@ -89,25 +107,14 @@ public class TestHelperUtils {
     }
 
     /**
-     * Creates filter dictionary dto.
+     * Creates page request dto.
      *
-     * @return filter dictionary dto
+     * @param page - page number
+     * @param size - page size
+     * @return page request dto
      */
-    public static FilterDictionaryDto createFilterDictionaryDto() {
-        return createFilterDictionaryDto(Collections.emptyList());
-    }
-
-    /**
-     * Creates filter dictionary dto.
-     *
-     * @param values - values
-     * @return filter dictionary dto
-     */
-    public static FilterDictionaryDto createFilterDictionaryDto(List<FilterDictionaryValueDto> values) {
-        FilterDictionaryDto filterDictionaryDto = new FilterDictionaryDto();
-        filterDictionaryDto.setName(FILTER_NAME);
-        filterDictionaryDto.setValues(values);
-        return filterDictionaryDto;
+    public static PageRequestDto createPageRequestDto(Integer page, Integer size) {
+        return new PageRequestDto(page, size, Collections.emptyList(), null, newArrayList());
     }
 
     /**
@@ -477,6 +484,48 @@ public class TestHelperUtils {
         decisionTreeOptions.setUseRandomSplits(false);
         decisionTreeOptions.setSeed(SEED);
         return decisionTreeOptions;
+    }
+
+    /**
+     * Creates evaluation results history page dto for testing.
+     *
+     * @return {@link PageDto} containing {@link EvaluationResultsHistoryDto} items
+     */
+    public static PageDto<EvaluationResultsHistoryDto> createHistoryPageDto() {
+        EvaluationResultsHistoryDto item = new EvaluationResultsHistoryDto();
+        item.setId(ITEM_ID);
+        item.setRequestId(UUID.randomUUID().toString());
+        item.setNumFolds(NUM_FOLDS);
+        item.setNumTests(NUM_TESTS);
+        item.setSeed(SEED);
+        item.setSaveDate(LocalDateTime.now());
+        PageDto<EvaluationResultsHistoryDto> pageDto = new PageDto<>();
+        pageDto.setContent(List.of(item));
+        pageDto.setTotalCount(TOTAL_COUNT);
+        pageDto.setPage(PAGE_NUMBER);
+        return pageDto;
+    }
+
+    /**
+     * Creates instances info page dto for testing.
+     *
+     * @return {@link PageDto} containing {@link InstancesInfoDto} items
+     */
+    public static PageDto<InstancesInfoDto> createInstancesInfoPageDto() {
+        InstancesInfoDto item = new InstancesInfoDto();
+        item.setId(ITEM_ID);
+        item.setUuid(UUID.randomUUID().toString());
+        item.setRelationName(RELATION_NAME);
+        item.setNumInstances(NUM_INSTANCES);
+        item.setNumAttributes(NUM_ATTRIBUTES);
+        item.setNumClasses(NUM_CLASSES);
+        item.setClassName(CLASS_NAME);
+        item.setCreatedDate(LocalDateTime.now());
+        PageDto<InstancesInfoDto> pageDto = new PageDto<>();
+        pageDto.setContent(List.of(item));
+        pageDto.setTotalCount(TOTAL_COUNT);
+        pageDto.setPage(PAGE_NUMBER);
+        return pageDto;
     }
 
     private static <T> T loadConfig(String path, TypeReference<T> tTypeReference) {
